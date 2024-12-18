@@ -15,7 +15,7 @@ Source1:	%{sname}-config.h
 BuildRequires:	postgresql%{pgmajorversion}-devel wget pgdg-srpm-macros
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1499
 Requires:		libsnappy1 libbson-1_0-0 libmongoc-1_0-0
 BuildRequires:		snappy-devel libbson-1_0-0-devel libmongoc-1_0-0-devel
 BuildRequires:		libopenssl-devel
@@ -45,8 +45,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -58,8 +58,10 @@ This packages provides JIT support for mongo_fdw
 
 %build
 
+sh autogen.sh
+
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1499
 sed -i "s:^\(PG_CPPFLAGS.*\):\1 -I/usr/include/libmongoc-1.0 -I/usr/include/libbson-1.0 -I/usr/include/json-c -fPIC:g" Makefile
 sed -i "s:\(^#include \"bson.h\"\):#include <bson.h>:g" mongo_fdw.c
 sed -i "s:\(^#include \"bson.h\"\):#include <bson.h>:g" mongo_fdw.h
@@ -107,6 +109,8 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 5.5.2-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
+- Re-add autogen.sh per:
+  https://github.com/EnterpriseDB/mongo_fdw/issues/185#issuecomment-2371352239
 
 * Fri Jul 12 2024 Devrim Gündüz <devrim@gunduz.org> - 5.5.2-1PGDG
 - Update to 5.5.2 per changes described at:
