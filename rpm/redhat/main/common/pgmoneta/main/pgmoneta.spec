@@ -1,5 +1,5 @@
 Name:		pgmoneta
-Version:	0.14.1
+Version:	0.15.0
 Release:	1PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
@@ -9,6 +9,7 @@ Source1:	%{name}.service
 Source2:	%{name}-tmpfiles.d
 
 Patch0:		%{name}-conf-rpm.patch
+Patch1:		%{name}-%{version}-checknull.patch
 BuildRequires:	gcc cmake make python3-docutils zlib-devel
 BuildRequires:	libzstd-devel lz4-devel bzip2-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
@@ -22,7 +23,7 @@ BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1499
 Requires(post):		systemd-sysvinit
 %endif
 %else
@@ -40,6 +41,7 @@ pgmoneta is a backup / restore solution for PostgreSQL.
 %prep
 %setup -q -n %{name}-%{version}
 %patch -P 0 -p0
+%patch -P 1 -p1
 
 %build
 
@@ -77,14 +79,13 @@ cd build
 if [ $1 -eq 1 ] ; then
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
    %if 0%{?suse_version}
-    %if 0%{?suse_version} >= 1315
+    %if 0%{?suse_version} >= 1499
      %service_add_pre %{same}.service
     %endif
    %else
     %systemd_post %{name}.service
     %endif
 fi
-
 
 %preun
 if [ $1 -eq 0 ] ; then
@@ -104,6 +105,7 @@ fi
 %{_bindir}/%{name}
 %{_bindir}/%{name}-admin
 %{_bindir}/%{name}-cli
+%{_bindir}/%{name}-walinfo
 %config %{_sysconfdir}/%{name}/%{name}.conf
 %{_libdir}/libpgmoneta.so*
 %dir %{_docdir}/%{name}
@@ -114,6 +116,11 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> 0.15.0-1PGDG
+- Update to 0.15.0 per changes described at:
+  https://github.com/pgmoneta/pgmoneta/releases/tag/0.15.0
+- Add a temp patch, per https://redmine.postgresql.org/issues/8081
+
 * Wed Sep 25 2024 Devrim Gündüz <devrim@gunduz.org> 0.14.1-1PGDG
 - Update to 0.14.1 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.14.1
