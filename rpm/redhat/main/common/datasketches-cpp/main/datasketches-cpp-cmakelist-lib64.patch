@@ -1,0 +1,19 @@
+--- CMakeLists.txt.old	2024-12-19 15:33:20.980662893 +0300
++++ CMakeLists.txt	2024-12-19 15:33:34.367896736 +0300
+@@ -154,13 +154,13 @@
+ configure_package_config_file(
+         cmake/DataSketchesConfig.cmake.in
+         "${CMAKE_CURRENT_BINARY_DIR}/DataSketchesConfig.cmake"
+-        INSTALL_DESTINATION lib/DataSketches/cmake
++        INSTALL_DESTINATION lib64/DataSketches/cmake
+         PATH_VARS CMAKE_INSTALL_INCLUDEDIR
+ )
+-install(EXPORT ${PROJECT_NAME} DESTINATION lib/DataSketches/cmake)
++install(EXPORT ${PROJECT_NAME} DESTINATION lib64/DataSketches/cmake)
+ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/DataSketchesConfigVersion.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/DataSketchesConfig.cmake"
+-        DESTINATION lib/DataSketches/cmake)
++        DESTINATION lib64/DataSketches/cmake)
+ 
+ 
+ #set(CPACK_PROJECT_NAME ${PROJECT_NAME})
