@@ -66,7 +66,7 @@ chmod 755 %{custom_find_req}
 %changelog
 * Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> - 1.90_5-23.6.0.24.10
 - Update Oracle instant client version to 23.6.0.24.10
-* Provide perl(DBD::Oracle) per report and patch from Sébastien Lardière:
+- Provide perl(DBD::Oracle) per report and patch from Sébastien Lardière:
   https://redmine.postgresql.org/issues/8074
 
 * Fri Aug 2 2024 Devrim Gündüz <devrim@gunduz.org> - 1.90_5-23.5.0.24.07
