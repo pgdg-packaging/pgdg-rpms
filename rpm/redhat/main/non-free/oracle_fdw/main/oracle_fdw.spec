@@ -3,6 +3,8 @@
 %global ofdwmidver 7
 %global ofdwminver 0
 
+%{!?oi_release:%global oi_release 23.6.0.24.10}
+
 # Override RPM dependency generation to filter out libclntsh.so.
 # http://fedoraproject.org/wiki/PackagingDrafts/FilteringAutomaticDependencies
 %global		_use_internal_dependency_generator 0
@@ -14,7 +16,7 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Oracle.
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ofdwmajver}.%{ofdwmidver}.%{ofdwminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		http://laurenz.github.io/%{sname}
 Source0:	https://github.com/laurenz/%{sname}/archive/ORACLE_FDW_%{ofdwmajver}_%{ofdwmidver}_%{ofdwminver}.tar.gz
@@ -26,9 +28,9 @@ Obsoletes:	%{sname}%{pgmajorversion} < 2.3.0-2
 
 Requires:	postgresql%{pgmajorversion}-server
 # Package builder needs to adjust this as needed.
-BuildRequires:	oracle-instantclient-basic >= 23.5.0.24.07
-BuildRequires:	oracle-instantclient-devel >= 23.5.0.24.07
-Requires:	oracle-instantclient-basic >= 23.5.0.24.07
+BuildRequires:	oracle-instantclient-basic >= %{oi_release}
+BuildRequires:	oracle-instantclient-devel >= %{oi_release}
+Requires:	oracle-instantclient-basic >= %{oi_release}
 
 %description
 Provides a Foreign Data Wrapper for easy and efficient read access from
@@ -59,6 +61,9 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 %{pginstdir}/doc/extension/README.%{sname}
 
 %changelog
+* Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> 2.7.0-4PGDG
+- Update OIC dependency to 23.6.0.24.10
+
 * Fri Aug 2 2024 Devrim Gündüz <devrim@gunduz.org> 2.7.0-1PGDG
 - Update to 2.7.0 per changes described at:
   https://github.com/laurenz/oracle_fdw/releases/tag/ORACLE_FDW_2_7_0
