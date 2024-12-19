@@ -80,9 +80,9 @@ Version:	14.15
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420001PGDG%{?dist}
+Release:	420002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -388,6 +388,7 @@ Requires:	llvm-toolset-7.0-llvm-devel >= 7.0.1 llvm-toolset-7.0-clang >= 7.0.1
 %else
 Requires:	llvm5.0-devel >= 5.0 llvm-toolset-7-clang >= 4.0.1
 %endif
+%endif
 %if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 Requires:	llvm6-devel clang6-devel
 %endif
@@ -396,7 +397,6 @@ Requires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 Requires:	llvm-devel >= 13.0 clang-devel >= 13.0
-%endif
 %endif
 %endif
 
@@ -1382,6 +1382,11 @@ fi
 %endif
 
 %changelog
+* Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> - 14.15-2PGDG
+- Make sure that llvm-devel and clang-devel are pulled along with
+  the -devel subpackage on SLES 15, RHEL 9 and RHEL 8. Report and patch
+  from Muralikrishna Bandaru. Fixes https://redmine.postgresql.org/issues/8071
+
 * Mon Nov 18 2024 Devrim Gündüz <devrim@gunduz.org> - 14.15-1PGDG
 - Update to 14.15, per changes described at
   https://www.postgresql.org/docs/release/14.15/
