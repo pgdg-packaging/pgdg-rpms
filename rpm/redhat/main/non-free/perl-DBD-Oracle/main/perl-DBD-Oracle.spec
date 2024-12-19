@@ -1,7 +1,7 @@
 %global		name perl-DBD-Oracle
 %global		pkgname %(echo %{name}| sed 's/perl-//')
 %{!?version:%global version 1.90_5}
-%{!?oi_release:%global oi_release 23.5.0.24.07}
+%{!?oi_release:%global oi_release 23.6.0.24.10}
 %global		release %{oi_release}PGDG%{dist}
 %global		perl_vendorarch %(eval "$(%{__perl} -V:installvendorarch)"; echo $installvendorarch)
 %global		_use_internal_dependency_generator 0
@@ -25,13 +25,11 @@ Requires:	oracle-instantclient-basic = %{oi_release}
 BuildRequires:	oracle-instantclient-devel = %{oi_release}
 BuildRequires:	oracle-instantclient-sqlplus = %{oi_release}
 Provides:	perl(DBD-Oracle) = %{version}
+Provides:	perl(DBD::Oracle) = %{version}
 
 %description
 DBD::Oracle is a Perl module which works with the DBI module to provide
 access to Oracle databases.
-This documentation describes driver specific behaviour and restrictions.
-It is not supposed to be used as the only reference for the user.
-In any case consult the DBI documentation first!
 
 %prep
 %setup -q -n %{pkgname}-%{version}
@@ -66,6 +64,11 @@ chmod 755 %{custom_find_req}
 %{_mandir}/man3/*
 
 %changelog
+* Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> - 1.90_5-23.6.0.24.10
+- Update Oracle instant client version to 23.6.0.24.10
+* Provide perl(DBD::Oracle) per report and patch from Sébastien Lardière:
+  https://redmine.postgresql.org/issues/8074
+
 * Fri Aug 2 2024 Devrim Gündüz <devrim@gunduz.org> - 1.90_5-23.5.0.24.07
 - Update Oracle instant client version to 23.5.0.24.07
 
