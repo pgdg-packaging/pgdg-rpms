@@ -10,6 +10,7 @@ Source0:	https://github.com/apache/datasketches-cpp/archive/refs/tags/%{version}
 Patch0:		%{name}-cmakelist-lib64.patch
 URL:		https://github.com/apache/datasketches-cpp/
 BuildRequires:	gcc-c++
+BuildArch:	noarch
 
 %description
 This is the core C++ component of the Apache DataSketches library. It contains
