@@ -6,7 +6,7 @@ Name:		datasketches-cpp
 Version:	5.1.0
 Release:	1PGDG%{dist}
 License:	GPLv2+
-Source0:	https://github.com/apache/datasketches-cpp/archive/refs/tags/%{name}-%{version}.tar.gz
+Source0:	https://github.com/apache/datasketches-cpp/archive/refs/tags/%{version}.tar.gz
 Patch0:		%{name}-cmakelist-lib64.patch
 URL:		https://github.com/apache/datasketches-cpp/
 BuildRequires:	gcc-c++
