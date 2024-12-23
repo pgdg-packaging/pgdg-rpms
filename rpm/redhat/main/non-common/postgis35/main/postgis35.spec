@@ -7,7 +7,7 @@
 %pgdg_set_gis_variables
 
 # Override some variables. PostGIS 3.5 is best served with GeOS 3.13,
-# PROJ 9.5 and GDAL 3.9 (except on RHEL 8 where GDAL 3.8 is available):
+# PROJ 9.5 and GDAL 3.10 (except on RHEL 8 where GDAL 3.8 is available):
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
@@ -16,9 +16,9 @@
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
 %else
-%global gdalfullversion %gdal39fullversion
-%global gdalmajorversion %gdal39majorversion
-%global gdalinstdir %gdal39instdir
+%global gdalfullversion %gdal310fullversion
+%global gdalmajorversion %gdal310majorversion
+%global gdalinstdir %gdal310instdir
 %endif
 %global projmajorversion %proj95majorversion
 %global projfullversion %proj95fullversion
@@ -43,8 +43,8 @@
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
-Version:	%{postgismajorversion}.0
-Release:	4PGDG%{?dist}
+Version:	%{postgismajorversion}.1
+Release:	1PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -54,7 +54,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.40 pcre-devel gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.45 pcre-devel gmp-devel
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
@@ -365,6 +365,11 @@ fi
 %endif
 
 %changelog
+* Thu Sep 26 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-1PGDG
+- Update to 3.5.1 per changes described at:
+  https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.5.1/NEWS
+- Build against GDAL 3.10
+
 * Wed Dec 18 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.0-4PGDG
 - Fix changelog date
 
