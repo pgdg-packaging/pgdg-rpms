@@ -1,17 +1,14 @@
 %global debug_package %{nil}
 
-%if 0%{?fedora} || 0%{?rhel} >= 7
+%if 0%{?fedora} || 0%{?rhel}
 %global macros_dir %{_rpmconfigdir}/macros.d
+BuildArch:	noarch
 %else
 %global macros_dir %{_sysconfdir}/rpm
 %endif
 
-%if 0%{?fedora} >= 36 || 0%{?rhel} >= 8
-BuildArch:	noarch
-%endif
-
 Name:		pgdg-srpm-macros
-Version:	1.0.44
+Version:	1.0.45
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -41,6 +38,9 @@ echo no build stage needed
 %{macros_dir}/macros.pgdg-postgresql
 
 %changelog
+* Mon Dec 23 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.45-1PGDG
+- Add GeOS 3.10 and update PROJ to 9.5.1
+
 * Mon Sep 16 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.44-1PGDG
 - Add PROJ 9.5
 
