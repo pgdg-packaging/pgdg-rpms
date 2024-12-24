@@ -368,7 +368,7 @@ fi
 * Thu Sep 26 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-1PGDG
 - Update to 3.5.1 per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.5.1/NEWS
-- Build against GDAL 3.10
+- Rebuild against GDAL 3.10 on Fedora, RHEL 9 and SLES 15.
 
 * Wed Dec 18 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.0-4PGDG
 - Fix changelog date
