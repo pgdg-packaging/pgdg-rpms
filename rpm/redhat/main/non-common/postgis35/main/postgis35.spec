@@ -75,7 +75,7 @@ BuildRequires:	gtk2-devel > 2.8.0
 %if 0%{?fedora} >= 39 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %endif
-%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1315
+%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
 BuildRequires:	SFCGAL-devel
 %endif
 %endif
@@ -178,19 +178,19 @@ The %{name}-utils package provides the utilities for PostGIS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for postgis35
+Summary:	Just-in-time compilation support for PostGIS 3.5
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for postgis35
+This packages provides JIT support for PostGIS 3.5
 %endif
 
 %prep
