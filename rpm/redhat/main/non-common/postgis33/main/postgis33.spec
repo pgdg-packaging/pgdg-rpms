@@ -7,7 +7,7 @@
 %pgdg_set_gis_variables
 
 # Override some variables. PostGIS 3.3 is best served with GeOS 3.13,
-# PROJ 9.5 and GDAL 3.9 (except on RHEL 8 where GDAL 3.8 is available):
+# PROJ 9.5 and GDAL 3.10 (except on RHEL 8 where GDAL 3.8 is available):
 %global	geosfullversion %geos313fullversion
 %global	geosmajorversion %geos313majorversion
 %global	geosinstdir %geos313instdir
@@ -16,9 +16,9 @@
 %global	gdalmajorversion %gdal38majorversion
 %global	gdalinstdir %gdal38instdir
 %else
-%global	gdalfullversion %gdal39fullversion
-%global	gdalmajorversion %gdal39majorversion
-%global	gdalinstdir %gdal39instdir
+%global	gdalfullversion %gdal310fullversion
+%global	gdalmajorversion %gdal310majorversion
+%global	gdalinstdir %gdal310instdir
 %endif
 %global	projmajorversion %proj95majorversion
 %global	projfullversion %proj95fullversion
@@ -35,7 +35,7 @@
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global     raster 1}
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %ifnarch ppc64 ppc64le
 # TODO
 %{!?sfcgal:%global     sfcgal 1}
@@ -48,8 +48,8 @@
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
-Version:	%{postgismajorversion}.7
-Release:	3PGDG%{?dist}
+Version:	%{postgismajorversion}.8
+Release:	1PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -60,14 +60,14 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.32 pcre-devel gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.45 pcre-devel gmp-devel
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
 Requires:	gmp
 %endif
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libjson-c-devel proj%{projmajorversion}-devel >= %{projfullversion}
 %endif
 %else
@@ -81,7 +81,7 @@ BuildRequires:	gtk2-devel > 2.8.0
 %if 0%{?fedora} >= 39 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %endif
-%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1315
+%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
 BuildRequires:	SFCGAL-devel
 %endif
 %endif
@@ -90,7 +90,7 @@ BuildRequires:	gdal%{gdalmajorversion}-devel >= %{gdalfullversion}
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %endif
 
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	libprotobuf-c1
 BuildRequires:	libprotobuf-c-devel
 %else
@@ -109,7 +109,7 @@ Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %endif
 
 Requires:	pcre
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	libjson-c5
 Requires:	libxerces-c-3_2
 BuildRequires:	libxerces-c-devel
@@ -187,19 +187,19 @@ The %{name}-utils package provides the utilities for PostGIS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for postgis33
+Summary:	Just-in-time compilation support for PostGIS 3.3
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for postgis33
+This packages provides JIT support for PostGIS 3.3
 %endif
 
 %prep
@@ -232,7 +232,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -368,6 +368,11 @@ fi
 %endif
 
 %changelog
+* Tue Dec 24 2024 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-1PGDG
+- Update to 3.3.8 per changes described at:
+  https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.3.8/NEWS
+- Rebuild against GDAL 3.10 on Fedora, RHEL 9 and SLES 15.
+
 * Sat Oct 12 2024 Devrim Gündüz <devrim@gunduz.org> - 3.3.7-3PGDG
 - Rebuild against SFCGAL 2.0 on RHEL 9 and Fedora
 
