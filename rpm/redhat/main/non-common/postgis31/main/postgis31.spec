@@ -7,7 +7,7 @@
 %pgdg_set_gis_variables
 
 # Override some variables. PostGIS 3.2 is best served with GeOS 3.13,
-# PROJ 9.5 and GDAL 3.9 (except on RHEL 8 where GDAL 3.8 is available):
+# PROJ 9.5 and GDAL 3.10 (except on RHEL 8 where GDAL 3.8 is available):
 %global	geosfullversion	%geos313fullversion
 %global	geosmajorversion %geos313majorversion
 %global	geosinstdir %geos313instdir
@@ -16,9 +16,9 @@
 %global	gdalmajorversion %gdal38majorversion
 %global	gdalinstdir %gdal38instdir
 %else
-%global	gdalfullversion %gdal39fullversion
-%global	gdalmajorversion %gdal39majorversion
-%global	gdalinstdir %gdal39instdir
+%global	gdalfullversion %gdal310fullversion
+%global	gdalmajorversion %gdal310majorversion
+%global	gdalinstdir %gdal310instdir
 %endif
 %global	projmajorversion %proj95majorversion
 %global	projfullversion %proj95fullversion
@@ -33,13 +33,9 @@
 
 %{!?utils:%global	utils 1}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
-%if 0%{?suse_version} < 1499
 %{!?raster:%global	raster 1}
-%else
-%{!?raster:%global	raster 1}
-%endif
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %ifnarch ppc64 ppc64le
 # TODO
 %{!?sfcgal:%global	sfcgal 1}
@@ -52,8 +48,8 @@
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
-Version:	%{postgismajorversion}.11
-Release:	5PGDG%{?dist}
+Version:	%{postgismajorversion}.12
+Release:	1PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -64,14 +60,14 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.18 pcre-devel gmp-devel
-%if 0%{?suse_version} >= 1315
+BuildRequires:	pgdg-srpm-macros >= 1.0.45 pcre-devel gmp-devel
+%if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
 Requires:	gmp
 %endif
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libjson-c-devel proj%{projmajorversion}-devel >= %{projfullversion}
 %endif
 %else
@@ -89,7 +85,7 @@ Requires:	SFCGAL
 BuildRequires:	gdal%{gdalmajorversion}-devel >= %{gdalfullversion}
 %endif
 
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	libprotobuf-c1
 BuildRequires:	libprotobuf-c-devel
 %else
@@ -108,10 +104,6 @@ Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %endif
 
 Requires:	pcre
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-Requires:	libjson-c2
-Requires:	libxerces-c-3_1
-%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libjson-c5
 Requires:	libxerces-c-3_2
@@ -234,7 +226,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -369,6 +361,11 @@ fi
 %endif
 
 %changelog
+* Tue Dec 24 2024 Devrim Gunduz <devrim@gunduz.org> - 3.1.12-1PGDG
+- Update to 3.1.12, per changes described at:
+  https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.1.12/NEWS
+- Rebuild against GDAL 3.10 on Fedora, RHEL 9 and SLES 15.
+
 * Mon Dec 9 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.11-6PGDG
 - Rebuild against SFCGAL 2.0 on RHEL 9 and Fedora
 - Rebuild against PROJ 9.5, GeOS 3.13
