@@ -54,7 +54,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.34 pcre-devel gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.45 pcre-devel gmp-devel
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
@@ -367,7 +367,7 @@ fi
 * Tue Dec 24 2024 Devrim Gunduz <devrim@gunduz.org> - 3.4.4-1PGDG
 - Update to 3.4.4 per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.4.4/NEWS
-- Build against GDAL 3.10
+- Rebuild against GDAL 3.10 on Fedora, RHEL 9 and SLES 15.
 
 * Sat Oct 12 2024 Devrim Gündüz <devrim@gunduz.org> - 3.4.3-3PGDG
 - Rebuild against SFCGAL 2.0 on RHEL 9 and Fedora
