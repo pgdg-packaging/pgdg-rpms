@@ -98,12 +98,12 @@ BuildRequires:	gdal%{gdalmajorversion}-devel >= %{gdalfullversion}
 %endif
 
 %if 0%{?suse_version} >= 1500
-Requires:       libprotobuf-c1
-BuildRequires:  libprotobuf-c-devel
+Requires:	libprotobuf-c1
+BuildRequires:	libprotobuf-c-devel
 %else
 # Fedora/RHEL:
-Requires:       protobuf-c >= 1.1.0
-BuildRequires:  protobuf-c-devel >= 1.1.0
+Requires:	protobuf-c >= 1.1.0
+BuildRequires:	protobuf-c-devel >= 1.1.0
 %endif
 
 Requires:	postgresql%{pgmajorversion} geos%{geosmajorversion} >= %{geosfullversion}
@@ -377,7 +377,7 @@ fi
 %endif
 
 %changelog
-* Tue Dec 24 20244 Devrim Gunduz <devrim@gunduz.org> - 3.2.8-1PGDG
+* Tue Dec 24 2024 Devrim Gunduz <devrim@gunduz.org> - 3.2.8-1PGDG
 - Update to 3.2.8, per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.2.8/NEWS
 - Rebuild against GDAL 3.10 on Fedora, RHEL 9 and SLES 15.
