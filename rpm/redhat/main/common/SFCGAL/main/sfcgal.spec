@@ -2,8 +2,8 @@
 
 Summary:	C++ wrapper library around CGAL for PostGIS
 Name:		SFCGAL
-%if 0%{?suse_version} && 0%{?suse_version} >= 1315
-Version:	1.3.10
+%if 0%{?suse_version} && 0%{?suse_version} >= 1500
+Version:	1.4.1
 BuildRequires:	cgal-devel
 %endif
 
@@ -31,11 +31,6 @@ URL:		https://sfcgal.gitlab.io/SFCGAL/
 
 BuildRequires:	cmake pgdg-srpm-macros
 
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-BuildRequires:	libboost_date_time1_54_0 libboost_thread1_54_0
-BuildRequires:	libboost_system1_54_0 libboost_serialization1_54_0
-BuildRequires:	libboost_serialization1_54_0-devel libboost_atomic1_54_0-devel
-%endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libboost_date_time1_66_0 libboost_thread1_66_0
 BuildRequires:	libboost_system1_66_0 libboost_serialization1_66_0
@@ -81,7 +76,7 @@ Development headers and libraries for SFCGAL.
 %{__install} -d build
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr \
 %endif
 %else
@@ -114,7 +109,7 @@ cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr \
 
 %files devel
 %{_includedir}/%{name}/
-%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %{_libdir}/pkgconfig/sfcgal.pc
 %endif
 
@@ -122,6 +117,9 @@ cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr \
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Sat Dec 28 2024 Devrim Gunduz <devrim@gunduz.org> - 1.4.1-2PGDG
+- Update to 1.4.1 on SLES 15
+
 * Mon Dec 16 2024 Devrim Gunduz <devrim@gunduz.org> - 2.0.0-2PGDG
 - Add RHEL 10 support
 
