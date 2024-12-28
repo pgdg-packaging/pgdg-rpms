@@ -49,7 +49,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.8
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -210,12 +210,12 @@ This packages provides JIT support for PostGIS 3.3
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
-LDFLAGS="-Wl,-rpath,%{projinstdir}/lib ${LDFLAGS}" ; export LDFLAGS
+LDFLAGS="-Wl,-rpath,%{projinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
 LDFLAGS="-Wl,-rpath,%{libspatialiteinstdir}/lib ${LDFLAGS}" ; export LDFLAGS
 SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{geosinstdir}/lib64" ; export SHLIB_LINK
 SFCGAL_LDFLAGS="$SFCGAL_LDFLAGS -L/usr/lib64"; export SFCGAL_LDFLAGS
 
-LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -lgeos_c -L%{projinstdir}/lib -L%{gdalinstdir}/lib -L%{libgeotiffinstdir}/lib -ltiff -L/usr/lib64"; export LDFLAGS
+LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -lgeos_c -L%{projinstdir}/lib64 -L%{gdalinstdir}/lib -L%{libgeotiffinstdir}/lib -ltiff -L/usr/lib64"; export LDFLAGS
 CFLAGS="$CFLAGS -I%{gdalinstdir}/include"; export CFLAGS
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:%{projinstdir}/lib64/pkgconfig
 
@@ -223,6 +223,7 @@ autoconf
 
 %configure --with-pgconfig=%{pginstdir}/bin/pg_config \
 	--enable-lto \
+	--with-projdir=%{projinstdir} \
 %if !%raster
 	--without-raster \
 %endif
@@ -368,6 +369,10 @@ fi
 %endif
 
 %changelog
+* Sat Dec 28 2024 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-2PGDG
+- Fix SLES 15 builds by adding --with-projdir option back. Also fix
+  PROJ path.
+
 * Tue Dec 24 2024 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-1PGDG
 - Update to 3.3.8 per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.3.8/NEWS
