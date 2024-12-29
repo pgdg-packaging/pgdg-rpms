@@ -1,26 +1,33 @@
-%global odbcgittag 17_00_0004
+%global pgodbcmajver 17
+%global pgodbcmidver 00
+%global pgodbcminver 0004
 
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
-Version:	17.00.0004
-Release:	2PGDG%{?dist}
+Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
+Release:	3PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
-Source0:	https://github.com/postgresql-interfaces/psqlodbc/archive/refs/tags/REL-%{odbcgittag}.tar.gz
+Source0:	https://github.com/postgresql-interfaces/psqlodbc/archive/refs/tags/REL-%{pgodbcmajver}_%{pgodbcmidver}_%{pgodbcminver}.tar.gz
 Source1:	acinclude.m4
 
 BuildRequires:	autoconf krb5-devel pam-devel pgdg-srpm-macros
 BuildRequires:	openssl-devel pam-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	unixODBC-devel
 
-Requires:	postgresql%{pgmajorversion}-libs krb5-libs
+Requires:	postgresql%{pgmajorversion}-libs
+%if 0%{?suse_version} >= 1500
+Requires:	krb5
+%else
+Requires:	krb5-libs
+%endif
 
 %if 0%{?fedora} == 39
 BuildRequires:	zlib-devel
 Requires:	zlib
 %endif
-%if 0%{?fedora} == 40
+%if 0%{?fedora} >= 40
 BuildRequires:	zlib-ng-compat-devel
 Requires:	zlib-ng-compat
 %endif
@@ -28,7 +35,7 @@ Requires:	zlib-ng-compat
 BuildRequires:	zlib-devel
 Requires:	zlib
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	zlib-devel
 Requires:	libz1
 %endif
@@ -40,7 +47,7 @@ This package includes the driver needed for applications to access a
 PostgreSQL system via ODBC (Open Database Connectivity).
 
 %prep
-%setup -q -n psqlodbc-REL-%{odbcgittag}
+%setup -q -n psqlodbc-REL-%{pgodbcmajver}_%{pgodbcmidver}_%{pgodbcminver}
 
 %ifarch ppc64le
 sed -i "s:elf64ppc:elf64lppc:g" configure.ac
@@ -85,6 +92,9 @@ popd
 %license license.txt
 
 %changelog
+* Sun Dec 29 2024 Devrim Gündüz <devrim@gunduz.org> - 17.00.0004-3PGDG
+- Fix SLES 15 dependency and add proper Fedora 41 support
+
 * Mon Dec 16 2024 Devrim Gündüz <devrim@gunduz.org> - 17.00.0004-2PGDG
 - Fix version number in spec file and really update to 17.00.0004 :(
 - Fix ppc64le builds.
