@@ -1,7 +1,7 @@
 %global sname	mysql-replication
 %global __ospython3 %{_bindir}/python3
 
-%if 0%{?fedora} >= 35
+%if 0%{?fedora} >= 40 0%{?rhel} >= 10
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -9,7 +9,7 @@
 
 Name:		python3-%{sname}
 Version:	1.0.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -52,7 +52,10 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
-* Wed Oct 18 2023 - Devrim Gündüz <devrim@gunduz.org> 1.0.2-1
+* Sun Dec 29 2024 - Devrim Gündüz <devrim@gunduz.org> 1.0.2-2PGDG
+- Add RHEL 10 support
+
+* Wed Oct 18 2023 - Devrim Gündüz <devrim@gunduz.org> 1.0.2-1PGDG
 - Update to 1.0.2
 - Add PGDG branding
 
