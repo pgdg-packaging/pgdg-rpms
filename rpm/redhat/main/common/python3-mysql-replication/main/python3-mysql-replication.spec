@@ -1,7 +1,7 @@
 %global sname	mysql-replication
 %global __ospython3 %{_bindir}/python3
 
-%if 0%{?fedora} >= 40 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
