@@ -5,15 +5,15 @@
 
 %pgdg_set_gis_variables
 
-# Use GDAL 3.9 on all of the platforms except RHEL 8:
+# Use GDAL 3.10 on all of the platforms except RHEL 8:
 %if 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
 %else
-%global gdalfullversion %gdal39fullversion
-%global gdalmajorversion %gdal39majorversion
-%global gdalinstdir %gdal39instdir
+%global gdalfullversion %gdal310fullversion
+%global gdalmajorversion %gdal310majorversion
+%global gdalinstdir %gdal310instdir
 %endif
 
 Summary:	PostgreSQL foreign data wrapper for OGR
@@ -86,6 +86,9 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Mon Dec 30 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.5-4PGDG
+- Rebuild against GDAL 3.10
+
 * Fri Nov 22 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.5-4PGDG
 - Use GDAL 3.8 on RHEL 8
 
