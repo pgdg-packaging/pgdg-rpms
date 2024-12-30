@@ -5,15 +5,11 @@
 
 %global sname gdal
 
-%if 0%{?fedora} == 40
-%{!?gdaljava:%global gdaljava 0}
-%else
 %{!?gdaljava:%global gdaljava 1}
-%endif
 
 %pgdg_set_gis_variables
 
-%if 0%{?fedora} >= 39
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -36,7 +32,7 @@
 %global gdalsomajorversion	36
 %global libspatialitemajorversion	50
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} <= 1499
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} <= 1499
 %global g2clib_enabled 1
 %else
 %global g2clib_enabled 0
@@ -49,7 +45,7 @@
 
 Name:		%{sname}310
 Version:	3.10.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -184,7 +180,7 @@ BuildRequires:	python3-numpy
 BuildRequires:	python3-setuptools
 
 BuildRequires:	qhull-devel
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1315
@@ -245,7 +241,7 @@ Requires:	libspatialite%{libspatialitemajorversion}-devel
 Requires:	libarmadillo10
 %endif
 %endif
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	armadillo
 %endif
 
@@ -322,7 +318,7 @@ export CFLAGS="$RPM_OPT_FLAGS -fpic"
 export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include"
 export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include"
 # SLES 15 has -Itirpc on /usr/include, so use the following only on Fedora and RHEL:
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 8
 export CXXFLAGS="$CFLAGS -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{_includedir}/tirpc"
 %endif
@@ -479,6 +475,9 @@ done
 %endif
 
 %changelog
+* Mon Dec 30 2024 Devrim Gunduz <devrim@gunduz.org> - 3.10.0-2PGDG
+- Re-enable Java bindings on Fedora 40
+
 * Sat Nov 9 2024 Devrim Gunduz <devrim@gunduz.org> - 3.10.0-1PGDG
 - Initial 3.10.0 packaging per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.10.0
