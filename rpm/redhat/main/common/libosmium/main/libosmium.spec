@@ -9,13 +9,20 @@
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
-%global gdalfullversion %gdal39fullversion
-%global gdalmajorversion %gdal39majorversion
-%global gdalinstdir %gdal39instdir
+# Use GDAL 3.10 on all of the platforms except RHEL 8:
+%if 0%{?rhel} == 8
+%global gdalfullversion %gdal38fullversion
+%global gdalmajorversion %gdal38majorversion
+%global gdalinstdir %gdal38instdir
+%else
+%global gdalfullversion %gdal310fullversion
+%global gdalmajorversion %gdal310majorversion
+%global gdalinstdir %gdal310instdir
+%endif
 
 Name:		libosmium
 Version:	2.20.0
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Fast and flexible C++ library for working with OpenStreetMap data
 
 License:	BSL-1.0
@@ -86,7 +93,7 @@ cd libosmium
 	-DGEOS_LIBRARY=%{geosinstdir}/lib64/libgeos.so -DGEOS_INCLUDE_DIR=%{geosinstdir}/include
 
 %cmake_build
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 %cmake_build --target doc
 %endif
 
@@ -107,6 +114,9 @@ cd libosmium
 %endif
 
 %changelog
+* Mon Dec 30 2024 Devrim Gündüz <devrim@gunduz.org> - 2.20.0-45PGDG
+- Rebuild against GDAL 3.10
+
 * Fri Sep 20 2024 Devrim Gündüz <devrim@gunduz.org> - 2.20.0-44PGDG
 - Rebuild against GDAL 3.9 and GeOS 3.13
 
