@@ -476,6 +476,7 @@ done
 
 %changelog
 * Mon Dec 30 2024 Devrim Gunduz <devrim@gunduz.org> - 3.10.0-2PGDG
+- Fix linker config file
 - Re-enable Java bindings on Fedora 40
 
 * Sat Nov 9 2024 Devrim Gunduz <devrim@gunduz.org> - 3.10.0-1PGDG
