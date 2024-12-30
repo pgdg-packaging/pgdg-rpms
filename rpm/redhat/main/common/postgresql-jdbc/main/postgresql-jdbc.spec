@@ -2,7 +2,7 @@
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
 Version:	42.7.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # ASL 2.0 applies only to postgresql-jdbc.pom file, the rest is BSD
 License:	BSD and ASL 2.0
 URL:		https://jdbc.postgresql.org/
@@ -15,35 +15,21 @@ Requires:	jpackage-utils
 # On SUSE/SLES, java-headless is Provided by java-11-openjdk-headless, which is version 0:11
 Requires:	java-headless >= 8
 %else
-# On rhel/centos, java-headless Provides 'java-headless = 1:1.8.0'
+# On RHEL java-headless Provides 'java-headless = 1:1.8.0'
 Requires:	java-headless >= 1:1.8
 %endif
 
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-BuildRequires:	java-1_8_0-openjdk-devel
-%endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	java-11-openjdk-devel
 %endif
 %if 0%{?rhel} == 9
 BuildRequires:	java-17-openjdk-devel
 %endif
-%if 0%{?rhel} < 9 && 0%{?rhel} >= 7
-BuildRequires:	java-latest-openjdk-devel
-%endif
-%if 0%{?fedora}
+%if 0%{?rhel} == 8 || 0%{?fedora}  || 0%{?rhel} >= 10
 BuildRequires:	java-latest-openjdk-devel
 %endif
 
-%if 0%{?rhel} == 7
-# Default maven 3.0 does not build the driver, so use 3.3:
-BuildRequires:	rh-maven33-maven
-%endif
-
-# On the remaining distros, use the maven package supplied by OS.
-%if 0%{?fedora} >= 30 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1315
 BuildRequires:	maven
-%endif
 
 %description
 PostgreSQL is an advanced Object-Relational database management
@@ -113,7 +99,7 @@ mvn clean package 2>&1 | tee test.log | grep FAILED
 test $? -eq 0 && { cat test.log ; exit 1 ; }
 %endif
 
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 %files
 %doc LICENSE README.md
 %else
@@ -124,11 +110,8 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %endif
 
 # ...and SLES locates .pom file somewhere else:
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 %{_javadir}/%{name}.jar
-%{_datadir}/maven-poms/JPP-%{name}.pom
-%endif
-%if 0%{?rhel} && 0%{?rhel} == 7
 %{_datadir}/maven-poms/JPP-%{name}.pom
 %endif
 %if 0%{?rhel} && 0%{?rhel} >= 8
@@ -145,6 +128,9 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
+* Mon Dec 30 2024 Devrim Gündüz <devrim@gunduz.org> - 42.7.4-2PGDG
+- Fix SLES 15 dependency and remove RHEL 7 and SLES 12 support.
+
 * Fri Aug 23 2024 Devrim Gündüz <devrim@gunduz.org> - 42.7.4-1PGDG
 - Update to 42.7.4 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.4
