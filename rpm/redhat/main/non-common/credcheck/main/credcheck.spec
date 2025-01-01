@@ -3,14 +3,14 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.8
+Version:	3.0
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/MigOpsRepos/%{sname}
 Source0:	https://github.com/MigOpsRepos//%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros >= 1.0.27
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -30,8 +30,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -61,6 +61,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Jan 2 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0-1PGDG
+- Update to 3.0 per changes described at
+  https://github.com/MigOpsRepos/credcheck/releases/tag/v3.0
+
 * Mon Aug 5 2024 Devrim Gunduz <devrim@gunduz.org> - 2.8-1PGDG
 - Update to 2.8 per changes described at
   https://github.com/MigOpsRepos/credcheck/releases/tag/v2.8
