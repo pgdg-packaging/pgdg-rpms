@@ -1,6 +1,6 @@
 %global __ospython3 %{_bindir}/python3
 
-%if 0%{?fedora} >= 35
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -8,23 +8,20 @@
 
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
-Version:	2.0.19
-Release:	2PGDG%{?dist}
+Version:	2.0.20
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
 BuildArch:	noarch
 
-Requires:	python3-PyMySQL python3-psycopg2 python3-rollbar
+Requires:	python3-PyMySQL python3-psycopg2 python3-parsy python3-rollbar
 Requires:	python3-mysql-replication >= 0.31 python3-tabulate python3-daemonize
 
-%if 0%{?rhel} && 0%{?rhel} == 7
-Requires:	python36-PyYAML
-%endif
-%if 0%{?fedora} >= 34 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	python3-pyyaml
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	python3-PyYAML
 %endif
 
@@ -60,6 +57,10 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Wed Jan 1 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.20-1PGDG
+- Update to 2.0.20 per changes described at
+  https://github.com/the4thdoctor/pg_chameleon/releases/tag/v2.0.20
+
 * Mon Feb 19 2024  Devrim Gündüz <devrim@gunduz.org> - 2.0.19-2PGDG
 - Add PGDG branding
 
