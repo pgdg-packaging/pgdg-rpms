@@ -93,6 +93,7 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 * Thu Jan 2 2025 - Devrim Gündüz <devrim@gunduz.org> - 1.6.8-2PGDG
 - Simplify Java BR and add Java Requires.
 - Use proper JAVA_HOME on all distros
+- Use macros for version numbers in the spec file to avoid accidents.
 
 * Sun Oct 20 2024 - Devrim Gündüz <devrim@gunduz.org> - 1.6.8-1PGDG
 - Update to 1.6.8 per changes described at:
