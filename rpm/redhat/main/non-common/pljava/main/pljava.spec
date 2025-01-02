@@ -26,10 +26,21 @@ URL:		http://tada.github.io/%{sname}/
 Source0:	https://github.com/tada/%{sname}/archive/V%{relver}.tar.gz
 Source1:	%{sname}.pom
 
+%if 0%{?rhel} == 8
+BuildRequires:	java-11-openjdk-devel
+%else
 BuildRequires:	java-devel
+%endif
+
 BuildRequires:	openssl-devel krb5-devel
 
-BuildRequires:	maven java
+%if 0%{?rhel} == 8
+BuildRequires:	java-11-openjdk
+%else
+BuildRequires:	java
+%endif
+
+BuildRequires:	maven
 
 Obsoletes:	%{sname}-%{pgmajorversion} < 1.5.6-2
 
@@ -48,7 +59,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %ifarch ppc64 ppc64le
 mvn clean install -Dso.debug=true -Psaxon-examples -Dnar.aolProperties=pljava-so/aol.%{archtag}-linux-gpp.properties
 %else
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?rhel} == 8
+export JAVA_HOME=/etc/alternatives/java_sdk_11_openjdk
+%endif
+%if 0%{?fedora} || 0%{?rhel} >= 9
 export JAVA_HOME=/usr/lib/jvm/java-openjdk/
 %endif
 %if 0%{?suse_version} >= 1500
