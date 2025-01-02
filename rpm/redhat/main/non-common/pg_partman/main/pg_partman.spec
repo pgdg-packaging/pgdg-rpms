@@ -4,7 +4,7 @@
 
 Summary:	A PostgreSQL extension to manage partitioned tables by time or ID
 Name:		%{sname}_%{pgmajorversion}
-Version:	5.2.3
+Version:	5.2.4
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgpartman/%{sname}/archive/v%{version}.tar.gz
@@ -71,6 +71,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.4-1PGDG
+- Update to 5.2.4 per changes described at:
+  https://github.com/pgpartman/pg_partman/releases/tag/v5.2.4
+
 * Tue Dec 31 2024 Devrim Gündüz <devrim@gunduz.org> - 5.2.3-1PGDG
 - Update to 5.2.3 per changes described at:
   https://github.com/pgpartman/pg_partman/releases/tag/v5.2.3
