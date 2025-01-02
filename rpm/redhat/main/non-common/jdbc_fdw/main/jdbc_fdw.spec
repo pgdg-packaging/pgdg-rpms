@@ -1,31 +1,21 @@
 %global sname	jdbc_fdw
-
 %{!?llvm:%global llvm 1}
 
 Summary:	JDBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.4.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
 Patch0:		%{sname}-pgdg-rpm.patch
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-BuildRequires:	postgresql%{pgmajorversion}-server
-Requires:	postgresql%{pgmajorversion}-server
 
-%if 0%{?rhel} == 9
-BuildRequires:	java-17-openjdk-devel
-%endif
-%if 0%{?rhel} == 8
-BuildRequires:	java-latest-openjdk-devel
-%endif
-%if 0%{?fedora}
-BuildRequires:	java-latest-openjdk-devel
-%endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	java-11-openjdk-devel
-%endif
+BuildRequires:	java-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	openssl-devel krb5-devel
+
+Requires:	java
+Requires:	postgresql%{pgmajorversion}-server
 
 %description
 This is a foreign data wrapper (FDW) to connect PostgreSQL to
@@ -40,8 +30,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -53,6 +43,13 @@ This packages provides JIT support for jdbc_fdw
 %patch -P 0 -p0
 
 %build
+
+%if 0%{?suse_version} >= 1500
+export PATH=/usr/lib64/jvm/java-openjdk/bin:$PATH
+%endif
+%if 0%{?fedora} || 0%{?rhel} >= 9
+export PATH=/usr/lib/jvm/java-openjdk/:$PATH
+%endif
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 
@@ -78,6 +75,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.0-2PGDG
+- Simplify Java dependencies and use correct path for java[c].
+
 * Wed Aug 21 2024 Devrim Gündüz <devrim@gunduz.org> - 0.4.0-1PGDG
 - Initial packaging for PostgreSQL RPM repositories. Patch taken from
   Debian sources.
