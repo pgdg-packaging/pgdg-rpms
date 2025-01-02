@@ -35,9 +35,9 @@ BuildRequires:	java-devel
 BuildRequires:	openssl-devel krb5-devel
 
 %if 0%{?rhel} == 8
-BuildRequires:	java-11-openjdk
+Requires:	java-11-openjdk
 %else
-BuildRequires:	java
+Requires:	java
 %endif
 
 BuildRequires:	maven
