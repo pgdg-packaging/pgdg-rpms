@@ -45,7 +45,7 @@ export JDK_INCLUDE="/usr/lib/jvm/java-openjdk/include/"
 export JRE_LIBDIR="/usr/lib/jvm/java-openjdk/lib/amd64/server/"
 export JVM_LIB="/usr/lib/jvm/java-openjdk/lib/amd64/server/"
 %endif
-%if 0%{?rhel} >= 9 || 0%{fedora}
+%if 0%{?fedora} || 0%{?rhel} >= 9
 export JDK_INCLUDE="/usr/lib/jvm/java-openjdk/include/"
 export JRE_LIBDIR="/usr/lib/jvm/java-openjdk/lib/server/"
 export JVM_LIB="/usr/lib/jvm/java-openjdk/lib/server/"
