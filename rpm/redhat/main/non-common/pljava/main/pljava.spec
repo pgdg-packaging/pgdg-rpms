@@ -1,5 +1,9 @@
 %global sname	pljava
-%global relver	1_6_8
+%global pljavamajver 1
+%global pljavamidver 6
+%global pljavaminver 8
+
+%global relver %{pljavamajver}_%{pljavamidver}_%{pljavaminver}
 
 %if 0%{?suse_version} >= 1500
 %else
@@ -14,40 +18,18 @@
 
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.6.8
-Release:	1PGDG%{?dist}
+Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
+Release:	2PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
 Source0:	https://github.com/tada/%{sname}/archive/V%{relver}.tar.gz
 Source1:	%{sname}.pom
 
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-BuildRequires:	java-1_8_0-openjdk-devel
-%endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	java-11-openjdk-devel
-%endif
-%if 0%{?rhel} == 9
-BuildRequires:	java-17-openjdk-devel
-%endif
-%if 0%{?rhel} == 8
-BuildRequires:	java-11-openjdk-devel
-%endif
-%if 0%{?fedora}
-BuildRequires:	java-latest-openjdk-devel
-%endif
-
-%if 0%{?suse_version} >= 1315
-Requires:	java-11-openjdk-headless
-%else
-Requires:	java-headless >= 1:1.8
-%endif
-
-BuildRequires:	pgdg-srpm-macros
+BuildRequires:	java-devel
 BuildRequires:	openssl-devel krb5-devel
 
-BuildRequires:	maven
+BuildRequires:	maven java
 
 Obsoletes:	%{sname}-%{pgmajorversion} < 1.5.6-2
 
@@ -66,8 +48,11 @@ export PATH=%{pginstdir}/bin:$PATH
 %ifarch ppc64 ppc64le
 mvn clean install -Dso.debug=true -Psaxon-examples -Dnar.aolProperties=pljava-so/aol.%{archtag}-linux-gpp.properties
 %else
-%if 0%{?rhel} == 8
-export JAVA_HOME=/etc/alternatives/java_sdk_11_openjdk
+%if 0%{?fedora} || 0%{?rhel} >= 8
+export JAVA_HOME=/usr/lib/jvm/java-openjdk/
+%endif
+%if 0%{?suse_version} >= 1500
+export JAVA_HOME=/usr/lib64/jvm/java-openjdk/
 %endif
 # Common for all distros:
 mvn clean install -Dso.debug=true -Psaxon-examples
@@ -105,6 +90,10 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Thu Jan 2 2025 - Devrim Gündüz <devrim@gunduz.org> - 1.6.8-2PGDG
+- Simplify Java BR and add Java Requires.
+- Use proper JAVA_HOME on all distros
+
 * Sun Oct 20 2024 - Devrim Gündüz <devrim@gunduz.org> - 1.6.8-1PGDG
 - Update to 1.6.8 per changes described at:
   https://github.com/tada/pljava/releases/tag/V1_6_8
