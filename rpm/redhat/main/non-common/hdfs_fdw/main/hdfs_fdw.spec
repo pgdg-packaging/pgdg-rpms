@@ -40,10 +40,22 @@ This packages provides JIT support for hdfs_fdw
 %setup -q -n %{sname}-%{version}
 
 %build
-export JDK_INCLUDE="/etc/alternatives/java_sdk_openjdk/include"
-export JRE_LIBDIR="/usr/lib/jvm/jre-1.8.0-openjdk/lib/amd64/server"
-export JVM_LIB="/usr/lib/jvm/jre-1.8.0-openjdk/lib/amd64/server"
-#export JVM_LIB="/etc/alternatives/jre_1.8.0_exports/lib/amd64/server"
+%if 0%{?rhel} == 8
+export JDK_INCLUDE="/usr/lib/jvm/java-openjdk/include/"
+export JRE_LIBDIR="/usr/lib/jvm/java-openjdk/lib/amd64/server/"
+export JVM_LIB="/usr/lib/jvm/java-openjdk/lib/amd64/server/"
+%endif
+%if 0%{?rhel} >= 9 || 0%{fedora}
+export JDK_INCLUDE="/usr/lib/jvm/java-openjdk/include/"
+export JRE_LIBDIR="/usr/lib/jvm/java-openjdk/lib/server/"
+export JVM_LIB="/usr/lib/jvm/java-openjdk/lib/server/"
+%endif
+%if 0%{?suse_version} >= 1500
+export JDK_INCLUDE="/usr/lib64/jvm/java/include/"
+export JRE_LIBDIR="/usr/lib64/jvm/java/lib/server/"
+export JVM_LIB="/usr/lib64/jvm/java/lib/server/"
+%endif
+
 pushd libhive
 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 popd
@@ -89,8 +101,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install INSTAL
 %endif
 
 %changelog
-* Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-4
+* Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-4PGDG
 - Add missing Requires.
+- Use better path for Java includes and libraries.
 
 * Wed Aug 21 2024 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-3PGDG
 - Fix package description in -debuginfo subpackage.
