@@ -27,7 +27,7 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?fedora} || 0%{?rhel} >= 9
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
 Requires:	llvm => 17.0
 %endif
