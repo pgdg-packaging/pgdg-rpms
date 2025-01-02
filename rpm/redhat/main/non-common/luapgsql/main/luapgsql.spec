@@ -9,15 +9,15 @@
 Summary:	Lua binding for PostgreSQL
 Name:		%{sname}
 Version:	1.6.7
-Release:	6PGDG%{?dist}
-License:	BSD
+Release:	7PGDG%{?dist}
+License:	PostgreSQL
 Source0:	https://github.com/arcapos/%{name}/archive/pgsql-%{version}.tar.gz
 Patch0:		%{sname}-pg%{pgmajorversion}-makefile-pgxs.patch
 URL:		https://github.com/arcapos/%{name}/
-BuildRequires:	lua-devel pgdg-srpm-macros
+BuildRequires:	lua-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel lua-devel
 Requires:	postgresql%{pgmajorversion}-server
-%if 0%{?fedora} || 0%{?rhel} >= 7
+%if 0%{?fedora} || 0%{?rhel} >= 8
 Requires:	lua(abi) = %{luaver}
 %else
 %global luanext 5.2
@@ -44,6 +44,9 @@ A Lua Binding for PostgreSQL.
 %{lualibdir}/pgsql.so
 
 %changelog
+* Thu Jan 2 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.7-7PGDG
+- Update license and remove RHEL 7 dependency
+
 * Thu Feb 22 2024 Devrim Gunduz <devrim@gunduz.org> - 1.6.7-6PGDG
 - Enable debug package
 
