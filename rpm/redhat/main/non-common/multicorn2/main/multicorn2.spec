@@ -3,7 +3,7 @@
 
 %{!?llvm:%global llvm 1}
 
-%if 0%{?fedora} >= 39
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -12,12 +12,12 @@
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
 URL:		https://github.com/pgsql-io/%{version}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	python3-devel
 
 Provides:	python3dist(multicorn)%{?_isa} = %{version}-%{release}
@@ -26,7 +26,7 @@ Provides:	python3dist(multicorn)%{?_isa} = %{version}-%{release}
 Provides:	%{sname} = %{version}
 
 %description
-Multicorn Python3 Wrapper for Postgresql Foreign Data Wrapper. Tested
+Multicorn2 Python3 Wrapper for Postgresql Foreign Data Wrapper. Tested
 on Linux w/ Python 3.6+ & Postgres 10+.
 
 The Multicorn Foreign Data Wrapper allows you to fetch foreign data in
@@ -45,8 +45,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -85,6 +85,10 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Fri Jan 3 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0-2PGDG
+- Add RHEL 10 support
+- Update LLVM dependencies
+
 * Wed Sep 25 2024 Devrim Gündüz <devrim@gunduz.org> - 3.0-1PGDG
 - Update to 3.0
 - Remove patch1, it is now in upstream tarball.
