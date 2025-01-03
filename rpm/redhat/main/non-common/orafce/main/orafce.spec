@@ -1,7 +1,10 @@
+%global _vpath_builddir build
+%global _vpath_srcdir .
+
 %global sname orafce
 %global orafcemajver 4
 %global orafcemidver 14
-%global orafceminver 0
+%global orafceminver 1
 
 %{!?llvm:%global llvm 1}
 
@@ -13,61 +16,47 @@ License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
 
-BuildRequires:	postgresql%{pgmajorversion}-devel, openssl-devel
-BuildRequires:	pgdg-srpm-macros krb5-devel, bison, flex
+BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel
+BuildRequires:	krb5-devel meson
 Requires:	postgresql%{pgmajorversion}
-
-Obsoletes:	%{sname}%{pgmajorversion} < 3.13.4-2
-
+BuildArch:	noarch
 %description
 The goal of this project is implementation some functions from Oracle database.
 Some date functions (next_day, last_day, trunc, round, ...) are implemented
 now. Functionality was verified on Oracle 10g and module is useful
 for production work.
 
-%if %llvm
-%package llvmjit
-Summary:	Just-in-time compilation support for orafce
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
-BuildRequires:	llvm17-devel clang17-devel
-Requires:	llvm17
-%endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
-%endif
-
-%description llvmjit
-This packages provides JIT support for orafce
-%endif
-
 %prep
 %setup -q -n %{sname}-VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}
 
 %build
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
+export PATH=%{pginstdir}/bin:$PATH
+%{__install} -d build
+%meson
+%meson_build
 
 %install
-%{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
+export PATH=%{pginstdir}/bin:$PATH
+%meson_install
+
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension/
+%{__cp} -p INSTALL.%{sname} README.asciidoc %{buildroot}%{pginstdir}/doc/extension/
 
 %files
 %defattr(644,root,root,755)
-%doc %{pginstdir}/doc/extension/COPYRIGHT.%{sname}
+%license COPYRIGHT.%{sname}
 %doc %{pginstdir}/doc/extension/INSTALL.%{sname}
 %doc %{pginstdir}/doc/extension/README.asciidoc
 %{pginstdir}/lib/%{sname}.so
 %{pginstdir}/share/extension/%{sname}.control
 %{pginstdir}/share/extension/%{sname}--*.sql
 
-%if %llvm
-%files llvmjit
-   %{pginstdir}/lib/bitcode/%{sname}*.bc
-   %{pginstdir}/lib/bitcode/%{sname}/*.bc
-%endif
-
 %changelog
+* Fri Jan 3 2025 Devrim Gündüz <devrim@gunduz.org> 4.14.1-1PGDG
+- Update to 4.14.1 per changes described at
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_14_1
+- Switch to meson build
+
 * Mon Nov 25 2024 Devrim Gündüz <devrim@gunduz.org> 4.14.0-1PGDG
 - Update to 4.14.0 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_14_0
