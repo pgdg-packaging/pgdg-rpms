@@ -1,0 +1,12 @@
+--- odbc_fdw.c.old	2025-01-04 00:36:30.080601572 +0300
++++ odbc_fdw.c	2025-01-04 00:36:41.540786940 +0300
+@@ -1291,6 +1291,9 @@
+ 	                 NIL, /* no pathkeys */
+ 	                 NULL, /* no outer rel either */
+ 	                 NULL, /* no extra plan */
++#if PG_VERSION_NUM >= 170000
++	                 NIL, /* no fdw_restrictinfo list */
++#endif
+ 	                 NIL /* no fdw_private list */));
+ 
+ 	elog_debug("----> finishing %s", __func__);
