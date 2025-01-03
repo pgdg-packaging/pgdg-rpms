@@ -19,7 +19,7 @@ URL:		https://github.com/%{sname}/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel
 BuildRequires:	krb5-devel meson
 Requires:	postgresql%{pgmajorversion}
-BuildArch:	noarch
+
 %description
 The goal of this project is implementation some functions from Oracle database.
 Some date functions (next_day, last_day, trunc, round, ...) are implemented
