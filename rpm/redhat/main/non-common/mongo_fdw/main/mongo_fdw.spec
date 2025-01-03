@@ -1,25 +1,28 @@
 %global sname mongo_fdw
-%global relver 5_5_2
+
+%global mongofdwmajver 5
+%global mongofdwmidver 5
+%global mongofdwminver 2
+
+%global relver %{mongofdwmajver}_%{mongofdwmidver}_%{mongofdwminver}
 
 %{!?llvm:%global llvm 1}
 
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
-Version:	5.5.2
-Release:	2PGDG%{?dist}
+Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
+Release:	3PGDG%{?dist}
 License:	LGPLv3
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{relver}.tar.gz
 Source1:	%{sname}-config.h
 
-BuildRequires:	postgresql%{pgmajorversion}-devel wget pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 
-%if 0%{?suse_version}
 %if 0%{?suse_version} >= 1499
 Requires:		libsnappy1 libbson-1_0-0 libmongoc-1_0-0
 BuildRequires:		snappy-devel libbson-1_0-0-devel libmongoc-1_0-0-devel
 BuildRequires:		libopenssl-devel
-%endif
 %else
 Requires:	snappy
 Requires:	mongo-c-driver-libs libbson
@@ -29,8 +32,6 @@ BuildRequires:	libbson-devel
 %endif
 
 Requires:	postgresql%{pgmajorversion}-server cyrus-sasl-lib
-
-Obsoletes:	%{sname}%{pgmajorversion} < 5.2.7-2
 
 %description
 This PostgreSQL extension implements a Foreign Data Wrapper (FDW) for
@@ -57,7 +58,6 @@ This packages provides JIT support for mongo_fdw
 %setup -q -n %{sname}-REL-%{relver}
 
 %build
-
 sh autogen.sh
 
 %if 0%{?suse_version}
@@ -75,6 +75,7 @@ sed -i "s:\(^#include \"bson.h\"\):#include <bson.h>:g" mongo_fdw.c
 sed -i "s:\(^#include \"bson.h\"\):#include <bson.h>:g" mongo_fdw.h
 sed -i "s:\(^#include \"bson.h\"\)://\1:g" mongo_wrapper.h
 %endif
+
 PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags}
 
 %install
@@ -106,6 +107,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
+* Fri Jan 3 2025 Devrim Gündüz <devrim@gunduz.org> - 5.5.2-3PGDG
+- Use macros for version numbers to avoid build errors.
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 5.5.2-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
