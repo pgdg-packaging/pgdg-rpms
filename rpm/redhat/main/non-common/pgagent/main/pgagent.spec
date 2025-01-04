@@ -4,24 +4,18 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
 URL:		https://github.com/pgadmin-org/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-%if 0%{?rhel} && 0%{?rhel} <= 7
-BuildRequires:	cmake3
-%else
 BuildRequires:	cmake => 3.0.0
-%endif
 
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libboost_filesystem1_66_0-devel libboost_regex1_66_0-devel
 BuildRequires:	libboost_date_time1_66_0-devel libboost_thread1_66_0-devel
 BuildRequires:	libboost_system1_66_0-devel
-%endif
 %else
 BuildRequires:	boost-filesystem boost-regex boost-date-time
 BuildRequires:	boost-thread boost-system
@@ -31,10 +25,8 @@ BuildRequires:	boost-devel >= 1.41
 
 BuildRequires:		systemd, systemd-devel
 Requires:		systemd
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires(post):		systemd-sysvinit
-%endif
 %else
 Requires(post):		systemd-sysv
 Requires(post):		systemd
@@ -45,6 +37,10 @@ Requires(postun):	systemd
 %description
 pgAgent is a job scheduler for PostgreSQL which may be managed
 using pgAdmin.
+
+pgAgent is managed using pgAdmin (http://www.pgadmin.org). The pgAdmin
+documentation contains details of the setup and use of pgAgent with your
+PostgreSQL system.
 
 %pre
 if [ $1 -eq 1 ] ; then
@@ -155,6 +151,9 @@ fi
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Sat Jan 4 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.2-6GDG
+- Remove RHEL 7 and SLES 12 support.
+
 * Thu Feb 22 2024 Devrim Gündüz <devrim@gunduz.org> - 4.2.2-5GDG
 - Relax boost dependency on SLES 15 a bit. 1.66 is the version in the
   main SLES repos, so use that.
