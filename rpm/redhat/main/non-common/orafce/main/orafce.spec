@@ -21,10 +21,15 @@ BuildRequires:	krb5-devel meson
 Requires:	postgresql%{pgmajorversion}
 
 %description
-The goal of this project is implementation some functions from Oracle database.
-Some date functions (next_day, last_day, trunc, round, ...) are implemented
-now. Functionality was verified on Oracle 10g and module is useful
-for production work.
+Functions and operators that emulate a subset of functions and packages from the
+Oracle RDBMS.
+
+This module contains some useful functions that can help with porting Oracle
+application to PostgreSQL or that can be generally useful.
+
+Built-in Oracle date functions have been tested against Oracle 10 for conformance. Date
+ranges from 1960 to 2070 work correctly. Dates before 1582-10-05 with the 'J' format
+and before 1100-03-01 with other formats cannot be verified due to a bug in Oracle.
 
 %prep
 %setup -q -n %{sname}-VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}
