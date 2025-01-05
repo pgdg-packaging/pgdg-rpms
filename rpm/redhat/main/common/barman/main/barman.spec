@@ -2,7 +2,7 @@
 BuildRequires:	python3-devel
 Requires:	python3
 
-%if 0%{?fedora} >= 38
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -13,7 +13,7 @@ Requires:	python3
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.12.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -119,11 +119,15 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %{python_sitelib}/%{name}/
 
 %changelog
-* Mon Dec 9 2024 Devrim Gündüz <devrim@gunduz.org> - 3.12.1-1PGDG
+* Sun Jan 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.12.1-43PGDG
+- Add RHEL 10 support
+
+- Update to 3.12.1, per changes described at:
+* Mon Dec 9 2024 Devrim Gündüz <devrim@gunduz.org> - 3.12.1-42PGDG
 - Update to 3.12.1, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.12.1
 
-* Fri Nov 22 2024 Devrim Gündüz <devrim@gunduz.org> - 3.12.0-1PGDG
+* Fri Nov 22 2024 Devrim Gündüz <devrim@gunduz.org> - 3.12.0-42PGDG
 - Update to 3.12.0, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.12.0
 - Remove RHEL 7 and SLES 12 bits
