@@ -4,10 +4,10 @@
 # Powa archivist version
 %global powamajorversion 5
 %global powamidversion 0
-%global powaminorversion 0
+%global powaminorversion 1
 
 %global __ospython %{_bindir}/python3
-%if 0%{?fedora} >= 35
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -84,6 +84,10 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Sun Jan 5 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.1-1PGDG
+- Update 5.0.1 per changes described at:
+  https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_1
+
 * Mon Dec 9 2024 Devrim Gündüz <devrim@gunduz.org> - 5.0.0-1PGDG
 - Update 5.0.0 per changes described at:
   https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_0
