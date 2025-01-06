@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/vibhorkum/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vibhorkum/%{sname}
@@ -13,8 +13,10 @@ BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
 
 %description
-This module allows user to arbitrary command in a background worker and
-gives capability to users to launch
+This extension allows you to execute arbitrary SQL commands in background
+worker processes within PostgreSQL. It provides a convenient way to offload
+long-running tasks, perform operations asynchronously, and implement
+autonomous transactions.
 
 %if %llvm
 %package llvmjit
@@ -61,6 +63,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Jan 6 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3-2PGDG
+- Update description
+
 * Tue Oct 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3-1PGDG
 - Update to 1.3 per changes described at:
   https://github.com/vibhorkum/pg_background/releases/tag/v1.3
