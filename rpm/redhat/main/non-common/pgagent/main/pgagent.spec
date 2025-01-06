@@ -151,7 +151,7 @@ fi
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
-* Mon Jan6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-1PGDG
+* Mon Jan 6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-1PGDG
 - Update to 4.2.3 per changes described at
   https://github.com/pgadmin-org/pgagent/releases/tag/pgagent-4.2.3
 
