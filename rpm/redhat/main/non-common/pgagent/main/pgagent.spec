@@ -3,13 +3,13 @@
 
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.2.2
-Release:	6PGDG%{?dist}
+Version:	4.2.3
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
 URL:		https://github.com/pgadmin-org/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	cmake => 3.0.0
 
 %if 0%{?suse_version} >= 1500
@@ -151,6 +151,10 @@ fi
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Jan6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-1PGDG
+- Update to 4.2.3 per changes described at
+  https://github.com/pgadmin-org/pgagent/releases/tag/pgagent-4.2.3
+
 * Sat Jan 4 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.2-6GDG
 - Remove RHEL 7 and SLES 12 support.
 
