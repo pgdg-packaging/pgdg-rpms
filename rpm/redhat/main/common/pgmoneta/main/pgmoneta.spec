@@ -1,5 +1,5 @@
 Name:		pgmoneta
-Version:	0.15.0
+Version:	0.15.1
 Release:	1PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
@@ -9,7 +9,7 @@ Source1:	%{name}.service
 Source2:	%{name}-tmpfiles.d
 
 Patch0:		%{name}-conf-rpm.patch
-Patch1:		%{name}-%{version}-checknull.patch
+Patch1:		%{name}-%{version}-readlink.patch
 BuildRequires:	gcc cmake make python3-docutils zlib-devel
 BuildRequires:	libzstd-devel lz4-devel bzip2-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
@@ -116,6 +116,11 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Sun Jan 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.15.1-1PGDG
+- Update to 0.15.1 per changes described at:
+  https://github.com/pgmoneta/pgmoneta/releases/tag/0.15.1
+- Add a temp patch per https://redmine.postgresql.org/issues/8084#note-2
+
 * Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> 0.15.0-1PGDG
 - Update to 0.15.0 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.15.0
