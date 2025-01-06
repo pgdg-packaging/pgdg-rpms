@@ -7,10 +7,10 @@
 Summary:	2-gram (bigram) index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbigmver}_%{pgbigmpackagever}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/pgbigm/%{sname}
 Source0:	https://github.com/pgbigm/%{sname}/archive/refs/tags/v%{pgbigmver}-%{pgbigmpackagever}.tar.gz
-License:	BSD
+License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -28,8 +28,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -46,11 +46,17 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags}
 %{__rm} -rf %{buildroot}
 PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{buildroot} install
 
+# Install documentation with a better name:
+%{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
+%{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
+
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
+%license LICENSE
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{pginstdir}/lib/pg_bigm.so
 %{pginstdir}/share/extension/pg_bigm*.sql
 %{pginstdir}/share/extension/pg_bigm.control
@@ -62,6 +68,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - 1.2-20240606-2PGDG
+- Update LLVM dependencies and update license.
+
 * Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - 1.2-20240606-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
