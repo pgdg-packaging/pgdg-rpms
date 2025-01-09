@@ -8,7 +8,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PostgreSQL extension to allow to access to memory usage diagnostics
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -23,19 +23,19 @@ a PostgreSQL server.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for xxx
+Summary:	Just-in-time compilation support for pgmeminfo
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for xxx
+This packages provides JIT support for pgmeminfo
 %endif
 
 %prep
@@ -61,6 +61,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/bitcode/%{sname}/src/*.bc
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-3PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-2PGDG
 - Update LLVM dependencies
 
