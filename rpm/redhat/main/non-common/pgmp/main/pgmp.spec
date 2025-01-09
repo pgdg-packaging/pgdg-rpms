@@ -5,14 +5,14 @@
 Summary:	PostgreSQL Multiple Precision Arithmetic Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.5
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	LGPL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 # Make sure that we use Python 3.
 Patch1:		%{sname}-python3.patch
 URL:		https://dvarrazzo.github.io/pgmp/
 BuildRequires:	postgresql%{pgmajorversion}-devel gmp-devel pgdg-srpm-macros
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
 Requires:	gmp
@@ -33,8 +33,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -68,6 +68,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.5-4PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.5-3PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
