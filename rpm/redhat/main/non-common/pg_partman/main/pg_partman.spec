@@ -3,20 +3,35 @@
 %{!?llvm:%global llvm 1}
 
 Summary:	A PostgreSQL extension to manage partitioned tables by time or ID
+
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.2.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgpartman/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgpartman/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 Requires:	python3-psycopg2
 
 Obsoletes:	%{sname}%{pgmajorversion} < 4.4.0-2
 
 %description
-pg_partman is a PostgreSQL extension to manage partitioned tables by time or ID.
+pg_partman is an extension to create and manage both time-based and
+number-based table partition sets.
+
+The declarative partitioning built into PostgreSQL provides the commands to
+create a partitioned table and its children. pg_partman uses the built-in
+declarative features that PostgreSQL provides and builds upon those with
+additional features and enhancements to make managing partitions easier.
+One key way that pg_partman extends partitioning in Postgres is by providing
+a means to automate the child table maintenance over time (Ex. adding new
+children, dropping old ones based on a retention policy). pg_partman also
+has features to turn an existing table into a partitioned table or vice versa.
+
+A background worker (BGW) process is included to automatically run partition
+maintenance without the need of an external scheduler (cron, etc) in most
+cases.
 
 %if %llvm
 %package llvmjit
@@ -71,6 +86,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.4-2PGDG
+- Update description
+
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.4-1PGDG
 - Update to 5.2.4 per changes described at:
   https://github.com/pgpartman/pg_partman/releases/tag/v5.2.4
