@@ -4,12 +4,12 @@
 Summary:	pgbouncer Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/CrunchyData/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/CrunchyData/%{sname}
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 Requires:	pgbouncer >= 1.17
 
@@ -40,6 +40,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-2PGDG
+- Remove obsoleted BR
+
 * Wed Oct 2 2024 Devrim Gündüz <devrim@gunduz.org> 1.2.0-1PGDG
 - Update to 1.2.0 per changes described at:
   https://github.com/CrunchyData/pgbouncer_fdw/releases/tag/v1.2.0
