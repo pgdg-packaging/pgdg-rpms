@@ -5,21 +5,25 @@
 Summary:	A PostgreSQL extension that enables asynchronous (non-blocking) HTTP/HTTPS requests with SQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.14.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/supabase/%{sname}
 Source0:	https://github.com/supabase/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	Apache-2.0
-BuildRequires:	postgresql%{pgmajorversion}-devel libcurl >= 7.83
-Requires:	postgresql%{pgmajorversion}-server libcurl-devel >= 7.83
+BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel >= 7.83
+Requires:	postgresql%{pgmajorversion}-server
+%if 0%{?suse_version} >= 1500
+Requires:	libcurl4 >= 7.83
+%else
+Requires:	libcurl >= 7.83
+%endif
 
 %description
-The PG_NET extension enables PostgreSQL to make asynchronous HTTP/HTTPS
+The pg_net extension enables PostgreSQL to make asynchronous HTTP/HTTPS
 requests in SQL. It eliminates the need for servers to continuously poll for
 database changes and instead allows the database to proactively notify
 external resources about significant events. It seamlessly integrates with
-triggers, cron jobs (e.g., PG_CRON), and procedures, unlocking numerous
-possibilities. Notably, PG_NET powers Supabase's Webhook functionality,
-highlighting its robustness and reliability.
+triggers, cron jobs (e.g., pg_cron), and procedures, unlocking numerous
+possibilities.
 
 %if %llvm
 %package llvmjit
@@ -64,6 +68,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Jan 9 2025 Devrim Gunduz <devrim@gunduz.org> - 0.14.0-2PGDG
+- Add SLES 15 support
+
 * Wed Dec 11 2024 Devrim Gunduz <devrim@gunduz.org> - 0.14.0-1PGDG
 - Update to 0.14.0 per changes described at
   https://github.com/supabase/pg_net/releases/tag/v0.14.0
