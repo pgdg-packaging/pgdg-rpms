@@ -6,16 +6,17 @@
 Summary:	A PostgreSQL extension for storing point cloud (LIDAR) data
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pointcloudmajorversion}.5
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/pgpointcloud/%{sname}
 Source0:	https://github.com/pgpointcloud/%{sname}/archive/v%{version}.tar.gz
 License:	BSD
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	cunit-devel
 %else
 Requires:	CUnit-devel
 %endif
-BuildRequires:	postgresql%{pgmajorversion}-devel autoconf libxml2-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
+BuildRequires:	automake autoconf
 Requires:	postgresql%{pgmajorversion}-server postgis3_%{pgmajorversion}
 
 %description
@@ -30,19 +31,19 @@ raster) into one common framework : PostGIS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for xxx
+Summary:	Just-in-time compilation support for pointcloud
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for xxx
+This packages provides JIT support for pointcloud
 %endif
 
 %prep
@@ -77,6 +78,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.5-3PGDG
+- Update LLVM dependencies and add missing BR
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.2.5-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
