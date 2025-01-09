@@ -1,16 +1,16 @@
-%global debug_package %{nil}
 %global sname e-maj
 %global pname emaj
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.5.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{sname}/
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 
 BuildArch:	noarch
+Requires:	postgresql%{pgmajorversion}-contrib
 
 %description
 E-Maj is a set of PL/pgSQL functions allowing PostgreSQL Database
@@ -37,6 +37,9 @@ in time.
 %{pginstdir}/share/extension/%{pname}*.sql
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-2PGDG
+- Add -contrib dependency for the required dblink extension.
+
 * Mon Sep 9 2024 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-1PGDG
 - Update to 4.5.0
 
