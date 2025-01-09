@@ -11,7 +11,7 @@ Group:		Applications/Databases
 URL:		https://github.com/CrunchyData/%{sname}
 Source0:	https://github.com/CrunchyData/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
-Requires:	postgresql%{pgmajorversion}-server
+Requires:	postgresql%{pgmajorversion}-server pg_cron_%{pgmajorversion}
 
 %description
 pg_incremental is a simple extension that helps you do fast, reliable,
