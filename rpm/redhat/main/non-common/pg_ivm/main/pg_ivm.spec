@@ -5,7 +5,7 @@
 Summary:	Incremental View Maintenance (IVM) feature for PostgreSQL.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.9
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/sraoss/%{sname}/
 Source0:	https://github.com/sraoss/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -28,8 +28,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -58,6 +58,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9-2PGDG
+- Update LLVM dependencies
+
 * Tue Aug 6 2024 Devrim Gündüz <devrim@gunduz.org> - 1.9-1PGDG
 - Update to 1.9 per changes described at:
   https://github.com/sraoss/pg_ivm/releases/tag/v1.9
