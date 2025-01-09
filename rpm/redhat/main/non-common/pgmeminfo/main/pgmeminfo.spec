@@ -14,7 +14,7 @@ License:	BSD
 URL:		https://github.com/okbob/%{sname}
 Source0:	https://github.com/okbob/pgmeminfo/archive/refs/tags/VERSION_%{pmeminfomajver}_%{pmeminfomidver}_%{pmeminfominver}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}
 
 %description
