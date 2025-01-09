@@ -7,7 +7,7 @@
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.21
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
@@ -16,7 +16,13 @@ BuildRequires:	libsepol-devel readline-devel krb5-devel
 Requires:	postgresql%{pgmajorversion}-server %{sname}_%{pgmajorversion}-client
 
 %description
-pg_bulkload provides high-speed data loading capability to PostgreSQL users.
+pg_bulkload is a high speed data loading tool for PostgreSQL.
+
+pg_bulkload is designed to load huge amount of data to a database. You can
+load data to table bypassing PostgreSQL shared buffers.
+
+pg_bulkload also has some ETL features; input data validation and data
+transformation.
 
 %package client
 Summary:	High speed data loading utility for PostgreSQL
@@ -34,8 +40,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -60,16 +66,16 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 
 %files
 %defattr(-,root,root)
-%{pginstdir}/lib/pg_bulkload.so
+%{pginstdir}/lib/%{sname}.so
 %{pginstdir}/lib/pg_timestamp.so
 %{pginstdir}/share/contrib/pg_timestamp.sql
 %{pginstdir}/share/contrib/uninstall_pg_timestamp.sql
-%{pginstdir}/share/extension/pg_bulkload*.sql
-%{pginstdir}/share/extension/pg_bulkload.control
+%{pginstdir}/share/extension/%{sname}*.sql
+%{pginstdir}/share/extension/%{sname}.control
 
 %files client
 %defattr(-,root,root)
-%{pginstdir}/bin/pg_bulkload
+%{pginstdir}/bin/%{sname}
 %{pginstdir}/bin/postgresql
 
 %if %llvm
@@ -82,6 +88,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Jan 9 2025  Devrim Gündüz <devrim@gunduz.org> - 3.1.21-4PGDG
+- Update LLVM dependencies and package description
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.21-3PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
