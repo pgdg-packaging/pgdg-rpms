@@ -48,7 +48,7 @@ This packages provides JIT support for jdbc_fdw
 export PATH=/usr/lib64/jvm/java-openjdk/bin:$PATH
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 9
-export PATH=/usr/lib/jvm/java-openjdk/:$PATH
+export PATH=/usr/lib/jvm/java-openjdk/bin:$PATH
 %endif
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
