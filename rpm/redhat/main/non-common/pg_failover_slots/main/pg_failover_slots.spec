@@ -5,7 +5,7 @@
 Summary:	Makes PostgreSQL logical replication slots practically usable across physical failover.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -36,8 +36,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -76,6 +76,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Jan 9 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-2PGDG
+- Update LLVM dependencies
+
 * Tue Aug 27 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-1PGDG
 - Update to 1.1.0 per changes described at:
   https://github.com/EnterpriseDB/pg_failover_slots/releases/tag/v1.1.0
