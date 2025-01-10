@@ -5,11 +5,11 @@
 Summary:	Generic Queue for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.5.1
-Release:	3PGDG%{?dist}
-License:	BSD
+Release:	4PGDG%{?dist}
+License:	ISC
 Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel gcc pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel gcc
 
 Obsoletes:	%{sname}-%{pgmajorversion} < 3.4.1-2
 
@@ -30,8 +30,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -56,10 +56,10 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 
 %files
 %defattr(644,root,root,755)
-%{pginstdir}/lib/pgq*.so
-%{pginstdir}/share/contrib/*pgq*.sql
-%{pginstdir}/share/extension/pgq*.sql
-%{pginstdir}/share/extension/pgq*.control
+%{pginstdir}/lib/%{sname}*.so
+%{pginstdir}/share/contrib/*%{sname}*.sql
+%{pginstdir}/share/extension/%{sname}*.sql
+%{pginstdir}/share/extension/%{sname}*.control
 
 %if %llvm
 %files llvmjit
@@ -68,6 +68,9 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 %endif
 
 %changelog
+* Fri Jan 10 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-4PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-3PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
