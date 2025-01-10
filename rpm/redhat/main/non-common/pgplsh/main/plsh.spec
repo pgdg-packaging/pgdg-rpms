@@ -5,7 +5,7 @@
 Summary:	Sh shell procedural language handler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.20220917
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/petere/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/petere/%{sname}
@@ -27,8 +27,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -53,7 +53,7 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %defattr(644,root,root,755)
 
 %{pginstdir}/lib/%{sname}.so
-%doc NEWS COPYING README.md
+%doc NEWS README.md
 %license COPYING
 %{pginstdir}/share/extension/%{sname}--1--2.sql
 %{pginstdir}/share/extension/%{sname}--2.sql
@@ -67,6 +67,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Fri Jan 10 2025 Devrim Gunduz <devrim@gunduz.org> - 1.20220917-7PGDG
+- Update LLVM dependencies
+
 * Mon Jul 30 2024 Devrim Gunduz <devrim@gunduz.org> - 1.20220917-6PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
