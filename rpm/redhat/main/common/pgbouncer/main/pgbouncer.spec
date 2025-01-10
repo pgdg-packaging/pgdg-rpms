@@ -1,5 +1,5 @@
 Name:		pgbouncer
-Version:	1.23.1
+Version:	1.24.0
 Release:	42PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
@@ -10,7 +10,6 @@ Source3:	%{name}.logrotate
 Source4:	%{name}.service
 Patch0:		%{name}-ini.patch
 
-BuildRequires:	pgdg-srpm-macros
 Requires:	python3 python3-psycopg2
 
 BuildRequires:	libevent-devel >= 2.0
@@ -18,7 +17,7 @@ Requires:	libevent >= 2.0
 
 BuildRequires:	openssl-devel pam-devel
 
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 BuildRequires:	c-ares-devel >= 1.13
 Requires:	c-ares >= 1.13
 %endif
@@ -59,7 +58,7 @@ sed -i.fedora \
 
 %configure \
 	--datadir=%{_datadir} \
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 	--with-cares --disable-evdns \
 %else
 	--without-cares \
@@ -142,6 +141,10 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Fri Jan 10 2025 Devrim Gündüz <devrim@gunduz.org> - 1.24.0-42PGDG
+- Update to 1.24.0, per changes described at:
+  http://www.pgbouncer.org/changelog.html#pgbouncer-124x
+
 * Fri Aug 2 2024 Devrim Gündüz <devrim@gunduz.org> - 1.23.1-42PGDG
 - Update to 1.23.1, per changes described at:
   http://www.pgbouncer.org/changelog.html#pgbouncer-123x
