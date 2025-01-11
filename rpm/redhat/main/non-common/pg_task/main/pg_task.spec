@@ -5,9 +5,8 @@
 Summary:	PostgreSQL and Greenplum job scheduler
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.7
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
-Group:		Applications/Databases
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 BuildRequires:	postgresql%{pgmajorversion}-devel
@@ -26,8 +25,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -62,6 +61,9 @@ This packages provides JIT support for pg_task
 %endif
 
 %changelog
+* Sat Jan 11 2025 - Devrim Gündüz <devrim@gunduz.org> - 2.1.7-2PGDG
+- Update LLVM dependencies
+
 * Tue Sep 24 2024 - Devrim Gündüz <devrim@gunduz.org> - 2.1.7-1PGDG
 - Update to 2.1.7
 
