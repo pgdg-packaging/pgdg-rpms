@@ -1,5 +1,5 @@
---- src/Makefile.global.in.old	2020-02-28 16:17:03.000000000 +0000
-+++ src/Makefile.global.in	2020-04-07 09:14:33.906414682 +0100
+--- src/Makefile.global.in.old	2025-01-13 01:25:22.654145258 -0600
++++ src/Makefile.global.in	2025-01-13 01:25:34.049330728 -0600
 @@ -82,7 +82,7 @@
  # Installation directories
  #
