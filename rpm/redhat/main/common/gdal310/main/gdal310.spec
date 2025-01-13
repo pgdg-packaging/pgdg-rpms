@@ -44,8 +44,8 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}310
-Version:	3.10.0
-Release:	2PGDG%{?dist}
+Version:	3.10.1
+Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -354,7 +354,8 @@ export OGDI_CFLAGS='-I%{ogdiinstdir}/include/'
 %else
  -DBUILD_JAVA_BINDINGS=OFF \
 %endif
- -DSWIG_REGENERATE_PYTHON=OFF
+ -DSWIG_REGENERATE_PYTHON=OFF \
+ -DBUILD_CSHARP_BINDINGS=OFF
 
 %cmake_build
 
@@ -475,6 +476,11 @@ done
 %endif
 
 %changelog
+* Mon Jan 13 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.10.1-1PGDG
+- Update to 3.10.1 per changes described at:
+  https://github.com/OSGeo/gdal/releases/tag/v3.10.1
+- Update spec file to disable building csharp bindings
+
 * Mon Dec 30 2024 Devrim Gunduz <devrim@gunduz.org> - 3.10.0-2PGDG
 - Fix linker config file
 - Re-enable Java bindings on Fedora 40
