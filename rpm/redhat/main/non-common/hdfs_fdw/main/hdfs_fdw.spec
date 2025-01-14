@@ -80,16 +80,15 @@ popd
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install INSTALL_DIR=%{buildroot} DESTDIR=%{buildroot}
 
 # Install README file under PostgreSQL installation directory:
-%{__install} -d %{buildroot}%{pginstdir}/share/extension
-%{__install} -m 755 README.md %{buildroot}%{pginstdir}/share/extension/README-%{sname}
-%{__rm} -f %{buildroot}%{_docdir}/pgsql/extension/README.md
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 755 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %files
 %defattr(755,root,root,755)
-%doc %{pginstdir}/share/extension/README-%{sname}
+%doc %{pginstdir}/doc/extension/README-%{sname}
 %{pginstdir}/lib/libhive.so
 %{pginstdir}/lib/HiveJdbcClient-1.0.jar
 %{pginstdir}/lib/%{sname}.so
@@ -104,6 +103,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install INSTAL
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-4PGDG
 - Add missing Requires.
 - Use better path for Java includes and libraries.
+- Fix location of the README file
 
 * Wed Aug 21 2024 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-3PGDG
 - Fix package description in -debuginfo subpackage.
