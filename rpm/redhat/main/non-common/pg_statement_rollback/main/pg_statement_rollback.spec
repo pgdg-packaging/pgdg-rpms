@@ -5,8 +5,8 @@
 Summary:	Server side rollback at statement level for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4
-Release:	3PGDG%{?dist}
-License:	BSD
+Release:	4PGDG%{?dist}
+License:	ISC
 Source0:	https://github.com/lzlabs/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/lzlabs/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
@@ -25,8 +25,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -59,6 +59,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4-4PGDG
+- Update LLVM dependencies and fix license.
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.4-3PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
