@@ -40,16 +40,17 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 
 %install
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
-# Let's also install documentation:
-%{__mkdir} -p %{buildroot}%{pginstdir}/share/extension
-%{__cp} README.md %{buildroot}%{pginstdir}/share/extension/README-%{sname}.md
+
+# Install README file under PostgreSQL installation directory:
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 755 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
 %postun -p /sbin/ldconfig
 %post -p /sbin/ldconfig
 
 %files
 %license LICENSE
-%doc %{pginstdir}/share/extension/README-%{sname}.md
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{pginstdir}/lib/%{sname}.so
 %{pginstdir}/share/extension/%{sname}-*.sql
 %{pginstdir}/share/extension/%{sname}.control
@@ -63,6 +64,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %changelog
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.3-2PGDG
 - Update LLVM dependencies
+- Fix location of the README file.
 
 * Fri Aug 23 2024 - Devrim Gündüz <devrim@gunduz.org> - 2.1.3-1PGDG
 - Update to 2.1.3 per changes described at:
