@@ -3,7 +3,7 @@
 Summary:	Tool for diagnosing PostgreSQL system catalog corruption
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -34,8 +34,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 
 # Install README file under PostgreSQL installation directory:
-%{__install} -d %{buildroot}%{pginstdir}/doc
-%{__install} -m 755 README.md %{buildroot}%{pginstdir}/doc/README-%{sname}.md
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 755 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -43,10 +43,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %files
 %defattr(755,root,root,755)
 %license LICENSE
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{pginstdir}/bin/%{sname}
-%{pginstdir}/doc/README-%{sname}.md
 
 %changelog
+* Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> 1.6.0-2PGDG
+- Fix path of the README file.
+
 * Mon Nov 4 2024 Devrim Gündüz <devrim@gunduz.org> 1.6.0-1PGDG
 - Update to 1.6.0 per changes described at:
   https://github.com/EnterpriseDB/pg_catcheck/releases/tag/1.6.0
