@@ -61,7 +61,7 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 
 %files
 %defattr(-,root,root)
-%config %{pginstdir}/share/extension/pg_similarity.conf.sample
+%config %{pginstdir}/share/extension/%{sname}.conf.sample
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{pginstdir}/lib/%{sname}.so
 %{pginstdir}/share/extension/%{sname}*.sql
