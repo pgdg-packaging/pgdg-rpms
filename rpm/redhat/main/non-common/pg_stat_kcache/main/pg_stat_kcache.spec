@@ -9,19 +9,16 @@
 Summary:	A PostgreSQL extension gathering CPU and disk acess statistics
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{kcachemajver}.%{kcachemidver}.%{kcacheminver}
-Release:	1PGDG%{?dist}
-License:	PostgreSQL
+Release:	2PGDG%{?dist}
+License:	BSD
 URL:		https://github.com/powa-team/%{sname}
 Source0:	https://github.com/powa-team/%{sname}/archive/REL%{kcachemajver}_%{kcachemidver}_%{kcacheminver}.tar.gz
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-Requires:	postgresql%{pgmajorversion}-server
+BuildRequires:	postgresql%{pgmajorversion}-devel
+Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 
 %description
 Gathers statistics about real reads and writes done by the filesystem layer.
-It is provided in the form of an extension for PostgreSQL >= 9.4., and
-requires pg_stat_statements extension to be installed. PostgreSQL 9.4 or more
-is required as previous version of provided pg_stat_statements didn't expose
-the queryid field.
+Requires pg_stat_statements extension to be installed.
 
 %if %llvm
 %package llvmjit
@@ -32,8 +29,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -72,6 +69,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Jan 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-2PGDG
+- Add missing -contrib requirement
+- Simplify package description
+- Update LLVM dependencies
+
 * Tue Sep 17 2024 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-1PGDG
 - Update to 2.3.0 per changes described at:
   https://github.com/powa-team/pg_stat_kcache/releases/tag/REL2_3_0
