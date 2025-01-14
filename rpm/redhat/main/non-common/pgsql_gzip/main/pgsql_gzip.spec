@@ -6,16 +6,12 @@
 Summary:	PostgreSQL gzip/gunzip functions
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.0.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
-%if 0%{?fedora} == 39
-BuildRequires:	zlib-devel
-Requires:	zlib
-%endif
 %if 0%{?fedora} == 40
 BuildRequires:	zlib-ng-compat-devel
 Requires:	zlib-ng-compat
@@ -24,7 +20,7 @@ Requires:	zlib-ng-compat
 BuildRequires:	zlib-devel
 Requires:	zlib
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	zlib-devel
 Requires:	libz1
 %endif
@@ -53,8 +49,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -87,6 +83,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-4PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-3PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
