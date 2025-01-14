@@ -1,0 +1,20 @@
+--- a/hamming.c
++++ b/hamming.c
+@@ -178,7 +178,7 @@ hamming_text(PG_FUNCTION_ARGS)
+ 	elog(DEBUG1, "is normalized: %d", pgs_hamming_is_normalized);
+ 	elog(DEBUG1, "maximum length: %d", maxlen);
+ 
+-	elog(DEBUG1, "hammingdistance(%s, %s) = %.3f", DatumGetCString(a), DatumGetCString(b), res);
++	elog(DEBUG1, "hammingdistance(%s, %s) = %.3f", a, b, res);
+ 
+ 	/* if one string has zero length then return one */
+ 	if (maxlen == 0)
+@@ -188,7 +188,7 @@ hamming_text(PG_FUNCTION_ARGS)
+ 	else if (pgs_hamming_is_normalized)
+ 	{
+ 		res = 1.0 - (res / maxlen);
+-		elog(DEBUG1, "hamming(%s, %s) = %.3f", DatumGetCString(a), DatumGetCString(b), res);
++		elog(DEBUG1, "hamming(%s, %s) = %.3f", a, b, res);
+ 		PG_RETURN_FLOAT8(res);
+ 	}
+ 	else
