@@ -6,16 +6,16 @@
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
-Source0:	https://github.com/postgrespro/pgsphere/archive/refs/tags/%{version}.tar.gz
-URL:		https://github.com/postgrespro/pgsphere
+Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
+URL:		https://github.com/postgrespro/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 BuildRequires:	healpix-c++-devel
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	healpix_cxx-devel
 %endif
 
@@ -35,8 +35,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -59,10 +59,10 @@ This packages provides JIT support for pgsphere
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README.%{pname}
-%license %{pginstdir}/doc/extension/COPYRIGHT.pg_sphere
-%{pginstdir}/lib/pg_sphere.so
-%{pginstdir}/share/extension/pg_sphere*.sql
-%{pginstdir}/share/extension/pg_sphere.control
+%license %{pginstdir}/doc/extension/COPYRIGHT.%{pname}
+%{pginstdir}/lib/%{pname}.so
+%{pginstdir}/share/extension/%{pname}*.sql
+%{pginstdir}/share/extension/%{pname}.control
 
 %if %llvm
 %files llvmjit
@@ -72,6 +72,9 @@ This packages provides JIT support for pgsphere
 %endif
 
 %changelog
+* Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-3PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
