@@ -6,7 +6,7 @@
 Summary:	PostgreSQL HTTP client
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.6.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -27,8 +27,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -61,6 +61,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.1-2PGDG
+- Update LLVM dependencies
+
 * Thu Oct 10 2024 Devrim Gündüz <devrim@gunduz.org> - 1.6.1-1PGDG
 - Update to 1.6.1 per changes described at:
   https://github.com/pramsey/pgsql-http/releases/tag/v1.6.1
