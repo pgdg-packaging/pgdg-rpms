@@ -4,7 +4,7 @@
 Summary:	PostgreSQL extension to schedules and manages jobs in a job queue similar to Oracle DBMS_JOB package
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/MigOpsRepos/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-makefile.patch
@@ -29,15 +29,23 @@ command, plpgsql code or an existing stored procedure.
 %{__rm} -rf %{buildroot}
 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot} DESTDIR=%{buildroot} install
 
+# Install README and howto file under PostgreSQL installation directory:
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
+%{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
+
 %files
 %defattr(-,root,root,-)
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{_sysconfdir}/%{sname}/%{sname}.conf.dist
 %{pginstdir}/bin/%{sname}
-%{pginstdir}/doc/extension/README.md
 %{pginstdir}/share/extension/%{sname}*.sql
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Jan 13 2025 Devrim Gunduz <devrim@gunduz.org> - 1.5-4PGDG
+- Fix location of README file name and path.
+
 * Fri Sep 8 2023 Devrim Gunduz <devrim@gunduz.org> - 1.5-3PGDG
 - Add PGDG branding
 
