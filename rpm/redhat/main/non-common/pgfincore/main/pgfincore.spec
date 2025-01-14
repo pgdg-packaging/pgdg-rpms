@@ -8,8 +8,8 @@ Version:	1.3.1
 Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/klando/%{sname}/archive/%{version}.tar.gz
-URL:		https://github.com/klando/pgfincore
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+URL:		https://github.com/klando/%{sname}
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.2.2-2
@@ -43,20 +43,24 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %install
 %{__rm} -rf %{buildroot}
 %{__mkdir} -p %{buildroot}%{pginstdir}/share/extension
-%{__mkdir} -p %{buildroot}%{pginstdir}/share/pgfincore
-%{__mkdir} -p %{buildroot}%{pginstdir}/doc/pgfincore
+%{__mkdir} -p %{buildroot}%{pginstdir}/share/%{sname}
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
+
+# Install README file under PostgreSQL installation directory:
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 755 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
+%{__rm} -f %{buildroot}%{pginstdir}/doc/%{sname}/README.md
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
-%doc %{pginstdir}/doc/pgfincore/README.md
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
 %doc AUTHORS ChangeLog
 %license COPYRIGHT
 %{pginstdir}/lib/%{sname}.so
-%{pginstdir}/share/pgfincore/%{sname}*.sql
+%{pginstdir}/share/%{sname}/%{sname}*.sql
 %{pginstdir}/share/extension/%{sname}.control
 
 %if %llvm
@@ -66,8 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
-* Thu Jan 9 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-4PGDG
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-4PGDG
 - Update LLVM dependencies
+- Fix location of the README file.
 
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-3PGDG
 - Update LLVM dependencies
