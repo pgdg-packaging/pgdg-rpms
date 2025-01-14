@@ -56,18 +56,17 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags}
 PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR=%{buildroot}
 
 # Install README file under PostgreSQL installation directory:
-%{__install} -d %{buildroot}%{pginstdir}/share/extension
-%{__install} -m 755 README.md %{buildroot}%{pginstdir}/share/extension/README-%{sname}.md
-%{__rm} -f %{buildroot}%{_docdir}/pgsql/extension/README.md
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 755 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
-%doc LICENSE
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
+%license LICENSE
 %{pginstdir}/lib/%{sname}.so
-%{pginstdir}/share/extension/README-%{sname}.md
 
 %if %llvm
 %files llvmjit
@@ -76,8 +75,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
-* Thu Jan 9 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-2PGDG
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-2PGDG
 - Update LLVM dependencies
+- Fix location of the README file
 
 * Tue Aug 27 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-1PGDG
 - Update to 1.1.0 per changes described at:
