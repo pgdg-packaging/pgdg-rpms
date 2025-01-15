@@ -11,25 +11,28 @@ Source1:	%{name}.pom
 BuildArch:	noarch
 
 Requires:	jpackage-utils
+
 %if 0%{?suse_version} >= 1500
 # On SUSE/SLES, java-headless is Provided by java-11-openjdk-headless, which is version 0:11
 Requires:	java-headless >= 8
 %else
 # On RHEL java-headless Provides 'java-headless = 1:1.8.0'
-Requires:	java-headless >= 1:1.8
+Requires:	java-headless
 %endif
 
-%if 0%{?suse_version} >= 1500
-BuildRequires:	java-11-openjdk-devel
+%if 0%{?rhel} == 8 || 0%{?fedora}
+BuildRequires:	java-latest-openjdk-devel
 %endif
 %if 0%{?rhel} == 9
 BuildRequires:	java-17-openjdk-devel
 %endif
-%if 0%{?rhel} == 8 || 0%{?fedora}  || 0%{?rhel} >= 10
-BuildRequires:	java-latest-openjdk-devel
+%if 0%{?rhel} == 10
+BuildRequires:	java-21-openjdk-devel
 %endif
-
-BuildRequires:	maven
+%if 0%{?suse_version} >= 1500
+BuildRequires:	java-11-openjdk-devel
+%endif
+BuildRequires:	maven javapackages-local
 
 %description
 PostgreSQL is an advanced Object-Relational database management
@@ -44,13 +47,26 @@ This package contains the API Documentation for %{name}.
 
 %prep
 %setup -q -n postgresql-%{version}-jdbc-src
-%{__rm} -f .gitattributes
-%{__rm} -f .gitignore
-%{__rm} -f .travis.yml
-%{__rm} -f src/test/java/org/postgresql/test/jdbc4/CopyUtfTest.java
 
 # remove any binary libs
 find -name "*.jar" -or -name "*.class" | xargs %{__rm} -fr
+
+# RemoveBuild parent POMs in the same Maven call.
+%pom_remove_plugin :maven-shade-plugin
+
+# For compat reasons, make Maven artifact available under older coordinates.
+%mvn_alias org.postgresql:postgresql postgresql:postgresql
+
+# remove unmet dependency
+%pom_remove_dep uk.org.webcompere:system-stubs-jupiter
+
+# remove tests that depend on the system-stubs-jupiter
+%{__rm} src/test/java/org/postgresql/test/jdbc2/DriverTest.java \
+	src/test/java/org/postgresql/util/OSUtilTest.java \
+	src/test/java/org/postgresql/jdbcurlresolver/PgServiceConfParserTest.java \
+	src/test/java/org/postgresql/jdbcurlresolver/PgPassParserTest.java \
+	src/test/java/org/postgresql/util/StubEnvironmentAndProperties.java
+
 %build
 
 export CLASSPATH=
@@ -60,11 +76,7 @@ export CLASSPATH=
 # different platforms don't build in the same minute. For now, rely on
 # upstream to have updated the translations files before packaging.
 
-%if 0%{?rhel} == 7
-/opt/rh/rh-maven33/root/usr/bin/mvn -DskipTests -Pjavadoc package
-%else
 mvn -DskipTests -Pjavadoc package
-%endif
 
 %install
 %{__install} -d %{buildroot}%{_javadir}
@@ -131,6 +143,9 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 * Tue Jan 14 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.5-1PGDG
 - Update to 42.7.5 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.5
+- Fix RHEL 10 dependency
+- Disable shade plugin per https://github.com/pgjdbc/pgjdbc/issues/3480
+- Merged some changes from Fedora spec file.
 
 * Mon Dec 30 2024 Devrim Gündüz <devrim@gunduz.org> - 42.7.4-2PGDG
 - Fix SLES 15 dependency and remove RHEL 7 and SLES 12 support.
