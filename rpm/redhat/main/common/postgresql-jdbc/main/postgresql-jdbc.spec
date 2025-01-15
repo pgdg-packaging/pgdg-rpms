@@ -2,12 +2,15 @@
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
 Version:	42.7.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # ASL 2.0 applies only to postgresql-jdbc.pom file, the rest is BSD
 License:	BSD and ASL 2.0
 URL:		https://jdbc.postgresql.org/
 Source0:	https://jdbc.postgresql.org/download/postgresql-jdbc-%{version}.src.tar.gz
 Source1:	%{name}.pom
+%if 0%{?rhel} == 9
+Patch0:		%{sname}-downgradeshade-rhel8.patch
+%endif
 BuildArch:	noarch
 
 Requires:	jpackage-utils
@@ -47,12 +50,12 @@ This package contains the API Documentation for %{name}.
 
 %prep
 %setup -q -n postgresql-%{version}-jdbc-src
+%if 0%{?rhel} == 8
+%patch -P 0 -p0
+%endif
 
 # remove any binary libs
 find -name "*.jar" -or -name "*.class" | xargs %{__rm} -fr
-
-# RemoveBuild parent POMs in the same Maven call.
-%pom_remove_plugin :maven-shade-plugin
 
 # For compat reasons, make Maven artifact available under older coordinates.
 %mvn_alias org.postgresql:postgresql postgresql:postgresql
@@ -146,6 +149,10 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
+* Wed Jan 15 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.5-2PGDG
+- Do not remove shade plugin, just downgrade it for RHEL 8 to
+  unbreak SCRAM auth.
+
 * Tue Jan 14 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.5-1PGDG
 - Update to 42.7.5 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.5

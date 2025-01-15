@@ -1,0 +1,11 @@
+--- pom.xml.old	2025-01-15 11:54:18.006935241 -0600
++++ pom.xml	2025-01-15 11:54:40.057303579 -0600
+@@ -219,7 +219,7 @@
+                     <plugin>
+                         <groupId>org.apache.maven.plugins</groupId>
+                         <artifactId>maven-shade-plugin</artifactId>
+-                        <version>3.6.0</version>
++                        <version>3.5.1</version>
+                         <configuration>
+                             <minimizeJar>true</minimizeJar>
+                             <artifactSet>
