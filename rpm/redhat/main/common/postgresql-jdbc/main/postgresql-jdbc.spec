@@ -8,7 +8,7 @@ License:	BSD and ASL 2.0
 URL:		https://jdbc.postgresql.org/
 Source0:	https://jdbc.postgresql.org/download/postgresql-jdbc-%{version}.src.tar.gz
 Source1:	%{name}.pom
-%if 0%{?rhel} == 9
+%if 0%{?rhel} == 8
 Patch0:		%{sname}-downgradeshade-rhel8.patch
 %endif
 BuildArch:	noarch
