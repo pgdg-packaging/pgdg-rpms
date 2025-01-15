@@ -68,6 +68,12 @@ find -name "*.jar" -or -name "*.class" | xargs %{__rm} -fr
 	src/test/java/org/postgresql/util/StubEnvironmentAndProperties.java
 
 %build
+%if 0%{?suse_version} >= 1500
+export PATH=/usr/lib64/jvm/java-openjdk/bin:$PATH
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+export PATH=/usr/lib/jvm/java-openjdk/bin:$PATH
+%endif
 
 export CLASSPATH=
 # Ideally we would run "sh update-translations.sh" here, but that results
