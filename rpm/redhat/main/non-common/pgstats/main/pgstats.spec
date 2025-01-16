@@ -1,17 +1,17 @@
 %global sname	pgstats
 %global pgstatsmajver 1
-%global pgstatsmidver 2
+%global pgstatsmidver 4
 %global pgstatsminver 0
 
 Summary:	vmstat-like tool for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgstatsmajver}.%{pgstatsmidver}.%{pgstatsminver}
-Release:	2%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/gleu/pgstats/archive/refs/tags/REL%{pgstatsmajver}_%{pgstatsmidver}_%{pgstatsminver}.tar.gz
 URL:		https://github.com/gleu/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs libpq5
+Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
 
 %description
 pgstat is a vmstat-like tool for PostgreSQL.
@@ -56,6 +56,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgwaitevent
 
 %changelog
+* Thu Jan 16 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-1PGDG
+- Update to 1.4.0
+- Add PGDG branding
+
 * Mon Dec 05 2022 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-2
 - Get rid of AT and switch to GCC on RHEL 7 - ppc64le
 
