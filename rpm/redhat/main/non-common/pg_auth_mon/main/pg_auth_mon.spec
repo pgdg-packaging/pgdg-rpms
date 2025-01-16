@@ -71,7 +71,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
-* Sat Jan 4 2024 Devrim Gunduz <devrim@gunduz.org> - 3.0-2PGDG
+* Thu Sep 19 2024 Devrim Gunduz <devrim@gunduz.org> - 3.0-2PGDG
 - Update description and LLVM dependencies.
 
 * Tue Aug 6 2024 Devrim Gunduz <devrim@gunduz.org> - 3.0-1PGDG

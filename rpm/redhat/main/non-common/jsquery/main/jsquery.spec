@@ -45,6 +45,11 @@ BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
 Requires:	llvm => 17.0
 %endif
 
+%description llvmjit
+This packages provides JIT support for jsquery
+
+%endif
+
 %prep
 %setup -q -n %{sname}-ver_%{version}
 

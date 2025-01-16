@@ -61,7 +61,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 
 
 %changelog
-* Thu Jan 9 2024 Devrim Gündüz <devrim@gunduz.org> - 2.7-3PGDG
+* Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 2.7-3PGDG
 - Update LLVM dependencies
 
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 2.7-2PGDG

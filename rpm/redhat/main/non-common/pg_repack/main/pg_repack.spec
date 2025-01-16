@@ -63,7 +63,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
-* Sat 11 Jan 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-2PGDG
+* Sat Jan 11 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-2PGDG
 - Remove obsoleted BR
 
 * Mon Dec 16 2024 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-1PGDG

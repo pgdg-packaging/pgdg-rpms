@@ -70,7 +70,7 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 * Fri Jan 10 2025 Devrim Gunduz <devrim@gunduz.org> - 1.20220917-7PGDG
 - Update LLVM dependencies
 
-* Mon Jul 30 2024 Devrim Gunduz <devrim@gunduz.org> - 1.20220917-6PGDG
+* Tue Jul 30 2024 Devrim Gunduz <devrim@gunduz.org> - 1.20220917-6PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
 
