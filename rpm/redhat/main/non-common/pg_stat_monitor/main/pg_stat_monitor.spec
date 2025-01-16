@@ -5,28 +5,32 @@
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.1.3-2
 
 %description
-The pg_stat_monitor is a PostgreSQL Query Performance Monitoring tool, based
-on PostgreSQL's contrib module pg_stat_statements. PostgreSQL’s
-pg_stat_statements provides the basic statistics, which is sometimes not
-enough. The major shortcoming in pg_stat_statements is that it accumulates
-all the queries and their statistics and does not provide aggregated
-statistics nor histogram information. In this case, a user needs to calculate
-the aggregate which is quite expensive.
+The pg_stat_monitor is a Query Performance Monitoring tool for PostgreSQL.
+It attempts to provide a more holistic picture by providing much-needed query
+performance insights in a single view.
 
-pg_stat_monitor is developed on the basis of pg_stat_statements as its more
-advanced replacement. It provides all the features of pg_stat_statements
-plus its own feature set.
+pg_stat_monitor provides improved insights that allow database users to
+understand query origins, execution, planning statistics and details, query
+information, and metadata. This significantly improves observability, enabling
+users to debug and tune query performance. pg_stat_monitor is developed on the
+basis of pg_stat_statements as its more advanced replacement.
+
+While pg_stat_statements provides ever-increasing metrics, pg_stat_monitor
+aggregates the collected data, saving user efforts for doing it themselves.
+pg_stat_monitor stores statistics in configurable time-based units – buckets.
+This allows focusing on statistics generated for shorter time periods and
+makes query timing information such as max/min/mean time more accurate.
 
 %if %llvm
 %package llvmjit
@@ -37,8 +41,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -65,6 +69,7 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 
 %files
 %defattr(644,root,root,755)
+%license LICENSE
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{pginstdir}/lib/%{sname}.so
 %{pginstdir}/share/extension/%{sname}--*.sql
@@ -77,6 +82,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Jan 16 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-2PGDG
+- Update LLVM dependencies
+- Update package description and install license file.
+
 * Thu Aug 8 2024 - Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
 - Update to 2.1.0 per changes described at:
   https://github.com/percona/pg_stat_monitor/releases/tag/2.1.0
