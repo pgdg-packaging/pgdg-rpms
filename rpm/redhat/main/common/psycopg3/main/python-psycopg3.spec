@@ -22,14 +22,14 @@
 
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
-Version:	3.2.3
-Release:	2PGDG%{?dist}
+Version:	3.2.4
+Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
 Source0:	https://github.com/psycopg/psycopg/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	python3-devel
 
 Requires:	libpq5 >= 10.0
@@ -44,7 +44,7 @@ API 2.0 specifications. Several extensions allow access to many of the
 features offered by PostgreSQL.
 
 # Enable this package only on Fedora, which has PY 3.9:
-%if 0%{?fedora} > 39
+%if 0%{?fedora} >= 40
 %package -n python3-%{sname}-tests
 Summary:	A testsuite for Python 3
 Requires:	python3-%sname = %version-%release
@@ -95,7 +95,7 @@ popd
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{sname}/
 
 #Only on Fedora:
-%if 0%{?fedora} > 39
+%if 0%{?fedora} >= 40
 # Copy tests directory:
 %{__cp} -rp tests %{buildroot}%{python3_sitearch}/%{sname}/tests
 # This test is skipped on 3.7 and has a syntax error so brp-python-bytecompile would choke on it
@@ -134,6 +134,10 @@ popd
 %endif
 
 %changelog
+* Thu Jan 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.4-1PGDG
+- Update to 3.2.4 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.4
+
 * Tue Dec 17 2024 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-2PGDG
 - Add RHEL 10 support
 
