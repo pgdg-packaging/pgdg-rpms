@@ -1,17 +1,16 @@
-%global debug_package %{nil}
 %global sname pg_track_settings
 
 Summary:	PostgreSQL extension to keep track of settings modification
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/rjuju/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/rjuju/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
-Obsoletes:	%{sname}%{pgmajorversion} < 2.0.1-2
+BuildArch:	noarch
 
 %description
 pg_track_settings is a small extension that helps you keep track of
@@ -50,6 +49,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.2-3PGDG
+- Mark package as noarch.
+
 * Mon Aug 21 2023 Devrim Gündüz <devrim@gunduz.org> - 2.1.2-2PGDG
 - Remove RHEL 6 bits
 - Fix rpmlint warnings
