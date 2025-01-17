@@ -9,6 +9,7 @@ Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/ossc-db/%{sname}/archive/%{version}.tar.gz
 Source1:	README-%{sname}.txt
+Patch0:		%{sname}-pg17.patch
 URL:		https://ossc-db.github.io/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
@@ -36,6 +37,7 @@ This packages provides JIT support for pg_store_plans
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p0
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -65,6 +67,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 * Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.8-3PGDG
 - Update LLVM dependencies
 - Update project URL
+- Add a patch to fix builds against PostgreSQL 17
 
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.8-2PGDG
 - Update LLVM dependencies
