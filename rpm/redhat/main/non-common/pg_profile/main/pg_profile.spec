@@ -2,7 +2,7 @@
 
 Summary:	Tool to find out most resource intensive activities in your PostgreSQL databases
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.7
+Version:	4.8
 Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/zubkov-andrei/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -40,6 +40,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 4.8-1PGDG
+- Update to 4.8 per changes described at:
+  https://github.com/zubkov-andrei/pg_profile/releases/tag/4.8
+
 * Wed Sep 25 2024 Devrim Gündüz <devrim@gunduz.org> - 4.7-1PGDG
 - Update to 4.7 per changes described at:
   https://github.com/zubkov-andrei/pg_profile/releases/tag/4.7
