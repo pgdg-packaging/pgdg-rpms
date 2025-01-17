@@ -5,7 +5,7 @@
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
@@ -23,19 +23,19 @@ gives capability to users to launch
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pg_tle
+Summary:	Just-in-time compilation support for pg_Tle
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_tle
+This packages provides JIT support for pg_Tle
 %endif
 
 %prep
@@ -67,6 +67,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-3PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
