@@ -9,8 +9,8 @@ Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/petere/%{sname}/archive/%{version}.tar.gz
 Patch0:		%{sname}-fix-pg_cppflags.patch
-URL:		https://github.com/petere/pguri
-BuildRequires:	postgresql%{pgmajorversion}-devel uriparser-devel pgdg-srpm-macros
+URL:		https://github.com/petere/%{sname}
+BuildRequires:	postgresql%{pgmajorversion}-devel uriparser-devel
 Requires:	postgresql%{pgmajorversion}-server uriparser
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.20151224-2
@@ -39,8 +39,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -66,6 +66,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %files
 %defattr(644,root,root,755)
 %doc README.md
+%license LICENSE.md
 %{pginstdir}/lib/uri.so
 %{pginstdir}/share/extension/uri-*.sql
 %{pginstdir}/share/extension/uri.control
@@ -77,6 +78,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Sun Jan 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.20151224-8PGDG
+- Update LLVM dependencies
+- Install licensef file
+
 * Sun Sep 22 2024 Devrim Gündüz <devrim@gunduz.org> - 1.20151224-7PGDG
 - Fix builds against PostgreSQL 16+. Per
   https://github.com/petere/pguri/issues/16#issuecomment-1827546607
