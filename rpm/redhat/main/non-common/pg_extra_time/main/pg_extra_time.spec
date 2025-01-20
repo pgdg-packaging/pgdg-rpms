@@ -2,7 +2,7 @@
 
 Summary:	Extra date time functions and operators for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.3
+Version:	2.0.0
 Release:	1PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
@@ -14,8 +14,7 @@ BuildArch:	noarch
 
 %description
 The pg_extra_time PostgreSQL extension contains some date time
-functions and operators that, according to the extension author,
-ought to be part of the PostgreSQL standard distribution.
+functions and operators.
 
 %prep
 %setup -q -n %{sname}-%{version}
@@ -33,13 +32,18 @@ ought to be part of the PostgreSQL standard distribution.
 %postun -p /sbin/ldconfig
 
 %files
+%defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 %license LICENCE.txt
-%defattr(-,root,root,-)
 %{pginstdir}/share/extension/%{sname}*.sql
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Wed Jun 26 2024 - Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
+- Update to 2.0.0 per changes described at:
+  https://github.com/bigsmoke/pg_extra_time/releases/tag/v2.0.0
+  https://github.com/bigsmoke/pg_extra_time/blob/v2.0.0/CHANGELOG.md
+
 * Wed Jun 26 2024 - Devrim Gündüz <devrim@gunduz.org> - 1.1.3-1PGDG
 - Update to 1.1.3 per changes described at:
   https://github.com/bigsmoke/pg_extra_time/releases/tag/v1.1.3
