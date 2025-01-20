@@ -39,7 +39,7 @@ functions and operators.
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
-* Wed Jun 26 2024 - Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
+* Mon Jan 20 2025 - Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
 - Update to 2.0.0 per changes described at:
   https://github.com/bigsmoke/pg_extra_time/releases/tag/v2.0.0
   https://github.com/bigsmoke/pg_extra_time/blob/v2.0.0/CHANGELOG.md
