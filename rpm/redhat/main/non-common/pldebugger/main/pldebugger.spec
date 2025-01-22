@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.8
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PL/pgSQL debugger server-side code
 License:	Artistic 2.0
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -14,14 +14,10 @@ Source1:	%{sname}.LICENSE
 BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
 Requires:	postgresql%{pgmajorversion}-server
 
-Obsoletes:	%{sname}%{pgmajorversion} < 1.3-1
-Provides:	%{sname}%{pgmajorversion} = %{version}
-
 %description
 This module is a set of shared libraries which implement an API for
-debugging PL/pgSQL functions on PostgreSQL 9.4 and above. The pgAdmin
-project (http://www.pgadmin.org/) provides a client user interface as
-part of pgAdmin 4.
+debugging PL/pgSQL functions on PostgreSQL. The pgAdmin project
+(https://www.pgadmin.org/) provides a client user interface.
 
 %if %llvm
 %package llvmjit
@@ -32,8 +28,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -70,6 +66,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Jan 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.8-2PGDG
+- Update LLVM dependencies and package description.
+
 * Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - 1.8-1PGDG
 - Update to 1.8 per changes described at:
   https://github.com/EnterpriseDB/pldebugger/releases/tag/v1.8
