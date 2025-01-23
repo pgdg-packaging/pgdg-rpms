@@ -30,7 +30,7 @@
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %ifnarch ppc64 ppc64le
 # TODO
 %{!?sfcgal:%global	sfcgal 1}
@@ -43,8 +43,8 @@
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
-Version:	%{postgismajorversion}.1
-Release:	2PGDG%{?dist}
+Version:	%{postgismajorversion}.2
+Release:	1PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -72,7 +72,7 @@ BuildRequires:	libxml2-devel
 BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
@@ -225,7 +225,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -355,6 +355,7 @@ fi
    %if %{sfcgal}
    %{pginstdir}/lib/bitcode/postgis_sfcgal-%{postgissomajorversion}.index.bc
    %{pginstdir}/lib/bitcode/postgis_sfcgal-%{postgissomajorversion}/lwgeom_sfcgal.bc
+   %{pginstdir}/lib/bitcode/postgis_sfcgal-%{postgissomajorversion}/postgis_sfcgal_legacy.bc
    %endif
 %endif
 
@@ -366,6 +367,10 @@ fi
 %endif
 
 %changelog
+* Thu Jan 23 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-1PGDG
+- Update to 3.5.2 per changes described at:
+  https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.5.2/NEWS
+
 * Sat Dec 28 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-2PGDG
 * Fix SLES 15 builds by adding --with-projdir option back. Also fix
   PROJ path.
