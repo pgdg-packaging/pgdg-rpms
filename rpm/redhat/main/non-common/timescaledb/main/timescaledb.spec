@@ -1,36 +1,23 @@
 %global sname	timescaledb
 
-Summary:	PostgreSQL based time-series database
+Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.17.2
+Version:	2.18.0
 Release:	1PGDG%{?dist}
 License:	Apache
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
-%if 0%{?rhel} && 0%{?rhel} == 7
-Patch1:		%{sname}-cmake3-rhel7.patch
-%endif
-URL:		https://github.com/timescale/timescaledb
+URL:		https://github.com/timescale/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-BuildRequires:	openssl-devel
-%if 0%{?rhel} && 0%{?rhel} == 7
-BuildRequires:	cmake3
-%else
-BuildRequires:	cmake >= 3.4
-%endif
+BuildRequires:	cmake >= 3.4 openssl-devel
 
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
-TimescaleDB is an open-source database designed to make SQL scalable for
-time-series data. It is engineered up from PostgreSQL, providing automatic
-partitioning across time and space (partitioning key), as well as full SQL
-support.
+TimescaleDB is a PostgreSQL extension for high-performance real-time analytics
+on time-series and event data.
 
 %prep
 %setup -q -n %{sname}-%{version}
-%if 0%{?rhel} && 0%{?rhel} == 7
-%patch -P 1 -p0
-%endif
 
 # Build only the portions that have Apache Licence, and disable telemetry:
 export PATH=%{pginstdir}/bin:$PATH
@@ -40,10 +27,6 @@ export PATH=%{pginstdir}/bin:$PATH
 %build
 export PATH=%{pginstdir}/bin:$PATH
 %ifarch ppc64 ppc64le
-%if 0%{?rhel} && 0%{?rhel} == 7
-	CFLAGS="-O3 -mcpu=$PPC_MCPU -mtune=$PPC_MTUNE"
-%endif
-%else
 	CFLAGS="$RPM_OPT_FLAGS -fPIC -pie"
 	CXXFLAGS="$RPM_OPT_FLAGS -fPIC -pie"
 	export CFLAGS
@@ -66,6 +49,11 @@ cd build; %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Jan 23 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-1PGDG
+- Update to 2.18.0, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.18.0
+- Remove RHEL 7 support
+
 * Wed Nov 6 2024 Devrim Gündüz <devrim@gunduz.org> - 2.17.2-1PGDG
 - Update to 2.17.2, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.17.2
