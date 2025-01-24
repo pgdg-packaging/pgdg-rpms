@@ -57,7 +57,7 @@
 
 Name:		%{sname}38
 Version:	3.8.5
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -284,7 +284,7 @@ The GDAL Python 3 modules provide support to handle multiple GIS file formats.
 
 %package python-tools
 Summary:	Python tools for the GDAL file format library
-Requires:	python3-gdal
+Requires:	gdal38-python3
 
 %description python-tools
 The GDAL Python package provides number of tools for programming and
@@ -471,6 +471,10 @@ done
 %endif
 
 %changelog
+* Fri Jan 24 2025 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-7PGDG
+- Fix long standing python3-tools subpackage bug:
+  https://redmine.postgresql.org/issues/7931
+
 * Wed Oct 30 2024 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-6PGDG
 - Rebuild against libarrow 16 on Fedora 41
 
