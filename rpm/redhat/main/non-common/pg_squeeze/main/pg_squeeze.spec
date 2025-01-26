@@ -1,19 +1,20 @@
 %global sname pg_squeeze
-%global pgsqueezerelversion 1_7_0
+
+%global squeezemajver 1
+%global squeezemidver 8
+%global squeezeminver 0
 
 %{!?llvm:%global llvm 1}
 
 Summary:	A PostgreSQL extension for automatic bloat cleanup
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.7.0
-Release:	2PGDG%{?dist}
+Version:	%{squeezemajver}.%{squeezemidver}.%{squeezeminver}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
-Source0:	https://github.com/cybertec-postgresql/pg_squeeze/archive/REL%{pgsqueezerelversion}.tar.gz
+Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/REL%{squeezemajver}_%{squeezemidver}_%{squeezeminver}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
-
-Obsoletes:	%{sname}%{pgmajorversion} < 1.3.0-2
 
 %description
 pg_squeeze is an extension that removes unused space from a table and
@@ -38,7 +39,7 @@ This packages provides JIT support for pg_squeeze
 %endif
 
 %prep
-%setup -q -n %{sname}-REL%{pgsqueezerelversion}
+%setup -q -n %{sname}-REL%{squeezemajver}_%{squeezemidver}_%{squeezeminver}
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -67,6 +68,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Sun Jan 26 2025 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-1PGDG
+- Update to 1.8.0 per changes described at:
+  https://github.com/cybertec-postgresql/pg_squeeze/releases/tag/REL1_8_0
+
 * Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-2PGDG
 - Update LLVM dependencies
 
