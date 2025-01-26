@@ -13,7 +13,7 @@
 %endif
 
 Name:		etcd
-Version:	3.5.17
+Version:	3.5.18
 Release:	1PGDG%{?dist}
 Summary:	Distributed reliable key-value store
 License:	ASL 2.0
@@ -28,7 +28,7 @@ BuildRequires:	systemd-rpm-macros
 %if 0%{?fedora} || 0%{?rhel}
 Requires(pre):	shadow-utils
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires(pre):	shadow
 %endif
 
@@ -83,6 +83,10 @@ getent passwd %{name} >/dev/null || useradd -r -g %{name} -d %{_sharedstatedir}/
 %attr(755, root, root) %{_bindir}/etcdutl
 
 %changelog
+* Sun Jan 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.18-1PGDG
+- Update to 3.5.18, per changes described at:
+  https://github.com/etcd-io/etcd/releases/tag/v3.5.18
+
 * Wed Nov 13 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.17-1PGDG
 - Update to 3.5.17, per changes described at:
   https://github.com/etcd-io/etcd/releases/tag/v3.5.17
