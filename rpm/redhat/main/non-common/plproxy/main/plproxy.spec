@@ -5,12 +5,12 @@
 Summary:	PL/Proxy is database partitioning system implemented as PL language.
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.11.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	ISC
 URL:		https://plproxy.github.io
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel flex >= 2.5.4 pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel flex >= 2.5.4
 Requires:	postgresql%{pgmajorversion}
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.10.0-2
@@ -27,8 +27,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -60,6 +60,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-3PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
