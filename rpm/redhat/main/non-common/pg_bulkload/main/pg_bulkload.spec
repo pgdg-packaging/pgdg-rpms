@@ -1,13 +1,16 @@
-%global	pgbulkloadpackagever 3_1_21
-
 %global sname pg_bulkload
+
+%global pgbulkloadmajver 3
+%global pgbulkloadmidver 1
+%global pgbulkloadminver 22
+%global	pgbulkloadpackagever %{pgbulkloadmajver}_%{pgbulkloadmidver}_%{pgbulkloadminver}
 
 %{!?llvm:%global llvm 1}
 
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.1.21
-Release:	4PGDG%{?dist}
+Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
+Release:	1PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
@@ -45,7 +48,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_bulkload
+This package provides JIT support for pg_bulkload
 %endif
 
 %prep
@@ -88,6 +91,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Jan 27 2025 Devrim Gunduz <devrim@gunduz.org> - 3.1.21-1PGDG
+- Update to 3.1.22 per changes described at:
+  https://github.com/ossc-db/pg_bulkload/releases/tag/VERSION3_1_22
+
 * Thu Jan 9 2025  Devrim Gündüz <devrim@gunduz.org> - 3.1.21-4PGDG
 - Update LLVM dependencies and package description
 
