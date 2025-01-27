@@ -31,7 +31,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_store_plans
+This package provides JIT support for pg_store_plans
 %endif
 
 %prep
