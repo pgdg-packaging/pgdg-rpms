@@ -5,11 +5,11 @@
 Summary:	SI Units for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	7.10
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ChristophBerg/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/ChristophBerg/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -17,9 +17,6 @@ postgresql-unit implements a PostgreSQL datatype for SI units, plus byte.
 The base units can be combined to named and unnamed derived units using
 operators defined in the PostgreSQL type system. SI prefixes are used for
 input and output, and quantities can be converted to arbitrary scale.
-
-Requires PostgreSQL 9.5 or later (uses psprintf()), flex, and bison 3 (the
-pre-built grammar files are used if only bison 2 is available).
 
 %if %llvm
 %package llvmjit
@@ -35,7 +32,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for postgresql-unit
+This package2 provides JIT support for postgresql-unit
 %endif
 
 %prep
@@ -67,6 +64,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-2PGDG
+- Remove redundant BR
+
 * Wed Dec 11 2024 Devrim Gündüz <devrim@gunduz.org> - 7.10-1PGDG
 - Update to 7.10 per changes described at:
   https://github.com/df7cb/postgresql-unit/releases/tag/7.10
