@@ -9,14 +9,12 @@
 Summary:	Procedural language interface between PostgreSQL and R
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plrmajver}.%{plrmidver}.%{plrminver}
-Release:	1PGDG%{?dist}
-License:	BSD
+Release:	2PGDG%{?dist}
+License:	GPLv2
 Source0:	https://github.com/postgres-%{sname}/%{sname}/archive/REL%{plrmajver}_%{plrmidver}_%{plrminver}.tar.gz
 URL:		https://github.com/postgres-%{sname}/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel R-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel R-devel
 Requires:	postgresql%{pgmajorversion}-server
-
-Obsoletes:	%{sname}%{pgmajorversion} < 8.4.1-2
 
 %description
 Procedural Language Handler for the "R software environment for
@@ -24,19 +22,19 @@ statistical computing and graphics".
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for plr
+Summary:	Just-in-time compilation support for PL/R
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for plr
+This packages provides JIT support for PL/R
 %endif
 
 %prep
@@ -70,6 +68,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot}/ install
 %endif
 
 %changelog
+* Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 8.4.7-2PGDG
+- Update LLVM dependencies
+
 * Mon Aug 12 2024 Devrim Gunduz <devrim@gunduz.org> - 8.4.7-1PGDG
 - Update to 8.4.7
 
