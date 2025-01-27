@@ -33,7 +33,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pldebugger
+This package provides JIT support for pldebugger
 %endif
 
 %prep

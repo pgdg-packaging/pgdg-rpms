@@ -44,7 +44,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pguri
+This package provides JIT support for pguri
 %endif
 
 %prep

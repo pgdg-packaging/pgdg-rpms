@@ -32,7 +32,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_uuidv7
+This package provides JIT support for pg_uuidv7
 %endif
 
 %prep

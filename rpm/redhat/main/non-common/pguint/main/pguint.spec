@@ -37,7 +37,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pguint
+This package provides JIT support for pguint
 %endif
 
 %prep

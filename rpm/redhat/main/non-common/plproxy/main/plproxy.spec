@@ -32,7 +32,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for plproxy
+This package provides JIT support for plproxy
 %endif
 
 %prep

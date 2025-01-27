@@ -35,7 +35,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_Tle
+This package provides JIT support for pg_Tle
 %endif
 
 %prep

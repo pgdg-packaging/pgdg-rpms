@@ -67,7 +67,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for plprofiler
+This package provides JIT support for plprofiler
 %endif
 
 %prep

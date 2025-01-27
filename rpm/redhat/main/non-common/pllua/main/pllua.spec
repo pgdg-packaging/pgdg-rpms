@@ -49,7 +49,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for PL/Lua
+This package provides JIT support for PL/Lua
 %endif
 
 %prep

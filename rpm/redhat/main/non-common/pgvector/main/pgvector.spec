@@ -43,7 +43,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pgvector
+This package provides JIT support for pgvector
 %endif
 
 %prep
