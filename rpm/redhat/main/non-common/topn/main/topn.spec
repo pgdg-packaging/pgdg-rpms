@@ -5,14 +5,12 @@
 Summary:	PostgreSQL extension that returns the top values in a database
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.7.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	AGPLv3
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
-Requires(post):	%{_sbindir}/update-alternatives
-Requires(postun):	%{_sbindir}/update-alternatives
 
 %description
 TopN is an open source PostgreSQL extension that returns the top values
@@ -35,12 +33,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for topn
+This package provides JIT support for topn
 %endif
 
 %prep
@@ -70,6 +68,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 2.7.0-2PGDG
+- Update LLVM dependencies
+
 * Sat Oct 19 2024 Devrim Gündüz <devrim@gunduz.org> - 2.7.0-1PGDG
 - Update to 2.7.0
 
