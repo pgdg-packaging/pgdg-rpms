@@ -3,21 +3,16 @@
 Summary:	An efficient nanosecond precision timestamp type for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
-Source0:	https://github.com/fvannee/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
-URL:		https://github.com/fvannee/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-%if 0%{?rhel} && 0%{?rhel} == 7
-BuildRequires:	cmake3 >= 3.17
-%else
+Source0:	https://github.com/optiver/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
+URL:		https://github.com/optiver/%{sname}
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	cmake >= 3.17
-%endif
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
-timestamp9 is an efficient nanosecond precision timestamp type
-for PostgreSQL.
+timestamp9 is an efficient nanosecond precision timestamp type for PostgreSQL.
 
 %prep
 %setup -q -n %{sname}-%{sname}-%{version}
@@ -26,7 +21,7 @@ for PostgreSQL.
 %{__mkdir} build
 pushd build
 export PATH=%{pginstdir}/bin/:$PATH
-%if 0%{?suse_version} && 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 cmake ..
 %else
 cmake3 ..
@@ -37,7 +32,7 @@ popd
 %install
 %{__rm} -rf %{buildroot}
 pushd build
-PATH=%{pginstdir}/bin/:$PATH  %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
+PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 popd
 
 %files
@@ -47,6 +42,10 @@ popd
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-3PGDG
+- Update project URL and remove reduntant BRs
+- Remove RHEL 7 and SLES 12 support
+
 * Wed Sep 13 2023 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-2PGDG
 - Add PGDG branding
 
