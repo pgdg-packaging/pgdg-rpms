@@ -5,11 +5,11 @@
 Summary:	t-digest implementation for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/tvondra/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/tvondra/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -66,6 +66,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-2PGDG
+- Remove redundant BR
+
 * Mon Oct 28 2024 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-1PGDG
 - Update to 1.4.2 per changes described at:
   https://github.com/tvondra/tdigest/releases/tag/v1.4.2
