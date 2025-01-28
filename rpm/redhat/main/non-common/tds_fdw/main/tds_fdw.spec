@@ -5,19 +5,19 @@
 Summary:	TDS Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/tds-fdw/%{sname}/archive/v%{version}.zip
 URL:		https://github.com/tds-fdw/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel freetds-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel freetds-devel
 Requires:	postgresql%{pgmajorversion}-server freetds
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.0.2-2
 
 %description
-This library contains a single PostgreSQL extension, a foreign data wrapper
-called "tds_fdw". It can be used to communicate with Microsoft SQL
-Server and Sybase databases.
+This is a PostgreSQL foreign data wrapper that can connect to databases that
+use the Tabular Data Stream (TDS) protocol, such as Sybase databases and
+Microsoft SQL server.
 
 %if %llvm
 %package llvmjit
@@ -28,12 +28,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for tds_fdw
+This package provides JIT support for tds_fdw
 %endif
 
 %prep
@@ -74,6 +74,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-2PGDG
+- Update LLVM dependencies and remove redundant BR
+
 * Tue Sep 17 2024 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-1PGDG
 - Update to 2.0.4 per changes described at:
   https://github.com/tds-fdw/tds_fdw/releases
