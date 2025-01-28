@@ -3,11 +3,11 @@
 Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.18.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	Apache
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/timescale/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	cmake >= 3.4 openssl-devel
 
 Requires:	postgresql%{pgmajorversion}-server
@@ -49,6 +49,9 @@ cd build; %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-2PGDG
+- Remove redundant BR
+
 * Thu Jan 23 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-1PGDG
 - Update to 2.18.0, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.18.0
