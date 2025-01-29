@@ -3,15 +3,13 @@
 Summary:	PostgreSQL table versioning extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.11.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/linz/postgresql-tableversion/archive/%{version}.tar.gz
 URL:		https://github.com/linz/postgresql-tableversion/
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros jq
+BuildRequires:	postgresql%{pgmajorversion}-devel jq
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
-
-Obsoletes:	%{sname}%{pgmajorversion} < 1.8.0-2
 
 %description
 PostgreSQL table versioning extension, recording row modifications and its
@@ -39,11 +37,15 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %defattr(644,root,root,755)
 %doc %{pginstdir}/doc/extension/*%{sname}.md
 %license LICENSE
-%{pginstdir}/bin/table_version-loader
+%attr (755, root, root) %{pginstdir}/bin/table_version-loader
 %{pginstdir}/share/extension/table_version*.sql*
 %{pginstdir}/share/extension/table_version.control
 
 %changelog
+* Wed Jan 29 2025 Devrim Gündüz <devrim@gunduz.org> - 1.11.1-2PGDG
+- Mark shell script executable.
+- Remove redundant BR
+
 * Sat Nov 9 2024 Devrim Gündüz <devrim@gunduz.org> - 1.11.1-1PGDG
 - Update to 1.11.1
 
