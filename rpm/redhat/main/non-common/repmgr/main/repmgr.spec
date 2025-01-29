@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -31,7 +31,7 @@ Requires(postun):	systemd
 
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 BuildRequires:	libxslt-devel pam-devel readline-devel
-BuildRequires:	libmemcached-devel libicu-devel pgdg-srpm-macros
+BuildRequires:	libmemcached-devel libicu-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %if 0%{?suse_version} >= 1500
@@ -42,29 +42,16 @@ Requires:	openssl-libs >= 1.0.2k
 
 BuildRequires:	openssl-devel
 
-Obsoletes:	%{sname}%{pgmajorversion} < 5.2.1-1
-Obsoletes:	%{sname}_%{pgmajorversion} < 5.2.1-1
-
 %description
-repmgr is an open-source tool suite to manage replication and failover in a
+repmgr is an open-source tool suite for managing replication and failover in
 cluster of PostgreSQL servers. It enhances PostgreSQL's built-in hot-standby
 capabilities with tools to set up standby servers, monitor replication, and
 perform administrative tasks such as failover or manual switchover operations.
 
-repmgr has provided advanced support for PostgreSQL's built-in replication
-mechanisms since they were introduced in 9.0, and repmgr 2.0 supports all
-PostgreSQL versions from 9.0 to 9.5. With further developments in replication
-functionality such as cascading replication, timeline switching and base
-backups via the replication protocol, the repmgr team has decided to use
-PostgreSQL 9.3 as the baseline version for repmgr 3.0, which is a substantial
-rewrite of the existing repmgr code and which will be developed to support
-future PostgreSQL versions.
 
 %package devel
 Summary:	Development header files of repmgr
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-Obsoletes:	%{sname}%{pgmajorversion}-devel < 5.2.1-1
-Obsoletes:	%{sname}_%{pgmajorversion}-devel < 5.2.1-1
 
 %description devel
 The repmgr-devel package contains the header files needed to compile C or C++
@@ -84,7 +71,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for repmgr
+This package provides JIT support for repmgr
 %endif
 
 %prep
@@ -167,6 +154,10 @@ fi
 %endif
 
 %changelog
+* Wed Jan 29 2025 - Devrim Gündüz <devrim@gunduz.org> - 5.5.0-2PGDG
+- Update package description
+- Remove redundant BR
+
 * Sat Nov 23 2024 - Devrim Gündüz <devrim@gunduz.org> - 5.5.0-1PGDG
 - Update to 5.5.0, per changes described at:
   https://repmgr.org/docs/current/release-5.5.0.html
