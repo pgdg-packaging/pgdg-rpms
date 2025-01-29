@@ -6,12 +6,17 @@
 Summary:	Sequential UUID generators for PostgreSQL
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.0.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/tvondra/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/tvondra/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+
+%description
+This PostgreSQL extension implements two UUID generators with sequential
+patterns, which helps to reduce random I/O patterns associated with regular
+entirely-random UUID.
 
 %if %llvm
 %package llvmjit
@@ -27,13 +32,8 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for sequential_uuids
+This package provides JIT support for sequential_uuids
 %endif
-
-%description
-This PostgreSQL extension implements two UUID generators with sequential
-patterns, which helps to reduce random I/O patterns associated with regular
-entirely-random UUID.
 
 %prep
 %setup -q -n %{sname}-%{version}
@@ -62,6 +62,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Wed Jan 29 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.3-2PGDG
+- Update LLVM dependencies
+- Remove redundant BR
+
 * Mon Dec 23 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.3-1PGDG
 - Update to 1.0.3 per changes described at:
   https://github.com/tvondra/sequential-uuids/releases/tag/v1.0.3
