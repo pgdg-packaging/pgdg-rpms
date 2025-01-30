@@ -32,7 +32,7 @@
 %global gdalsomajorversion	36
 %global libspatialitemajorversion	50
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} <= 1499
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} <= 1499
 %global g2clib_enabled 1
 %else
 %global g2clib_enabled 0
@@ -45,7 +45,7 @@
 
 Name:		%{sname}310
 Version:	3.10.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -81,6 +81,7 @@ BuildRequires:	fontconfig-devel
 BuildRequires:	freexl-devel
 %if 0%{?g2clib_enabled}
 BuildRequires:	g2clib-devel
+BuildRequires:	g2clib-static
 %endif
 BuildRequires:	geos%{geosmajorversion}-devel >= 3.12.2
 BuildRequires:	ghostscript
@@ -159,7 +160,6 @@ BuildRequires:	libjasper-devel
 BuildRequires:	libxerces-c-devel
 BuildRequires:	python3-numpy-devel
 %else
-BuildRequires:	g2clib-static
 BuildRequires:	libdap-devel
 BuildRequires:	expat-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
@@ -476,6 +476,9 @@ done
 %endif
 
 %changelog
+* Thu Jan 30 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.1-2PGDG
+- g2clib is not available (yet) on RHEL 10 so disable it on this platform.
+
 * Mon Jan 13 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.10.1-1PGDG
 - Update to 3.10.1 per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.10.1
