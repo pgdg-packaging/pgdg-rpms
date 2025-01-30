@@ -32,7 +32,7 @@
 %global gdalsomajorversion	36
 %global libspatialitemajorversion	50
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} <= 1499
+%if 0%{?fedora} >= 40 || 0%{?rhel} <= 9 || 0%{?suse_version} <= 1499
 %global g2clib_enabled 1
 %else
 %global g2clib_enabled 0
@@ -167,7 +167,6 @@ BuildRequires:	jasper-devel
 BuildRequires:	java-devel >= 1:1.6.0
 BuildRequires:	json-c-devel
 BuildRequires:	libdap-devel libgta-devel
-BuildRequires:	librx-devel
 BuildRequires:	perl-devel
 BuildRequires:	perl-generators
 BuildRequires:	xerces-c-devel
