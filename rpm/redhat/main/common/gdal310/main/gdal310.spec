@@ -32,10 +32,10 @@
 %global gdalsomajorversion	36
 %global libspatialitemajorversion	50
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} <= 9 || 0%{?suse_version} <= 1499
-%global g2clib_enabled 1
+%if 0%{?suse_version} <= 1499 || 0%{?rhel} >= 10
+%global	g2clib_enabled 0
 %else
-%global g2clib_enabled 0
+%global	g2clib_enabled 1
 %endif
 
 # Enable/disable generating refmans
