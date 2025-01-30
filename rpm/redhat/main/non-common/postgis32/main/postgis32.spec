@@ -57,7 +57,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.8
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -68,7 +68,14 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.32 pcre-devel gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.32 gmp-devel
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+BuildRequires:	pcre2-devel
+Requires:	pcre2
+%else
+BuildRequires:	pcre-devel
+Requires:	pcre
+%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
@@ -115,7 +122,6 @@ Requires:	hdf5
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %endif
 
-Requires:	pcre
 %if 0%{?suse_version} >= 1500
 Requires:	libjson-c5
 Requires:	libxerces-c-3_2
@@ -378,6 +384,9 @@ fi
 %endif
 
 %changelog
+* Thu Jan 30 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.8-3PGDG
+- Add RHEL 10 support
+
 * Tue Dec 24 2024 Devrim Gunduz <devrim@gunduz.org> - 3.2.8-2PGDG
 - Fix SLES 15 builds by adding --with-projdir option back. Also fix
   PROJ path.
