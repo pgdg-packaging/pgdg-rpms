@@ -7,7 +7,7 @@
 %global _hardened_build 1
 
 Name:		haproxy
-Version:	3.1.2
+Version:	3.1.3
 Release:	1PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
@@ -24,7 +24,7 @@ Source5:	halog.1
 BuildRequires:	gcc lua-devel pcre2-devel make
 BuildRequires:	openssl-devel systemd-devel systemd
 
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires(pre):	shadow-utils
 %else
 Requires(pre):	shadow
@@ -56,20 +56,20 @@ regparm_opts="USE_REGPARM=1"
 %endif
 
 %{__make} %{?_smp_mflags} CPU="generic" TARGET="linux-glibc" USE_OPENSSL=1 USE_PCRE2=1 USE_SLZ=1 USE_LUA=1 USE_CRYPT_H=1 USE_SYSTEMD=1 USE_LINUX_TPROXY=1 USE_GETADDRINFO=1 USE_PROMEX=1 DEFINE=-DMAX_SESS_STKCTR=12 ${regparm_opts} \
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 	ADDLIB="%{build_ldflags}" \
 %endif
 	ADDINC="%{build_cflags}"
 
 %{__make} admin/halog/halog \
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 	ADDLIB="%{build_ldflags}" \
 %endif
 	ADDINC="%{build_cflags}"
 
 pushd admin/iprange
 %{__make} \
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 	LDFLAGS="%{build_ldflags}" \
 %endif
 	OPTIMIZE="%{build_cflags}"
@@ -143,6 +143,10 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Tue Feb 4 2025 Devrim Gündüz <devrim@gunduz.org> 3.1.3-1PGDG
+- Update to 3.1.3 per changes described at:
+  https://www.mail-archive.com/haproxy@formilux.org/msg45567.html
+
 * Fri Jan 24 2025 Devrim Gündüz <devrim@gunduz.org> 3.1.2-1PGDG
 - Update to 3.1.2 per changes described at:
   https://www.mail-archive.com/haproxy@formilux.org/msg45549.html
