@@ -5,11 +5,11 @@
 Summary:	Prefix Range module for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.10
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/v%{version}.zip
 URL:		https://github.com/dimitri/prefix
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.2.9-2
@@ -28,12 +28,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for prefix
+This package provides JIT support for prefix
 %endif
 
 %prep
@@ -65,6 +65,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Wed Feb 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.10-3PGDG
+- Update LLVM dependencies and remove redundant BR.
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.2.10-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
