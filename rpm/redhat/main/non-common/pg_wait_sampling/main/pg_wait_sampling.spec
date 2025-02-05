@@ -5,15 +5,15 @@
 Summary:	Sampling based statistics of wait events
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.6
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
+BuildRequires:	postgresql%{pgmajorversion}-devel
+Requires:	postgresql%{pgmajorversion}-server
 
 %description
-PostgreSQL 9.6+ provides an information about current wait event of particular
+PostgreSQL provides an information about current wait event of particular
 process. However, in order to gather descriptive statistics of server
 behavior user have to sample current wait event multiple times.
 
@@ -29,8 +29,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -65,6 +65,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Wed Feb 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.6-2PGDG
+- Update LLVM dependencies
+- Remove redundant BR
+
 * Thu Aug 8 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.6-1PGDG
 - Update to 1.1.6 per changes described at:
   https://github.com/postgrespro/pg_wait_sampling/releases/tag/v1.1.6
