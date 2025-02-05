@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.7.12
+Version:	2.7.14
 Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
@@ -14,7 +14,7 @@ BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
 Requires:	postgresql%{pgmajorversion}
 
 %description
-The plpgsql_check is PostgreSQL extension with functionality for direct
+plpgsql_check is a PostgreSQL extension with functionality for direct
 or indirect extra validation of functions in PL/pgSQL language. It verifies
 a validity of SQL identifiers used in PL/pgSQL code. It also tries to identify
 performance issues.
@@ -28,8 +28,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
@@ -61,6 +61,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Wed Feb 5 2025 Devrim Gündüz <devrim@gunduz.org> 2.7.14-1PGDG
+- Update to 2.7.14 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.7.14
+- Update LLVM dependencies.
+
 * Tue Oct 15 2024 Devrim Gündüz <devrim@gunduz.org> 2.7.12-1PGDG
 - Update to 2.7.12 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.7.12
