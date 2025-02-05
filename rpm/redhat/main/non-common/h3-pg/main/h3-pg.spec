@@ -3,16 +3,16 @@
 
 Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.2.0
+Version:	4.2.1
 Release:	1PGDG%{dist}
 License:	Apache
 URL:		https://github.com/zachasme/%{sname}
 Source0:	https://github.com/zachasme/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-useosh3.patch
-BuildRequires:	cmake >= 3.20 h3-devel
+BuildRequires:	cmake >= 3.20 h3-devel >= 4.2.0-2
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
-Requires:	postgresql%{pgmajorversion} h3
+Requires:	postgresql%{pgmajorversion} h3 >= 4.2.0-2
 
 %description
 This library provides PostgreSQL bindings for the H3 Core Library.
@@ -28,7 +28,7 @@ pushd build
 %if 0%{?fedora}
 CFLAGS="$CFLAGS -I%{_includedir}/h3"; export CFLAGS
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 cmake -DCMAKE_BUILD_TYPE=Release .. \
 %else
 %cmake3 .. -DCMAKE_BUILD_TYPE=Release .. \
@@ -59,6 +59,10 @@ popd
 %{pginstdir}/share/extension/h3_postgis.control
 
 %changelog
+* Wed Feb 5 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.1-1PGDG
+- Update to 4.2.1 per changes described at:
+  https://github.com/zachasme/h3-pg/releases/tag/v4.2.1
+
 * Mon Jan 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.0-1PGDG
 - Update to 4.2.0 per changes described at:
   https://github.com/zachasme/h3-pg/releases/tag/v4.2.0
