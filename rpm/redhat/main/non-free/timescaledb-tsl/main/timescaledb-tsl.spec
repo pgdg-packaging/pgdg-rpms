@@ -42,11 +42,11 @@ CXXFLAGS="$RPM_OPT_FLAGS -fPIC -pie"
 export CFLAGS
 export CXXFLAGS
 
-cd build; %{__make}
+cd build; %{__make} %{?_smp_mflags}
 
 %install
 export PATH=%{pginstdir}/bin:$PATH
-cd build; %{__make} DESTDIR=%{buildroot} install
+cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 
 %files
 %defattr(-, root, root)
