@@ -19,6 +19,12 @@ Requires:	libaio
 Requires:	perl(:MODULE_COMPAT_%(eval "$(%{__perl} -V:version)"; echo $version))
 Requires:	perl(ExtUtils::MakeMaker) >= 6.30
 BuildRequires:	perl(DBI) >= 1.51 perl(ExtUtils::MakeMaker) >= 6.30
+%if 0%{?rhel} == 8
+BuildRequires:	perl-interpreter
+%endif
+%if 0%{?rhel} >= 9
+BuildRequires:	perl-filetest
+%endif
 Requires:	perl(DBI) >= 1.51
 Requires:	oracle-instantclient-basic = %{oi_release}
 BuildRequires:	oracle-instantclient-devel = %{oi_release}
