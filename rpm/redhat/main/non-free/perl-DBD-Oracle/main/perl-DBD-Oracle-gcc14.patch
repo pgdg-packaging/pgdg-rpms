@@ -1,0 +1,30 @@
+From 9dc2ca0bc4f249075d179014aed5e1bc346f8dc4 Mon Sep 17 00:00:00 2001
+From: Lorinczy Zsigmond <zsigmond.lorinczy@idomsoft.hu>
+Date: Tue, 25 Jun 2024 21:21:20 +0200
+Subject: [PATCH] Changing 'return' to block statement, fixing a problem
+ created while transforming inline function to macro
+
+---
+ dbdcnx.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/dbdcnx.c b/dbdcnx.c
+index b0550bb..569f46f 100644
+--- a/dbdcnx.c
++++ b/dbdcnx.c
+@@ -87,10 +87,11 @@ struct llist_t{
+ 
+ #define llist_drop(ael) do{\
+     llist_t * el = ael;\
+-    if(llist_empty(el)) return;\
+-    el->left->right = el->right;\
+-    el->right->left = el->left;\
+-    llist_init(el);\
++    if(!llist_empty(el)) {\
++        el->left->right = el->right;\
++        el->right->left = el->left;\
++        llist_init(el);\
++    } \
+ }while(0)
+ 
+ // this is pointer to the left element in chain
