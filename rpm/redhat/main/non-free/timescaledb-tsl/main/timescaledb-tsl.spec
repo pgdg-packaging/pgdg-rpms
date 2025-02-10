@@ -4,30 +4,20 @@
 Summary:	PostgreSQL based time-series database
 Name:		%{sname}-tsl_%{pgmajorversion}
 Version:	2.18.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	Timescale
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
-%if 0%{?rhel} && 0%{?rhel} == 7
-Patch1:		%{sname}-cmake3-rhel7.patch
-%endif
 URL:		https://github.com/timescale/timescaledb
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	openssl-devel
-%if 0%{?rhel} && 0%{?rhel} == 7
-BuildRequires:	cmake3
-%else
 BuildRequires:	cmake >= 3.4
-%endif
-
 Requires:	postgresql%{pgmajorversion}-server
 
 Conflicts:	%{sname}_%{pgmajorversion}
 
 %description
-TimescaleDB is an open-source database designed to make SQL scalable for
-time-series data. It is engineered up from PostgreSQL, providing automatic
-partitioning across time and space (partitioning key), as well as full SQL
-support.
+TimescaleDB is a PostgreSQL extension for high-performance real-time analytics
+on time-series and event data.
 
 %package devel
 Summary:	Development portions of timescaledb-tsl
@@ -39,9 +29,6 @@ This packages includes development portions of timescaledb-tsl.
 
 %prep
 %setup -q -n %{sname}-%{version}
-%if 0%{?rhel} && 0%{?rhel} == 7
-%patch -P 1 -p0
-%endif
 
 # Disable telemetry, so that we can distribute it via PGDG repos:
 export PATH=%{pginstdir}/bin:$PATH
@@ -75,6 +62,10 @@ cd build; %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/pgxs/src/test/perl/TimescaleNode.pm
 
 %changelog
+* Fri Feb 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-2PGDG
+- Remove RHEL 7 support
+- Update package description and remove redundant BR
+
 * Fri Feb 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-1PGDG
 - Update to 2.18.0, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.18.0
