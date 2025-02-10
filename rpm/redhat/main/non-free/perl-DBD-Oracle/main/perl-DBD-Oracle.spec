@@ -1,7 +1,7 @@
 %global		name perl-DBD-Oracle
 %global		pkgname %(echo %{name}| sed 's/perl-//')
 %{!?version:%global version 1.90_5}
-%{!?oi_release:%global oi_release 23.6.0.24.10}
+%{!?oi_release:%global oi_release 23.7.0.25.01}
 %global		release %{oi_release}PGDG%{dist}
 %global		perl_vendorarch %(eval "$(%{__perl} -V:installvendorarch)"; echo $installvendorarch)
 %global		_use_internal_dependency_generator 0
@@ -64,6 +64,9 @@ chmod 755 %{custom_find_req}
 %{_mandir}/man3/*
 
 %changelog
+* Mon Feb 10 2025 Devrim Gündüz <devrim@gunduz.org> - 1.90_5-23.7.0.25.01
+- Update Oracle instant client version to 23.7.0.25.01
+
 * Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> - 1.90_5-23.6.0.24.10
 - Update Oracle instant client version to 23.6.0.24.10
 - Provide perl(DBD::Oracle) per report and patch from Sébastien Lardière:
