@@ -33,11 +33,11 @@ export PATH=%{pginstdir}/bin:$PATH
 	export CXXFLAGS
 %endif
 
-cd build; %{__make}
+cd build; %{__make} %{?_smp_mflags}
 
 %install
 export PATH=%{pginstdir}/bin:$PATH
-cd build; %{__make} DESTDIR=%{buildroot} install
+cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{__rm} -f %{buildroot}/%{pginstdir}/lib/pgxs/src/test/perl/*pm
 
 %files
@@ -51,6 +51,7 @@ cd build; %{__make} DESTDIR=%{buildroot} install
 %changelog
 * Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-2PGDG
 - Remove redundant BR
+- Build in parallel
 
 * Thu Jan 23 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.0-1PGDG
 - Update to 2.18.0, per changes described at:
