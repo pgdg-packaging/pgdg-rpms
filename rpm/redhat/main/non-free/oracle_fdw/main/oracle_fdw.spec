@@ -3,7 +3,7 @@
 %global ofdwmidver 7
 %global ofdwminver 0
 
-%{!?oi_release:%global oi_release 23.6.0.24.10}
+%{!?oi_release:%global oi_release 23.7.0.25.01}
 
 # Override RPM dependency generation to filter out libclntsh.so.
 # http://fedoraproject.org/wiki/PackagingDrafts/FilteringAutomaticDependencies
@@ -16,12 +16,12 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Oracle.
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ofdwmajver}.%{ofdwmidver}.%{ofdwminver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
-URL:		http://laurenz.github.io/%{sname}
+URL:		https://laurenz.github.io/%{sname}
 Source0:	https://github.com/laurenz/%{sname}/archive/ORACLE_FDW_%{ofdwmajver}_%{ofdwmidver}_%{ofdwminver}.tar.gz
 Source1:	%{sname}-filter-requires-libclntsh.sh
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.3.0-2
@@ -61,6 +61,9 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 %{pginstdir}/doc/extension/README.%{sname}
 
 %changelog
+* Mon Feb 10 2025 Devrim Gündüz <devrim@gunduz.org> 2.7.0-5PGDG
+- Update OIC dependency to 23.7.0.25.01
+
 * Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> 2.7.0-4PGDG
 - Update OIC dependency to 23.6.0.24.10
 
