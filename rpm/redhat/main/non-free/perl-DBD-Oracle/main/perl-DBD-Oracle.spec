@@ -4,7 +4,6 @@
 %{!?oi_release:%global oi_release 23.7.0.25.01}
 %global		release %{oi_release}PGDG%{dist}
 %global		perl_vendorarch %(eval "$(%{__perl} -V:installvendorarch)"; echo $installvendorarch)
-%global		_use_internal_dependency_generator 0
 %global		custom_find_req %{_tmppath}/%{pkgname}-%{version}-find-requires
 %global		__find_requires %{custom_find_req}
 %global		__perl_requires %{custom_find_req}

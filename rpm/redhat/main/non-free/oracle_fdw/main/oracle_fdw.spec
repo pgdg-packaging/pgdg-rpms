@@ -5,9 +5,6 @@
 
 %{!?oi_release:%global oi_release 23.7.0.25.01}
 
-# Override RPM dependency generation to filter out libclntsh.so.
-# http://fedoraproject.org/wiki/PackagingDrafts/FilteringAutomaticDependencies
-%global		_use_internal_dependency_generator 0
 %global		__find_requires %{SOURCE1}
 
 # Disable tests by default.
