@@ -72,13 +72,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	13.18
+Version:	13.19
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1345,6 +1345,10 @@ fi
 %endif
 
 %changelog
+* Tue Feb 11 2025 Devrim Gündüz <devrim@gunduz.org> - 13.19-1PGDG
+- Update to 13.19, per changes described at
+  https://www.postgresql.org/docs/release/13.19/
+
 * Thu Dec 19 2024 Devrim Gündüz <devrim@gunduz.org> - 13.18-2PGDG
 - Make sure that llvm-devel and clang-devel are pulled along with
   the -devel subpackage on SLES 15, RHEL 9 and RHEL 8. Report and patch
