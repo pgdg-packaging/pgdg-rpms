@@ -1,5 +1,5 @@
 Name:		pgexporter
-Version:	0.6.0
+Version:	0.6.1
 Release:	1PGDG%{dist}
 Summary:	Prometheus exporter for PostgreSQL
 License:	BSD
@@ -91,6 +91,10 @@ cd %{buildroot}%{_libdir}/
 %{_libdir}/libpgexporter.so.%{version}
 
 %changelog
+* Tue Feb 11 2025 - Devrim Gündüz <devrim@gunduz.org> 0.6.1-1PGDG
+- Update to 0.6.1 per changes described at:
+  https://github.com/pgexporter/pgexporter/releases/tag/0.6.1
+
 * Tue Feb 4 2025 - Devrim Gündüz <devrim@gunduz.org> 0.6.0-1PGDG
 - Update to 0.6.0 per changes described at:
   https://github.com/pgexporter/pgexporter/releases/tag/0.6.0
