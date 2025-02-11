@@ -4,7 +4,7 @@
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
 Version:	4.2.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -49,8 +49,7 @@ pushd build
 %{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install \
 	DESTDIR=%{buildroot}
 popd
-%{__cp} -r src/h3lib/include/* %{buildroot}/%{_includedir}/%{sname}/
-%{__mv} %{buildroot}/%{_includedir}/%{sname}/h3api.h %{buildroot}/%{_includedir}/
+%{__mv} %{buildroot}/%{_includedir}/h3/h3api.h %{buildroot}/%{_includedir}/
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -75,10 +74,12 @@ popd
 
 %files devel
 %{_includedir}/h3api.h
-%{_includedir}/%{sname}/*
 %{_libdir}/cmake/%{sname}/*.cmake
 
 %changelog
+* Tue Feb 11 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.0-3PGDG
+- Revert the changes in 4.2.0-2 as new h3-pg does not need them.
+
 * Wed Feb 5 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.0-2PGDG
 - Install more header files along with -devel subpackage to build
   h3-pg
