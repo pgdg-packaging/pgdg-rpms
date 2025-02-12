@@ -5,7 +5,7 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
@@ -16,9 +16,11 @@ Requires:	postgresql%{pgmajorversion}
 Obsoletes:	%{sname}%{pgmajorversion} < 1.4.6-2
 
 %description
-pg_repack can re-organize tables on a postgres database without any locks so that
-you can retrieve or update rows in tables being reorganized.
-The module is developed to be a better alternative of CLUSTER and VACUUM FULL.
+PostgreSQL extension which lets you remove bloat from tables and indexes, and
+optionally restore the physical order of clustered indexes. Unlike CLUSTER and
+VACUUM FULL it works online, without holding an exclusive lock on the
+processed tables during processing. pg_repack is efficient to boot, with
+performance comparable to using CLUSTER directly.
 
 %if %llvm
 %package llvmjit
@@ -63,6 +65,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Wed Feb 12 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-3PGDG
+- Improve package description
+
 * Sat Jan 11 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-2PGDG
 - Remove obsoleted BR
 
