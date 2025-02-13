@@ -8,7 +8,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.2.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PG-Strom extension module for PostgreSQL
 License:	PostgreSQL
 URL:		https://github.com/heterodb/pg-strom
@@ -27,8 +27,13 @@ Requires(post):		glibc
 Requires(postun):	glibc
 
 %description
-PG-Strom is an extension for PostgreSQL, to accelerate analytic queries
-towards large data set using the capability of GPU devices.
+PG-Strom is an extension for PostgreSQL database. It is designed to accelerate
+mostly batch and analytics workloads with utilization of GPU and NVME-SSD, and
+Apache Arrow columnar.
+
+By utilization of GPU (Graphic Processor Unit) device which has thousands
+cores per chip, it enables to accelerate SQL workloads for data analytics or
+batch processing to big data set.
 
 %if %llvm
 %package llvmjit
@@ -39,12 +44,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_strom
+This package provides JIT support for pg_strom
 %endif
 
 %prep
@@ -93,6 +98,10 @@ export CUDA_PATH=%{__cuda_path}
 %endif
 
 %changelog
+* Thu Feb 13 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.2-2PGDG
+- Update LLVM dependencies
+- Improve package description
+
 * Fri Aug 2 2024 Devrim Gündüz <devrim@gunduz.org> - 5.2.2-1PGDG
 - Update to 5.2.2
 - Update Cuda dependency to 12.6
