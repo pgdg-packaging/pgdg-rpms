@@ -44,8 +44,8 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}310
-Version:	3.10.1
-Release:	2PGDG%{?dist}
+Version:	3.10.2
+Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -475,6 +475,10 @@ done
 %endif
 
 %changelog
+* Sun Feb 16 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.2-1PGDG
+- Update to 3.10.2 per changes described at:
+  https://github.com/OSGeo/gdal/blob/v3.10.2/NEWS.md
+
 * Thu Jan 30 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.1-2PGDG
 - g2clib is not available (yet) on RHEL 10 so disable it on this platform.
 
