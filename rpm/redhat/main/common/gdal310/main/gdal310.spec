@@ -32,7 +32,7 @@
 %global gdalsomajorversion	36
 %global libspatialitemajorversion	50
 
-%if 0%{?suse_version} <= 1499 || 0%{?rhel} >= 10
+%if 0%{?suse_version} <= 1500 || 0%{?rhel} >= 10
 %global	g2clib_enabled 0
 %else
 %global	g2clib_enabled 1
