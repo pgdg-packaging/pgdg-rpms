@@ -4,8 +4,8 @@
 
 Summary:	Store execution plans like pg_stat_statements does for queries
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.9
-Release:	1PGDG%{?dist}
+Version:	1.8
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/ossc-db/%{sname}/archive/%{version}.tar.gz
 Source1:	README-%{sname}.txt
@@ -62,9 +62,6 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
-* Wed Feb 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9-1PGDG
-- Update to 1.9
-
 * Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.8-3PGDG
 - Update LLVM dependencies
 - Update project URL
