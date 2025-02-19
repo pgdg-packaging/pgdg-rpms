@@ -3,12 +3,12 @@
 
 Summary:	PostgreSQL functions which a DBA regularly needs
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.10.7
+Version:	0.11.0
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://gitlab.com/sjstoelting/%{pname}
 Source0:	https://gitlab.com/sjstoelting/%{pname}/-/archive/v%{version}/%{pname}-v%{version}.tar.bz2
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
 
@@ -40,6 +40,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Wed Feb 19 2025 Devrim Gündüz <devrim@gunduz.org> 0.11.0-1PGDG
+- Update to 0.11.0
+
 * Mon Oct 21 2024 Devrim Gündüz <devrim@gunduz.org> 0.10.7-1PGDG
 - Update to 0.10.7
 
