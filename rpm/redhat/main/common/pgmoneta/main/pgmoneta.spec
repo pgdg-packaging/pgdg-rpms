@@ -1,5 +1,5 @@
 Name:		pgmoneta
-Version:	0.15.1
+Version:	0.15.2
 Release:	1PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
@@ -9,7 +9,6 @@ Source1:	%{name}.service
 Source2:	%{name}-tmpfiles.d
 
 Patch0:		%{name}-conf-rpm.patch
-Patch1:		%{name}-%{version}-readlink.patch
 BuildRequires:	gcc cmake make python3-docutils zlib-devel
 BuildRequires:	libzstd-devel lz4-devel bzip2-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
@@ -41,7 +40,6 @@ pgmoneta is a backup / restore solution for PostgreSQL.
 %prep
 %setup -q -n %{name}-%{version}
 %patch -P 0 -p0
-%patch -P 1 -p1
 
 %build
 
@@ -116,6 +114,11 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Wed Feb 19 2025 Devrim Gündüz <devrim@gunduz.org> 0.15.2-1PGDG
+- Update to 0.15.2 per changes described at:
+  https://github.com/pgmoneta/pgmoneta/releases/tag/0.15.2
+- Remove patch1
+
 * Sun Jan 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.15.1-1PGDG
 - Update to 0.15.1 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.15.1
