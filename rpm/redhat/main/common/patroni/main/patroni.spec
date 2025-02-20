@@ -6,7 +6,7 @@
 
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
-Version:	4.0.4
+Version:	4.0.5
 Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
@@ -23,7 +23,7 @@ Requires:	python3-psutil >= 2.0.0
 Requires:	python3-ydiff >= 1.2
 Requires:	python3-ydiff <= 1.3
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	python3-click >= 4.1 python3-six >= 1.7
 Requires:	python3-dateutil python3-prettytable >= 0.7
 Requires:	python3-pyyaml python3-urllib3 >= 1.19.1
@@ -54,7 +54,7 @@ Summary:	Related components to use patroni with Consul
 Requires:	%{name} = %{version}-%{release}
 Requires:	consul python3-requests
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	python3-consul >= 0.7.1
 %endif
 
@@ -72,7 +72,7 @@ Summary:	Related components to use patroni with etcd
 Requires:	%{name} = %{version}-%{release}
 Requires:	python3-etcd >= 0.4.3
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	python3-dns python3-certifi
 %endif
 
@@ -173,6 +173,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Thu Feb 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-1PGDG
+- Update to 4.0.5, per changes described at:
+  https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-405
+
 * Mon Dec 16 2024 Devrim Gündüz <devrim@gunduz.org> - 4.0.4-2PGDG
 - Update URL
 
