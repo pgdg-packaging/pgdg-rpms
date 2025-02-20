@@ -12,10 +12,12 @@ Source0:	https://github.com/Florents-Tselai/%{sname}/archive/refs/tags/v%{versio
 BuildRequires:	postgresql%{pgmajorversion}-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libpoppler-glib-devel
+Requires:	libpoppler135 libpopper-glib8
 %else
 BuildRequires:	poppler-glib-devel
+Requires:	poppler
 %endif
-Requires:	postgresql%{pgmajorversion}-server poppler
+Requires:	postgresql%{pgmajorversion}-server
 
 %description
 This extension for PostgreSQL provides a pdf data type and assorted functions.
