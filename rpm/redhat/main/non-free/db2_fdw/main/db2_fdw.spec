@@ -2,20 +2,10 @@
 %global sname db2_fdw
 %global db2_home "/opt/ibm/db2/V11.5/"
 
-%ifarch ppc64 ppc64le s390 s390x armv7hl
- %if 0%{?rhel} && 0%{?rhel} == 7
-  %{!?llvm:%global llvm 0}
- %else
-  %{!?llvm:%global llvm 1}
- %endif
-%else
- %{!?llvm:%global llvm 1}
-%endif
-
 Summary:	PostgreSQL DB2 Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
 Version:	6.0.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/wolfgangbrandl/%{sname}
@@ -34,27 +24,17 @@ conditions and required columns as well as comprehensive EXPLAIN support.
 %package llvmjit
 Summary:	Just-in-time compilation support for db2_fdw
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?rhel} && 0%{?rhel} == 7
-%ifarch aarch64
-Requires:	llvm-toolset-7.0-llvm >= 7.0.1
-%else
-Requires:	llvm5.0 >= 5.0
-%endif
-%endif
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-BuildRequires:	llvm6-devel clang6-devel
-Requires:	llvm6
-%endif
 %if 0%{?suse_version} >= 1500
-BuildRequires:	llvm15-devel clang15-devel
-Requires:	llvm15
+BuildRequires:	llvm17-devel clang17-devel
+Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for db2_fdw
+This package provides JIT support for db2_fdw
 %endif
 
 %prep
@@ -85,6 +65,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %endif
 
 %changelog
+* Fri Feb 21 2025 - Devrim Gündüz <devrim@gunduz.org> 6.0.1-2PGDG
+- Update LLVM dependencies
+- Remove RHEL 7 support
 
 * Fri Mar 29 2024 - Devrim Gündüz <devrim@gunduz.org> 6.0.1-1PGDG
 - Update to 6.0.1
