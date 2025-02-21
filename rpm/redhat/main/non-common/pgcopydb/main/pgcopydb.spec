@@ -4,15 +4,15 @@
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
 Version:	0.17
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
 
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel gc-devel
-BuildRequires:	pgdg-srpm-macros krb5-devel bison flex sqlite-devel
+BuildRequires:	krb5-devel bison flex sqlite-devel
 Requires:	postgresql%{pgmajorversion}
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	gc
 %endif
 %if 0%{?suse_version} >= 1500
@@ -25,6 +25,7 @@ two running Postgres servers. To make a copy of a database to another
 server as quickly as possible, one would like to use the parallel
 options of pg_dump and still be able to stream the data to as many
 pg_restore jobs.
+
 %prep
 %setup -q -n %{sname}-%{version}
 
@@ -40,6 +41,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgcopydb
 
 %changelog
+* Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 0.17-2PGDG
+- Remove redundant BR
+
 * Mon Aug 19 2024 Devrim Gündüz <devrim@gunduz.org> - 0.17-1PGDG
 - Update to 0.17 per changes described at:
   https://github.com/dimitri/pgcopydb/releases/tag/v0.17
