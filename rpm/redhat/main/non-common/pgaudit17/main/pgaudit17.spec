@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	17.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/pgaudit/pgaudit/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -36,12 +36,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pgaudit
+This package provides JIT support for pgaudit
 %endif
 
 %prep
@@ -72,6 +72,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 17.0-2PGDG
+- Update LLVM dependencies
+
 * Sun Sep 8 2024 Devrim Gündüz <devrim@gunduz.org> - 17.0-1PGDG
 - Update to 17.0 per changes described at
   https://github.com/pgaudit/pgaudit/releases/tag/17.0
