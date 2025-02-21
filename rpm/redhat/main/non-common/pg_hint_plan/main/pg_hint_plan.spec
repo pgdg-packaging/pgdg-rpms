@@ -30,12 +30,12 @@
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
-Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
+BuildRequires:	postgresql%{pgmajorversion}-devel
+Requires:	postgresql%{pgmajorversion}-server
 
 %description
 pg_hint_plan makes it possible to tweak PostgreSQL execution plans using
@@ -57,12 +57,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_hint_plan
+This package provides JIT support for pg_hint_plan
 %endif
 
 %prep
@@ -97,6 +97,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - %{pghintplanversion}-2PGDG
+- Update LLVM dependencies
+- Remove redundant BR and Requires
+
 * Thu Aug 29 2024 Devrim Gündüz <devrim@gunduz.org> - %{pghintplanversion}-1PGDG
 - Update to 1.7.0 for PostgreSQL 17 per changes described at:
   https://github.com/ossc-db/pg_hint_plan/releases/tag/REL17_1_7_0
