@@ -22,12 +22,11 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}%{pgauditversion}_%{pgmajorversion}
 Version:	%{pversion}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
-Source0:	https://github.com/pgaudit/pgaudit/archive/refs/tags/%{version}.tar.gz
+Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
-BuildRequires:	pgdg-srpm-macros
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -46,19 +45,19 @@ trail or audit log. The term audit log is used in this documentation.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pgaudit%{pgauditversion}
+Summary:	Just-in-time compilation support for pgaudit
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pgaudit%{pgauditversion}
+This package provides JIT support for pgaudit
 %endif
 
 %prep
@@ -89,6 +88,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Feb 21 2025 Devrim Gunduz <devrim@gunduz.org> - %{pversion}-7PGDG
+- Update LLVM dependencies
+- Remove redundant BR
+
 * Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - %{pversion}-6PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
