@@ -5,7 +5,7 @@
 Summary:	Extra Window Functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.tar.gz
@@ -27,12 +27,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for extra_window_functions
+This package provides JIT support for extra_window_functions
 %endif
 
 %prep
@@ -62,6 +62,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Fri Feb 21 2025 Devrim Gunduz <devrim@gunduz.org> - 1.0-6PGDG
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - 1.0-5PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
