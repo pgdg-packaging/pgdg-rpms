@@ -8,7 +8,7 @@
 %global __ospython %{_bindir}/python3.11
 %endif
 
-%if 0%{?fedora} >= 38 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 40 || 0%{?suse_version} >= 1500 || 0%{?rhel} >= 10
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -18,7 +18,7 @@
 
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
-Version:	3.5.1
+Version:	3.6.0
 Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
@@ -88,6 +88,10 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0-42PGDG
+- Update to 3.6.0 per changes described at:
+  https://github.com/dalibo/pg_activity/releases/tag/v3.6.0
+
 * Sun Nov 3 2024 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-42PGDG
 - Bump up version number to avoid conclicts with OS packages.
 
