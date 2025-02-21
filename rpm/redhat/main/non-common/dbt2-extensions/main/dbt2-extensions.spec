@@ -6,7 +6,7 @@
 
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
-Version:	0.61.2
+Version:	0.61.6
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -42,12 +42,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for dbt2-extensions
+This package provides JIT support for dbt2-extensions
 %endif
 
 %prep
@@ -124,6 +124,10 @@ popd
 %endif
 
 %changelog
+* Fri Feb 21 2025 Devrim Gunduz <devrim@gunduz.org> - 0.61.6-1PGDG
+- Update 0.61.6
+- Update LLVM dependencies
+
 * Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - 0.61.2-1PGDG
 - Update 0.61.2
 - Update LLVM dependencies
