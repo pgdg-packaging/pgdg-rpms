@@ -5,11 +5,11 @@
 Summary:	PostgreSQL logical decoding output plugin for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.7
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/HighgoSoftware/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/HighgoSoftware/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.0.6-2
@@ -28,12 +28,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for wal2mongo
+This package provides JIT support for wal2mongo
 %endif
 
 %prep
@@ -61,6 +61,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.7-3PGDG
+- Update LLVM dependencies
+- Remove reduntant BR
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.7-2PGDG
 - Update LLVM dependencies
 
