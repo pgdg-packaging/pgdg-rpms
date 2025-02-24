@@ -5,12 +5,13 @@
 Summary:	PostgreSQL json query language with GIN indexing support
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/ver_%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}/
 
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
+BuildRequires:	bison flex
 Requires:	postgresql%{pgmajorversion}
 
 %description
@@ -83,6 +84,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Feb 24 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2-4PGDG
+- Add missing BRs
+
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2-3PGDG
 - Update LLVM dependencies
 
