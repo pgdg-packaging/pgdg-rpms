@@ -1,5 +1,10 @@
+config_opts['chroot_setup_cmd'] = " pgdg-srpm-macros"
+config_opts['macros']['%pgmajorversion'] = "17"
+config_opts['macros']['%pginstdir'] = "/usr/pgsql-17"
+config_opts['macros']['%__brp_check_rpaths'] = "/usr/bin/true"
+
 config_opts['chroot_setup_cmd'] = 'install bash bzip2 coreutils cpio diffutils redhat-release findutils gawk glibc-minimal-langpack grep gzip info patch redhat-rpm-config rpm-build sed tar unzip util-linux which xz'
-config_opts['dist'] = 'el9'  # only useful for --resultdir variable subst
+config_opts['dist'] = 'rhel9'  # only useful for --resultdir variable subst
 config_opts['releasever'] = '9'
 config_opts['package_manager'] = 'dnf'
 config_opts['extra_chroot_dirs'] = [ '/run/lock', ]
