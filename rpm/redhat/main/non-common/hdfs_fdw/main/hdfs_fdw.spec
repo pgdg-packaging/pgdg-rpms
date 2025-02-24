@@ -5,12 +5,12 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	libxml2-devel java-devel
+BuildRequires:	libxml2-devel java-devel javapackages-tools
 
 Requires:	postgresql%{pgmajorversion}-server
 Requires:	java
@@ -100,6 +100,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install INSTAL
 %endif
 
 %changelog
+* Mon Feb 24 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-5PGDG
+- Add missing BR.
+
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-4PGDG
 - Add missing Requires.
 - Use better path for Java includes and libraries.
