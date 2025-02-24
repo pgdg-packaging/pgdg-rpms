@@ -49,14 +49,6 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
 repo_gpgcheck = 1
 
-[pgdg12]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch
-baseurl=https://download.postgresql.org/pub/repos/yum/12/redhat/rhel-$releasever-$basearch
-enabled=1
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
-repo_gpgcheck = 1
-
 # PGDG RHEL / CentOS Updates Testing common repositories.
 
 [pgdg-common-testing]
@@ -68,7 +60,7 @@ gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
 repo_gpgcheck = 1
 
 # PGDG RHEL / CentOS Updates Testing repositories. (These packages should not be used in production)
-# Available for 12 and above.
+# Available for 13 and above.
 
 [pgdg15-updates-testing]
 name=PostgreSQL 15 for RHEL / CentOS $releasever - $basearch - Updates testing
@@ -94,18 +86,10 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
 repo_gpgcheck = 1
 
-[pgdg12-updates-testing]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/testing/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
-repo_gpgcheck = 1
-
 # PGDG Red Hat Enterprise Linux / CentOS SRPM testing common repository
 
 [pgdg-source-common]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch - Source
+name=PostgreSQL common for RHEL / CentOS $releasever - $basearch - Source
 baseurl=https://download.postgresql.org/pub/repos/yum/srpms/common/redhat/rhel-$releasever-$basearch
 enabled=0
 gpgcheck=1
@@ -178,24 +162,6 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
 repo_gpgcheck = 1
 
-[pgdg12-source]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch - Source
-failovermethod=priority
-baseurl=https://download.postgresql.org/pub/repos/yum/srpms/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
-repo_gpgcheck = 1
-
-[pgdg12-source-updates-testing]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch - Source update testing
-failovermethod=priority
-baseurl=https://download.postgresql.org/pub/repos/yum/srpms/testing/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
-repo_gpgcheck = 1
-
 # Debuginfo/debugsource packages for stable repos
 
 [pgdg15-debuginfo]
@@ -222,16 +188,8 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
 repo_gpgcheck = 1
 
-[pgdg12-debuginfo]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch - Debuginfo
-baseurl=https://download.postgresql.org/pub/repos/yum/debug/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
-repo_gpgcheck = 1
-
 # Debuginfo/debugsource packages for testing repos
-# Available for 12 and above.
+# Available for 13 and above.
 
 [pgdg15-updates-testing-debuginfo]
 name=PostgreSQL 15 for RHEL / CentOS $releasever - $basearch - Debuginfo
@@ -252,14 +210,6 @@ repo_gpgcheck = 1
 [pgdg13-updates-testing-debuginfo]
 name=PostgreSQL 13 for RHEL / CentOS $releasever - $basearch - Debuginfo
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/debug/13/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7
-repo_gpgcheck = 1
-
-[pgdg12-updates-testing-debuginfo]
-name=PostgreSQL 12 for RHEL / CentOS $releasever - $basearch - Debuginfo
-baseurl=https://download.postgresql.org/pub/repos/yum/testing/debug/12/redhat/rhel-$releasever-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL7

@@ -77,14 +77,6 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
-[pgdg12]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch
-baseurl=https://download.postgresql.org/pub/repos/yum/12/redhat/rhel-$releasever-$basearch
-enabled=1
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
-repo_gpgcheck = 1
-
 # PGDG RHEL / Rocky Updates Testing common repositories.
 
 [pgdg-common-testing]
@@ -96,7 +88,7 @@ gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
 # PGDG RHEL / Rocky Updates Testing repositories. (These packages should not be used in production)
-# Available for 12 and above.
+# Available for 13 and above.
 
 [pgdg18-updates-testing]
 name=PostgreSQL 18 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
@@ -146,18 +138,10 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
-[pgdg12-updates-testing]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/testing/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
-repo_gpgcheck = 1
-
 # PGDG Red Hat Enterprise Linux / Rocky SRPM testing common repository
 
 [pgdg-source-common]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Source
+name=PostgreSQL common for RHEL / Rocky / AlmaLinux $releasever - $basearch - Source
 baseurl=https://download.postgresql.org/pub/repos/yum/srpms/common/redhat/rhel-$releasever-$basearch
 enabled=0
 gpgcheck=1
@@ -264,22 +248,6 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
-[pgdg12-source]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Source
-baseurl=https://download.postgresql.org/pub/repos/yum/srpms/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
-repo_gpgcheck = 1
-
-[pgdg12-source-updates-testing]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Source update testing
-baseurl=https://download.postgresql.org/pub/repos/yum/srpms/testing/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
-repo_gpgcheck = 1
-
 # Debuginfo/debugsource repositories for the common repo
 
 [pgdg-common-debuginfo]
@@ -332,16 +300,8 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
-[pgdg12-debuginfo]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/debug/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
-repo_gpgcheck = 1
-
 # Debuginfo/debugsource packages for testing repos
-# Available for 12 and above.
+# Available for 13 and above.
 
 [pgdg18-updates-testing-debuginfo]
 name=PostgreSQL 18 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Debuginfo
@@ -382,12 +342,3 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
-
-[pgdg12-updates-testing-debuginfo]
-name=PostgreSQL 12 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/12/redhat/rhel-$releasever-$basearch
-enabled=0
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
-repo_gpgcheck = 1
-
