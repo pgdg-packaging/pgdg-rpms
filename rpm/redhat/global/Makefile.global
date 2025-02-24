@@ -20,7 +20,7 @@ allclean:
 	git clean -dfx
 
 clean:
-	rm -rf i386/ i586/ i686/ x86_64/ noarch/
+	rm -rf aarch64/ ppc64le/ x86_64/ noarch/
 	rm -f *.src.rpm
 	rm -f *.tar *.tar.gz *.tar.bz2 *.tgz *.zip .xz
 
