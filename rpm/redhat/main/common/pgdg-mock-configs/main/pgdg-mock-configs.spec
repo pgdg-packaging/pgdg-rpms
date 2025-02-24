@@ -8,8 +8,9 @@ Source0:	pgdg-fedora-40-x86_64.cfg
 Source1:	pgdg-fedora-41-x86_64.cfg
 Source2:	pgdg-rocky-9-x86_64.cfg
 Source3:	pgdg-fedora-40-x86_64.cfg
-Source50:	pgdg-fedora-all.tpl
-Source51:	pgdg-rocky-9.tpl
+Source50:	pgdg-fedora-40.tpl
+Source51:	pgdg-fedora-41.tpl
+Source52:	pgdg-rocky-9.tpl
 Source100:	LICENSE.txt
 Source101:	README.txt
 BuildArch:	noarch
@@ -43,6 +44,7 @@ PGDG mock configuration files which allow you to create chroots for Fedora
 %{__cp} -a %{SOURCE3} %{buildroot}%{_sysconfdir}/mock
 %{__cp} -a %{SOURCE50} %{buildroot}%{_sysconfdir}/mock/templates
 %{__cp} -a %{SOURCE51} %{buildroot}%{_sysconfdir}/mock/templates
+%{__cp} -a %{SOURCE52} %{buildroot}%{_sysconfdir}/mock/templates
 
 %{__mkdir} -p %{buildroot}%{_docdir}/%{name}
 %{__mkdir} -p %{buildroot}%{_licensedir}/%{name}
