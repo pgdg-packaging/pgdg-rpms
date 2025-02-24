@@ -4,7 +4,7 @@
 
 Summary:	Sampling based statistics of wait events
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.7
+Version:	1.1.8
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/v%{version}.tar.gz
@@ -65,6 +65,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Feb 24 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.8-1PGDG
+- Update to 1.1.8 per changes described at:
+  https://github.com/postgrespro/pg_wait_sampling/releases/tag/v1.1.8
+
 * Tue Feb 11 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.7-1PGDG
 - Update to 1.1.7 per changes described at:
   https://github.com/postgrespro/pg_wait_sampling/releases/tag/v1.1.7
