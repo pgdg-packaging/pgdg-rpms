@@ -6,13 +6,13 @@
 Summary:	PostgreSQL extension that transforms Postgres into a distributed database
 Name:		%{sname}_%{pgmajorversion}
 Version:	13.0.1
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	AGPLv3
 URL:		https://github.com/citusdata/%{sname}
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 BuildRequires:	libxslt-devel openssl-devel pam-devel readline-devel
-BuildRequires:	libcurl-devel libzstd-devel
+BuildRequires:	libcurl-devel libzstd-devel flex
 Requires:	postgresql%{pgmajorversion}-server
 
 %if 0%{?suse_version} >= 1500
@@ -106,6 +106,9 @@ make %{?_smp_mflags}
 %endif
 
 %changelog
+* Mon Feb 24 2025 Devrim Gunduz <devrim@gunduz.org> - 13.0.1-2PGDG
+- Add missing BR, per mock test.
+
 * Wed Feb 5 2025 Devrim Gunduz <devrim@gunduz.org> - 13.0.1-1PGDG
 - Update to 13.0.0 per changes described at:
   https://github.com/citusdata/citus/blob/release-13.0/CHANGELOG.md#citus-v1301-february-4th-2025
