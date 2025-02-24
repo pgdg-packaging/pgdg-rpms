@@ -5,20 +5,44 @@ config_opts['macros']['%pgmajorversion'] = "17"
 config_opts['macros']['%pginstdir'] = "/usr/pgsql-17"
 config_opts['macros']['%__brp_check_rpaths'] = "/usr/bin/true"
 
-config_opts['root'] = "pgdg-fedora-41-{{ target_arch }}"
-config_opts['description'] = 'PGDG-Fedora {{ releasever }}'
+config_opts['root'] = 'fedora-{{ releasever }}-{{ target_arch }}'
+
+config_opts['description'] = 'Fedora {{ releasever }}'
+# fedora 31+ isn't mirrored, we need to run from koji
+config_opts['mirrored'] = config_opts['target_arch'] != 'i686'
+
 config_opts['chroot_setup_cmd'] = 'install @{% if mirrored %}buildsys-{% endif %}build'
 
-config_opts['dist'] = 'f{{ releasever }}'  # only useful for --resultdir variable subst
+config_opts['dist'] = 'fc{{ releasever }}'  # only useful for --resultdir variable subst
 config_opts['extra_chroot_dirs'] = [ '/run/lock', ]
 
-# https://fedoraproject.org/wiki/Changes/BuildWithDNF5 for Fedora 41+
-config_opts['package_manager'] = '{% if releasever|int >= 41 %}dnf5{% else %}dnf{% endif %}'
+# https://fedoraproject.org/wiki/Changes/BuildWithDNF5 for Fedora 40+
+config_opts['package_manager'] = '{% if releasever|int >= 40 %}dnf5{% else %}dnf{% endif %}'
 
 config_opts['bootstrap_image'] = 'registry.fedoraproject.org/fedora:{{ releasever }}'
 config_opts['bootstrap_image_ready'] = int(config_opts['releasever']) >= 41
 
 config_opts['dnf.conf'] = """
+[main]
+keepcache=1
+system_cachedir=/var/cache/dnf
+debuglevel=2
+reposdir=/dev/null
+logfile=/var/log/yum.log
+retries=20
+obsoletes=1
+gpgcheck=0
+assumeyes=1
+syslog_ident=mock
+syslog_device=
+install_weak_deps=0
+metadata_expire=0
+best=1
+module_platform_id=platform:f{{ releasever }}
+protected_packages=
+user_agent={{ user_agent }}
+
+
 #################################
 # PGDG Fedora repositories	#
 #################################
@@ -92,7 +116,7 @@ repo_gpgcheck = 1
 name=PostgreSQL 18 for Fedora $releasever - $basearch - Updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/18/fedora/fedora-$releasever-$basearch
 enabled=1
-gpgcheck=1
+gpgcheck=0
 gpgkey=https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
@@ -170,7 +194,7 @@ repo_gpgcheck = 1
 name=PostgreSQL 17 for Fedora $releasever - $basearch - Source updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/srpms/testing/17/fedora/fedora-$releasever-$basearch
 enabled=0
-gpgcheck=1
+gpgcheck=0
 gpgkey=https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
@@ -296,7 +320,7 @@ repo_gpgcheck = 1
 name=PostgreSQL 17 for Fedora $releasever - $basearch - Debuginfo testing
 baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/17/fedora/fedora-$releasever-$basearch
 enabled=0
-gpgcheck=1
+gpgcheck=0
 gpgkey=https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
@@ -331,25 +355,6 @@ enabled=0
 gpgcheck=1
 gpgkey=https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
-
-[main]
-keepcache=1
-system_cachedir=/var/cache/dnf
-debuglevel=2
-reposdir=/dev/null
-logfile=/var/log/yum.log
-retries=20
-obsoletes=1
-gpgcheck=1
-assumeyes=1
-syslog_ident=mock
-syslog_device=
-install_weak_deps=0
-metadata_expire=0
-best=1
-module_platform_id=platform:f{{ releasever }}
-protected_packages=
-user_agent={{ user_agent }}
 
 # repos
 
