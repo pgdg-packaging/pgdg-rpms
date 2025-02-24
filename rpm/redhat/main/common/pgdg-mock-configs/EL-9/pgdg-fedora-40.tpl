@@ -1,0 +1,1 @@
+../main/pgdg-fedora-40.tpl
