@@ -4,20 +4,30 @@
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
 Version:	0.17
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
-
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel gc-devel
 BuildRequires:	krb5-devel bison flex sqlite-devel
-Requires:	postgresql%{pgmajorversion}
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
+BuildRequires:	libxml2-devel libxslt-devel pam-devel
+BuildRequires:	readline-devel zlib-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	gc
 %endif
 %if 0%{?suse_version} >= 1500
 Requires:	libgc1
 %endif
+Requires:	postgresql%{pgmajorversion}
 
 %description
 pgcopydb is a tool that automates running pg_dump | pg_restore between
@@ -41,6 +51,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgcopydb
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 0.17-3PGDG
+- Add missing BRs
+
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 0.17-2PGDG
 - Remove redundant BR
 
