@@ -6,11 +6,11 @@
 Summary:	PostgreSQL gzip/gunzip functions
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.0.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel zlib-devel
 
 %if 0%{?fedora} == 40
 BuildRequires:	zlib-ng-compat-devel
@@ -83,6 +83,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-5PGDG
+- Add missing BR
+
 * Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-4PGDG
 - Update LLVM dependencies
 
