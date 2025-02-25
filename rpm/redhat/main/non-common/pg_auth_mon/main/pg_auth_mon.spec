@@ -9,7 +9,7 @@ Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/RafiaSabih/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/RafiaSabih/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel kr5b-devel openssl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel krb5-devel openssl-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
 
 %description
