@@ -13,7 +13,7 @@ BuildRequires:	postgresql%{pgmajorversion}-devel, net-snmp-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
-SSLUtils is a Postgres extension that provides SSL certicate generation
+SSLUtils is a Postgres extension that provides SSL certificate generation
 functions to Postgres.
 
 %if %llvm
