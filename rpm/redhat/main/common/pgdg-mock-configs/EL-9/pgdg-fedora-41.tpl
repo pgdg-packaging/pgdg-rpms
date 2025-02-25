@@ -3,9 +3,9 @@ config_opts['macros']['%pgmajorversion'] = "17"
 config_opts['macros']['%pginstdir'] = "/usr/pgsql-17"
 config_opts['macros']['%__brp_check_rpaths'] = "/usr/bin/true"
 
-config_opts['root'] = 'fedora-{{ releasever }}-{{ target_arch }}'
+config_opts['root'] = 'pgdg-fedora-41-{{ releasever }}-{{ target_arch }}'
 
-config_opts['description'] = 'Fedora {{ releasever }}'
+config_opts['description'] = 'PGDG-Fedora {{ releasever }}'
 # fedora 31+ isn't mirrored, we need to run from koji
 config_opts['mirrored'] = config_opts['target_arch'] != 'i686'
 
