@@ -5,7 +5,7 @@
 Summary:	ODBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/CartoDB/%{sname}
 Source0:	https://github.com/CartoDB/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -13,7 +13,7 @@ Source0:	https://github.com/CartoDB/%{sname}/archive/refs/tags/%{version}.tar.gz
 Patch0:		%{sname}-pg17.patch
 %endif
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	postgresql%{pgmajorversion}-server
+BuildRequires:	postgresql%{pgmajorversion}-server unixODBC-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -69,6 +69,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-3PGDG
+- Add missing BR
+
 * Fri Jan 3 2025 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-2PGDG
 - Add a patch to fix builds against PostgreSQL 17 per
   https://github.com/CartoDB/odbc_fdw/pull/143
