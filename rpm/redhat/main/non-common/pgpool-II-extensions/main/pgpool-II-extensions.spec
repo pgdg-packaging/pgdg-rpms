@@ -3,15 +3,15 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.5.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
 Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
-BuildRequires:	libmemcached-devel openssl-devel pgdg-srpm-macros >= 1.0.21
-%if 0%{?suse_version} && 0%{?suse_version} >= 1315
+BuildRequires:	libmemcached-devel openssl-devel openldap-devel
+%if 0%{?suse_version}
 BuildRequires:	openldap2-devel
 %else
 Requires(post):	systemd-sysv
@@ -27,13 +27,10 @@ PostgreSQL extensions, libraries and sql files for pgpool-II.
 %setup -q -n %{sname}-%{version}
 
 %build
-
 # We need this flag on SLES so that pgpool can find libmemched.
 # Otherwise, we get "libmemcached.so: undefined reference to `pthread_once'" error.
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
 	export LDFLAGS='-lpthread'
-%endif
 %endif
 %ifarch ppc64 ppc64le
 %configure --build=ppc64le \
@@ -87,6 +84,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 4.5.5-2PGDG
+- Add missing BR
+
 * Mon Dec 16 2024 Devrim Gündüz <devrim@gunduz.org> - 4.5.5-1PGDG
 - Update to 4.5.5 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-5-5.html
