@@ -3,12 +3,29 @@
 Summary:	command line utility for exporting XML, JSON, BYTEA document from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion} pgdg-srpm-macros
-Requires:	postgresql%{pgmajorversion}
+BuildRequires:	postgresql%{pgmajorversion}-devel
+# All supported distros have libselinux-devel package:
+BuildRequires:	libselinux-devel >= 2.0.93
+# SLES: SLES 15 does not have selinux-policy packageç
+# RHEL/Fedora has selinux-policy:
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	selinux-policy >= 3.9.13
+%endif
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
+BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
+BuildRequires:	krb5-devel readline-devel zlib-devel
 
 Obsoletes:	%{sname}%{pgmajorversion} < 0.1.3-2
 
@@ -35,6 +52,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-4PGDG
+- Add missing BRs
+
 * Mon Aug 21 2023 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-3PGDG
 - Remove RHEL 6 bits
 - Add PGDG branding
