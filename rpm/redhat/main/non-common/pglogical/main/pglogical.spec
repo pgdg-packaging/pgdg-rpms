@@ -6,11 +6,23 @@
 Summary:	Logical Replication extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4.5
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{tag}.tar.gz
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
+BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
+BuildRequires:	krb5-devel zlib-devel
+
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}_%{pgmajorversion} < 2.3.3-2
@@ -74,6 +86,9 @@ PATH=%{pginstdir}/bin:$PATH %make_install
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 2.4.5-3PGDG
+- Add missing BRs
+
 * Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 2.4.5-2PGDG
 - Update LLVM dependencies
 
