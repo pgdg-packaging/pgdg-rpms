@@ -4,11 +4,20 @@
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	13.1
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
-License:	GPLv2+
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
 Source0:	https://github.com/df7cb/pg_filedump/archive/%{sversion}.tar.gz
+License:	GPLv2+
+BuildRequires:	postgresql%{pgmajorversion}-devel
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
 
 %description
 Display formatted contents of a PostgreSQL heap/index/control file.
@@ -33,6 +42,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH make %{?_smp_mflags}
 %doc README.pg_filedump
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 13.1-5PGDG
+- Add missing BRs and remove redundant BR
+
 * Fri Feb 23 2024 Devrim Gündüz <devrim@gunduz.org> - 13.1-4PGDG
 - Add PGDG branding
 
