@@ -5,11 +5,11 @@
 Summary:	Read dead but unvacuumed rows from a PostgreSQL relation
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.7
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/df7cb/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/df7cb/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -61,6 +61,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 2.7-4PGDG
+- Remove redundant BR
+
 * Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 2.7-3PGDG
 - Update LLVM dependencies
 
