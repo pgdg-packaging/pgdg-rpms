@@ -3,10 +3,13 @@
 Summary:	PostgreSQL extension to extract DDL of database objects in a way compatible to Oracle DBMS_METADATA package.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/hexacluster/%{sname}/
 Source0:	https://github.com/hexacluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
+BuildRequires:	postgresql%{pgmajorversion}-devel
+Requires:	postgresql%{pgmajorversion}-server
+
 BuildArch:	noarch
 
 %description
@@ -40,6 +43,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-2PGDG
+- Add missing BRs and dependency
+
 * Thu Jan 11 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-1PGDG
 - Initial RPM packaging for the PostgreSQL RPM Repository:
   https://github.com/HexaCluster/pg_dbms_metadata/releases/tag/v1.0.0
