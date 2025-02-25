@@ -6,12 +6,12 @@
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel zlib-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 BuildRequires:	healpix-c++-devel
 %endif
@@ -72,6 +72,9 @@ This packages provides JIT support for pgsphere
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-4PGDG
+- Add missing BR
+
 * Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-3PGDG
 - Update LLVM dependencies
 
