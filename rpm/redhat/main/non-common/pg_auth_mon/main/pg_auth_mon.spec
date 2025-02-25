@@ -5,11 +5,11 @@
 Summary:	PostgreSQL extension to store authentication attempts
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/RafiaSabih/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/RafiaSabih/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel kr5b-devel openssl-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
 
 %description
@@ -71,6 +71,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0-3PGDG
+- Add missing BRs
+
 * Thu Sep 19 2024 Devrim Gunduz <devrim@gunduz.org> - 3.0-2PGDG
 - Update description and LLVM dependencies.
 
