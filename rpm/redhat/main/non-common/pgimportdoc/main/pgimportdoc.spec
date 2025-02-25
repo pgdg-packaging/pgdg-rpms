@@ -3,12 +3,29 @@
 Summary:	command line tool for import XML, TEXT and BYTEA documents to PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel, postgresql%{pgmajorversion}
-BuildRequires:	pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
+# All supported distros have libselinux-devel package:
+BuildRequires:	libselinux-devel >= 2.0.93
+# SLES: SLES 15 does not have selinux-policy packageç
+# RHEL/Fedora has selinux-policy:
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	selinux-policy >= 3.9.13
+%endif
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
+BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
+BuildRequires:	krb5-devel readline-devel zlib-devel
 Requires:	postgresql%{pgmajorversion}
 
 Obsoletes:	%{sname}%{pgmajorversion} < 0.1.3-2
@@ -36,6 +53,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Tue Feb 25 2025 - Devrim Gündüz <devrim@gunduz.org> 0.1.4-3PGDG
+- Add missing BRs
+
 * Fri Feb 23 2024 - Devrim Gündüz <devrim@gunduz.org> 0.1.4-2PGDG
 - Add PGDG branding
 
