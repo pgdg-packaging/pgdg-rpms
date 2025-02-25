@@ -27,7 +27,7 @@ BuildRequires:	lz4-devel
 Requires:	lz4-libs
 %endif
 BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
-BuildRequires:	krb5-devel readline-devel
+BuildRequires:	krb5-devel readline-devel zlib-devel
 
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 
