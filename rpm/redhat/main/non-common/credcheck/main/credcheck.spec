@@ -4,13 +4,13 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/MigOpsRepos/%{sname}
 Source0:	https://github.com/MigOpsRepos//%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -61,6 +61,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0-2PGDG
+- Add missing BR
+
 * Thu Jan 2 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0-1PGDG
 - Update to 3.0 per changes described at
   https://github.com/MigOpsRepos/credcheck/releases/tag/v3.0
