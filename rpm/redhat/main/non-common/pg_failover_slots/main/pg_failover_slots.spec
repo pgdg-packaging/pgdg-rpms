@@ -5,13 +5,13 @@
 Summary:	Makes PostgreSQL logical replication slots practically usable across physical failover.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel wget pgdg-srpm-macros
-
+BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	krb5-devel openssl-devel
 
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -75,6 +75,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-3PGDG
+- Add missing BRs and remove redundant BRs
+
 * Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-2PGDG
 - Update LLVM dependencies
 - Fix location of the README file
