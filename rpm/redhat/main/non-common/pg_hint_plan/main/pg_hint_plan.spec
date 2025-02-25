@@ -30,11 +30,11 @@
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel flex
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -97,6 +97,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - %{pghintplanversion}-3PGDG
+- Add missing BR
+
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - %{pghintplanversion}-2PGDG
 - Update LLVM dependencies
 - Remove redundant BR and Requires
