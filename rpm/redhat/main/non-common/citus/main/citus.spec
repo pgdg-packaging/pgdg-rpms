@@ -12,7 +12,7 @@ URL:		https://github.com/citusdata/%{sname}
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 BuildRequires:	libxslt-devel openssl-devel pam-devel readline-devel
-BuildRequires:	libcurl-devel libzstd-devel flex
+BuildRequires:	libcurl-devel libzstd-devel flex lz4-devel krb5-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %if 0%{?suse_version} >= 1500
