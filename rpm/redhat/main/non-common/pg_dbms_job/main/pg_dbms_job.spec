@@ -4,11 +4,13 @@
 Summary:	PostgreSQL extension to schedules and manages jobs in a job queue similar to Oracle DBMS_JOB package
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/MigOpsRepos/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-makefile.patch
 URL:		https://github.com/MigOpsRepos/%{sname}/
+BuildRequires:	postgresql%{pgmajorversion}-devel make
+Requires:	postgresql%{pgmajorversion}-server
 
 %description
 This PostgreSQL extension provided full compatibility with the DBMS_JOB
@@ -43,6 +45,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 1.5-5PGDG
+- Add missing BRs and Requires.
+
 * Mon Jan 13 2025 Devrim Gunduz <devrim@gunduz.org> - 1.5-4PGDG
 - Fix location of README file name and path.
 
