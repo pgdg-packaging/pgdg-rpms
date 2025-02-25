@@ -1,6 +1,4 @@
-# TODO: Move "macros" to the pgdg-srpm-macros (or another) package
-# to get rid of those lines.
-config_opts['chroot_setup_cmd'] = " pgdg-srpm-macros"
+config_opts['chroot_setup_cmd'] = " install bash bzip2 coreutils cpio diffutils findutils gawk glibc-minimal-langpack grep gzip info lua patch pgdg-srpm-macros python3 redhat-rpm-config rpm-build sed tar unzip util-linux which xz"
 config_opts['macros']['%pgmajorversion'] = "17"
 config_opts['macros']['%pginstdir'] = "/usr/pgsql-17"
 config_opts['macros']['%__brp_check_rpaths'] = "/usr/bin/true"
