@@ -5,12 +5,12 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	17.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/pgaudit/pgaudit/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
-BuildRequires:	pgdg-srpm-macros
+BuildRequires:	openssl-devel krb5-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -72,6 +72,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 17.0-3PGDG
+- Add missing BRs
+
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 17.0-2PGDG
 - Update LLVM dependencies
 

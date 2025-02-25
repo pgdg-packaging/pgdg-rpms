@@ -27,6 +27,7 @@ License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
+BuildRequires:	openssl-devel krb5-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -88,6 +89,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - %{pversion}-8PGDG
+- Add missing BRs
+
 * Fri Feb 21 2025 Devrim Gunduz <devrim@gunduz.org> - %{pversion}-7PGDG
 - Update LLVM dependencies
 - Remove redundant BR
