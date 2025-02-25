@@ -5,11 +5,12 @@
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
+BuildRequires:	krb5-devel openssl-devel
 Requires:	postgresql%{pgmajorversion}-server pgaudit_%{pgmajorversion}
 
 %description
@@ -67,6 +68,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.4-3PGDG
+- Add missing BRs
+
 * Sat Jan 4 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.4-2PGDG
 - Update package description and LLVM dependencies.
 
