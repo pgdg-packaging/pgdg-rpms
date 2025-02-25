@@ -76,7 +76,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
-* Tue Fev 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-4PGDG
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-4PGDG
 - Add missing BRs and dependencies
 
 * Wed Feb 12 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-3PGDG
