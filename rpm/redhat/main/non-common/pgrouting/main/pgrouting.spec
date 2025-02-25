@@ -5,12 +5,12 @@
 Summary:	Routing functionality for PostGIS
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgroutingmajorversion}.3
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://pgrouting.org/
 BuildRequires:	cmake >= 3.12 boost-devel >= 1.56
-BuildRequires:	gcc-c++ gmp-devel
+BuildRequires:	gcc-c++ gmp-devel perl-version
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion} postgis
 
@@ -68,6 +68,9 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.7.3-2PGDG
+- Add missing BR
+
 * Tue Feb 11 2025 Devrim Gündüz <devrim@gunduz.org> - 3.7.3-1PGDG
 - Update to 3.7.3 per changes described at:
   https://github.com/pgRouting/pgrouting/releases/tag/v3.7.3
