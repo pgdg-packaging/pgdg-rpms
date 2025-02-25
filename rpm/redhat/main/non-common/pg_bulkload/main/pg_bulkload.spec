@@ -10,12 +10,12 @@
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel pam-devel
-BuildRequires:	libsepol-devel readline-devel krb5-devel
+BuildRequires:	libsepol-devel readline-devel krb5-devel lz4-devel zlib-devel
 Requires:	postgresql%{pgmajorversion}-server %{sname}_%{pgmajorversion}-client
 
 %description
@@ -91,6 +91,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 3.1.21-2PGDG
+- Add missing BRs
+
 * Mon Jan 27 2025 Devrim Gunduz <devrim@gunduz.org> - 3.1.21-1PGDG
 - Update to 3.1.22 per changes described at:
   https://github.com/ossc-db/pg_bulkload/releases/tag/VERSION3_1_22
