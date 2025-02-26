@@ -1,4 +1,13 @@
-pgdg-mock-config
-================
-sudo mock -r pgdg-fedora-40-x86_64 pg_uuidv7_17-1.6.0-1PGDG.f99.src.rpm  
+pgdg-mock-configs
+=================
+
+mock is a 'simple' chroot build environment manager for building RPMs: https://github.com/rpm-software-management/mock
+
+This package includes mock configuration files for the PGDG RPM packages.
+
+Usage:
+------
+
+- Building package on Fedora 41 and against PostgreSQL 17: sudo mock -r pgdg-fedora-41-pg17-x86_64 package.src.rpm
+- Building package on Rocky 9 and against PostgreSQL 16: sudo mock -r pgdg-rocky-9-pg16-x86_64 package.src.rpm
 
