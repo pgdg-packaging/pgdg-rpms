@@ -10,6 +10,15 @@ Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.g
 URL:		https://github.com/dimitri/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel gc-devel
 BuildRequires:	krb5-devel bison flex sqlite-devel
+# zstd dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd1 >= 1.4.0
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd >= 1.4.0
+%endif
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
