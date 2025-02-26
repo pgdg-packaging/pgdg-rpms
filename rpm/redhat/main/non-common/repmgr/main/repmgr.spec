@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -15,7 +15,28 @@ Source3:	repmgr-pg%{pgmajorversion}.sysconfig
 Patch0:		repmgr-pg%{pgmajorversion}-conf.sample.patch
 Patch1:		repmgr-pg%{pgmajorversion}-config-file-location.patch
 
-BuildRequires:	systemd, systemd-devel
+BuildRequires:	systemd systemd-devel flex krb5-devel libcurl-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libjson-c-devel
+%else
+BuildRequires:	json-c-devel
+%endif
+# All supported distros have libselinux-devel package:
+BuildRequires:	libselinux-devel >= 2.0.93
+# SLES: SLES 15 does not have selinux-policy packageç
+# RHEL/Fedora has selinux-policy:
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	selinux-policy >= 3.9.13
+%endif
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 %if 0%{?suse_version}
@@ -154,6 +175,9 @@ fi
 %endif
 
 %changelog
+* Wed Feb 26 2025 - Devrim Gündüz <devrim@gunduz.org> - 5.5.0-3PGDG
+- Add missing BRs and Requires
+
 * Wed Jan 29 2025 - Devrim Gündüz <devrim@gunduz.org> - 5.5.0-2PGDG
 - Update package description
 - Remove redundant BR
