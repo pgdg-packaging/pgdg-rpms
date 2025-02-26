@@ -9,7 +9,7 @@ config_opts['description'] = 'PGDG-Fedora {{ releasever }}'
 # fedora 31+ isn't mirrored, we need to run from koji
 config_opts['mirrored'] = config_opts['target_arch'] != 'i686'
 
-config_opts['dist'] = 'fc{{ releasever }}'  # only useful for --resultdir variable subst
+config_opts['dist'] = 'f{{ releasever }}'  # only useful for --resultdir variable subst
 config_opts['extra_chroot_dirs'] = [ '/run/lock', ]
 
 # https://fedoraproject.org/wiki/Changes/BuildWithDNF5 for Fedora 40+
