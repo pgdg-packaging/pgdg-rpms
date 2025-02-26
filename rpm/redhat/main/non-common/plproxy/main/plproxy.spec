@@ -5,12 +5,12 @@
 Summary:	PL/Proxy is database partitioning system implemented as PL language.
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.11.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	ISC
 URL:		https://plproxy.github.io
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel flex >= 2.5.4
+BuildRequires:	postgresql%{pgmajorversion}-devel bison flex >= 2.5.4
 Requires:	postgresql%{pgmajorversion}
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.10.0-2
@@ -60,6 +60,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-4PGDG
+- Add missing BR
+
 * Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-3PGDG
 - Update LLVM dependencies
 
