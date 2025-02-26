@@ -6,16 +6,12 @@
 Summary:	PostgreSQL HTTP client
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.6.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel
-%if 0%{?suse_version} >= 1500
 BuildRequires:	libcurl-devel
-%else
-BuildRequires:	curl-devel
-%endif
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -66,6 +62,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.3-2PGDG
+- Simplify libcurl dependency. The package name is the same on all
+  supported distros.
+
 * Fri Jan 24 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.3-1PGDG
 - Update to 1.6.3 per changes described at:
   https://github.com/pramsey/pgsql-http/releases/tag/v1.6.3
