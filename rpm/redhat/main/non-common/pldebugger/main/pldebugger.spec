@@ -4,14 +4,14 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.8
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PL/pgSQL debugger server-side code
 License:	Artistic 2.0
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 Source1:	%{sname}.LICENSE
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel krb5-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -66,6 +66,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Feb 26 2025 Devrim Gunduz <devrim@gunduz.org> - 1.8-3PGDG
+- Add missing BRs and remove redundant BR
+
 * Wed Jan 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.8-2PGDG
 - Update LLVM dependencies and package description.
 
