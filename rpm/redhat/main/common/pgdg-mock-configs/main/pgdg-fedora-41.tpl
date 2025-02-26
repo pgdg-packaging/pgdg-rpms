@@ -1,4 +1,4 @@
-config_opts['chroot_setup_cmd'] = " install bash bzip2 coreutils cpio diffutils findutils gawk glibc-minimal-langpack grep gzip info lua patch pgdg-srpm-macros python3 redhat-rpm-config rpm-build sed tar unzip util-linux which xz"
+config_opts['chroot_setup_cmd'] = " install @{% if mirrored %}buildsys-{% endif %}build bash bzip2 coreutils cpio diffutils findutils gawk glibc-minimal-langpack grep gzip info lua patch pgdg-srpm-macros python3 redhat-rpm-config rpm-build sed tar unzip util-linux which xz"
 config_opts['macros']['%pgmajorversion'] = "17"
 config_opts['macros']['%pginstdir'] = "/usr/pgsql-17"
 config_opts['macros']['%__brp_check_rpaths'] = "/usr/bin/true"
@@ -8,8 +8,6 @@ config_opts['root'] = 'pgdg-fedora-41-{{ releasever }}-{{ target_arch }}'
 config_opts['description'] = 'PGDG-Fedora {{ releasever }}'
 # fedora 31+ isn't mirrored, we need to run from koji
 config_opts['mirrored'] = config_opts['target_arch'] != 'i686'
-
-config_opts['chroot_setup_cmd'] = 'install @{% if mirrored %}buildsys-{% endif %}build'
 
 config_opts['dist'] = 'fc{{ releasever }}'  # only useful for --resultdir variable subst
 config_opts['extra_chroot_dirs'] = [ '/run/lock', ]
