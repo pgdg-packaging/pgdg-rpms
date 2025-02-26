@@ -57,7 +57,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.8
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -67,7 +67,7 @@ Patch0:		%{sname}%{postgiscurrmajorversion}-%{postgismajorversion}.0-gdalfpic.pa
 URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
-BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
+BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
 BuildRequires:	pgdg-srpm-macros >= 1.0.32 gmp-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 BuildRequires:	pcre2-devel
@@ -94,10 +94,10 @@ BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
-BuildRequires:	SFCGAL-devel >= 2.0.0
+BuildRequires:	SFCGAL SFCGAL-devel >= 2.0.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
-BuildRequires:	SFCGAL-devel
+BuildRequires:	SFCGAL SFCGAL-devel
 %endif
 %endif
 %if %{raster}
@@ -384,6 +384,9 @@ fi
 %endif
 
 %changelog
+* Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.8-4PGDG
+- Add missing BRs
+
 * Thu Jan 30 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.8-3PGDG
 - Add RHEL 10 support
 
