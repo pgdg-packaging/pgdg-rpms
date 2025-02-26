@@ -16,6 +16,15 @@ Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagev
 License:	BSD
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel pam-devel
 BuildRequires:	libsepol-devel readline-devel krb5-devel lz4-devel zlib-devel
+# zstd dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd1 >= 1.4.0
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd >= 1.4.0
+%endif
 Requires:	postgresql%{pgmajorversion}-server %{sname}_%{pgmajorversion}-client
 
 %description
