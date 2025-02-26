@@ -5,11 +5,11 @@
 Summary:	Numeric data types for PostgreSQL that use numerals
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/df7cb/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/df7cb//%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel bison flex
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -63,6 +63,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Feb 26 2025 - Devrim Gündüz <devrim@gunduz.org> 1.3-3PGDG
+- Add missing BRs
+
 * Mon Jan 27 2025 - Devrim Gündüz <devrim@gunduz.org> 1.3-2PGDG
 - Update LLVM dependencies
 
