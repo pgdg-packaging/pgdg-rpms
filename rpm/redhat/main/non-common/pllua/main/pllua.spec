@@ -98,7 +98,7 @@ LUALIB="-L%{libdir} -l lua" LUAC="%{_bindir}/luac" LUA="%{_bindir}/lua" \
 %endif
 
 %changelog
-* Wed Jan 22 2024 Devrim Gündüz <devrim@gunduz.org> - 2.0.12-4PGDG
+* Wed Jan 22 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.12-4PGDG
 - Update LLVM dependencies
 
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 2.0.12-3PGDG
