@@ -80,10 +80,10 @@ BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
-BuildRequires:	SFCGAL-devel >= 2.0.0
+BuildRequires:	SFCGAL SFCGAL-devel >= 2.0.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
-BuildRequires:	SFCGAL-devel
+BuildRequires:	SFCGAL SFCGAL-devel
 %endif
 %endif
 
@@ -373,6 +373,9 @@ fi
 %endif
 
 %changelog
+* Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-3PGDG
+- Add missing BRs
+
 * Thu Jan 30 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-2PGDG
 - Add RHEL 10 support
 
