@@ -5,11 +5,11 @@
 Summary:	SI Units for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	7.10
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ChristophBerg/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/ChristophBerg/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel flex
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -64,6 +64,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-3PGDG
+- Add missing BR
+
 * Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-2PGDG
 - Remove redundant BR
 
