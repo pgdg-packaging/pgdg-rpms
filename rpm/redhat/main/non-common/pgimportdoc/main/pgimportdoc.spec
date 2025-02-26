@@ -24,6 +24,15 @@ Requires:	liblz4-1
 BuildRequires:	lz4-devel
 Requires:	lz4-libs
 %endif
+# zstd dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd1 >= 1.4.0
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd >= 1.4.0
+%endif
 BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
 BuildRequires:	krb5-devel readline-devel zlib-devel
 Requires:	postgresql%{pgmajorversion}
