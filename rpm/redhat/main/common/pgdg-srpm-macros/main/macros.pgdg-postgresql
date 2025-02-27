@@ -3,29 +3,12 @@
 #
 #  This file is part of PostgreSQL Global Development Group RPM Packages
 #
-#  Copyright 2019-2024 Devrim Gündüz <devrim@gunduz.org>
+#  Copyright 2019-2025 Devrim Gündüz <devrim@gunduz.org>
 
 # RPM macros for building PostgreSQL RPM Packages
 
 %pgbaseinstdir   /usr/pgsql-%{pgmajorversion}
-
-# PGDG Fedora Globals
-%pgdg_fedora_global_macros\
-%endif\
-
 # PGDG Python3 common macros
-# This is the list of contrib modules that will be compiled with PY3 as well:
-%python3_build_list hstore_plpython jsonb_plpython ltree_plpython
-
-%pgdg_plpython_version\
-%if 0%{?fedora} && 0%{?fedora} > 27\
-# All Fedora releases use Python3\
-%{!?plpython3:%global plpython3 1}\
-%endif\
-%if 0%{?rhel} && 0%{?rhel} >= 7\
-# RHEL 7 and 8 use Python3\
-%{!?plpython3:%global plpython3 1}\
-%endif\
 
 # Macro for the dail snapshot packages
 %pgdg_build_timestamp %(date +"%Y%m%d")
