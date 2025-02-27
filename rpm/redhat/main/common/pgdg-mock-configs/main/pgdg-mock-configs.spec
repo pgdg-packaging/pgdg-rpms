@@ -40,6 +40,7 @@ PGDG mock configuration files which allow you to create chroots for Fedora and R
 %{__cp} README.txt %{buildroot}%{_docdir}/%{name}/
 
 %files
+%defattr(644,root,root)
 %license LICENSE.txt
 %doc README.txt
 %{_sysconfdir}/mock/pgdg-fedora-*.cfg
