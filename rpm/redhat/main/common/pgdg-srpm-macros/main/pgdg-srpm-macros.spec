@@ -7,14 +7,13 @@ BuildArch:	noarch
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	1.0.46
+Version:	1.0.47
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
 License:	PostgreSQL
-URL:		https://yum.PostgreSQL.org
-Source0:	macros.pgdg-postgresql
-Source1:	COPYRIGHT
+URL:		https://github.com/pgdg-packaging/%{name}
+Source0:	https://github.com/pgdg-packaging/%{name}/archive/refs/tags/%{version}.tar.gz
 Source2:	AUTHORS
 
 %description
@@ -22,8 +21,7 @@ A set of macros for building PostgreSQL PGDG packages. 3rd party packagers can
 override these macros and use their own.
 
 %prep
-%setup -c -T
-%{__cp} %{SOURCE1} %{SOURCE2} .
+%setup -q
 
 %build
 echo no build stage needed
@@ -32,11 +30,13 @@ echo no build stage needed
 %{__install} -p -D -m 0644 %{SOURCE0} %{buildroot}/%{macros_dir}/macros.pgdg-postgresql
 
 %files
-%license COPYRIGHT
-%doc AUTHORS
+%license LICENSE.txt
 %{macros_dir}/macros.pgdg-postgresql
 
 %changelog
+* Thu Feb 27 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.47-1PGDG
+- Switch to the new repository.
+
 * Thu Feb 27 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.46-1PGDG
 - Remove obsoleted entries from the macros file.
 
