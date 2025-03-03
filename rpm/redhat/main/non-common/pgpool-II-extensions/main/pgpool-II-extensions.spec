@@ -14,7 +14,6 @@ BuildRequires:	libmemcached-devel openssl-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	openldap2-devel
 Requires(post):	systemd-sysvinit
-%endif
 %else
 BuildRequires:	openldap-devel
 Requires(post):	systemd-sysv
