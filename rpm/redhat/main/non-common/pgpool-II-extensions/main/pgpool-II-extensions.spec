@@ -10,11 +10,17 @@ Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
 Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
-BuildRequires:	libmemcached-devel openssl-devel openldap-devel
-%if 0%{?suse_version}
+BuildRequires:	libmemcached-devel openssl-devel
+%if 0%{?suse_version} >= 1500
 BuildRequires:	openldap2-devel
+Requires(post):	systemd-sysvinit
+%endif
 %else
+BuildRequires:	openldap-devel
 Requires(post):	systemd-sysv
+Requires(post):	systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
 %endif
 
 Requires:	libmemcached
