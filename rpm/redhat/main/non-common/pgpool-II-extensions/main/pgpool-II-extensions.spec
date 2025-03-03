@@ -2,8 +2,8 @@
 
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
-Version:	4.5.5
-Release:	2PGDG%{?dist}
+Version:	4.6.0
+Release:	1PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
@@ -84,6 +84,10 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Mon Mar 3 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-1PGDG
+- Update to 4.6.0 per changes described at:
+  https://www.pgpool.net/docs/latest/en/html/release-4-6-0.html
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 4.5.5-2PGDG
 - Add missing BR
 
