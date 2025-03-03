@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	16.0
-Release:	4PGDG%{?dist}
+Version:	16.1
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/pgaudit/pgaudit/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -72,6 +72,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Mar 3 2025 Devrim Gündüz <devrim@gunduz.org> - 16.1-1PGDG
+- Update to 16.1 per changes described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/16.1
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 16.0-4PGDG
 - Add missing BRs
 
