@@ -189,6 +189,8 @@ fi
 %{_bindir}/pcp_attach_node
 %{_bindir}/pcp_detach_node
 %{_bindir}/pcp_health_check_stats
+%{_bindir}/pcp_invalidate_query_cache
+%{_bindir}/pcp_log_rotate
 %{_bindir}/pcp_node_count
 %{_bindir}/pcp_node_info
 %{_bindir}/pcp_pool_status
