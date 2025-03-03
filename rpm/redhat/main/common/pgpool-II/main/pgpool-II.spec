@@ -22,7 +22,7 @@ Requires(pre):		/usr/sbin/useradd /usr/sbin/groupadd
 BuildRequires:		systemd
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version} && 0%{?suse_version} >= 1315
+%if 0%{?suse_version} && 0%{?suse_version} >= 1500
 BuildRequires:		openldap2-devel
 Requires(post):		systemd-sysvinit
 %else
