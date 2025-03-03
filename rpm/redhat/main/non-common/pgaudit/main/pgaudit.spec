@@ -2,19 +2,15 @@
 
 %if %{pgmajorversion} == 15
 %global pgauditversion 17
-%global pversion 1.7.0
+%global pversion 1.7.1
 %endif
 %if %{pgmajorversion} == 14
 %global pgauditversion 16
-%global pversion 1.6.2
+%global pversion 1.6.3
 %endif
 %if %{pgmajorversion} == 13
 %global pgauditversion 15
-%global pversion 1.5.2
-%endif
-%if %{pgmajorversion} == 12
-%global pgauditversion 14
-%global pversion 1.4.3
+%global pversion 1.5.3
 %endif
 
 %{!?llvm:%global llvm 1}
@@ -22,7 +18,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}%{pgauditversion}_%{pgmajorversion}
 Version:	%{pversion}
-Release:	7PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -89,6 +85,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Mar 3 2025 Devrim Gunduz <devrim@gunduz.org> - %{pversion}-1PGDG
+- Update to 1.7.1, 1.6.3 and 1.5.3 per changes described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/1.7.1
+  https://github.com/pgaudit/pgaudit/releases/tag/1.6.3
+  https://github.com/pgaudit/pgaudit/releases/tag/1.5.3
+
 * Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - %{pversion}-8PGDG
 - Add missing BRs
 
