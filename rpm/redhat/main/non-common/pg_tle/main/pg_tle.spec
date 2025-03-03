@@ -23,7 +23,7 @@ gives capability to users to launch
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pg_Tle
+Summary:	Just-in-time compilation support for pg_tle
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
@@ -35,7 +35,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This package provides JIT support for pg_Tle
+This package provides JIT support for pg_tle
 %endif
 
 %prep
