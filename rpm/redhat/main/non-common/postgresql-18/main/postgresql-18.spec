@@ -78,7 +78,7 @@ Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
 
 BuildRequires:	perl glibc-devel bison >= 2.3 flex >= 2.5.35
-BuildRequires:	gcc-c++
+BuildRequires:	gcc-c++ libcurl-devel
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4 pgdg-srpm-macros
 BuildRequires:	libxml2-devel libxslt-devel
@@ -231,8 +231,10 @@ Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
 %if 0%{?suse_version} >= 1500
+Requires:	libcurl4
 Requires:	libopenssl1_1
 %else
+Requires:	curl
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -525,6 +527,7 @@ export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config
 %if %selinux
 	--with-selinux \
 %endif
+	--with-libcurl \
 	--with-systemd \
 	--with-system-tzdata=%{_datadir}/zoneinfo \
 	--sysconfdir=/etc/sysconfig/pgsql \
