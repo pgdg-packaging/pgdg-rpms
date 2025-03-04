@@ -26,6 +26,16 @@ commonbuild: commonbfsrpm
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
+commonsrpm: prep
+	rpmbuild --define "_sourcedir ." \
+	--define "_specdir $(PWD)" \
+	--define  "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommon/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+        --define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17"  --define "pgpackageversion 17" \
+        --define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
+
 commonrpm: prep
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
