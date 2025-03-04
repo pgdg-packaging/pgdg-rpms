@@ -6,7 +6,7 @@
 %global		_geoslibdir lib64
 
 Name:		%{sname}%{_geosversion}
-Version:	3.13.0
+Version:	3.13.1
 Release:	1PGDG%{?dist}
 Summary:	GEOS is a C++ port of the Java Topology Suite
 
@@ -14,7 +14,7 @@ License:	LGPLv2
 URL:		https://libgeos.org/
 Source0:	http://download.osgeo.org/geos/geos-%{version}.tar.bz2
 
-%if 0%{?suse_version} && 0%{?suse_version} >= 1499
+%if 0%{?suse_version}
 BuildRequires:	cmake >= 3.15
 %else
 BuildRequires:	cmake3 >= 3.15
@@ -101,7 +101,11 @@ echo "%{geosinstdir}/%{_geoslibdir}/" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{geosinstdir}/%{_geoslibdir}/pkgconfig/%{sname}.pc
 
 %changelog
-* Tue Jun 25 2024 Devrim Gunduz <devrim@gunduz.org> - 3.3.0-1PGDG
+* Tue Mar 4 2025 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-1PGDG
+- Update to 3.13.1 per changes described at:
+  https://github.com/libgeos/geos/releases/tag/3.13.1
+
+* Tue Jun 25 2024 Devrim Gunduz <devrim@gunduz.org> - 3.13.0-1PGDG
 - Initial packaging of 3.13.X for the PostgreSQL RPM Repository:
   https://github.com/libgeos/geos/releases/tag/3.13.0
 
