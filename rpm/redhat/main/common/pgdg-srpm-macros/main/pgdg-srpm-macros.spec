@@ -14,7 +14,6 @@ Summary:	SRPM macros for building PostgreSQL PGDG Packages
 License:	PostgreSQL
 URL:		https://github.com/pgdg-packaging/%{name}
 Source0:	https://github.com/pgdg-packaging/%{name}/archive/refs/tags/%{version}.tar.gz
-Source2:	AUTHORS
 
 %description
 A set of macros for building PostgreSQL PGDG packages. 3rd party packagers can
