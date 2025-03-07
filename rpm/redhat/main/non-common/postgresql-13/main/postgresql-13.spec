@@ -76,9 +76,9 @@ Version:	13.20
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420001PGDG%{?dist}
+Release:	420002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -111,7 +111,7 @@ Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
 BuildRequires:	perl glibc-devel bison flex >= 2.5.31
 BuildRequires:	gcc-c++
 BuildRequires:	perl(ExtUtils::MakeMaker)
-BuildRequires:	readline-devel zlib-devel >= 1.0.4 pgdg-srpm-macros
+BuildRequires:	readline-devel zlib-devel >= 1.0.4
 
 # This dependency is needed for Source 16:
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -1345,6 +1345,9 @@ fi
 %endif
 
 %changelog
+* Fri Mar 07 2025 Devrim Gunduz <devrim@gunduz.org> - 13.20-2PGDG
+- Remove redundant BR
+
 * Mon Feb 17 2025 Devrim Gündüz <devrim@gunduz.org> - 13.20-1PGDG
 - Update to 13.20, per changes described at
   https://www.postgresql.org/docs/release/13.20/
