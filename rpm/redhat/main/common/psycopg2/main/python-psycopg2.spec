@@ -24,13 +24,13 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	%{ppg2majver}.%{ppg2midver}.%{ppg2minver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
 Source0:	https://github.com/psycopg/psycopg2/archive/refs/tags/%{ppg2majver}.%{ppg2midver}.%{ppg2minver}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	python3-devel
 
 Requires:	libpq5 >= 10.0
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Sat Mar 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.10-4PGDG
+- Remove redundant BR
+
 * Tue Dec 17 2024 Devrim Gündüz <devrim@gunduz.org> - 2.9.10-3PGDG
 - psycopg2 > 2.9.6 does not build on RHEL 8. So add a permanent guard
   against accidental builds on RHEL 8 to prevent breakage.
