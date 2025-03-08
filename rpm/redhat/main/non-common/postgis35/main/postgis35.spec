@@ -30,15 +30,15 @@
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
-%ifnarch ppc64 ppc64le
-# TODO
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
 %{!?sfcgal:%global	sfcgal 1}
-%else
-%{!?sfcgal:%global	sfcgal 0}
 %endif
-%else
+%if 0%{?rhel} == 8
+%ifarch ppc64 ppc64le
 %{!?sfcgal:%global	sfcgal 0}
+%else
+%{!?sfcgal:%global	sfcgal 1n}
+%endif
 %endif
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
@@ -373,6 +373,9 @@ fi
 %endif
 
 %changelog
+* Sat Mar 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-4PGDG
+- Enable sfcgal support on RHEL 9 - ppc64le
+
 * Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-3PGDG
 - Add missing BRs
 
