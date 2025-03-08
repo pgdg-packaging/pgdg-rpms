@@ -374,7 +374,7 @@ fi
 
 %changelog
 * Sat Mar 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-4PGDG
-- Enable sfcgal support on RHEL 9 - ppc64le
+- Enable SFCGAL support on RHEL 9 - ppc64le
 
 * Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-3PGDG
 - Add missing BRs
