@@ -26,7 +26,7 @@ override these macros and use their own.
 echo no build stage needed
 
 %install
-%{__install} -p -D -m 0644 %{SOURCE0} %{buildroot}/%{macros_dir}/macros.pgdg-postgresql
+%{__install} -p -D -m 0644 macros.pgdg-postgresql %{buildroot}/%{macros_dir}/macros.pgdg-postgresql
 
 %files
 %license LICENSE.txt
