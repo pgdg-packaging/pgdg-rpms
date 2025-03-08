@@ -2,7 +2,7 @@
 # PGDG Red Hat Enterprise Linux / Rocky / AlmaLinux repositories.	#
 #########################################################################
 
-# PGDG Red Hat Enterprise Linux / Rocky /AlmaLinux stable common repository for all PostgreSQL versions
+# PGDG Red Hat Enterprise Linux / Rocky / AlmaLinux stable common repository for all PostgreSQL versions
 
 [pgdg-common]
 name=PostgreSQL common RPMs for RHEL / Rocky / AlmaLinux $releasever - $basearch
