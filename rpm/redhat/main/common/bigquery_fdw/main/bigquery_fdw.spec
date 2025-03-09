@@ -53,7 +53,7 @@ python3 setup.py install --no-compile --root %{buildroot}
 %{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info/*
 
 %changelog
-* Sun Sep 9 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0-3PGDG
+* Sun Mar 9 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0-3PGDG
 - Add RHEL 10 dependency
 - Remove redundant BR
 
