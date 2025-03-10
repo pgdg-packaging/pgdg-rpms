@@ -35,7 +35,7 @@ BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
 BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
-BuildRequires:	krb5-devel readline-devel zlib-devel zstd-devel
+BuildRequires:	krb5-devel readline-devel zlib-devel
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.2.0-2
 
