@@ -43,7 +43,7 @@ BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd1 >= 1.4.0
 %endif
 %if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	ibzstd-devel >= 1.4.0
+BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
