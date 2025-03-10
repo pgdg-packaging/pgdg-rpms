@@ -45,7 +45,7 @@
 
 Name:		%{sname}310
 Version:	3.10.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -72,7 +72,6 @@ Requires:	lz4
 
 BuildRequires:	cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.44
 
-BuildRequires:	ant
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
 BuildRequires:	chrpath
@@ -475,6 +474,9 @@ done
 %endif
 
 %changelog
+* Sun Mar 9 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.2-2PGDG
+- Remove redundant ant BR
+
 * Sun Feb 16 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.2-1PGDG
 - Update to 3.10.2 per changes described at:
   https://github.com/OSGeo/gdal/blob/v3.10.2/NEWS.md
