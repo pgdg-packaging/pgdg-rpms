@@ -18,13 +18,13 @@
 
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.5
-Release:	4PGDG%{?dist}
+Version:	1.1.6
+Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
 BuildRequires:	postgresql%{pgmajorversion}-devel gdal%{gdalmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.34
+BuildRequires:	pgdg-srpm-macros >= 1.0.45
 Requires:	postgresql%{pgmajorversion}-server gdal%{gdalmajorversion}-libs
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.0.12-3
@@ -47,7 +47,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for ogr_fdw
+This package provides JIT support for ogr_fdw
 %endif
 
 %prep
@@ -86,6 +86,10 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Wed Mar 12 2025 Devrim Gündüz <devrim@gunduz.org> 1.1.6-1PGDG
+- Update to 1.1.6 per changes described at:
+  https://github.com/pramsey/pgsql-ogr-fdw/releases/tag/v1.1.6
+
 * Mon Dec 30 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.5-4PGDG
 - Rebuild against GDAL 3.10
 
