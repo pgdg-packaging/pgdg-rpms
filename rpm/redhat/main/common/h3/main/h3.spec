@@ -3,8 +3,8 @@
 
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
-Version:	4.2.0
-Release:	3PGDG%{dist}
+Version:	4.2.1
+Release:	1PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -34,7 +34,7 @@ for h3.
 pushd build
 %if 0%{?suse_version} >= 1315
 cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE=Release \
-	-DBUILD_SHARED_LIBS:BOOL=ON  ..
+	-DBUILD_SHARED_LIBS:BOOL=ON ..
 %else
 %cmake3 -DCMAKE_BUILD_TYPE=Release ..
 %endif
@@ -55,7 +55,6 @@ popd
 %postun	-p /sbin/ldconfig
 
 %files
-%defattr(644,root,root,755)
 %license LICENSE
 %doc README.md
 %{_bindir}/cellToBoundary
@@ -77,6 +76,10 @@ popd
 %{_libdir}/cmake/%{sname}/*.cmake
 
 %changelog
+* Wed Mar 12 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.1-1PGDG
+- Update to 4.2.1 per changes described at:
+  https://github.com/uber/h3/releases/tag/v4.2.1
+
 * Tue Feb 11 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.0-3PGDG
 - Revert the changes in 4.2.0-2 as new h3-pg does not need them.
 
