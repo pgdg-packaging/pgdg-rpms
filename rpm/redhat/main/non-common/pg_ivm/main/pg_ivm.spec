@@ -4,13 +4,13 @@
 
 Summary:	Incremental View Maintenance (IVM) feature for PostgreSQL.
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.9
-Release:	2PGDG%{?dist}
+Version:	1.10
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/sraoss/%{sname}/
 Source0:	https://github.com/sraoss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
-Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
+Requires:	postgresql%{pgmajorversion}-server
 
 %description
 Incremental View Maintenance (IVM) is a way to make materialized views
@@ -21,7 +21,7 @@ than recomputation when only small parts of the view are changed.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pg_ivm
+Summary:	Just-in-time compilation support for xxx
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
@@ -33,7 +33,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_ivm
+This package provides JIT support for xxx
 %endif
 
 %prep
@@ -58,6 +58,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Wed Mar 12 2025 Devrim Gündüz <devrim@gunduz.org> - 1.10-1PGDG
+- Update to 1.10 per changes described at:
+  https://github.com/sraoss/pg_ivm/releases/tag/v1.10
+
 * Thu Jan 9 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9-2PGDG
 - Update LLVM dependencies
 
