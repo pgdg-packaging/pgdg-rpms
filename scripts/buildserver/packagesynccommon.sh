@@ -49,10 +49,10 @@ rsync --checksum -ave ssh --delete $COMMON_SRPM_DIR/ yumupload@yum.postgresql.or
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $COMMON_SRPM_DIR s3://dnf-debuginfo.postgresql.org/srpms/common/$osdistro/$os-$osarch/
-aws cloudfront create-invalidation --distribution-id $S3_DISTRO_ID --path /srpms/common/$osdistro/$os-$osarch/repodata/*
+aws cloudfront create-invalidation --distribution-id $CF_DISTRO_ID --path /srpms/common/$osdistro/$os-$osarch/repodata/*
 
 # Sync debug* RPMs to S3 bucket:
 aws s3 sync $COMMON_DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org/debug/common/$osdistro/$os-$osarch/
-aws cloudfront create-invalidation --distribution-id $S3_DISTRO_ID --path /debug/common/$osdistro/$os-$osarch/repodata/*
+aws cloudfront create-invalidation --distribution-id $CF_DISTRO_ID --path /debug/common/$osdistro/$os-$osarch/repodata/*
 
 exit 0

@@ -32,7 +32,7 @@ export extrasrepoenabled=1	# 1 or 0. Currently for RHEL 9, 8 and SLES 15
 export GPG_TTY=$(tty)
 export GPG_PASSWORD=foobar
 
-export S3_DISTRO_ID=XXXXXXXXXXXXXXXXXX
+export CF_DISTRO_ID=XXXXXXXXXXXXXXXXXX
 
 declare -a pgStableBuilds=("17 16 15 14 13" )
 declare -a pgTestBuilds=("17 16 15 14 13" )
