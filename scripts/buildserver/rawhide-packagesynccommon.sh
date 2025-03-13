@@ -48,7 +48,7 @@ rsync --checksum -ave ssh --delete $TESTING_COMMON_RPM_DIR/ yumupload@yum.postgr
 rsync --checksum -ave ssh --delete $TESTING_COMMON_SRPM_DIR/ yumupload@yum.postgresql.org:/srv/yum/yum/srpms/testing/common/$osdistro/$os-$osarch
 
 # Sync SRPMs to S3 bucket:
-aws s3 sync $STESTING_COMMON_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch
+aws s3 sync $TESTING_COMMON_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch
 aws cloudfront create-invalidation --distribution-id $CF_DISTRO_ID --path /srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 
 # Sync debug* RPMs to S3 bucket:
