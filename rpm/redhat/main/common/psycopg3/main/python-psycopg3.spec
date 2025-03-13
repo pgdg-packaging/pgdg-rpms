@@ -22,7 +22,7 @@
 
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
-Version:	3.2.5
+Version:	3.2.6
 Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
@@ -134,6 +134,10 @@ popd
 %endif
 
 %changelog
+* Thu Mar 13 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.6-1PGDG
+- Update to 3.2.6 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.6
+
 * Mon Feb 24 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.5-1PGDG
 - Update to 3.2.5 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.2.5
