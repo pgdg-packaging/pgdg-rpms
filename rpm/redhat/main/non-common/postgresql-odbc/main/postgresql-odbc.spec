@@ -5,14 +5,14 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
 Source0:	https://github.com/postgresql-interfaces/psqlodbc/archive/refs/tags/REL-%{pgodbcmajver}_%{pgodbcmidver}_%{pgodbcminver}.tar.gz
 Source1:	acinclude.m4
 
-BuildRequires:	autoconf krb5-devel pam-devel pgdg-srpm-macros
+BuildRequires:	autoconf krb5-devel pam-devel automake
 BuildRequires:	openssl-devel pam-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	unixODBC-devel
 
@@ -23,10 +23,6 @@ Requires:	krb5
 Requires:	krb5-libs
 %endif
 
-%if 0%{?fedora} == 39
-BuildRequires:	zlib-devel
-Requires:	zlib
-%endif
 %if 0%{?fedora} >= 40
 BuildRequires:	zlib-ng-compat-devel
 Requires:	zlib-ng-compat
@@ -92,6 +88,9 @@ popd
 %license license.txt
 
 %changelog
+* Wed Feb 26 2025  Devrim Gündüz <devrim@gunduz.org> - 17.00.0004-4PGDG
+- Add missing BR and remove redundant BR
+
 * Sun Dec 29 2024 Devrim Gündüz <devrim@gunduz.org> - 17.00.0004-3PGDG
 - Fix SLES 15 dependency and add proper Fedora 41 support
 
