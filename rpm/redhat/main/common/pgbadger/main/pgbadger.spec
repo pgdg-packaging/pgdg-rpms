@@ -6,7 +6,8 @@ License:	PostgreSQL
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{name}
 BuildArch:	noarch
-Requires:	perl-Text-CSV_XS make
+BuildRequires:	perl make
+Requires:	perl-Text-CSV_XS perl
 
 %description
 pgBadger is a PostgreSQL log analyzer build for speed with fully
