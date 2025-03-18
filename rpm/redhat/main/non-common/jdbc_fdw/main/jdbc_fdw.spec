@@ -3,8 +3,8 @@
 
 Summary:	JDBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.4.0
-Release:	2PGDG%{?dist}
+Version:	0.5.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
@@ -35,7 +35,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for jdbc_fdw
+This package provides JIT support for jdbc_fdw
 %endif
 
 %prep
@@ -75,6 +75,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Mar 18 2025 Devrim Gündüz <devrim@gunduz.org> - 0.5.0-1PGDG
+- Update to 0.5.0 per changes described at:
+  https://github.com/pgspider/jdbc_fdw/releases/tag/v0.5.0
+
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.0-2PGDG
 - Simplify Java dependencies and use correct path for java[c].
 
