@@ -1,12 +1,12 @@
 Summary:	A fast PostgreSQL log analyzer
 Name:		pgbadger
-Version:	13.0
+Version:	13.1
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{name}
 BuildArch:	noarch
-Requires:	perl-Text-CSV_XS
+Requires:	perl-Text-CSV_XS make
 
 %description
 pgBadger is a PostgreSQL log analyzer build for speed with fully
@@ -43,6 +43,10 @@ compressed file.
 %{_mandir}/man1/%{name}.1p.gz
 
 %changelog
+* Tue Mar 18 2025 - Devrim Gündüz <devrim@gunduz.org> 13.1-1PGDG
+- Update to 13.1, per changes described at:
+  https://github.com/darold/pgbadger/releases/tag/v13.1
+
 * Mon Dec 9 2024 - Devrim Gündüz <devrim@gunduz.org> 13.0-1PGDG
 - Update to 13.0, per changes described at:
   https://github.com/darold/pgbadger/releases/tag/v13.0
