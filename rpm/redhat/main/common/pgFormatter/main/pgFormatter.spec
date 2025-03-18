@@ -5,7 +5,7 @@ Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{name}/
-BuildRequires:	perl(ExtUtils::MakeMaker) make
+BuildRequires:	perl(ExtUtils::MakeMaker) make perl-macros
 BuildArch:	noarch
 
 %description
