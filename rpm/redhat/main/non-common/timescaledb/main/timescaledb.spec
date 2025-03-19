@@ -2,7 +2,7 @@
 
 Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.18.2
+Version:	2.19.0
 Release:	1PGDG%{?dist}
 License:	Apache
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
@@ -49,6 +49,10 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Wed Mar 19 2025 Devrim Gündüz <devrim@gunduz.org> - 2.19.0-1PGDG
+- Update to 2.19.0, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.19.0
+
 * Wed Feb 19 2025 Devrim Gündüz <devrim@gunduz.org> - 2.18.2-1PGDG
 - Update to 2.18.2, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.18.2
