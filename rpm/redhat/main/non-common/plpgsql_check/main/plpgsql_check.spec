@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.7.15
+Version:	2.8.0
 Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
@@ -33,7 +33,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for plpgsql_check
+This package provides JIT support for plpgsql_check
 %endif
 
 %prep
@@ -61,6 +61,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-1PGDG
+- Update to 2.8.0 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.8.0
+
 * Fri Feb 7 2025 Devrim Gündüz <devrim@gunduz.org> 2.7.15-1PGDG
 - Update to 2.7.15 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.7.15
