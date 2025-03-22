@@ -4,8 +4,8 @@
 
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.2.0
-Release:	4PGDG%{?dist}
+Version:	1.5.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
@@ -13,13 +13,11 @@ BuildRequires:	postgresql%{pgmajorversion}-devel flex krb5-devel openssl-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
-Trusted Language Extensions (TLE) for PostgreSQL (pg_tle) is an open
-source project that lets developers extend and deploy new PostgreSQL
-functionality with lower administrative and technical overhead.
-Developers can use Trusted Language Extensions for PostgreSQL to create
-and install extensions on restricted filesystems and work with
-PostgreSQL internals through a SQL API.
-gives capability to users to launch
+Trusted Language Extensions (TLE) for PostgreSQL (pg_tle) is an open source
+project that lets developers extend and deploy new PostgreSQL functionality
+with lower administrative and technical overhead. Developers can use Trusted
+Language Extensions for PostgreSQL to create and install extensions on
+restricted filesystems and work with PostgreSQL internals through a SQL API.
 
 %if %llvm
 %package llvmjit
@@ -67,6 +65,16 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.0-1PGDG
+- Update to 1.5.0 per changes described at:
+  https://github.com/aws/pg_tle/releases/tag/v1.5.0
+  https://github.com/aws/pg_tle/releases/tag/v1.4.0
+  https://github.com/aws/pg_tle/releases/tag/v1.3.4
+  https://github.com/aws/pg_tle/releases/tag/v1.3.3
+  https://github.com/aws/pg_tle/releases/tag/v1.3.2
+  https://github.com/aws/pg_tle/releases/tag/v1.3.1
+  https://github.com/aws/pg_tle/releases/tag/v1.3.0
+
 * Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-4PGDG
 - Add missing BRs
 
