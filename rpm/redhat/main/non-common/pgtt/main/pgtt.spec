@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Global Temporary Tables Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.0
-Release:	3PGDG%{?dist}
+Version:	4.1
+Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/darold/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{sname}
@@ -57,6 +57,7 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %make_install install DESTDIR=%{buildroot
 
 %files
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
+%doc %{pginstdir}/doc/extension/%{sname}.md
 %license COPYING
 %{pginstdir}/lib/%{sname}.so
 %{pginstdir}/share/extension/%{sname}.control
@@ -69,6 +70,10 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %make_install install DESTDIR=%{buildroot
 %endif
 
 %changelog
+* Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1-1PGDG
+- Update to 4.1 per changes described at:
+  https://github.com/darold/pgtt/releases/tag/v4.1
+
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0-3PGDG
 - Update LLVM dependencies
 
@@ -76,7 +81,7 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %make_install install DESTDIR=%{buildroot
 - Update LLVM dependencies
 - Remove RHEL 7 support
 
-* Tue Jun 4 2024 2024 Devrim Gündüz <devrim@gunduz.org> - 4.0-1PGDG
+* Tue Jun 4 2024 Devrim Gündüz <devrim@gunduz.org> - 4.0-1PGDG
 - Update to 4.0 per changes described at:
   https://github.com/darold/pgtt/releases/tag/v4.0
 
