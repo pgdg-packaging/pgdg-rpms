@@ -5,7 +5,7 @@
 
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
-Version:	4.1.0
+Version:	4.3.0
 Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
@@ -14,11 +14,16 @@ Source0:	https://github.com/dbcli/%{name}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	python3-devel
 
+BuildRequires:	python3-pytest python3-sqlparse python3-cli-helpers
+BuildRequires:	python3-mock python3-pexpect
+BuildRequires:	python3-pgspecial python3-psycopg3
+BuildRequires:	python3-setproctitle python3-sshtunnel python3-tzlocal
+
 Requires:	python3-click => 3.2, python3-pygments => 2.0
 Requires:	python3-sqlparse >= 0.1.14, python3-%{name}
 Requires:	python3-jedi => 0.8.1 python3-setproctitle >= 1.1.9
 Requires:	python3-wcwidth >= 0.1.6 python3-humanize >= 0.5.1
-Requires:	python3-configobj >= 5.0.6 python3-prompt_toolkit >= 1.0.10
+Requires:	python3-configobj >= 5.0.6
 Requires:	python3-cli-helpers python3-cli-helpers+styles
 BuildArch:	noarch
 
@@ -43,26 +48,10 @@ This is a build of the pgcli for the debug build of Python 3.
 %setup -q
 
 %build
-for python in %{python_runtimes} ; do
-  $python setup.py build
-done
+%pyproject_wheel
 
 %install
-
-DoInstall() {
-  PythonBinary=$1
-
-  Python_SiteArch=$($PythonBinary -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")
-
-  mkdir -p %{buildroot}$Python_SiteArch/%{name}
-  $PythonBinary setup.py install --no-compile --root %{buildroot}
-}
-
-%{__rm} -rf %{buildroot}
-for python in %{python_runtimes} ; do
-  DoInstall $python
-done
-
+%pyproject_install
 %files
 %defattr(-,root,root)
 %doc AUTHORS changelog.rst LICENSE.txt DEVELOP.rst TODO
@@ -73,13 +62,16 @@ done
 %doc AUTHORS changelog.rst LICENSE.txt DEVELOP.rst TODO
 %dir %{python3_sitelib}/%{name}
 %{python3_sitelib}/%{name}/*
-%{python3_sitelib}/*.egg-info/
+%{python3_sitelib}/%{name}-%{version}.dist-info/*
 
 %files -n python3-%{name}-debug
 %defattr(-,root,root)
 %doc LICENSE.txt
 
 %changelog
+* Sun Mar 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.3.0-1PGDG
+- Update to 4.3.0
+
 * Fri Aug 23 2024 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-1PGDG
 - Update to 4.1.0
 
