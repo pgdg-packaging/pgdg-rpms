@@ -21,8 +21,8 @@
 %endif
 
 Name:		libosmium
-Version:	2.20.0
-Release:	45PGDG%{?dist}
+Version:	2.22.0
+Release:	42PGDG%{?dist}
 Summary:	Fast and flexible C++ library for working with OpenStreetMap data
 
 License:	BSL-1.0
@@ -30,7 +30,7 @@ URL:		http://osmcode.org/%{name}/
 Source0:	https://github.com/osmcode/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 Source1:	https://github.com/osmcode/osm-testdata/archive/%{testcommit}/osm-testdata-%{testcommit}.tar.gz
 
-BuildRequires:	cmake make gcc-c++ pgdg-srpm-macros >= 1.0.37
+BuildRequires:	cmake make gcc-c++ pgdg-srpm-macros >= 1.0.45
 BuildRequires:	doxygen graphviz xmlstarlet
 BuildRequires:	ruby rubygems spatialite-tools
 
@@ -87,7 +87,6 @@ sed -i -e 's/-O3 -g//' libosmium/CMakeLists.txt
 
 %build
 cd libosmium
-%{__rm} include/osmium/geom/projection.hpp
 %cmake -DBUILD_HEADERS=ON -DBUILD_DATA_TESTS=ON \
 	-DGDAL_LIBRARY=%{gdalinstdir}/lib/libgdal.so -DGDAL_INCLUDE_DIR=%{gdalinstdir}/include \
 	-DGEOS_LIBRARY=%{geosinstdir}/lib64/libgeos.so -DGEOS_INCLUDE_DIR=%{geosinstdir}/include
@@ -114,6 +113,10 @@ cd libosmium
 %endif
 
 %changelog
+* Tue Mar 18 2025 Devrim Gündüz <devrim@gunduz.org> - 2.20.0-42PGDG
+- Update to 2.22.0 per changes described at:
+  https://github.com/osmcode/libosmium/releases/tag/v2.22.0
+
 * Mon Dec 30 2024 Devrim Gündüz <devrim@gunduz.org> - 2.20.0-45PGDG
 - Rebuild against GDAL 3.10
 
