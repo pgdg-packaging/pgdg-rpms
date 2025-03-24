@@ -117,7 +117,7 @@ repo_gpgcheck = 1
 
 # PGDG Fedora stable common SRPM repository for all PostgreSQL versions
 
-[pgdg-source-common]
+[pgdg-common-source]
 name=PostgreSQL common SRPMs for Fedora $releasever - $basearch
 baseurl=https://dnf-srpms.postgresql.org/srpms/common/fedora/fedora-$releasever-$basearch
 enabled=0
@@ -145,7 +145,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
-[pgdg17-source-updates-testing]
+[pgdg17-updates-testing-source]
 name=PostgreSQL 17 for Fedora $releasever - $basearch - Source updates testing
 baseurl=https://dnf-srpms.postgresql.org/srpms/testing/17/fedora/fedora-$releasever-$basearch
 enabled=0
@@ -161,7 +161,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
-[pgdg16-source-updates-testing]
+[pgdg16-updates-testing-source]
 name=PostgreSQL 16 for Fedora $releasever - $basearch - Source updates testing
 baseurl=https://dnf-srpms.postgresql.org/srpms/testing/16/fedora/fedora-$releasever-$basearch
 enabled=0
@@ -177,7 +177,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
-[pgdg15-source-updates-testing]
+[pgdg15-updates-testing-source]
 name=PostgreSQL 15 for Fedora $releasever - $basearch - Source updates testing
 baseurl=https://dnf-srpms.postgresql.org/srpms/testing/15/fedora/fedora-$releasever-$basearch
 enabled=0
@@ -193,7 +193,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
-[pgdg14-source-updates-testing]
+[pgdg14-updates-testing-source]
 name=PostgreSQL 14 for Fedora $releasever - $basearch - Source updates testing
 baseurl=https://dnf-srpms.postgresql.org/srpms/testing/14/fedora/fedora-$releasever-$basearch
 enabled=0
@@ -209,7 +209,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
-[pgdg13-source-updates-testing]
+[pgdg13-updates-testing-source]
 name=PostgreSQL 13 for Fedora $releasever - $basearch - Source updates testing
 baseurl=https://dnf-srpms.postgresql.org/srpms/testing/13/fedora/fedora-$releasever-$basearch
 enabled=0
