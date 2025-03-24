@@ -1,0 +1,1 @@
+../main/../main/plr.spec

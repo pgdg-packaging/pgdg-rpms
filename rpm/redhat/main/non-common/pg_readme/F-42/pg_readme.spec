@@ -1,0 +1,1 @@
+../main/pg_readme.spec

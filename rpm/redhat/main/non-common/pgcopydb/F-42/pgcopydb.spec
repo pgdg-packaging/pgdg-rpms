@@ -1,0 +1,1 @@
+../main/pgcopydb.spec
