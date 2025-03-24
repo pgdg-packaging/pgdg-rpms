@@ -5,7 +5,7 @@
 
 Name:		ogdi%{ogdimajorver}
 Version:	4.1.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Open Geographic Datastore Interface
 License:	BSD
 URL:		https://github.com/libogdi/ogdi
@@ -23,7 +23,6 @@ BuildRequires:	libexpat-devel
 BuildRequires:	expat-devel
 %endif
 BuildRequires:	libtirpc-devel
-BuildRequires:	tcl-devel
 BuildRequires:	zlib-devel
 
 # ODBC driver has been removed in 4.1.1 without replacement
@@ -55,13 +54,6 @@ BuildRequires:	expat-devel
 OGDI header files and developer's documentation.
 
 
-%package tcl
-Summary:	TCL wrapper for OGDI
-Requires:	%{name} = %{version}-%{release}
-
-%description tcl
-TCL wrapper for OGDI.
-
 %prep
 %setup -q -n %{sname}-%{version}
 %patch -P 0 -p1
@@ -77,7 +69,7 @@ export CFG=debug # for -g
 
 # removal of -D_FORTIFY_SOURCE from preprocessor flags seems not needed any more
 # ogdits-3.1 test suite produces same result with and without the flag
-export CFLAGS="$RPM_OPT_FLAGS -DDONT_TD_VOID -DUSE_TERMIO -ltirpc"
+export CFLAGS="$RPM_OPT_FLAGS -DDONT_TD_VOID -DUSE_TERMIO -ltirpc -std=gnu17"
 ./configure \
 	--prefix=%{ogdi41instdir} \
 	--with-binconfigs \
@@ -89,7 +81,6 @@ export CFLAGS="$RPM_OPT_FLAGS -DDONT_TD_VOID -DUSE_TERMIO -ltirpc"
 %{__make}
 
 # build contributions
-%{__make} -C ogdi/tcl_interface
 %{__make} -C contrib/gdal
 
 %install
@@ -102,8 +93,6 @@ export DESTDIR=%{buildroot}
 	INST_BIN=%{buildroot}%{ogdi41instdir}/bin
 
 # install plugins olso
-%{__make} install -C ogdi/tcl_interface \
-	INST_LIB=%{buildroot}%{ogdi41instdir}/lib
 %{__make} install -C contrib/gdal \
 	INST_LIB=%{buildroot}%{ogdi41instdir}/lib
 
@@ -164,8 +153,12 @@ touch -r ogdi-config.in %{buildroot}%{ogdi41instdir}/bin/%{sname}-config
 %dir %{ogdi41instdir}/include/
 %{ogdi41instdir}/include/*.h
 
-
 %changelog
+* Mon Mar 24 2025 Devrim Gunduz <devrim@gunduz.org> - 4.1.1-2PGDG
+- Fix/surpress build errors against GCC 15. GDAL will drop OGDI
+  support along with 3.11, so don't bother to fix more.
+- Retire tcl subpackage. Cannot be built against GCC 15.
+
 * Mon Apr 24 2023 Devrim Gunduz <devrim@gunduz.org> - 4.1.1-1PGDG
 - Update to 4.1.1 per changes described at:
   https://github.com/libogdi/ogdi/releases/tag/ogdi_4_1_1
