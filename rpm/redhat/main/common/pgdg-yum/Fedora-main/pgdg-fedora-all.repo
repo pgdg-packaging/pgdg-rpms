@@ -127,7 +127,7 @@ repo_gpgcheck = 1
 
 # PGDG Fedora testing common SRPM repository for all PostgreSQL versions
 
-[pgdg-common-srpm-testing]
+[pgdg-common-testing-source]
 name=PostgreSQL common testing SRPMs for Fedora $releasever - $basearch
 baseurl=https://dnf-srpms.postgresql.org/srpms/testing/common/fedora/fedora-$releasever-$basearch
 enabled=0
