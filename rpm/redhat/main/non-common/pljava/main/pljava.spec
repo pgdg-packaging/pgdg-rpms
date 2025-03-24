@@ -1,7 +1,7 @@
 %global sname	pljava
 %global pljavamajver 1
 %global pljavamidver 6
-%global pljavaminver 8
+%global pljavaminver 9
 
 %global relver %{pljavamajver}_%{pljavamidver}_%{pljavaminver}
 
@@ -19,7 +19,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
@@ -104,6 +104,10 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Mon Mar 24 2025 - Devrim Gündüz <devrim@gunduz.org> - 1.6.9-1PGDG
+- Update to 1.6.9 per changes described at:
+  https://github.com/tada/pljava/releases/tag/V1_6_9
+
 * Thu Jan 2 2025 - Devrim Gündüz <devrim@gunduz.org> - 1.6.8-2PGDG
 - Simplify Java BR and add Java Requires.
 - Use proper JAVA_HOME on all distros
