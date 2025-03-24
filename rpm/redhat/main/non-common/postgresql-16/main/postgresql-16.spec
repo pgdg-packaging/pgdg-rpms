@@ -58,9 +58,9 @@ Version:	16.8
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -477,13 +477,6 @@ LDFLAGS="-Wl,--as-needed"; export LDFLAGS
 %endif
 
 export CFLAGS
-
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 8
-export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config-64
-%endif
-%if 0%{?suse_version} >= 1315
-export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config
-%endif
 
 # These configure options must match main build
 ./configure --enable-rpath \
@@ -1234,6 +1227,11 @@ fi
 %endif
 
 %changelog
+* Mon Mar 24 2025 Devrim Gunduz <devrim@gunduz.org> - 16.8-3PGDG
+- Remove explicit calls to CLANG and LLVM_CONFIG as they are the
+  same across all distros (and also llvm-config-64 is removed from
+  Fedora 42).
+
 * Fri Mar 07 2025 Devrim Gunduz <devrim@gunduz.org> - 16.8-2PGDG
 - Remove redundant BR
 

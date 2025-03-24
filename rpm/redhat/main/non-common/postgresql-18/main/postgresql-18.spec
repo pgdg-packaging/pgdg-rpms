@@ -458,13 +458,6 @@ LDFLAGS="-Wl,--as-needed"; export LDFLAGS
 
 export CFLAGS
 
-%if 0%{?fedora} || 0%{?rhel}
-export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config-64
-%endif
-%if 0%{?suse_version} >= 1500
-export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config
-%endif
-
 # These configure options must match main build
 ./configure --enable-rpath \
 	--prefix=%{pgbaseinstdir} \
