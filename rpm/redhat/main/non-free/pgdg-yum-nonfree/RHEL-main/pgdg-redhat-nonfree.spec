@@ -1,6 +1,6 @@
 Name:		pgdg-redhat-nonfree-repo
 Version:	42.0
-Release:	15PGDG
+Release:	16PGDG
 Summary:	PostgreSQL PGDG RPMs - Yum Repository Configuration for RHEL / Rocky Linux / AlmaLinux NonFree
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
@@ -38,6 +38,12 @@ AlmaLinux non-free repository, and also the GPG key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Tue Mar 25 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-16PGDG
+- Remove v12 repos
+- Add -debuginfo repos
+- Fix/update srpm repo names so that they have -source at the end
+  and move them to the new URL.
+
 * Wed Sep 25 2024 Devrim Gündüz <devrim@gunduz.org> - 42.0-15PGDG
 - Add v17 repositories
 - Remove RHEL 7 bits
