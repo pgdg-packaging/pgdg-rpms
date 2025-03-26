@@ -9,7 +9,7 @@ Release:	1PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 License:	MIT
-BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
