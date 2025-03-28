@@ -81,7 +81,7 @@ BuildRequires:	perl glibc-devel bison >= 2.3 flex >= 2.5.35
 BuildRequires:	gcc-c++ libcurl-devel
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
-BuildRequires:	libxml2-devel libxslt-devel
+BuildRequires:	libxml2-devel libxslt-devel liburing-devel
 
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -521,6 +521,7 @@ export CFLAGS
 	--with-selinux \
 %endif
 	--with-libcurl \
+	--with-liburing \
 	--with-systemd \
 	--with-system-tzdata=%{_datadir}/zoneinfo \
 	--sysconfdir=/etc/sysconfig/pgsql \
