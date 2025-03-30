@@ -249,7 +249,7 @@ Summary:	The programs needed to create and run a PostgreSQL server
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
-Requires:	util-linux
+Requires:	util-linux liburing
 # for /sbin/ldconfig
 Requires(post):		glibc
 Requires(postun):	glibc
