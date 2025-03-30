@@ -78,7 +78,7 @@ Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
 
 BuildRequires:	perl glibc-devel bison >= 2.3 flex >= 2.5.35
-BuildRequires:	gcc-c++ libcurl-devel
+BuildRequires:	gcc-c++ libcurl-devel >= 7.61.0
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
 BuildRequires:	libxml2-devel libxslt-devel liburing-devel
