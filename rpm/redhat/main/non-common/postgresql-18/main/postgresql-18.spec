@@ -34,10 +34,6 @@
  %{!?sdt:%global sdt 1}
 %endif
 
-%if 0%{?fedora} > 30
-%global _hardened_build 1
-%endif
-
 #Filter out some Perl "dependencies"
 %global __requires_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
 %global __provides_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
