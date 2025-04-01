@@ -73,7 +73,7 @@ Patch3:		%{sname}-%{pgmajorversion}-conf.patch
 Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
 
-BuildRequires:	perl glibc-devel bison >= 2.3 flex >= 2.5.35
+BuildRequires:	perl glibc-devel bison >= 3.0.4 flex >= 2.6.1
 BuildRequires:	gcc-c++ libcurl-devel >= 7.61.0
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
@@ -126,17 +126,15 @@ BuildRequires:	e2fsprogs-devel
 %endif
 
 %if %ldap
-%if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	openldap2-devel
-%endif
 %else
 BuildRequires:	openldap-devel
 %endif
 %endif
 
 %if %nls
-BuildRequires:	gettext >= 0.10.35
+BuildRequires:	gettext >= 0.19.8
 %endif
 
 %if %pam
@@ -144,6 +142,7 @@ BuildRequires:	pam-devel
 %endif
 
 %if %plperl
+BuildRequires:	perl-devel
 %if 0%{?fedora} || 0%{?rhel}
 BuildRequires:	perl-ExtUtils-Embed
 %endif
@@ -163,11 +162,11 @@ BuildRequires:	systemtap-sdt-devel
 
 %if %selinux
 # All supported distros have libselinux-devel package:
-BuildRequires:	libselinux-devel >= 2.0.93
+BuildRequires:	libselinux-devel >= 2.9.10
 # SLES: SLES 15 does not have selinux-policy package.
 # RHEL/Fedora has selinux-policy:
 %if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	selinux-policy >= 3.9.13
+BuildRequires:	selinux-policy >= 3.4.3
 %endif
 %endif
 
@@ -180,10 +179,8 @@ BuildRequires:	openssl-devel-engine
 %endif
 
 %if %uuid
-%if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	uuid-devel
-%endif
 %else
 BuildRequires:	libuuid-devel
 %endif
@@ -192,10 +189,8 @@ BuildRequires:	libuuid-devel
 BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
 Requires(post):		systemd-sysvinit
-%endif
 %else
 Requires(post):		systemd-sysv
 Requires(post):		systemd
@@ -251,10 +246,8 @@ Requires(post):		glibc
 Requires(postun):	glibc
 # pre/post stuff needs systemd too
 
-%if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
 Requires(post):		systemd
-%endif
 %else
 Requires(post):		systemd
 Requires(preun):	systemd
@@ -317,17 +310,12 @@ Requires:	libicu-devel
 %endif
 
 %if %enabletaptests
-%if 0%{?suse_version} && 0%{?suse_version} >= 1500
+BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
 Requires:	perl-IPC-Run
-BuildRequires:	perl-IPC-Run
-%endif
-%if 0%{?rhel}
-Requires:	perl-Test-Simple
-BuildRequires:	perl-Test-Simple perl-IPC-Run perl-Time-HiRes
-%endif
-%if 0%{?fedora}
-Requires:	perl-IPC-Run
-BuildRequires:	perl-Test-Simple perl-IPC-Run perl-Time-HiRes
+# SLES 15 does not have a separate perl-TimeHires package. It is part
+# of the main perl package.
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	perl-Time-HiRes
 %endif
 %endif
 
@@ -366,9 +354,6 @@ goal of accelerating analytics queries.
 Summary:	The Perl procedural language for PostgreSQL
 Requires:	%{name}-server%{?_isa} = %{version}-%{release}
 Requires:	perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
-%ifarch ppc ppc64
-BuildRequires:	perl-devel
-%endif
 Provides:	postgresql-plperl >= %{version}-%{release}
 
 %description plperl
@@ -767,10 +752,8 @@ useradd -M -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
 /sbin/ldconfig
 if [ $1 -eq 1 ] ; then
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-   %if 0%{?suse_version}
    %if 0%{?suse_version} >= 1500
    %service_add_pre postgresql-%{pgpackageversion}.service
-   %endif
    %else
    %systemd_post %{sname}-%{pgpackageversion}.service
    %endif
