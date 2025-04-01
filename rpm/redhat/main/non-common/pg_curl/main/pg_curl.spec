@@ -5,7 +5,7 @@
 Summary:	PostgreSQL tool for transferring data with URL syntax
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 License:	MIT
@@ -20,7 +20,7 @@ TELNET, TFTP, WS and WSS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pgsql_http
+Summary:	Just-in-time compilation support for pg_curl
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
@@ -32,7 +32,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This package provides JIT support for pgsql_http
+This package provides JIT support for pg_curl
 %endif
 
 %prep
@@ -60,6 +60,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
     %{pginstdir}/lib/bitcode/%{sname}/*.bc
 %endif
 %changelog
+* Tue Apr 1 2025 Devrim Gunduz <devrim@gunduz.org> - 2.4.3-2PGDG
+- Fix llvmjit subpackage description and summary
+
 * Wed Mar 26 2025 Devrim Gunduz <devrim@gunduz.org> - 2.4.3-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
 
