@@ -271,11 +271,19 @@ repo_gpgcheck = 1
 
 # Debuginfo/debugsource repositories for testing repos
 
+[pgdg18-updates-testing-debuginfo]
+name=PostgreSQL 18 for Fedora $releasever - $basearch - Debuginfo testing
+baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/18/fedora/fedora-$releasever-$basearch
+enabled=0
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
+repo_gpgcheck = 1
+
 [pgdg17-updates-testing-debuginfo]
 name=PostgreSQL 17 for Fedora $releasever - $basearch - Debuginfo testing
 baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/17/fedora/fedora-$releasever-$basearch
 enabled=0
-gpgcheck=0
+gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-Fedora
 repo_gpgcheck = 1
 
