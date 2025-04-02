@@ -5,21 +5,42 @@
 %global postgisprevmajorversion 2.5
 %global sname	postgis
 
-%global	libspatialitemajorversion	50
-
 %pgdg_set_gis_variables
+
+# Override some variables. PostGIS 3.0 is best served with GeOS 3.13,
+# PROJ 9.5 and GDAL 3.10 (except on RHEL 8 where GDAL 3.8 is available):
+%global geosfullversion %geos313fullversion
+%global geosmajorversion %geos313majorversion
+%global geosinstdir %geos313instdir
+%if 0%{?rhel} == 8
+%global gdalfullversion %gdal38fullversion
+%global gdalmajorversion %gdal38majorversion
+%global gdalinstdir %gdal38instdir
+%else
+%global gdalfullversion %gdal310fullversion
+%global gdalmajorversion %gdal310majorversion
+%global gdalinstdir %gdal310instdir
+%endif
+%global projmajorversion %proj95majorversion
+%global projfullversion %proj95fullversion
+%global projinstdir %proj95instdir
+
+%global libgeotiffmajorversion 17
+%global libgeotiffinstdir %libgeotiff17instdir
+
+%global libspatialitemajorversion	50
 
 %{!?llvm:%global llvm 1}
 
 %{!?utils:%global	utils 1}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 %{!?raster:%global	raster 0}
 %else
 %{!?raster:%global	raster 1}
 %endif
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %ifnarch ppc64 ppc64le
 # TODO
 %{!?sfcgal:%global	sfcgal 1}
@@ -44,14 +65,14 @@ URL:		http://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.18 pcre-devel gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.47 pcre-devel gmp-devel
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
 Requires:	gmp
 %endif
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libjson-c-devel proj%{projmajorversion}-devel >= %{projfullversion}
 %endif
 %else
@@ -69,7 +90,7 @@ Requires:	SFCGAL
 BuildRequires:	gdal%{gdalmajorversion}-devel >= %{gdalfullversion}
 %endif
 
-%if 0%{?fedora} >= 29 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 BuildRequires:	protobuf-c-devel
 %endif
 
@@ -83,7 +104,7 @@ Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %endif
 
 Requires:	pcre
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	libjson-c5
 Requires:	libxerces-c-3_1
 %else
@@ -91,7 +112,7 @@ Requires:	json-c xerces-c
 %endif
 Requires(post):	%{_sbindir}/update-alternatives
 
-%if 0%{?fedora} >= 29 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	protobuf-c >= 1.1.0
 %endif
 
@@ -186,14 +207,14 @@ This packages provides JIT support for postgis30
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
-LDFLAGS="-Wl,-rpath,%{projinstdir}/lib ${LDFLAGS}" ; export LDFLAGS
+LDFLAGS="-Wl,-rpath,%{projinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
 LDFLAGS="-Wl,-rpath,%{libspatialiteinstdir}/lib ${LDFLAGS}" ; export LDFLAGS
 SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{geosinstdir}/lib64" ; export SHLIB_LINK
 SFCGAL_LDFLAGS="$SFCGAL_LDFLAGS -L/usr/lib64"; export SFCGAL_LDFLAGS
 
-LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -lgeos_c -L%{projinstdir}/lib -L%{gdalinstdir}/lib -L%{libgeotiffinstdir}/lib -L/usr/lib64/ -ltiff"; export LDFLAGS
+LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -lgeos_c -L%{projinstdir}/lib64 -L%{gdalinstdir}/lib -L%{libgeotiffinstdir}/lib -L/usr/lib64/ -ltiff"; export LDFLAGS
 CFLAGS="$CFLAGS -I%{gdalinstdir}/include"; export CFLAGS
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:%{projinstdir}/lib/pkgconfig
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:%{projinstdir}/lib64/pkgconfig
 
 autoconf
 
@@ -344,6 +365,9 @@ fi
 %endif
 
 %changelog
+* Wed Apr 2 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0.9-2PGDG
+- Rebuild against PROJ 9.5, GDAL 3.10 and GeOS 3.13
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 3.0.9-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
