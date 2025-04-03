@@ -1,0 +1,1 @@
+../main/proj96.spec
