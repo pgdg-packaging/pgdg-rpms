@@ -24,16 +24,16 @@
 %{!?llvm:%global llvm 1}
 %{!?nls:%global nls 1}
 %{!?pam:%global pam 1}
-%{!?pltcl:%global pltcl 1}
 %{!?plperl:%global plperl 1}
 %{!?plpython3:%global plpython3 1}
+%{!?pltcl:%global pltcl 1}
+%{!?runselftest:%global runselftest 0}
+%{!?sdt:%global sdt 1}
+%{!?selinux:%global selinux 1}
 %{!?ssl:%global ssl 1}
 %{!?test:%global test 1}
-%{!?runselftest:%global runselftest 0}
-%{!?selinux:%global selinux 1}
 %{!?uuid:%global uuid 1}
 %{!?xml:%global xml 1}
-%{!?sdt:%global sdt 1}
 
 #Filter out some Perl "dependencies"
 %global __requires_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
@@ -79,9 +79,6 @@ BuildRequires:	gcc-c++ libcurl-devel >= 7.61.0
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
 BuildRequires:	libxml2-devel libxslt-devel
-%if %liburing
-BuildRequires:	liburing-devel
-%endif
 
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -115,15 +112,6 @@ BuildRequires:	libicu-devel
 Requires:	libicu
 %endif
 
-%if %llvm
-%if 0%{?suse_version} >= 1500
-BuildRequires:	llvm17-devel clang17-devel
-%endif
-%if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel => 17.0 clang-devel >= 17.0
-%endif
-%endif
-
 %if %kerberos
 BuildRequires:	krb5-devel
 BuildRequires:	e2fsprogs-devel
@@ -134,6 +122,19 @@ BuildRequires:	e2fsprogs-devel
 BuildRequires:	openldap2-devel
 %else
 BuildRequires:	openldap-devel
+%endif
+%endif
+
+%if %liburing
+BuildRequires:	liburing-devel
+%endif
+
+%if %llvm
+%if 0%{?suse_version} >= 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+BuildRequires:	llvm-devel => 17.0 clang-devel >= 17.0
 %endif
 %endif
 
@@ -302,20 +303,6 @@ Summary:	PostgreSQL development header files and libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
-%if %llvm
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
-Requires:	llvm17-devel clang17-devel
-%endif
-%if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel => 17.0 clang-devel >= 17.0
-%endif
-%endif
-
-%if %icu
-Requires:	libicu-devel
-%endif
-
 %if %enabletaptests
 BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
 Requires:	perl-IPC-Run
@@ -323,6 +310,20 @@ Requires:	perl-IPC-Run
 # of the main perl package.
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	perl-Time-HiRes
+%endif
+%endif
+
+%if %icu
+Requires:	libicu-devel
+%endif
+
+%if %llvm
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if 0%{?suse_version} >= 1500
+Requires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+Requires:	llvm-devel => 17.0 clang-devel >= 17.0
 %endif
 %endif
 
@@ -465,8 +466,25 @@ export CFLAGS
 %if %icu
 	--with-icu \
 %endif
+%if %kerberos
+	--with-gssapi \
+	--with-includes=%{_includedir} \
+	--with-libraries=%{_libdir} \
+%endif
+%if %liburing
+	--with-liburing \
+%endif
+%if %ldap
+	--with-ldap \
+%endif
 %if %llvm
 	--with-llvm \
+%endif
+%if %nls
+	--enable-nls \
+%endif
+%if %pam
+	--with-pam \
 %endif
 %if %plperl
 	--with-perl \
@@ -478,25 +496,14 @@ export CFLAGS
 	--with-tcl \
 	--with-tclconfig=%{_libdir} \
 %endif
-%if %ssl
-	--with-openssl \
-%endif
-%if %pam
-	--with-pam \
-%endif
-%if %kerberos
-	--with-gssapi \
-	--with-includes=%{_includedir} \
-	--with-libraries=%{_libdir} \
-%endif
-%if %liburing
-	--with-liburing \
-%endif
-%if %nls
-	--enable-nls \
-%endif
 %if %sdt
 	--enable-dtrace \
+%endif
+%if %selinux
+	--with-selinux \
+%endif
+%if %ssl
+	--with-openssl \
 %endif
 %if %uuid
 	--with-uuid=e2fs \
@@ -504,12 +511,6 @@ export CFLAGS
 %if %xml
 	--with-libxml \
 	--with-libxslt \
-%endif
-%if %ldap
-	--with-ldap \
-%endif
-%if %selinux
-	--with-selinux \
 %endif
 	--with-libcurl \
 	--with-systemd \
