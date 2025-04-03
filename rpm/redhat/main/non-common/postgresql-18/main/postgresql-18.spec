@@ -15,6 +15,12 @@
 %{!?icu:%global icu 1}
 %{!?kerberos:%global kerberos 1}
 %{!?ldap:%global ldap 1}
+# RHEL 8 does not have io_uring support:
+%if 0%{?rhel} == 8
+%{!?liburing:%global liburing 0}
+%else
+%{!?liburing:%global liburing 1}
+%endif
 %{!?llvm:%global llvm 1}
 %{!?nls:%global nls 1}
 %{!?pam:%global pam 1}
@@ -77,7 +83,10 @@ BuildRequires:	perl glibc-devel bison >= 3.0.4 flex >= 2.6.1
 BuildRequires:	gcc-c++ libcurl-devel >= 7.61.0
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
-BuildRequires:	libxml2-devel libxslt-devel liburing-devel
+BuildRequires:	libxml2-devel libxslt-devel
+%if %liburing
+BuildRequires:	liburing-devel
+%endif
 
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -240,7 +249,10 @@ Summary:	The programs needed to create and run a PostgreSQL server
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
-Requires:	util-linux liburing
+Requires:	util-linux
+%if %liburing
+Requires:	liburing
+%endif
 # for /sbin/ldconfig
 Requires(post):		glibc
 Requires(postun):	glibc
@@ -482,6 +494,9 @@ export CFLAGS
 	--with-includes=%{_includedir} \
 	--with-libraries=%{_libdir} \
 %endif
+%if %liburing
+	--with-liburing \
+%endif
 %if %nls
 	--enable-nls \
 %endif
@@ -502,7 +517,6 @@ export CFLAGS
 	--with-selinux \
 %endif
 	--with-libcurl \
-	--with-liburing \
 	--with-systemd \
 	--with-system-tzdata=%{_datadir}/zoneinfo \
 	--sysconfdir=/etc/sysconfig/pgsql \
