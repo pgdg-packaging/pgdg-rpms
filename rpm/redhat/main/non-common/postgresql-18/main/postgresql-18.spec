@@ -1,4 +1,3 @@
-%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
