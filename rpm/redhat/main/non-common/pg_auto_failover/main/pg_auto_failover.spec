@@ -4,8 +4,8 @@
 
 Summary:	Postgres extension and service for automated failover and high-availability
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1
-Release:	5PGDG%{dist}
+Version:	2.2
+Release:	1PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}/
@@ -56,7 +56,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_auto_failover
+This package provides JIT support for pg_auto_failover
 %endif
 
 %prep
@@ -90,6 +90,10 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Thu Apr 3 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2-1PGDG
+- Update to 2.2, per changes described at:
+  https://github.com/hapostgres/pg_auto_failover/releases/tag/v2.2
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1-5PGDG
 - Add missing BRs
 
