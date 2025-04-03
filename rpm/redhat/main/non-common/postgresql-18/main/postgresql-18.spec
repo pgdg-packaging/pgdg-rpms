@@ -33,12 +33,7 @@
 %{!?selinux:%global selinux 1}
 %{!?uuid:%global uuid 1}
 %{!?xml:%global xml 1}
-
-%ifarch ppc64 ppc64le s390 s390x armv7hl
-%{!?sdt:%global sdt 0}
-%else
- %{!?sdt:%global sdt 1}
-%endif
+%{!?sdt:%global sdt 1}
 
 #Filter out some Perl "dependencies"
 %global __requires_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
