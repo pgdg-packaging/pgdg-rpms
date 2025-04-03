@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
@@ -162,7 +163,7 @@ BuildRequires:	systemtap-sdt-devel
 
 %if %selinux
 # All supported distros have libselinux-devel package:
-BuildRequires:	libselinux-devel >= 2.9.10
+BuildRequires:	libselinux-devel >= 2.9
 # SLES: SLES 15 does not have selinux-policy package.
 # RHEL/Fedora has selinux-policy:
 %if 0%{?rhel} || 0%{?fedora}
