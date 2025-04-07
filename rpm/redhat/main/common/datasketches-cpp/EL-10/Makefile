@@ -1,4 +1,4 @@
-w#################################
+#################################
 # RPM-specific Makefile		#
 # https://yum.postgresql.org	#
 #                         	#
