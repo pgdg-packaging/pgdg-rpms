@@ -26,7 +26,26 @@ BuildRequires:	gcc glibc-devel bison flex >= 2.5.31
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
 
 BuildRequires:	krb5-devel libicu-devel libxml2-devel libxslt-devel
-BuildRequires:	e2fsprogs-devel systemd systemd-devel
+BuildRequires:	pam-devel e2fsprogs-devel systemd systemd-devel
+BuildRequires:	systemtap-sdt-devel systemtap-sdt-dtrace
+BuildRequires:	perl(ExtUtils::MakeMaker) perl-FindBin
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	uuid-devel
+%else
+BuildRequires:	libuuid-devel
+%endif
+
+%if 0%{?fedora} || 0%{?rhel}
+BuildRequires:	perl-ExtUtils-Embed
+%endif
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+BuildRequires:	llvm-devel => 17.0 clang-devel >= 17.0
+%endif
 
 Requires:	/sbin/ldconfig libicu
 
