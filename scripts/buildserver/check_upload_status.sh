@@ -14,7 +14,7 @@ source ~/bin/global.sh
 for packageBuildVersion in ${pgStableBuilds[@]}
 do
 	echo "Checking PostgreSQL $packageBuildVersion - $os"
-	upload_status=`curl -s -o /dev/null -w "%{http_code}" https://download.postgresql.org/pub/repos/yum/$packageBuildVersion/$osdistro/$os-$osarch/repodata`
+	upload_status=`curl -s -o /dev/null -w "%{http_code}" https://download.postgresql.org/pub/repos/yum/$packageBuildVersion/$osdistro/$os-$osarch/repodata/`
 	echo "Status: $upload_status"
 	if [ $upload_status == "404" ]
 	then
@@ -26,7 +26,7 @@ done
 # Also check the common repo:
 
 echo "Checking $os common repo:"
-upload_status=`curl -s -o /dev/null -w "%{http_code}" https://download.postgresql.org/pub/repos/yum/common/$osdistro/$os-$osarch/repodata`
+upload_status=`curl -s -o /dev/null -w "%{http_code}" https://download.postgresql.org/pub/repos/yum/common/$osdistro/$os-$osarch/repodata/`
 echo "Status: $upload_status"
 if [ $upload_status == "404" ]
 then
