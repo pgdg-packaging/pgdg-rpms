@@ -1,9 +1,8 @@
+%global debug_package %{nil}
 %global pgmajorversion 17
 
 # Macros that define the configure parameters:
 %{!?kerbdir:%global kerbdir "/usr"}
-
-%{!?ssl:%global ssl 1}
 
 Summary:	PostgreSQL Client Library
 Name:		libpq5
@@ -11,9 +10,9 @@ Version:	%{pgmajorversion}.4
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420001PGDG%{?dist}
+Release:	420002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -26,12 +25,12 @@ Patch5:		%{name}-var-run-socket.patch
 BuildRequires:	gcc glibc-devel bison flex >= 2.5.31
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
 
-BuildRequires:	krb5-devel libicu-devel
+BuildRequires:	krb5-devel libicu-devel libxml2-devel libxslt-devel
 BuildRequires:	e2fsprogs-devel systemd systemd-devel
 
 Requires:	/sbin/ldconfig libicu
 
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libopenssl-devel
 %else
 BuildRequires:	openssl-devel
@@ -83,22 +82,12 @@ BuildRequires:	selinux-policy >= 3.9.13
 BuildRequires:	selinux-policy >= 3.9.13
 %endif
 
-%if %ssl
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-BuildRequires:	libopenssl-devel
-%else
 BuildRequires:	openssl-devel
-%endif
-%endif
 
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-Requires:	libopenssl1_0_0
-%else
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl1_1
 %else
 Requires:	openssl-libs >= 1.0.2k
-%endif
 %endif
 
 Obsoletes:	libpq <= 99.0
@@ -148,20 +137,35 @@ export CFLAGS
 
 export PYTHON=/usr/bin/python3
 
-# These configure options must match main build
-%configure --disable-rpath \
-%if %ssl
-	--with-openssl \
+CFLAGS="${CFLAGS:-%optflags}"
+# Strip out -ffast-math from CFLAGS....
+CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
+%if 0%{?rhel}
+LDFLAGS="-Wl,--as-needed"; export LDFLAGS
 %endif
+export CFLAGS
+
+# These configure options must match main build
+%configure \
+	--enable-rpath \
+	--enable-dtrace \
+	--enable-nls \
 	--with-gssapi \
+	--with-icu \
 	--with-includes=%{kerbdir}/include \
 	--with-libraries=%{kerbdir}/%{_lib} \
-	--enable-nls \
 	--with-ldap \
+	--with-libxslt \
+	--with-libxml \
+	--with-llvm \
 	--with-lz4 \
+	--with-openssl \
+	--with-pam \
 	--with-selinux \
 	--with-systemd \
-	--with-system-tzdata=%{_datadir}/zoneinfo
+	--with-system-tzdata=%{_datadir}/zoneinfo \
+	--with-uuid=e2fs \
+	--with-zstd
 
 %global build_subdirs \\\
 	src/include \\\
@@ -183,7 +187,6 @@ done
 
 # remove files not to be packaged
 find %{buildroot} -name '*.a' -delete
-%{__rm} -r %{buildroot}%_includedir/pgsql/server
 %{__rm} -r %{buildroot}%_datadir/pgsql/postgres.bki
 %{__rm} -r %{buildroot}%_datadir/pgsql/system_constraints.sql
 
@@ -222,6 +225,11 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-42-2PGDG
+- Sync build parameters with main package.
+- Install more files with -devel subpackage. Need it for some of the
+  packages in common repository.
+
 * Tue Feb 18 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-42-1PGDG
 - Update to 17.4
 
