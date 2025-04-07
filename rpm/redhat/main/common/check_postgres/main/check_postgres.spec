@@ -1,19 +1,18 @@
 Summary:	PostgreSQL monitoring script
 Name:		check_postgres
 Version:	2.26.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/bucardo/%{name}/archive/%{version}.tar.gz
 URL:		https://bucardo.org/wiki/Check_postgres
 BuildArch:	noarch
-BuildRequires:	perl-ExtUtils-MakeMaker
+BuildRequires:	perl-ExtUtils-MakeMaker make
 BuildRequires:	perl-DBD-Pg >= 2.0 perl-DBI >= 1.51
-#perl-Date-Parse
 Requires:	perl-File-Temp perl-Time-HiRes perl-Digest-MD5
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 7
+%if 0%{?fedora} || 0%{?rhel}
 Requires:	perl-Getopt-Long
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	perl-Getopt-Long-Descriptive
 %endif
 
@@ -26,19 +25,16 @@ scripts.
 %setup -q
 
 %build
-%{__perl} Makefile.PL INSTALLDIRS=vendor
+%{__perl} Makefile.PL NO_PACKLIST=1 INSTALLDIRS=vendor
 %{__make} %{?_smp_mflags}
 
 %install
 %{__rm} -rf %{buildroot}
 %{__make} %{?_smp_mflags} pure_install DESTDIR=%{buildroot}
-%{__rm} -f %{buildroot}%{_libdir}/perl5/vendor_perl/auto/check_postgres/.packlist
 
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 %perl_process_packlist
 %perl_gen_filelist
-%endif
 %endif
 
 %files
@@ -48,6 +44,11 @@ scripts.
 %{_bindir}/%{name}.pl
 
 %changelog
+* Mon Apr 7 2025 - Devrim Gündüz <devrim@gunduz.org> 2.26.0-3PGDG
+- Add missing BR
+- Build with NO_PACKLIST=1
+- Spec file cleanup
+
 * Fri Feb 16 2024 - Devrim Gündüz <devrim@gunduz.org> 2.26.0-2PGDG
 - Add PGDG branding
 - Fix rpmlint warning
