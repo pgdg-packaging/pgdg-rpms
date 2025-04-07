@@ -44,8 +44,8 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}310
-Version:	3.10.2
-Release:	2PGDG%{?dist}
+Version:	3.10.3
+Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -474,6 +474,10 @@ done
 %endif
 
 %changelog
+* Mon Apr 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.3-1PGDG
+- Update to 3.10.3 per changes described at:
+  https://github.com/OSGeo/gdal/blob/v3.10.3/NEWS.md
+
 * Sun Mar 9 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.2-2PGDG
 - Remove redundant ant BR
 
