@@ -7,7 +7,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.61.6
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -15,11 +15,11 @@ Patch0:		%{sname}-cmakelists-rpm.patch
 Requires:	%{sname}-common
 
 BuildRequires:	gcc-c++
-BuildRequires:	cmake => 3.2.0
+BuildRequires:	cmake >= 3.2.0
 
 BuildRequires:	libpq5-devel openssl-devel curl-devel
 
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libexpat-devel
 %else
 Requires:	expat-devel
@@ -60,11 +60,7 @@ CFLAGS="$CFLAGS -I%{pginstdir}/include/server -g -fPIE"; export CFLAGS
 export PATH=%{pginstdir}/bin/:$PATH
 %{__install} -d build
 pushd build
-%if 0%{?suse_version} >= 1315
-cmake ..
-%else
 %cmake3 ..
-%endif
 
 popd
 
@@ -95,11 +91,12 @@ popd
 %{__cp} storedproc/pgsql/c/%{sname}.so %{buildroot}/%{pginstdir}/lib
 %{__cp} storedproc/pgsql/c/%{sname}--0.45.0.sql %{buildroot}/%{pginstdir}/share/extension/%{sname}--%{version}.sql
 
-# Remove binaries, they are installed with the common package.
+# Remove files which are installed with the common package:
 %{__rm} -f %{buildroot}/%{_bindir}/*
-
-# Remove man files, they are installed with the common package.
 %{__rm} -f %{buildroot}/%{_mandir}/man1/dbt2*
+
+# Remove more files:
+%{__rm} -rf %{buildroot}/usr/src/%{sname}/storedproc/
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -124,6 +121,10 @@ popd
 %endif
 
 %changelog
+* Mon Apr 7 2025 Devrim Gunduz <devrim@gunduz.org> - 0.61.6-2PGDG
+- Spec file cleanup
+- Remove more files.
+
 * Fri Feb 21 2025 Devrim Gunduz <devrim@gunduz.org> - 0.61.6-1PGDG
 - Update 0.61.6
 - Update LLVM dependencies
