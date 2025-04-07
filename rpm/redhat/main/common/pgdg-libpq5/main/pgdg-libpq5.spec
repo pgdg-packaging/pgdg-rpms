@@ -1,4 +1,3 @@
-%global debug_package %{nil}
 %global pgmajorversion 17
 
 # Macros that define the configure parameters:
