@@ -1,9 +1,9 @@
 Summary:	Gather information about a particular computer
 Name:		boxinfo
 Version:	1.4.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
-Source0:	https://bucardo.org/downloads/%{name}.pl
+Source0:	%{name}.pl
 Source2:	README.%{name}
 URL:		https://bucardo.org/wiki/Boxinfo
 BuildArch:	noarch
@@ -17,11 +17,10 @@ highly developed Postgres section. It was developed at End Point
 Corporation by Greg Sabino Mullane.
 
 %prep
-%if 0%{?suse_version} >= 1315
-%{__cp} -p %{SOURCE0} .
-%endif
+echo no prep stage needed
 
 %build
+echo no build stage needed
 
 %install
 %{__rm} -rf %{buildroot}
@@ -29,7 +28,7 @@ Corporation by Greg Sabino Mullane.
 %{__install} -d -m 755 %{buildroot}%{_bindir}
 %{__install} -d -m 755 %{buildroot}%{_docdir}/%{name}
 
-%{__install} -m 755 %{name}.pl %{buildroot}%{_bindir}/%{name}.pl
+%{__install} -m 755 %{SOURCE0} %{buildroot}%{_bindir}/%{name}.pl
 %{__install} -m 644 %{SOURCE2} %{buildroot}%{_docdir}/%{name}/
 
 %files
@@ -38,6 +37,9 @@ Corporation by Greg Sabino Mullane.
 %attr(644,root,root) %{_docdir}/%{name}/README.%{name}
 
 %changelog
+* Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-3PGDG
+- Fix instalation issue on recent platforms
+
 * Fri Feb 16 2024 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-2PGDG
 - Modernise the spec file.
 - Add PGDG branding.
