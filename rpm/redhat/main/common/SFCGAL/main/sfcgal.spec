@@ -23,12 +23,17 @@ Version:	2.0.0
 BuildRequires:	CGAL-devel >= 5.6
 %endif
 
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
 URL:		https://sfcgal.gitlab.io/SFCGAL/
 
+BuildRequires:	%if 0%{?suse_version} >= 1500
+BuildRequires:  cmake-full
+%else
+BuildRequires:  cmake-rpm-macros
+%endif
 BuildRequires:	cmake pgdg-srpm-macros
 
 %if 0%{?suse_version} >= 1500
@@ -75,12 +80,9 @@ Development headers and libraries for SFCGAL.
 
 %{__install} -d build
 
-%if 0%{?suse_version}
+%cmake .. \
 %if 0%{?suse_version} >= 1500
-cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr \
-%endif
-%else
-%cmake3 .. \
+	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
 %endif
 	-D LIB_INSTALL_DIR=%{_lib} -DBoost_NO_BOOST_CMAKE=BOOL:ON .
 
@@ -117,6 +119,9 @@ cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr \
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Mon Apr 7 2025 Devrim Gunduz <devrim@gunduz.org> - 2.0.0-3PGDG
+- Add missing BRs.
+
 * Sat Dec 28 2024 Devrim Gunduz <devrim@gunduz.org> - 1.4.1-2PGDG
 - Update to 1.4.1 on SLES 15
 
