@@ -3,7 +3,7 @@
 
 Summary:	Database Test 2 Differences from the TPC-C - Common package
 Name:		%{sname}-common
-Version:	0.53.9
+Version:	0.61.6
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -11,14 +11,15 @@ URL:		https://github.com/osdldbt/%{sname}/
 Patch0:		%{sname}-cmakelists-rpm.patch
 Patch1:		%{sname}-profile.patch
 
-BuildRequires:	gcc-c++ openssl-devel curl-devel libev-devel
-%if 0%{?rhel} && 0%{?rhel} == 7
-BuildRequires:	cmake3
+BuildRequires:	cmake curl-devel libev-devel
+BuildRequires:	libpq5-devel gcc-c++ openssl-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	cmake-full
 %else
-BuildRequires:	cmake => 3.2.0
-%endif
+BuildRequires:	cmake-rpm-macros
 
-%if 0%{?suse_version} >= 1315
+%endif
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libexpat-devel
 Requires:	libev4
 %else
@@ -26,7 +27,6 @@ BuildRequires:	expat-devel
 Requires:	libev
 %endif
 
-BuildRequires:	libpq5-devel
 Requires:	R
 
 %description
@@ -50,12 +50,11 @@ CFLAGS="$CFLAGS -I%{pginstdir}/include/server -g -fPIE"; export CFLAGS
 
 %{__install} -d build
 pushd build
-%if 0%{?suse_version} >= 1315
-cmake  -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
+%if 0%{?suse_version} >= 1500
+%cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..
 %else
 %cmake3 ..
 %endif
-
 popd
 
 %{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} build
@@ -67,8 +66,9 @@ pushd build
 	DESTDIR=%{buildroot}
 popd
 
-# Remove .sql files, we'll ship them with -extensions subpackages.
+# Remove some files, we'll ship them with -extensions subpackages.
 %{__rm} -f %{buildroot}/%{_datadir}/pgsql/*.sql
+%{__rm} -rf %{buildroot}/usr/src/%{sname}/storedproc/
 
 %{__mkdir} -p %{buildroot}/%{_sysconfdir}/
 %{__cp} examples/dbt2_profile %{buildroot}/%{_sysconfdir}/dbt2_profile.conf
@@ -82,6 +82,11 @@ popd
 %{_mandir}/man1/dbt2*
 
 %changelog
+* Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 0.61.6-1PGDG
+- Update to 0.61.6
+- Add missing BRs
+- Remove RHEL 7 and SLES 12 support
+
 * Fri Feb 16 2024 Devrim Gündüz <devrim@gunduz.org> - 0.53.9-1PGDG
 - Update to 0.53.9
 - Fix rpmlint warnings
