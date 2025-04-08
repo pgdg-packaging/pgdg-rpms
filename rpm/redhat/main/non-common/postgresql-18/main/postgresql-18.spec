@@ -454,6 +454,7 @@ export CFLAGS
 	--mandir=%{pgbaseinstdir}/share/man \
 	--datadir=%{pgbaseinstdir}/share \
 	--libdir=%{pgbaseinstdir}/lib \
+	--with-libnuma \
 	--with-lz4 \
 	--with-zstd \
 %if %beta
