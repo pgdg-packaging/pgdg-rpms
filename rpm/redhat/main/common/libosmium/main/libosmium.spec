@@ -22,7 +22,7 @@
 
 Name:		libosmium
 Version:	2.22.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Fast and flexible C++ library for working with OpenStreetMap data
 
 License:	BSL-1.0
@@ -113,7 +113,10 @@ cd libosmium
 %endif
 
 %changelog
-* Tue Mar 18 2025 Devrim Gündüz <devrim@gunduz.org> - 2.20.0-42PGDG
+* Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.22.0-43PGDG
+- Rebuild to fix incorrect release number in previous changelog entry
+
+* Tue Mar 18 2025 Devrim Gündüz <devrim@gunduz.org> - 2.22.0-42PGDG
 - Update to 2.22.0 per changes described at:
   https://github.com/osmcode/libosmium/releases/tag/v2.22.0
 
