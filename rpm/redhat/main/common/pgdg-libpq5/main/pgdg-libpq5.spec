@@ -26,7 +26,10 @@ BuildRequires:	readline-devel zlib-devel >= 1.0.4
 
 BuildRequires:	krb5-devel libicu-devel libxml2-devel libxslt-devel
 BuildRequires:	pam-devel e2fsprogs-devel systemd systemd-devel
-BuildRequires:	systemtap-sdt-devel systemtap-sdt-dtrace
+BuildRequires:	systemtap-sdt-devel
+%if 0%{?fedora} >= 41
+BuildRequires:	systemtap-sdt-dtrace
+%endif
 BuildRequires:	perl(ExtUtils::MakeMaker) perl-FindBin
 
 %if 0%{?suse_version} >= 1500
