@@ -9,9 +9,9 @@ Version:	%{pgmajorversion}.4
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -27,10 +27,13 @@ BuildRequires:	readline-devel zlib-devel >= 1.0.4
 BuildRequires:	krb5-devel libicu-devel libxml2-devel libxslt-devel
 BuildRequires:	pam-devel e2fsprogs-devel systemd systemd-devel
 BuildRequires:	systemtap-sdt-devel
-%if 0%{?fedora} >= 41
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
 BuildRequires:	systemtap-sdt-dtrace
 %endif
-BuildRequires:	perl(ExtUtils::MakeMaker) perl-FindBin
+BuildRequires:	perl(ExtUtils::MakeMaker)
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
+BuildRequires:	perl-FindBin
+%endif
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	uuid-devel
@@ -246,7 +249,11 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
-* Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-42-2PGDG
+* Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-3PGDG
+- systemtap-sdt-dtrace is RHEL 10+ and Fedora 41+ package.
+- perl-FindBin Fedora 40+ and RHEL 9+ package
+
+* Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-2PGDG
 - Sync build parameters with main package.
 - Install more files with -devel subpackage. Need it for some of the
   packages in common repository.
