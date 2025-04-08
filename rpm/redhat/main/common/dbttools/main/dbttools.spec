@@ -1,6 +1,6 @@
 Summary:	Shared tools for dbt2 tests
 Name:		dbttools
-Version:	0.5.0
+Version:	0.5.1
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{name}/archive/refs/tags/v%{version}.tar.gz
@@ -38,6 +38,9 @@ These scripts currently depend on R or Julia to generate charts.
 
 
 %changelog
+* Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-1PGDG
+- Update to 0.5.1
+
 * Sun Jul 23 2023 Devrim Gündüz <devrim@gunduz.org> - 0.5.0-1PGDG
 - Update to 0.5.0
 - Add PGDG branding
