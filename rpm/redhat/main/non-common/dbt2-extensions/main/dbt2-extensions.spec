@@ -60,7 +60,7 @@ CFLAGS="$CFLAGS -I%{pginstdir}/include/server -g -fPIE"; export CFLAGS
 export PATH=%{pginstdir}/bin/:$PATH
 %{__install} -d build
 pushd build
-%cmake3 ..
+%cmake ..
 
 popd
 
