@@ -8,7 +8,7 @@
 
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
-Version:	2.0.1
+Version:	2.1.0
 Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -17,7 +17,7 @@ URL:		https://github.com/%{sname}-dev/%{sname}
 BuildRequires:	make gcc-c++ cmake libtool libpq5-devel libosmium-devel >= 2.20.0-44
 BuildRequires:	libxml2-devel proj%{projmajorversion}-devel >= %{projfullversion}
 BuildRequires:	protozero-devel python3-psycopg2 python3-devel potrace-devel
-BuildRequires:	opencv-devel zlib-devel
+BuildRequires:	zlib-devel
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libboost_headers1_66_0-devel libbz2-devel
@@ -75,12 +75,17 @@ popd
 %files
 %defattr(755,root,root,755)
 %{_bindir}/%{sname}
-%{_bindir}/%{sname}-gen
 %{_bindir}/%{sname}-replication
 %{_mandir}/man1/%{sname}*
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
+- Update to 2.1.0 per changes described at:
+  https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.0
+- Remove generalization support (osm2pgsql-gen binary). It is causing
+  some dependency problems.
+
 * Mon Dec 2 2024 Devrim Gündüz <devrim@gunduz.org> - 2.0.1-1PGDG
 - Update to 2.0.1 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.0.1
