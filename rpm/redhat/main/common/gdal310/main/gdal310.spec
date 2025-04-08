@@ -70,7 +70,7 @@ BuildRequires:	lz4-devel bash-completion
 Requires:	lz4
 %endif
 
-BuildRequires:	cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.44
+BuildRequires:	ant cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.44
 
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
@@ -477,6 +477,7 @@ done
 * Mon Apr 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.3-1PGDG
 - Update to 3.10.3 per changes described at:
   https://github.com/OSGeo/gdal/blob/v3.10.3/NEWS.md
+- Put ant back as a BR.
 
 * Sun Mar 9 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.2-2PGDG
 - Remove redundant ant BR
