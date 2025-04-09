@@ -4,7 +4,7 @@
 
 Summary:	Synchronize Postgres roles and ACLs from any LDAP directory
 Name:		%{sname}
-Version:	6.3
+Version:	6.4.0
 Release:	1PGDG%{?dist}
 License:	BSD
 Url:		https://github.com/dalibo/%{sname}
@@ -46,6 +46,9 @@ Features:
 %{_bindir}/%{sname}
 
 %changelog
+* Wed Apr 9 2025 Devrim Gündüz <devrim@gunduz.org> - 6.4.0-1PGDG
+- Update to 6.4.0
+
 * Sun Feb 9 2025 Devrim Gündüz <devrim@gunduz.org> - 6.3-1PGDG
 - Update to 6.3
 
