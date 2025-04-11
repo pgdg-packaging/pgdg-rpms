@@ -15,6 +15,7 @@
 %{!?icu:%global icu 1}
 %{!?kerberos:%global kerberos 1}
 %{!?ldap:%global ldap 1}
+%{!?libnuma:%global libnuma 1}
 # RHEL 8 does not have io_uring support:
 %if 0%{?rhel} == 8
 %{!?liburing:%global liburing 0}
@@ -124,7 +125,14 @@ BuildRequires:	openldap2-devel
 BuildRequires:	openldap-devel
 %endif
 %endif
-
+%if %libnuma
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
+%endif
 %if %liburing
 BuildRequires:	liburing-devel
 %endif
@@ -177,10 +185,9 @@ BuildRequires:	selinux-policy >= 3.4.3
 
 %if %ssl
 BuildRequires:	openssl-devel
-%endif
-
 %if 0%{?fedora} >= 41
 BuildRequires:	openssl-devel-engine
+%endif
 %endif
 
 %if %uuid
@@ -453,7 +460,6 @@ export CFLAGS
 	--mandir=%{pgbaseinstdir}/share/man \
 	--datadir=%{pgbaseinstdir}/share \
 	--libdir=%{pgbaseinstdir}/lib \
-	--with-libnuma \
 	--with-lz4 \
 	--with-zstd \
 %if %beta
@@ -471,6 +477,10 @@ export CFLAGS
 	--with-includes=%{_includedir} \
 	--with-libraries=%{_libdir} \
 %endif
+%if %libnuma
+	--with-libnuma \
+%endif
+
 %if %liburing
 	--with-liburing \
 %endif
