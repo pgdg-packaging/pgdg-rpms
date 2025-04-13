@@ -1,0 +1,8 @@
+[ -f /etc/profile ] && source /etc/profile
+
+PGDATA=/var/lib/pgsql/18/data
+export PGDATA
+# If you want to customize your settings,
+# Use the file below. This is not overriden
+# by the RPMS.
+[ -f /var/lib/pgsql/18/.psql_profile ] && source /var/lib/pgsql/18/.psql_profile
