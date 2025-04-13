@@ -483,7 +483,6 @@ export CFLAGS
 %if %libnuma
 	--with-libnuma \
 %endif
-
 %if %liburing
 	--with-liburing \
 %endif
