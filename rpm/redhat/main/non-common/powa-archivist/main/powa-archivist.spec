@@ -4,7 +4,7 @@
 # Powa archivist version
 %global powamajorversion 5
 %global powamidversion 0
-%global powaminorversion 1
+%global powaminorversion 2
 
 %global __ospython %{_bindir}/python3
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
@@ -23,7 +23,7 @@ Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/powa-archivist/archive/REL_%{powamajorversion}_%{powamidversion}_%{powaminorversion}.tar.gz
 URL:		https://powa.readthedocs.io/
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 
 %description
 PoWA is PostgreSQL Workload Analyzer that gathers performance stats and
@@ -50,7 +50,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for powa-archivist
+This package provides JIT support for powa-archivist
 %endif
 
 %prep
@@ -84,6 +84,10 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Sun Apr 13 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.2-1PGDG
+- Update 5.0.2 per changes described at:
+  https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_2
+
 * Sun Jan 5 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.1-1PGDG
 - Update 5.0.1 per changes described at:
   https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_1
