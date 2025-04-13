@@ -125,6 +125,7 @@ BuildRequires:	openldap2-devel
 BuildRequires:	openldap-devel
 %endif
 %endif
+
 %if %libnuma
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	numactl-devel
@@ -133,6 +134,8 @@ Requires:	numactl-libs
 BuildRequires:	libnuma-devel
 Requires:	libnuma1
 %endif
+%endif
+
 %if %liburing
 BuildRequires:	liburing-devel
 %endif
