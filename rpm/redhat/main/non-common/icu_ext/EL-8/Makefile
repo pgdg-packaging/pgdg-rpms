@@ -11,7 +11,7 @@
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
 DIST=.rhel8
-SPECFILE="icu-ext.spec"
+SPECFILE="icu_ext.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
