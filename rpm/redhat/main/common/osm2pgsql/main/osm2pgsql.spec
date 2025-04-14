@@ -8,7 +8,7 @@
 
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
-Version:	2.1.0
+Version:	2.1.1
 Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -80,6 +80,10 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
+- Update to 2.1.1 per changes described at:
+  https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.1
+
 * Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
 - Update to 2.1.0 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.0
