@@ -1,5 +1,5 @@
 
-%if 0%{?fedora} >= 39
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -7,7 +7,7 @@
 
 Name:		PyGreSQL
 Version:	6.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A Python client library for PostgreSQL
 
 URL:		http://www.PyGreSQL.org/
@@ -55,6 +55,9 @@ find -type f -exec chmod 644 {} +
 %{python3_sitearch}/pgdb/*py*
 
 %changelog
+* Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-2PGDG
+- Add RHEL 10 support
+
 * Fri Dec 6 2024 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-1PGDG
 - Update to 6.1.0 per changes described at:
   https://pygresql.org/contents/changelog.html
