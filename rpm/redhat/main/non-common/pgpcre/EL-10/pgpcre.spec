@@ -1,1 +1,0 @@
-../main/pgpcre.spec
