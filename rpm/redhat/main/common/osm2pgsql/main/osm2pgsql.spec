@@ -14,21 +14,28 @@ License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
 
-BuildRequires:	make gcc-c++ cmake libtool libpq5-devel libosmium-devel >= 2.20.0-44
+BuildRequires:	make gcc-c++ cmake libtool libpq5-devel
 BuildRequires:	libxml2-devel proj%{projmajorversion}-devel >= %{projfullversion}
-BuildRequires:	protozero-devel python3-psycopg2 python3-devel potrace-devel
+BuildRequires:	python3-psycopg2 python3-devel
 BuildRequires:	zlib-devel
+
+# These packages are have been deprecated as of RHEL 8.7,
+# so enable these features on Fedora and RHEL 8:
+# https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/8.7_release_notes/deprecated_functionality#deprecated-packages
+%if 0%{?fedora} >= 40 || 0%{?rhel} == 8
+BuildRequires:	protozero-devel libosmium-devel
+%endif
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libboost_headers1_66_0-devel libbz2-devel
 BuildRequires:	Catch2-2-devel clang-tools
 BuildRequires:	libexpat-devel nlohmann_json-devel
-BuildRequires:	lua54-devel python3-behave
+BuildRequires:	lua54-devel
 %else
 BuildRequires:	boost-devel bzip2-devel
 BuildRequires:	catch2-devel clang-tools-extra
 BuildRequires:	expat-devel json-devel
-BuildRequires:	lua-devel python3-behave
+BuildRequires:	lua-devel
 %endif
 
 Requires:	libpq5
@@ -44,18 +51,19 @@ geocoding with Nominatim, or general analysis.
 %build
 %{__install} -d build
 pushd build
-%if 0%{?suse_version} >= 1315
-cmake .. \
-%else
-%cmake3 .. \
-%endif
+%cmake .. \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DPROJ_LIBRARY=%{projinstdir}/lib64/libproj.so \
 	-DPROJ6_INCLUDE_DIR=%{projinstdir}/include \
 	-DEXTERNAL_FMT=OFF \
+%if 0%{?fedora} >= 40 || 0%{?rhel} == 8
 	-DEXTERNAL_LIBOSMIUM=ON \
 	-DEXTERNAL_PROTOZERO=ON \
+%else
+	-DEXTERNAL_LIBOSMIUM=OFF \
+	-DEXTERNAL_PROTOZERO=OFF \
+%endif
 %if "%{_lib}" == "lib64"
 	-DLIB_SUFFIX=64
 %endif
@@ -83,6 +91,8 @@ popd
 * Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
 - Update to 2.1.1 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.1
+- Disable osmium and generalizations support on RHEL >= 9 because
+  of lack of dependent packages.
 
 * Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
 - Update to 2.1.0 per changes described at:
