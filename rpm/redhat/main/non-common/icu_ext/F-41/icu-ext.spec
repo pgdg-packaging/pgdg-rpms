@@ -1,0 +1,1 @@
+../main/icu-ext.spec
