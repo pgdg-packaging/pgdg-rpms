@@ -10,8 +10,8 @@ License:	PostgreSQL
 URL:		https://github.com/dverite/%{sname}
 Source0:	https://github.com/dverite/%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
-Requires:	postgresql%{pgmajorversion}
+BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
+Requires:	postgresql%{pgmajorversion} libicu
 
 %description
 icu_ext is a PostgreSQL extension to expose functionality from ICU to
