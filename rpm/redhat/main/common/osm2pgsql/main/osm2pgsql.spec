@@ -33,10 +33,8 @@ BuildRequires:	Catch2-2-devel clang-tools
 BuildRequires:	libexpat-devel nlohmann_json-devel
 BuildRequires:	lua54-devel
 %else
-BuildRequires:	boost-devel bzip2-devel
-BuildRequires:	catch2-devel clang-tools-extra
-BuildRequires:	expat-devel json-devel
-BuildRequires:	lua-devel
+BuildRequires:	boost-devel bzip2-devel catch2-devel
+BuildRequires:	clang-tools-extra expat-devel json-devel lua-devel
 %endif
 
 Requires:	libpq5
