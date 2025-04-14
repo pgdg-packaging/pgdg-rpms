@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-DIST=.rhel8
+DIST=.rhel9
 SPECFILE="check_patroni.spec"
 
 # Now, include global Makefile
