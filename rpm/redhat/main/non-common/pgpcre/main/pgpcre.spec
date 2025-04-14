@@ -10,8 +10,8 @@ License:	GPLv2
 URL:		https://github.com/petere/%{sname}
 Source0:	https://github.com/petere/%{sname}/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pcre2-devel
-Requires:	postgresql%{pgmajorversion} pcre2
+BuildRequires:	postgresql%{pgmajorversion}-devel pcre-devel
+Requires:	postgresql%{pgmajorversion} pcre
 
 %description
 This is a module for PostgreSQL that exposes Perl-compatible regular
