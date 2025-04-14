@@ -1,3 +1,4 @@
+%global _vpath_builddir .
 %global sname osm2pgsql
 
 %pgdg_set_gis_variables
@@ -20,9 +21,9 @@ BuildRequires:	python3-psycopg2 python3-devel
 BuildRequires:	zlib-devel
 
 # These packages are have been deprecated as of RHEL 8.7,
-# so enable these features on Fedora and RHEL 8:
+# so enable these features on Fedora only:
 # https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/8.7_release_notes/deprecated_functionality#deprecated-packages
-%if 0%{?fedora} >= 40 || 0%{?rhel} == 8
+%if 0%{?fedora} >= 40
 BuildRequires:	protozero-devel libosmium-devel
 %endif
 
@@ -57,7 +58,7 @@ pushd build
 	-DPROJ_LIBRARY=%{projinstdir}/lib64/libproj.so \
 	-DPROJ6_INCLUDE_DIR=%{projinstdir}/include \
 	-DEXTERNAL_FMT=OFF \
-%if 0%{?fedora} >= 40 || 0%{?rhel} == 8
+%if 0%{?fedora} >= 40
 	-DEXTERNAL_LIBOSMIUM=ON \
 	-DEXTERNAL_PROTOZERO=ON \
 %else
@@ -91,7 +92,7 @@ popd
 * Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
 - Update to 2.1.1 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.1
-- Disable osmium and generalizations support on RHEL >= 9 because
+- Enable osmium and generalizations support only on Fedora because
   of lack of dependent packages.
 
 * Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
