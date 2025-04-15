@@ -1,0 +1,1 @@
+../main/plxslt.spec
