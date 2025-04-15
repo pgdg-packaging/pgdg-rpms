@@ -19,6 +19,9 @@ BuildRequires:	lz4-devel
 Requires:	lz4-libs
 %endif
 
+Obsoletes:	%{sname}17 <= 17.1 %{sname}16 <= 17.1 %{sname}15 <= 17.1
+Obsoletes:	%{sname}14 <= 17.1 %{sname}13 <= 17.1
+
 %description
 Display formatted contents of a PostgreSQL heap/index/control file.
 
