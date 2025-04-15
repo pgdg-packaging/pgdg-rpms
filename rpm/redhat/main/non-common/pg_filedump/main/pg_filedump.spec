@@ -1,10 +1,10 @@
 %global sname pg_filedump
-%global sversion REL_17_0
+%global sversion REL_17_2
 
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
-Version:	17.1
-Release:	2PGDG%{?dist}
+Version:	17.2
+Release:	1PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
 License:	GPLv2+
@@ -42,6 +42,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Tue Apr 15 2025 Devrim Gündüz <devrim@gunduz.org> - 17.2-1PGDG
+- Update to 17.2 per changes described at:
+  https://github.com/df7cb/pg_filedump/releases/tag/REL_17_2
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 17.1-2PGDG
 - Add missing BRs and remove redundant BR
 
