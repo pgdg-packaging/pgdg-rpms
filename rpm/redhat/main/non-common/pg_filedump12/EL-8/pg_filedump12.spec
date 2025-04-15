@@ -1,1 +1,0 @@
-../main/../main/pg_filedump12.spec
