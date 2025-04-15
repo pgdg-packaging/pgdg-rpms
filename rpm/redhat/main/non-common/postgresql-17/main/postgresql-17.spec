@@ -47,9 +47,9 @@ Version:	17.4
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420003PGDG%{?dist}
+Release:	420004PGDG%{?dist}
 %else
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1218,6 +1218,9 @@ fi
 %endif
 
 %changelog
+* Tue Apr 15 2025 Devrim Gunduz <devrim@gunduz.org> - 17.4-4PGDG
+- Rebuild against new GCC on Fedora 42
+
 * Mon Mar 24 2025 Devrim Gunduz <devrim@gunduz.org> - 17.4-3PGDG
 - Remove explicit calls to CLANG and LLVM_CONFIG as they are the
   same across all distros (and also llvm-config-64 is removed from
