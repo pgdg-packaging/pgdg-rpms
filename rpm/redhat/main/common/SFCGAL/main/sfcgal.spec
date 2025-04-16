@@ -29,7 +29,7 @@ Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{versio
 
 URL:		https://sfcgal.gitlab.io/SFCGAL/
 
-BuildRequires:	%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} >= 1500
 BuildRequires:  cmake-full
 %else
 BuildRequires:  cmake-rpm-macros
