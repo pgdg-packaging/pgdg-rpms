@@ -28,9 +28,17 @@
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
+# Override PROJ:
+%if 0%{?fedora} == 42
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
+%else
 %global	projmajorversion %proj95majorversion
 %global	projfullversion %proj95fullversion
 %global	projinstdir %proj95instdir
+%endif
+
 
 %global gdalinstdir /usr/%{name}
 %global gdalsomajorversion	35
@@ -49,7 +57,7 @@
 
 Name:		%{sname}39
 Version:	3.9.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -479,6 +487,9 @@ done
 %endif
 
 %changelog
+* Wed Apr 16 2025 Devrim Gunduz <devrim@gunduz.org> - 3.9.3-2PGDG
+- Rebuild against PROJ 9.6 on Fedora 42
+
 * Mon Oct 14 2024 Devrim Gunduz <devrim@gunduz.org> - 3.9.3-1PGDG
 - Update to 3.9.3 per changes described at:
   https://github.com/OSGeo/gdal/blob/v3.9.3/NEWS.md
