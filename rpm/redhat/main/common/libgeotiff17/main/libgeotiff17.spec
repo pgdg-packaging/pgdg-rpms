@@ -5,13 +5,19 @@
 %pgdg_set_gis_variables
 
 # Override PROJ:
-%global projmajorversion %proj95majorversion
-%global projfullversion %proj95fullversion
-%global projinstdir %proj95instdir
+%if 0%{?rhel} == 8
+%global	projmajorversion %proj95majorversion
+%global	projfullversion %proj95fullversion
+%global	projinstdir %proj95instdir
+%else
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
+%endif
 
 Name:		%{sname}%{libgeotiffversion}
 Version:	1.7.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	GeoTIFF format library
 License:	MIT
 URL:		https://github.com/OSGeo/%{sname}
@@ -19,7 +25,7 @@ Source0:	https://github.com/OSGeo/%{sname}/releases/download/%{version}/%{sname}
 Source2:	%{name}-pgdg-libs.conf
 Patch0:		%{sname}_cmake.patch
 BuildRequires:	libtiff-devel libjpeg-devel proj%{projmajorversion}-devel zlib-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.36 cmake
+BuildRequires:	pgdg-srpm-macros >= 1.0.48 cmake
 
 %description
 GeoTIFF represents an effort by over 160 different remote sensing,
@@ -131,6 +137,9 @@ EOF
 %{libgeotiff17instdir}/lib/pkgconfig/%{name}.pc
 
 %changelog
+* Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.3-3PGDG
+- Rebuild against PROJ 9.6
+
 * Thu Sep 19 2024 Devrim Gündüz <devrim@gunduz.org> - 1.7.3-2PGDG
 - Rebuild against PROJ 9.5
 
