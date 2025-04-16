@@ -3,14 +3,21 @@
 
 %pgdg_set_gis_variables
 
-%global projmajorversion %proj95majorversion
-%global projfullversion %proj95fullversion
-%global projinstdir %proj95instdir
+# Override PROJ:
+%if 0%{?rhel} == 8
+%global	projmajorversion %proj95majorversion
+%global	projfullversion %proj95fullversion
+%global	projinstdir %proj95instdir
+%else
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
+%endif
 
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
 Version:	2.1.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
@@ -87,6 +94,9 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Wed Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-2PGDG
+- Rebuild against PROJ 9.6
+
 * Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
 - Update to 2.1.1 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.1
