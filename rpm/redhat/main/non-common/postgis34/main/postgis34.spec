@@ -6,8 +6,8 @@
 
 %pgdg_set_gis_variables
 
-# Override some variables. PostGIS 3.4 is best served with GeOS 3.13,
-# PROJ 9.5 and GDAL 3.10 (except on RHEL 8 where GDAL 3.8 is available):
+# Override some variables. PostGIS 3.5 is best served with GeOS 3.13,
+# PROJ 9.6 and GDAL 3.10 (except on RHEL 8 where PROJ 9.5 and GDAL 3.8 are available):
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
@@ -15,14 +15,17 @@
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
+%global projmajorversion %proj95majorversion
+%global projfullversion %proj95fullversion
+%global projinstdir %proj95instdir
 %else
 %global gdalfullversion %gdal310fullversion
 %global gdalmajorversion %gdal310majorversion
 %global gdalinstdir %gdal310instdir
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
 %endif
-%global projmajorversion %proj95majorversion
-%global projfullversion %proj95fullversion
-%global projinstdir %proj95instdir
 
 %{!?llvm:%global llvm 1}
 
@@ -44,7 +47,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.4
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -371,6 +374,9 @@ fi
 %endif
 
 %changelog
+* Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-6PGDG
+- Rebuild against PROJ 9.6
+
 * Sat Mar 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-5PGDG
 - Enable SFCGAL support on RHEL 9 - ppc64le
 
