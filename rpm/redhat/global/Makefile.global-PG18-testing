@@ -17,14 +17,7 @@
 
 ## PostgreSQL 18 Testing
 
-prep18:
-	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
-	# Update spec file, patches, etc, before running spectool:
-	git pull
-	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" $(SPECFILE)
-
-build18testing: bfsrpm18testing
+build18testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm18testing/BUILDROOT" \
@@ -33,6 +26,7 @@ build18testing: bfsrpm18testing
 	--define "_rpmdir $(HOME)/rpm18testing/RPMS/" \
 	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm18testing
 
 srpm18testing: prep18
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -65,7 +59,7 @@ rpm18testing: prep18
 	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild18testimg: bfnosignsrpm18testing
+nosignbuild18testimg:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm18testing/BUILD" \
@@ -74,6 +68,7 @@ nosignbuild18testimg: bfnosignsrpm18testing
 	--define "_rpmdir $(HOME)/rpm18testing/RPMS/" \
 	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm18testing
 
 noprepbuild18testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

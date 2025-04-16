@@ -17,7 +17,7 @@
 
 ## PostgreSQL 14 Testing
 
-build14testing: bfsrpm14testing
+build14testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm14testing/BUILDROOT" \
@@ -26,6 +26,7 @@ build14testing: bfsrpm14testing
 	--define "_rpmdir $(HOME)/rpm14testing/RPMS/" \
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm14testing
 
 srpm14testing: prep14
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -58,7 +59,7 @@ rpm14testing: prep14
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild14testimg: bfnosignsrpm14testing
+nosignbuild14testimg:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm14testing/BUILD" \
@@ -67,6 +68,7 @@ nosignbuild14testimg: bfnosignsrpm14testing
 	--define "_rpmdir $(HOME)/rpm14testing/RPMS/" \
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm14testing
 
 noprepbuild14testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

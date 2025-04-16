@@ -24,7 +24,7 @@ prep16:
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" $(SPECFILE)
 
-build16: bfsrpm16
+build16: prep16
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm16/BUILDROOT" \
@@ -33,6 +33,7 @@ build16: bfsrpm16
 	--define "_rpmdir $(HOME)/rpm16/RPMS/" \
 	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm16
 
 srpm16: prep16
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -72,7 +73,7 @@ rpm16: prep16
 	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild16: bfnosignsrpm16
+nosignbuild16: prep16
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm16/BUILD" \
@@ -81,6 +82,7 @@ nosignbuild16: bfnosignsrpm16
 	--define "_rpmdir $(HOME)/rpm16/RPMS/" \
 	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm16
 
 noprepbuild16:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

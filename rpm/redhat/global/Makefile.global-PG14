@@ -24,7 +24,7 @@ prep14:
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" $(SPECFILE)
 
-build14: bfsrpm14
+build14: prep14
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
@@ -33,6 +33,7 @@ build14: bfsrpm14
 	--define "_rpmdir $(HOME)/rpm14/RPMS/" \
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm14
 
 srpm14: prep14
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -72,7 +73,7 @@ rpm14: prep14
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild14: bfnosignsrpm14
+nosignbuild14: prep14
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm14/BUILD" \
@@ -81,6 +82,7 @@ nosignbuild14: bfnosignsrpm14
 	--define "_rpmdir $(HOME)/rpm14/RPMS/" \
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm14
 
 noprepbuild14:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

@@ -24,7 +24,7 @@ prep15:
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" $(SPECFILE)
 
-build15: bfsrpm15
+build15: prep15
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm15/BUILDROOT" \
@@ -33,6 +33,7 @@ build15: bfsrpm15
 	--define "_rpmdir $(HOME)/rpm15/RPMS/" \
 	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm15
 
 srpm15: prep15
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -72,7 +73,7 @@ rpm15: prep15
 	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild15: bfnosignsrpm15
+nosignbuild15: prep15
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm15/BUILD" \
@@ -81,6 +82,7 @@ nosignbuild15: bfnosignsrpm15
 	--define "_rpmdir $(HOME)/rpm15/RPMS/" \
 	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm15
 
 noprepbuild15:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

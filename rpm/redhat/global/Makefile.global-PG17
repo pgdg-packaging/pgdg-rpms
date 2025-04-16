@@ -24,7 +24,7 @@ prep17:
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" $(SPECFILE)
 
-build17: bfsrpm17
+build17: prep17
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm17/BUILDROOT" \
@@ -33,6 +33,7 @@ build17: bfsrpm17
 	--define "_rpmdir $(HOME)/rpm17/RPMS/" \
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm17
 
 srpm17: prep17
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -72,7 +73,7 @@ rpm17: prep17
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild17: bfnosignsrpm17
+nosignbuild17: prep17
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm17/BUILD" \
@@ -81,6 +82,7 @@ nosignbuild17: bfnosignsrpm17
 	--define "_rpmdir $(HOME)/rpm17/RPMS/" \
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm17
 
 noprepbuild17:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

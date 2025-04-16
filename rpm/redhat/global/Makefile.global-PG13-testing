@@ -17,7 +17,7 @@
 
 ## PostgreSQL 13 Testing
 
-build13testing: bfsrpm13testing
+build13testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm13testing/BUILDROOT" \
@@ -26,6 +26,7 @@ build13testing: bfsrpm13testing
 	--define "_rpmdir $(HOME)/rpm13testing/RPMS/" \
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm13testing
 
 srpm13testing: prep13
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -58,7 +59,7 @@ rpm13testing: prep13
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild13testimg: bfnosignsrpm13testing
+nosignbuild13testimg:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm13testing/BUILD" \
@@ -67,6 +68,7 @@ nosignbuild13testimg: bfnosignsrpm13testing
 	--define "_rpmdir $(HOME)/rpm13testing/RPMS/" \
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm13testing
 
 noprepbuild13testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

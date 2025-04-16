@@ -17,7 +17,7 @@
 
 ## PostgreSQL 16 Testing
 
-build16testing: bfsrpm16testing
+build16testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
@@ -26,6 +26,7 @@ build16testing: bfsrpm16testing
 	--define "_rpmdir $(HOME)/rpm16testing/RPMS/" \
 	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm16testing
 
 srpm16testing: prep16
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -58,7 +59,7 @@ rpm16testing: prep16
 	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild16testimg: bfnosignsrpm16testing
+nosignbuild16testimg:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm16testing/BUILD" \
@@ -67,6 +68,7 @@ nosignbuild16testimg: bfnosignsrpm16testing
 	--define "_rpmdir $(HOME)/rpm16testing/RPMS/" \
 	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm16testing
 
 noprepbuild16testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

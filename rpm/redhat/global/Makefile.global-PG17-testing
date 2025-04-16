@@ -17,7 +17,7 @@
 
 ## PostgreSQL 17 Testing
 
-build17testing: bfsrpm17testing
+build17testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
@@ -26,6 +26,7 @@ build17testing: bfsrpm17testing
 	--define "_rpmdir $(HOME)/rpm17testing/RPMS/" \
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm17testing
 
 srpm17testing: prep17
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -58,7 +59,7 @@ rpm17testing: prep17
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild17testimg: bfnosignsrpm17testing
+nosignbuild17testimg:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm17testing/BUILD" \
@@ -67,6 +68,7 @@ nosignbuild17testimg: bfnosignsrpm17testing
 	--define "_rpmdir $(HOME)/rpm17testing/RPMS/" \
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm17testing
 
 noprepbuild17testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

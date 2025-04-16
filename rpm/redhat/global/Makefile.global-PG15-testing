@@ -17,14 +17,7 @@
 
 ## PostgreSQL 15 Testing
 
-prep15testing:
-	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
-	# Update spec file, patches, etc, before running spectool:
-	git pull
-	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" $(SPECFILE)
-
-build15testing: bfsrpm15testing
+build15testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
@@ -33,6 +26,7 @@ build15testing: bfsrpm15testing
 	--define "_rpmdir $(HOME)/rpm15testing/RPMS/" \
 	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm15testing
 
 srpm15testing: prep15
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -65,7 +59,7 @@ rpm15testing: prep15
 	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild15testimg: bfnosignsrpm15testing
+nosignbuild15testimg:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm15testing/BUILD" \
@@ -74,6 +68,7 @@ nosignbuild15testimg: bfnosignsrpm15testing
 	--define "_rpmdir $(HOME)/rpm15testing/RPMS/" \
 	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm15testing
 
 noprepbuild15testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \

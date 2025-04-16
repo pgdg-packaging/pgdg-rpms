@@ -24,7 +24,7 @@ prep13:
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" $(SPECFILE)
 
-build13: bfsrpm13
+build13: prep13
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm13/BUILDROOT" \
@@ -33,6 +33,7 @@ build13: bfsrpm13
 	--define "_rpmdir $(HOME)/rpm13/RPMS/" \
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfsrpm13
 
 srpm13: prep13
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
@@ -72,7 +73,7 @@ rpm13: prep13
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
-nosignbuild13: bfnosignsrpm13
+nosignbuild13: prep13
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define  "_builddir $(HOME)/rpm13/BUILD" \
@@ -81,6 +82,7 @@ nosignbuild13: bfnosignsrpm13
 	--define "_rpmdir $(HOME)/rpm13/RPMS/" \
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+	make bfnosignsrpm13
 
 noprepbuild13:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
