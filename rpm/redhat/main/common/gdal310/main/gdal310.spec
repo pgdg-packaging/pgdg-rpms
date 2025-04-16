@@ -24,13 +24,21 @@
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
-%global	projmajorversion %proj95majorversion
-%global	projfullversion %proj95fullversion
-%global	projinstdir %proj95instdir
 
 %global gdalinstdir /usr/%{name}
 %global gdalsomajorversion	36
 %global libspatialitemajorversion	50
+
+# Override PROJ:
+%if 0%{?rhel} == 8
+%global	projmajorversion %proj95majorversion
+%global	projfullversion %proj95fullversion
+%global	projinstdir %proj95instdir
+%else
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
+%endif
 
 %if 0%{?suse_version} <= 1500 || 0%{?rhel} >= 10
 %global	g2clib_enabled 0
@@ -45,7 +53,7 @@
 
 Name:		%{sname}310
 Version:	3.10.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -474,6 +482,9 @@ done
 %endif
 
 %changelog
+* Wed Apr 16 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.3-2PGDG
+- Rebuild against PROJ 9.6
+
 * Mon Apr 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.3-1PGDG
 - Update to 3.10.3 per changes described at:
   https://github.com/OSGeo/gdal/blob/v3.10.3/NEWS.md
