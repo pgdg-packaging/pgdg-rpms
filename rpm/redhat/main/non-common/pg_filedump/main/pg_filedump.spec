@@ -1,9 +1,13 @@
 %global sname pg_filedump
-%global sversion REL_17_2
+
+%global pg_fdmajorver 17
+%global pg_fdminorver 3
+
+%global sversion REL_%{pg_fdmajorver}_%{pg_fdminorver}
 
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
-Version:	17.2
+Version:	%{pg_fdmajorver}.%{pg_fdminorver}
 Release:	1PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
@@ -45,6 +49,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 17.3-1PGDG
+- Update to 17.3 per changes described at:
+  https://github.com/df7cb/pg_filedump/releases/tag/REL_17_3
+
 * Tue Apr 15 2025 Devrim Gündüz <devrim@gunduz.org> - 17.2-1PGDG
 - Update to 17.2 per changes described at:
   https://github.com/df7cb/pg_filedump/releases/tag/REL_17_2
