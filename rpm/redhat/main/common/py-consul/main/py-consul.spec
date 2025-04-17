@@ -9,10 +9,15 @@ URL:		https://github.com/criteo/%{name}
 Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	python3-devel python3-wheel
+
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 BuildRequires:	pyproject-rpm-macros
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%endif
 
 BuildArch:	noarch
-
 
 %description
 Python client for Consul
@@ -20,7 +25,7 @@ Python client for Consul
 %prep
 %setup -q -n %{name}-%{version}
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
 %generate_buildrequires
 %pyproject_buildrequires
 %endif
