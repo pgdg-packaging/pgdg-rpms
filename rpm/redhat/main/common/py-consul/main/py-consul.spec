@@ -10,6 +10,9 @@ Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	python3-devel python3-wheel
 
+%if 0%{?rhel} == 8
+BuildRequires:	python39-wheel
+%endif
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 BuildRequires:	pyproject-rpm-macros
 %endif
