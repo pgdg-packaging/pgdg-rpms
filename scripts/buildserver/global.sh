@@ -47,6 +47,9 @@ sign_package(){
 	# they exist.
 	find ~/rpm* pgdg* $ossysupdates -iname "*.sig" -print0 | xargs -0 /bin/rm -v -rf "{}"
 
+	# Remove all buildreqs.nosrc packages:
+	find ~/rpm* pgdg* $ossysupdates -iname "*buildreqs.nosrc*" -print0 | xargs -0 /bin/rm -v -rf "{}"
+
 	# Find the packages, and sign them. Using an expect script to automate signing process.
 	# The first parameter refers to the location of the RPMs:
 	for signpackagelist in `find ~/$1* -iname "*$signPackageName*$packageVersion*.rpm"`; do /usr/bin/expect ~/bin/signrpms.expect $signpackagelist; done
