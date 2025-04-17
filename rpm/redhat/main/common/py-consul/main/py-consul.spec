@@ -9,7 +9,7 @@ URL:		https://github.com/criteo/%{name}
 Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	python3-devel python3-wheel
-BuildRequires:	systemd-rpm-macros
+BuildRequires:	pyproject-rpm-macros
 
 BuildArch:	noarch
 
