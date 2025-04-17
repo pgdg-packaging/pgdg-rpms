@@ -22,6 +22,8 @@ BuildRequires:	python-rpm-macros
 
 BuildArch:	noarch
 
+Obsoletes:	python3-consul <= 1.1.0-42
+
 %description
 Python client for Consul
 
