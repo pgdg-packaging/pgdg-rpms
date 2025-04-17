@@ -7,7 +7,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.0.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -20,8 +20,9 @@ BuildRequires:	python3-setuptools python3-psycopg2 >= 2.5.4
 Requires:	python3-cdiff python3-psutil >= 2.0.0
 Requires:	python3-psycopg2 >= 2.5.4
 Requires:	python3-psutil >= 2.0.0
+Requires:	python3-ydiff < 1.5
 Requires:	python3-ydiff >= 1.2
-Requires:	python3-ydiff <= 1.3
+Requires:	python3-cryptography >= 1.4
 
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	python3-click >= 4.1 python3-six >= 1.7
@@ -53,16 +54,7 @@ caveats. Use wisely.
 Summary:	Related components to use patroni with Consul
 Requires:	%{name} = %{version}-%{release}
 Requires:	consul python3-requests
-
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
-Requires:	python3-consul >= 0.7.1
-%endif
-
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1499
-Requires:	python3-python-consul
-%endif
-%endif
+Requires:	py-consul >= 1.6.0
 
 %description -n %{name}-consul
 Meta package to pull consul related dependencies for patroni
@@ -173,6 +165,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Thu Apr 17 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-2PGDG
+- Update/fix versions of some dependencies
+- Switch from python-consul to py-consul
+
 * Thu Feb 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-1PGDG
 - Update to 4.0.5, per changes described at:
   https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-405
