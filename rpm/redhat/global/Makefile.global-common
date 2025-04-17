@@ -17,6 +17,7 @@ commonbfsrpm: prep
 	--define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
 
 commonbuild:
+	prep
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpmcommon/BUILDROOT" \
