@@ -1,6 +1,6 @@
 Name:		ydiff
 Version:	1.4.2
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/ydiff
 License:	BSD
@@ -44,6 +44,9 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Sat Apr 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-43PGDG
+- Rebuild on RHEL 8 because of an issue on the build instance
+
 * Thu Apr 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-42PGDG
 - Update to 1.4.2
 
