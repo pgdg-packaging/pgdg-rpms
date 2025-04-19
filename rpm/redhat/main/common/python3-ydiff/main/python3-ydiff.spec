@@ -1,3 +1,12 @@
+%global __ospython %{_bindir}/python3
+
+%if 0%{?fedora} >= 40 || 0%{?suse_version} >= 1500 || 0%{?rhel} >= 10
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%else
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%endif
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+
 Name:		ydiff
 Version:	1.4.2
 Release:	43PGDG%{?dist}
@@ -28,10 +37,11 @@ Python library that implements API used by ydiff tool.
 /usr/bin/sed -i '/#!\/usr\/bin\/env python/d' ydiff.py
 
 %build
-%py3_build
+%{__ospython} setup.py build
 
 %install
-%py3_install
+%{__rm} -rf %{buildroot}
+%{__ospython} setup.py install --root %{buildroot} -O1 --skip-build
 
 %files
 %doc README.rst
@@ -41,7 +51,7 @@ Python library that implements API used by ydiff tool.
 %files -n python3-%{name}
 %{python3_sitelib}/__pycache__/*
 %{python3_sitelib}/%{name}.py
-%{python3_sitelib}/%{name}-%{version}-py%{python3_version}.egg-info
+%{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
 
 %changelog
 * Sat Apr 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-43PGDG
