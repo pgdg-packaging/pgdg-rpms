@@ -1,7 +1,7 @@
 %global sname pg_filedump
 
 %global pg_fdmajorver 17
-%global pg_fdminorver 3
+%global pg_fdminorver 4
 
 %global sversion REL_%{pg_fdmajorver}_%{pg_fdminorver}
 
@@ -49,6 +49,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Sun Apr 20 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-1PGDG
+- Update to 17.4 per changes described at:
+  https://github.com/df7cb/pg_filedump/releases/tag/REL_17_4
+
 * Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 17.3-1PGDG
 - Update to 17.3 per changes described at:
   https://github.com/df7cb/pg_filedump/releases/tag/REL_17_3
