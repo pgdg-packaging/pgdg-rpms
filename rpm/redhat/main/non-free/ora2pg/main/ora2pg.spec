@@ -1,6 +1,8 @@
+%global _libdir /usr/lib64
+
 Summary:	Oracle, MySQL and SQL Server to PostgreSQL database schema converter
 Name:		ora2pg
-Version:	24.3
+Version:	25.0
 Release:	1PGDG%{?dist}
 License:	GPLv3
 URL:		http://ora2pg.darold.net/
@@ -35,7 +37,7 @@ to a PostgreSQL database.
 # SLES suggest these macros to be used:
 # https://en.opensuse.org/openSUSE:Packaging_Perl
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
  %perl_process_packlist
  %perl_gen_filelist
 %endif
@@ -60,6 +62,10 @@ to a PostgreSQL database.
 %{_docdir}/%{name}-%{version}/*
 
 %changelog
+* Sun Apr 20 2025 Devrim Gündüz <devrim@gunduz.org> 25.0-1PGDG
+- Update to 25.0 per changes described at:
+  https://github.com/darold/ora2pg/releases/tag/v25.0
+
 * Fri Mar 29 2024 Devrim Gündüz <devrim@gunduz.org> 24.3-1PGDG
 - Update to 24.3 per changes described at:
   https://github.com/darold/ora2pg/releases/tag/v24.3
