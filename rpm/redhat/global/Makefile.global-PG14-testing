@@ -17,13 +17,6 @@
 
 ## PostgreSQL 14 Testing
 
-prep14:
-	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
-	# Update spec file, patches, etc, before running spectool:
-	git pull
-	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" $(SPECFILE)
-
 build14testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
