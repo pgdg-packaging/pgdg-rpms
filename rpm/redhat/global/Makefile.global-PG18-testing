@@ -17,6 +17,13 @@
 
 ## PostgreSQL 18 Testing
 
+prep18:
+	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
+	# Update spec file, patches, etc, before running spectool:
+	git pull
+	# Use spectool to download source files, especially tarballs.
+	spectool -g -S --define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" $(SPECFILE)
+
 build18testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
