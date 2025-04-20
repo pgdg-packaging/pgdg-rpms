@@ -17,6 +17,13 @@
 
 ## PostgreSQL 13 Testing
 
+prep13:
+	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
+	# Update spec file, patches, etc, before running spectool:
+	git pull
+	# Use spectool to download source files, especially tarballs.
+	spectool -g -S --define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" $(SPECFILE)
+
 build13testing:
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
