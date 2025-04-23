@@ -7,7 +7,7 @@
 %global _hardened_build 1
 
 Name:		haproxy
-Version:	3.1.6
+Version:	3.1.7
 Release:	1PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
@@ -76,7 +76,7 @@ pushd admin/iprange
 popd
 
 %install
-%{__make} install-bin DESTDIR=%{buildroot} PREFIX=%{_prefix} TARGET="linux2628"
+%{__make} install-bin DESTDIR=%{buildroot} PREFIX=%{_prefix} SBINDIR=%{_sbindir} TARGET="linux2628"
 %{__make} install-man DESTDIR=%{buildroot} PREFIX=%{_prefix}
 
 %{__install} -p -D -m 0644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
@@ -143,6 +143,10 @@ exit 0
 %{_mandir}/man1/*
 
 %changelog
+* Wed Apr 23 2025 Devrim Gündüz <devrim@gunduz.org> 3.1.7-1PGDG
+- Update to 3.1.7 per changes described at:
+  https://www.mail-archive.com/haproxy@formilux.org/msg45795.html
+
 * Mon Mar 24 2025 Devrim Gündüz <devrim@gunduz.org> 3.1.6-1PGDG
 - Update to 3.1.6 per changes described at:
   https://www.mail-archive.com/haproxy@formilux.org/msg45683.html
