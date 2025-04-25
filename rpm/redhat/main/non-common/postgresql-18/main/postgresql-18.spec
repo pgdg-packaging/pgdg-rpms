@@ -232,6 +232,33 @@ If you want to manipulate a PostgreSQL database on a local or remote PostgreSQL
 server, you need this package. You also need to install this package
 if you're installing the postgresql%{pgmajorversion}-server package.
 
+%package ecpg
+Summary:	Run-time library for ECPG programs
+
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl1_1
+%else
+Requires:	openssl-libs >= 1.1.1k
+%endif
+
+%description ecpg
+The postgresql%{pgmajorversion}-ecpg is used by programs built with ECPG
+(Embedded PostgreSQL for C).
+
+%package ecpg-devel
+Summary:	Development files for ECPG (Embedded PostgreSQL for C)
+
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl1_1
+%else
+Requires:	openssl-libs >= 1.1.1k
+%endif
+
+%description ecpg-devel
+The postgresql%{pgmajorversion}-ecpg-devel pacakge contains the necessary
+files to build ECPG (Embedded PostgreSQL for C) programs.  It includes the
+development libraries and the preprocessor program ecpg.
+
 %package libs
 Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
@@ -341,11 +368,11 @@ Provides:	postgresql-devel >= %{version}-%{release}
 Obsoletes:	libpq-devel <= 42.0
 
 %description devel
-The postgresql%{pgmajorversion}-devel package contains the header files and libraries
-needed to compile C or C++ applications which will directly interact
-with a PostgreSQL database management server. It also contains the ecpg
-Embedded C Postgres preprocessor. You need to install this package if you want
-to develop applications which will interact with a PostgreSQL server.
+The postgresql%{pgmajorversion}-devel package contains the header files and
+libraries needed to compile C or C++ applications which will directly interact
+with a PostgreSQL database management server. You need to install this package
+if you want to develop applications which will interact with a PostgreSQL
+server.
 
 %if %llvm
 %package llvmjit
@@ -760,7 +787,8 @@ cat pltcl-%{pgmajorversion}.lang > pg_pltcl.lst
 #cat pg_amcheck-%{pgmajorversion}.lang pg_logicalinspect-%{pgmajorversion}.lang > pg_contrib.lst
 cat pg_amcheck-%{pgmajorversion}.lang > pg_contrib.lst
 cat libpq5-%{pgmajorversion}.lang > pg_libpq5.lst
-cat pg_config-%{pgmajorversion}.lang ecpg-%{pgmajorversion}.lang ecpglib6-%{pgmajorversion}.lang > pg_devel.lst
+cat pg_config-%{pgmajorversion}.lang > pg_devel.lst
+cat ecpg-%{pgmajorversion}.lang ecpglib6-%{pgmajorversion}.lang > ecpg.lst
 cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorversion}.lang pg_dump-%{pgmajorversion}.lang pg_basebackup-%{pgmajorversion}.lang pgscripts-%{pgmajorversion}.lang pg_combinebackup-%{pgmajorversion}.lang pg_walsummary-%{pgmajorversion}.lang > pg_main.lst
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
 %endif
@@ -888,9 +916,6 @@ if [ "$1" -eq 0 ]
 	%{_sbindir}/update-alternatives --remove pgsql-ld-conf		%{pgbaseinstdir}/share/%{sname}-%{pgmajorversion}-libs.conf
 	/sbin/ldconfig
 fi
-
-%clean
-%{__rm} -rf %{buildroot}
 
 # FILES section.
 
@@ -1094,9 +1119,6 @@ fi
 %files libs -f pg_libpq5.lst
 %defattr(-,root,root)
 %{pgbaseinstdir}/lib/libpq.so.*
-%{pgbaseinstdir}/lib/libecpg.so*
-%{pgbaseinstdir}/lib/libpgtypes.so.*
-%{pgbaseinstdir}/lib/libecpg_compat.so.*
 %{pgbaseinstdir}/lib/libpqwalreceiver.so
 %config(noreplace) %attr (644,root,root) %{pgbaseinstdir}/share/%{sname}-%{pgmajorversion}-libs.conf
 
@@ -1171,25 +1193,45 @@ fi
 %{pgbaseinstdir}/share/snowball_create.sql
 %{pgbaseinstdir}/share/sql_features.txt
 
+%files ecpg -f ecpg.lst
+%defattr(-,root,root)
+%{pgbaseinstdir}/bin/ecpg
+%{pgbaseinstdir}/lib/libecpg.so*
+%{pgbaseinstdir}/lib/libecpg_compat.so*
+%{pgbaseinstdir}/lib/libecpg.a
+%{pgbaseinstdir}/lib/libecpg_compat.a
+%{pgbaseinstdir}/lib/libpgtypes.a
+%{pgbaseinstdir}/lib/libpgtypes.so*
+%{pgbaseinstdir}/share/man/man1/ecpg.*
+
+%files ecpg-devel
+%defattr(-,root,root)
+%{pgbaseinstdir}/include/informix/*
+%{pgbaseinstdir}/include/pgtypes*h
+%{pgbaseinstdir}/include/ecpg*.h
+%{pgbaseinstdir}/include/sql3types.h
+%{pgbaseinstdir}/include/sqlca.h
+%{pgbaseinstdir}/include/sqlda*.h
+%{pgbaseinstdir}/lib/pkgconfig/libecpg*.pc
+%{pgbaseinstdir}/lib/pkgconfig/libpgtypes.pc
+
 %files devel -f pg_devel.lst
 %defattr(-,root,root)
-%{pgbaseinstdir}/include/*
-%{pgbaseinstdir}/bin/ecpg
+%{pgbaseinstdir}/include/libpq*.h
+%{pgbaseinstdir}/include/pg_config*.h
+%{pgbaseinstdir}/include/postgres_ext.h
+%{pgbaseinstdir}/include/internal/*
+%{pgbaseinstdir}/include/libpq/*
+%{pgbaseinstdir}/include/server/*
+
 %{pgbaseinstdir}/lib/libpq.so
-%{pgbaseinstdir}/lib/libecpg.so
 %{pgbaseinstdir}/lib/libpq.a
-%{pgbaseinstdir}/lib/libecpg.a
-%{pgbaseinstdir}/lib/libecpg_compat.so
-%{pgbaseinstdir}/lib/libecpg_compat.a
 %{pgbaseinstdir}/lib/libpgcommon.a
 %{pgbaseinstdir}/lib/libpgcommon_shlib.a
 %{pgbaseinstdir}/lib/libpgport.a
 %{pgbaseinstdir}/lib/libpgport_shlib.a
-%{pgbaseinstdir}/lib/libpgtypes.so
-%{pgbaseinstdir}/lib/libpgtypes.a
 %{pgbaseinstdir}/lib/pgxs/*
-%{pgbaseinstdir}/lib/pkgconfig/*
-%{pgbaseinstdir}/share/man/man1/ecpg.*
+%{pgbaseinstdir}/lib/pkgconfig/libpq.pc
 
 %if %llvm
 %files llvmjit
