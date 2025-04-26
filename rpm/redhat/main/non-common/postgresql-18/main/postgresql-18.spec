@@ -56,7 +56,7 @@ Url:		https://www.postgresql.org/
 Source0:	https://download.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
-Source6:	%{sname}-%{pgmajorversion}-README-systemd.rpm-dist
+Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
 Source7:	%{sname}-%{pgmajorversion}-ecpg_config.h
 Source9:	%{sname}-%{pgmajorversion}-libs.conf
 Source12:	https://www.postgresql.org/files/documentation/pdf/%{pgpackageversion}/%{sname}-%{pgpackageversion}-A4.pdf
