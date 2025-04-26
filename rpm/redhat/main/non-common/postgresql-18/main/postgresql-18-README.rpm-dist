@@ -90,9 +90,12 @@ are under $PATH:
 - dropdb
 - dropuser
 - pg_basebackup
+- pg_combinebackup
+- pg_createsubscriber
 - pg_dump
 - pg_dumpall
 - pg_restore
+- pg_walsummary
 - psql
 - reindexdb
 - vacuumdb
@@ -110,18 +113,20 @@ version will restart database).  Upgrading across a major release of PostgreSQL
 (for example, from 12.x to 18.x) requires more effort.
 
 If you are performing major version upgrade (for example, from 13.x to 18.x),
-there are two solutions:
+there are three solutions:
 
 - pg_upgrade: PGDG RPMs allow side-by-side installation of multiple major versions.
   Use pg_upgrade of the "greater" major version to perform the upgrade. See
-  pg_upgrade --help for details.
+  /usr/pgsql-18/bin/pg_upgrade --help for details.
 - Traditional dump/reload: This is dumping and reloading process to bring your
   data into the new version. *Before* upgrading, run pg_dumpall to extract all
   your data into a SQL file. Shut down the old postmaster, upgrade to the new
   version RPMs, initdb, and run the dump file through psql to restore your data.
   You can also pg_dumpall global objects + pg_dump individual databases and restore
   them.
-
+- Logical replication: Logical replication can also be used between two major version.
+  However please read the limitations here first:
+  https://www.postgresql.org/docs/current/logical-replication-restrictions.html
 
 RPMs also support in-place upgrade from the immediately previous major release.
 Currently, you can upgrade in-place from 17.x to 18.x.  Just run:
@@ -140,20 +145,22 @@ choose' what pieces are needed, and what dependencies are required.
 
 The RPMset is packaged in the following subpackages:
 
-postgresql18:		Key clients and libraries, and documentation
-postgresql18-contrib:	The contrib modules (extensions) included in PostgreSQL
-postgresql18-devel:	Development libraries and include files
-postgresql18-docs:	Documentation, including PDF file
-postgresql18-libs:	Client shared libraries
-postgresql18-llvmjit:	Just-in-time compilation support
-postgresql18-test:	The regression tests and associated files
-postgresql18-plperl:	The Perl procedural language for PostgreSQL
-postgresql18-plpython:	The Python procedural language for PostgreSQL
-postgresql18-pltcl:	The Tcl procedural language for PostgreSQL
-postgresql18-test:	The test suite distributed with PostgreSQL
-postgresql18-server:	Server executables and data files
+postgresql18:			Key clients and libraries, and documentation
+postgresql18-contrib:		The contrib modules (extensions) included in PostgreSQL
+postgresql18-devel:		Development libraries and include files
+postgresql18-docs:		Documentation, including PDF file
+postgresql18-ecpg:		Run-time library for ECPG programs
+postgresql18-ecpg-devel:	Development files for ECPG 
+postgresql18-libs:		Client shared libraries
+postgresql18-llvmjit:		Just-in-time compilation support
+postgresql18-test:		The regression tests and associated files
+postgresql18-plperl:		The Perl procedural language for PostgreSQL
+postgresql18-plpython:		The Python procedural language for PostgreSQL
+postgresql18-pltcl:		The Tcl procedural language for PostgreSQL
+postgresql18-test:		The test suite distributed with PostgreSQL
+postgresql18-server:		Server executables and data files
 
-postgresql-jdbc (version independent) and postgresql18-odbc are seperate (s)rpms.
+postgresql-jdbc (version independent) and postgresql18-odbc are separate (s)rpms.
 
 You have to install postgresql18 and postgresql18-libs to do anything.
 postgresql18-server is needed unless you only plan to use the clients to work
@@ -206,7 +213,7 @@ the beauty of RPM -- you don't have to keep track of the files, RPM does it
 for you.
 
 These RPMs are designed to be LSB-compliant -- if you find this not to be the
-case, please let us know by way of the pgsql-pkg-yum@postgresql.org
+case, please let us know by way of the pgsql-pkg-yum@lists.postgresql.org
 mailing list.
 
 -------------------------------------------------------------------------------
@@ -320,24 +327,30 @@ This release of the RPMset includes the ability to conditionally build
 sets of packages.  The parameters, their defaults, and the meanings are:
 
 beta		0	#build with cassert and do not strip the binaries
-icn		1	#build with ICU support
+enabletaptests	1	#enable TAP tests
+icu		1	#build with ICU support
 kerberos	1	#use Kerberos 5 support.
 ldap		1	#build with LDAP support.
+libnuma		1	#build with NUMA support.
+liburing	1	#build with io_uring support (except on RHEL 8)
 llvm		1	#build with llvm support
 nls		1	#build with national language support.
 pam		1	#build with PAM support.
-pltcl		1	#build the PL/Tcl procedural language package.
 plperl		1	#build the PL/Perl procedural language package.
+plpython	1	#build the PL/Python procedural language package.
+pltcl		1	#build the PL/Tcl procedural language package.
+runselftest	0	#do "make check" during the build.
+sdt		1	#build with dtrace.
+selinux		1	#build with SELinux.
 ssl		1	#use OpenSSL support.
 test		1	#build the postgresql18-test package.
-runselftest	0	#do "make check" during the build.
 uuid		1	#build contrib/uuid-ossp
 xml		1	#build with XML support
 
 To use these defines, invoke a rebuild like this:
 rpmbuild --rebuild --define 'plpython 0' --define 'pltcl 0' \
 	--define 'test 0' --define 'runselftest 1' --define 'kerberos 0' \
-	postgresql18-18.0-1PGDG.rhel7.src.rpm
+	postgresql18-18.0-1PGDG.rhel9.src.rpm
 This line would disable the plpython, pltcl, and test subpackages, enable
 the regression test run during build, and disable kerberos support.
 
