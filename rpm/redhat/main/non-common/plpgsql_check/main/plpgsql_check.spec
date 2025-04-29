@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.8.0
+Version:	2.8.1
 Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
@@ -61,6 +61,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Tue Apr 29 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.1-1PGDG
+- Update to 2.8.1 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.8.1
+
 * Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-1PGDG
 - Update to 2.8.0 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.8.0
