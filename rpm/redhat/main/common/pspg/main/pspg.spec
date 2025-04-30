@@ -28,9 +28,6 @@ CFLAGS="%{optflags} -I/usr/include/ncurses/"
 	prefix=%{_prefix} bindir=%{_bindir} mandir=%{_mandir} \
 	install
 
-%clean
-%{__rm} -rf %{buildroot}
-
 %files
 %defattr(-,root,root)
 %license LICENSE
@@ -38,7 +35,7 @@ CFLAGS="%{optflags} -I/usr/include/ncurses/"
 %{_bindir}/*
 
 %changelog
-* Tue Apr 29 2*25 Devrim Gündüz <devrim@gunduz.org> - 5.8.9-42PGDG
+* Tue Apr 29 2025 Devrim Gündüz <devrim@gunduz.org> - 5.8.9-42PGDG
 - Update to 5.8.9 per changes described at:
   https://github.com/okbob/pspg/releases/tag/5.8.9
 
