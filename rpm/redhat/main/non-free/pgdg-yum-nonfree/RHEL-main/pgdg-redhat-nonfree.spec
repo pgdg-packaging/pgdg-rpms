@@ -1,7 +1,7 @@
 Name:		pgdg-redhat-nonfree-repo
 Version:	42.0
-Release:	16PGDG
-Summary:	PostgreSQL PGDG RPMs - Yum Repository Configuration for RHEL / Rocky Linux / AlmaLinux NonFree
+Release:	17PGDG
+Summary:	PostgreSQL PGDG RPMs - DNF Repository Configuration for RHEL / Rocky Linux / AlmaLinux NonFree
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
 Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-RHEL-nonfree
@@ -10,7 +10,7 @@ BuildArch:	noarch
 Requires:	/etc/redhat-release
 
 %description
-This package contains yum configuration for Red Hat Enterprise Linux, Rocky Linux,
+This package contains dnf configuration for Red Hat Enterprise Linux, Rocky Linux,
 AlmaLinux non-free repository, and also the GPG key for PGDG RPMs.
 
 %prep
@@ -38,6 +38,9 @@ AlmaLinux non-free repository, and also the GPG key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Wed Apr 30 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-17PGDG
+- Use new URLs for SRPMs
+
 * Tue Mar 25 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-16PGDG
 - Remove v12 repos
 - Add -debuginfo repos
