@@ -232,6 +232,22 @@ If you want to manipulate a PostgreSQL database on a local or remote PostgreSQL
 server, you need this package. You also need to install this package
 if you're installing the postgresql%{pgmajorversion}-server package.
 
+%package contrib
+Summary:	Contributed source and binaries distributed with PostgreSQL
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Requires:	%{name}-server%{?_isa} = %{version}-%{release}
+Provides:	postgresql-contrib >= %{version}-%{release}
+
+%description contrib
+The postgresql%{pgmajorversion}-contrib package contains various extension modules that are
+included in the PostgreSQL distribution.
+
+%package devel
+Summary:	PostgreSQL development header files and libraries
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+
 %package ecpg
 Summary:	Run-time library for ECPG programs
 
@@ -259,87 +275,6 @@ Requires:	openssl-libs >= 1.1.1k
 The postgresql%{pgmajorversion}-ecpg-devel pacakge contains the necessary
 files to build ECPG (Embedded PostgreSQL for C) programs.  It includes the
 development libraries and the preprocessor program ecpg.
-
-%package libs
-Summary:	The shared libraries required for any PostgreSQL clients
-Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
-
-%if 0%{?suse_version} >= 1500
-Requires:	libcurl4
-Requires:	libopenssl1_1
-%else
-Requires:	curl
-Requires:	openssl-libs >= 1.1.1k
-%endif
-
-%description libs
-The postgresql%{pgmajorversion}-libs package provides the essential shared libraries for any
-PostgreSQL client program or interface. You will need to install this package
-to use any other PostgreSQL package or any clients that need to connect to a
-PostgreSQL server.
-
-%package server
-Summary:	The programs needed to create and run a PostgreSQL server
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
-Requires:	util-linux
-%if %liburing
-Requires:	liburing
-%endif
-# for /sbin/ldconfig
-Requires(post):		glibc
-Requires(postun):	glibc
-# pre/post stuff needs systemd too
-
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd
-%else
-Requires(post):		systemd
-Requires(preun):	systemd
-Requires(postun):	systemd
-%endif
-
-Provides:	postgresql-server >= %{version}-%{release}
-
-%description server
-PostgreSQL is an advanced Object-Relational database management system (DBMS).
-The postgresql%{pgmajorversion}-server package contains the programs needed to create
-and run a PostgreSQL server, which will in turn allow you to create
-and maintain PostgreSQL databases.
-
-%package docs
-Summary:	Extra documentation for PostgreSQL
-Provides:	postgresql-docs >= %{version}-%{release}
-%if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	docbook-style-xsl libxslt
-%endif
-%if 0%{?suse_version} >= 1499
-BuildRequires:	docbook-xsl-stylesheets
-%endif
-
-%description docs
-The postgresql%{pgmajorversion}-docs package includes the SGML source for the documentation
-as well as the documentation in PDF format and some extra documentation.
-Install this package if you want to help with the PostgreSQL documentation
-project, or if you want to generate printed documentation. This package also
-includes HTML version of the documentation.
-
-%package contrib
-Summary:	Contributed source and binaries distributed with PostgreSQL
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-Requires:	%{name}-server%{?_isa} = %{version}-%{release}
-Provides:	postgresql-contrib >= %{version}-%{release}
-
-%description contrib
-The postgresql%{pgmajorversion}-contrib package contains various extension modules that are
-included in the PostgreSQL distribution.
-
-%package devel
-Summary:	PostgreSQL development header files and libraries
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %if %enabletaptests
 BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
@@ -375,6 +310,41 @@ with a PostgreSQL database management server. You need to install this package
 if you want to develop applications which will interact with a PostgreSQL
 server.
 
+%package docs
+Summary:	Extra documentation for PostgreSQL
+Provides:	postgresql-docs >= %{version}-%{release}
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	docbook-style-xsl libxslt
+%endif
+%if 0%{?suse_version} >= 1499
+BuildRequires:	docbook-xsl-stylesheets
+%endif
+
+%description docs
+The postgresql%{pgmajorversion}-docs package includes the SGML source for the documentation
+as well as the documentation in PDF format and some extra documentation.
+Install this package if you want to help with the PostgreSQL documentation
+project, or if you want to generate printed documentation. This package also
+includes HTML version of the documentation.
+
+%package libs
+Summary:	The shared libraries required for any PostgreSQL clients
+Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
+
+%if 0%{?suse_version} >= 1500
+Requires:	libcurl4
+Requires:	libopenssl1_1
+%else
+Requires:	curl
+Requires:	openssl-libs >= 1.1.1k
+%endif
+
+%description libs
+The postgresql%{pgmajorversion}-libs package provides the essential shared libraries for any
+PostgreSQL client program or interface. You will need to install this package
+to use any other PostgreSQL package or any clients that need to connect to a
+PostgreSQL server.
+
 %if %llvm
 %package llvmjit
 Summary:	Just-in-time compilation support for PostgreSQL
@@ -406,7 +376,6 @@ Provides:	postgresql-plperl >= %{version}-%{release}
 The postgresql%{pgmajorversion}-plperl package contains the PL/Perl procedural language,
 which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Perl.
-
 %endif
 
 %if %plpython3
@@ -440,6 +409,36 @@ PostgreSQL is an advanced Object-Relational database management
 system. The %{name}-pltcl package contains the PL/Tcl language
 for the backend.
 %endif
+
+%package server
+Summary:	The programs needed to create and run a PostgreSQL server
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
+Requires:	util-linux
+%if %liburing
+Requires:	liburing
+%endif
+# for /sbin/ldconfig
+Requires(post):		glibc
+Requires(postun):	glibc
+# pre/post stuff needs systemd too
+
+%if 0%{?suse_version} >= 1500
+Requires(post):		systemd
+%else
+Requires(post):		systemd
+Requires(preun):	systemd
+Requires(postun):	systemd
+%endif
+
+Provides:	postgresql-server >= %{version}-%{release}
+
+%description server
+PostgreSQL is an advanced Object-Relational database management system (DBMS).
+The postgresql%{pgmajorversion}-server package contains the programs needed to create
+and run a PostgreSQL server, which will in turn allow you to create
+and maintain PostgreSQL databases.
 
 %if %test
 %package test
@@ -759,7 +758,6 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %find_lang pg_controldata-%{pgmajorversion}
 %find_lang pg_ctl-%{pgmajorversion}
 %find_lang pg_dump-%{pgmajorversion}
-#%find_lang pg_logicalinspect-%{pgmajorversion}
 %find_lang pg_resetwal-%{pgmajorversion}
 %find_lang pg_rewind-%{pgmajorversion}
 %find_lang pg_test_fsync-%{pgmajorversion}
@@ -785,7 +783,6 @@ cat pltcl-%{pgmajorversion}.lang > pg_pltcl.lst
 %find_lang postgres-%{pgmajorversion}
 %find_lang psql-%{pgmajorversion}
 
-#cat pg_amcheck-%{pgmajorversion}.lang pg_logicalinspect-%{pgmajorversion}.lang > pg_contrib.lst
 cat pg_amcheck-%{pgmajorversion}.lang > pg_contrib.lst
 cat libpq5-%{pgmajorversion}.lang > pg_libpq5.lst
 cat pg_config-%{pgmajorversion}.lang > pg_devel.lst
