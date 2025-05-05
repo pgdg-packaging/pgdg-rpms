@@ -148,6 +148,16 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
+# PGDG RHEL / Rocky / AlmaLinux Extras SRPM repository
+
+[pgdg-rhel10-extras-source]
+name=SRPMs of the Extras packages to support some RPMs in the PostgreSQL RPM repo RHEL / Rocky / AlmaLinux $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/srpms/common/pgdg-rhel$releasever-extras/redhat/rhel-$releasever-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+repo_gpgcheck = 1
+
 # PGDG RHEL / Rocky / AlmaLinux testing common SRPM repository for all PostgreSQL versions
 
 [pgdg-common-testing-source]
@@ -156,6 +166,16 @@ baseurl=https://dnf-srpms.postgresql.org/srpms/testing/common/redhat/rhel-$relea
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG RHEL / Rocky / AlmaLinux Extras Testing SRPM repository
+
+[pgdg-rhel10-extras-testing-source]
+name=SRPMs of the Extras packages to support some RPMs in the PostgreSQL RPM repo RHEL / Rocky / AlmaLinux $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/srpms/testing/common/pgdg-rhel$releasever-extras/redhat/rhel-$releasever-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
 
 # PGDG Source RPMs (SRPMS), and their testing repositories:
