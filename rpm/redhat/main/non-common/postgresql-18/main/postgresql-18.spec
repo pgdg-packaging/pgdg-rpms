@@ -158,9 +158,11 @@ BuildRequires:	pam-devel
 %endif
 
 %if %plperl
-BuildRequires:	perl-devel
 %if 0%{?fedora} || 0%{?rhel}
+BuildRequires:	perl-devel
 BuildRequires:	perl-ExtUtils-Embed
+%else
+BuildRequires:	perl
 %endif
 %endif
 
