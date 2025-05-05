@@ -435,7 +435,11 @@ Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
 Requires:	util-linux
 %if %liburing
+%if 0%{?fedora} || 0%{?rhel}
 Requires:	liburing
+%else
+Requires:	liburing2
+%endif
 %endif
 # for /sbin/ldconfig
 Requires(post):		glibc
