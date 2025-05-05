@@ -1,11 +1,11 @@
 %global _vpath_builddir .
-%global pgroutingmajorversion 3.7
+%global pgroutingmajorversion 3.8
 %global sname	pgrouting
 
 Summary:	Routing functionality for PostGIS
 Name:		%{sname}_%{pgmajorversion}
-Version:	%{pgroutingmajorversion}.3
-Release:	2PGDG%{dist}
+Version:	%{pgroutingmajorversion}.0
+Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://pgrouting.org/
@@ -68,6 +68,10 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.8.0-1PGDG
+- Update to 3.8.0 per changes described at:
+  https://github.com/pgRouting/pgrouting/releases/tag/v3.8.0
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.7.3-2PGDG
 - Add missing BR
 
