@@ -241,8 +241,8 @@ Requires:	%{name}-server%{?_isa} = %{version}-%{release}
 Provides:	postgresql-contrib >= %{version}-%{release}
 
 %description contrib
-The postgresql%{pgmajorversion}-contrib package contains various extension modules that are
-included in the PostgreSQL distribution.
+The postgresql%{pgmajorversion}-contrib package contains various extension
+modules that are included in the PostgreSQL distribution.
 
 %package devel
 Summary:	PostgreSQL development header files and libraries
@@ -322,11 +322,11 @@ BuildRequires:	docbook-xsl-stylesheets
 %endif
 
 %description docs
-The postgresql%{pgmajorversion}-docs package includes the SGML source for the documentation
-as well as the documentation in PDF format and some extra documentation.
-Install this package if you want to help with the PostgreSQL documentation
-project, or if you want to generate printed documentation. This package also
-includes HTML version of the documentation.
+The postgresql%{pgmajorversion}-docs package includes the SGML source for the
+documentation as well as the documentation in PDF format and some extra
+documentation. Install this package if you want to help with the PostgreSQL
+documentation project, or if you want to generate printed documentation. This
+package also includes HTML version of the documentation.
 
 %package libs
 Summary:	The shared libraries required for any PostgreSQL clients
@@ -339,10 +339,10 @@ Requires:	openssl-libs >= 1.1.1k
 %endif
 
 %description libs
-The postgresql%{pgmajorversion}-libs package provides the essential shared libraries for any
-PostgreSQL client program or interface. You will need to install this package
-to use any other PostgreSQL package or any clients that need to connect to a
-PostgreSQL server.
+The postgresql%{pgmajorversion}-libs package provides the essential shared
+libraries for any PostgreSQL client program or interface. You will need to
+install this package to use any other PostgreSQL package or any clients that
+need to connect to a PostgreSQL server.
 
 %package libs-oauth
 Summary:	The shared libraries required for any PostgreSQL clients - OAuth flow
@@ -357,13 +357,12 @@ Requires:	curl
 
 %description libs-oauth
 The postgresql%{pgmajorversion}-libs-oauth is an optional module for
-postgresql%{pgmajorversion}-libs implementing the Device Authorization
-flow for OAuth clients (RFC 8628). It is maintained as its own shared
-library in order to isolate its dependency on libcurl. If a connection
-string allows the use of OAuth, and the server asks for it, and a libpq
-client has not installed its own custom OAuth flow, libpq will attempt
-to delay-load this module using dlopen() and the following ABI. Failure
-to load results in a failed connection.
+postgresql%{pgmajorversion}-libs implementing the Device Authorization flow for
+OAuth clients (RFC 8628). It is maintained as its own shared library in order
+to isolate its dependency on libcurl. If a connection string allows the use of
+OAuth, and the server asks for it, and a libpq client has not installed its own
+custom OAuth flow, libpq will attempt to delay-load this module using dlopen()
+and the following ABI. Failure to load results in a failed connection.
 
 %if %llvm
 %package llvmjit
@@ -380,9 +379,9 @@ Provides:	postgresql-llvmjit >= %{version}-%{release}
 
 %description llvmjit
 The postgresql%{pgmajorversion}-llvmjit package contains support for
-just-in-time compiling parts of PostgreSQL queries. Using LLVM it
-compiles e.g. expressions and tuple deforming into native code, with the
-goal of accelerating analytics queries.
+just-in-time compiling parts of PostgreSQL queries. Using LLVM it compiles e.g.
+expressions and tuple deforming into native code, with the goal of accelerating
+analytics queries.
 %endif
 
 %if %plperl
@@ -393,9 +392,9 @@ Requires:	perl(:MODULE_COMPAT_%(eval "`%{__perl} -V:version`"; echo $version))
 Provides:	postgresql-plperl >= %{version}-%{release}
 
 %description plperl
-The postgresql%{pgmajorversion}-plperl package contains the PL/Perl procedural language,
-which is an extension to the PostgreSQL database server.
-Install this if you want to write database functions in Perl.
+The postgresql%{pgmajorversion}-plperl package contains the PL/Perl procedural
+language, which is an extension to the PostgreSQL database server. Install this
+if you want to write database functions in Perl.
 %endif
 
 %if %plpython3
@@ -411,8 +410,8 @@ Requires:	python3-libs
 %endif
 
 %description plpython3
-The postgresql%{pgmajorversion}-plpython3 package contains the PL/Python3 procedural language,
-which is an extension to the PostgreSQL database server.
+The postgresql%{pgmajorversion}-plpython3 package contains the PL/Python3
+procedural language, which is an extension to the PostgreSQL database server.
 Install this if you want to write database functions in Python 3.
 %endif
 
@@ -456,9 +455,9 @@ Provides:	postgresql-server >= %{version}-%{release}
 
 %description server
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
-The postgresql%{pgmajorversion}-server package contains the programs needed to create
-and run a PostgreSQL server, which will in turn allow you to create
-and maintain PostgreSQL databases.
+The postgresql%{pgmajorversion}-server package contains the programs needed to
+create and run a PostgreSQL server, which will in turn allow you to create and
+maintain PostgreSQL databases.
 
 %if %test
 %package test
@@ -468,9 +467,9 @@ Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 Provides:	postgresql-test >= %{version}-%{release}
 
 %description test
-The postgresql%{pgmajorversion}-test package contains files needed for various tests for the
-PostgreSQL database management system, including regression tests and
-benchmarks.
+The postgresql%{pgmajorversion}-test package contains files needed for various
+tests for the PostgreSQL database management system, including regression tests
+and benchmarks.
 %endif
 
 %prep
