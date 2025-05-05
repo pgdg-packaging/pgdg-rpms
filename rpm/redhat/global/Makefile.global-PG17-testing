@@ -17,7 +17,7 @@
 
 ## PostgreSQL 17 Testing
 
-build17testing:
+build17testing: prep17
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \

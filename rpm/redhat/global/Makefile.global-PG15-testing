@@ -17,7 +17,7 @@
 
 ## PostgreSQL 15 Testing
 
-build15testing:
+build15testing: prep15
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \

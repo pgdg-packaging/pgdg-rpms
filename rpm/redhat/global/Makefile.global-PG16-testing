@@ -17,7 +17,7 @@
 
 ## PostgreSQL 16 Testing
 
-build16testing:
+build16testing: prep16
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \

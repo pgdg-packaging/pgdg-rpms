@@ -17,7 +17,7 @@
 
 ## PostgreSQL 13 Testing
 
-build13testing:
+build13testing: prep13
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm13testing/BUILDROOT" \

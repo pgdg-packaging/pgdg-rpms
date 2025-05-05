@@ -24,7 +24,7 @@ prep18:
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" $(SPECFILE)
 
-build18testing:
+build18testing: prep18
 	rpmbuild --define "_sourcedir $(PWD)" \
 	--define "_specdir $(PWD)" \
 	--define "_buildrootdir $(HOME)/rpm18testing/BUILDROOT" \
