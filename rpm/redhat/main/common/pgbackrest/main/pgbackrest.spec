@@ -3,7 +3,7 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.55.0
+Version:	2.55.1
 Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
@@ -17,13 +17,9 @@ BuildRequires:	openssl-devel zlib-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	libzstd-devel libxml2-devel libyaml-devel libssh2-devel
 BuildRequires:	meson
 
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	lz4-libs libzstd libssh2
 BuildRequires:	lz4-devel bzip2-devel ninja-build
-%endif
-%if 0%{?suse_version} && 0%{?suse_version} <= 1499
-Requires:	liblz4-1_7 libzstd1 libssh2-1
-BuildRequires:	liblz4-devel libbz2-devel ninja
 %endif
 %if 0%{?suse_version} && 0%{?suse_version} >= 1500
 Requires:	liblz4-1 libzstd1 libssh2-1
@@ -37,7 +33,7 @@ BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires(post):		systemd-sysvinit
 %endif
 %else
@@ -90,18 +86,14 @@ are required to perform a backup which increases security.
 # PGDATA needs removal of group and world permissions due to pg_pwd hole.
 %{__install} -d -m 700 /var/lib/pgsql/
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
-useradd -M -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
+useradd -M -g postgres -o -r -d /var/lib/pgsql -s /usr/bin/bash \
 	-c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
 %{__chown} postgres: /var/lib/pgsql
 
 %post
 if [ $1 -eq 1 ] ; then
-   /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-   %if 0%{?suse_version}
-   %if 0%{?suse_version} >= 1315
-   %service_add_pre %{name}.service
-   %endif
-   %else
+   /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+   %if 0%{?suse_version} >= 1500
    %systemd_post %{name}.service
    %endif
 fi
@@ -109,16 +101,16 @@ fi
 %preun
 if [ $1 -eq 0 ] ; then
 	# Package removal, not upgrade
-	/bin/systemctl --no-reload disable %{name}.service >/dev/null 2>&1 || :
-	/bin/systemctl stop %{name}.service >/dev/null 2>&1 || :
+	/usr/bin/systemctl --no-reload disable %{name}.service >/dev/null 2>&1 || :
+	/usr/bin/systemctl stop %{name}.service >/dev/null 2>&1 || :
 fi
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+/usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
 if [ $1 -ge 1 ] ; then
 	# Package upgrade, not uninstall
-	/bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
+	/usr/bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
 fi
 
 %files
@@ -134,6 +126,10 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 2.55.1-1PGDG
+- Update to 2.55.1, per changes described at:
+  https://pgbackrest.org/release.html#2.55.1
+
 * Tue Apr 22 2025 Devrim Gündüz <devrim@gunduz.org> - 2.55.0-1PGDG
 - Update to 2.55.0, per changes described at:
   https://pgbackrest.org/release.html#2.55.0
