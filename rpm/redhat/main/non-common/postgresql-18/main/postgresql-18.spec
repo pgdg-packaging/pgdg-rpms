@@ -988,13 +988,6 @@ fi
 %{pgbaseinstdir}/share/man/man3/*
 %{pgbaseinstdir}/share/man/man7/*
 
-%files docs
-%defattr(-,root,root)
-%doc doc/src/*
-%doc *-A4.pdf
-%doc src/tutorial
-%doc doc/html
-
 %files contrib -f pg_contrib.lst
 %defattr(-,root,root)
 %doc %{pgbaseinstdir}/doc/extension/*.example
@@ -1133,6 +1126,54 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_recvlogical.1
 %{pgbaseinstdir}/share/man/man1/vacuumlo.1
 
+%files devel -f pg_devel.lst
+%defattr(-,root,root)
+%{pgbaseinstdir}/include/libpq*.h
+%{pgbaseinstdir}/include/pg_config*.h
+%{pgbaseinstdir}/include/postgres_ext.h
+%{pgbaseinstdir}/include/internal/*
+%{pgbaseinstdir}/include/libpq/*
+%{pgbaseinstdir}/include/server/*
+
+%{pgbaseinstdir}/lib/libpq.so
+%{pgbaseinstdir}/lib/libpq.a
+%{pgbaseinstdir}/lib/libpq-oauth.a
+%{pgbaseinstdir}/lib/libpgcommon.a
+%{pgbaseinstdir}/lib/libpgcommon_shlib.a
+%{pgbaseinstdir}/lib/libpgport.a
+%{pgbaseinstdir}/lib/libpgport_shlib.a
+%{pgbaseinstdir}/lib/pgxs/*
+%{pgbaseinstdir}/lib/pkgconfig/libpq.pc
+
+%files docs
+%defattr(-,root,root)
+%doc doc/src/*
+%doc *-A4.pdf
+%doc src/tutorial
+%doc doc/html
+
+%files ecpg -f ecpg.lst
+%defattr(-,root,root)
+%{pgbaseinstdir}/bin/ecpg
+%{pgbaseinstdir}/lib/libecpg.so*
+%{pgbaseinstdir}/lib/libecpg_compat.so*
+%{pgbaseinstdir}/lib/libecpg.a
+%{pgbaseinstdir}/lib/libecpg_compat.a
+%{pgbaseinstdir}/lib/libpgtypes.a
+%{pgbaseinstdir}/lib/libpgtypes.so*
+%{pgbaseinstdir}/share/man/man1/ecpg.*
+
+%files ecpg-devel
+%defattr(-,root,root)
+%{pgbaseinstdir}/include/informix/*
+%{pgbaseinstdir}/include/pgtypes*h
+%{pgbaseinstdir}/include/ecpg*.h
+%{pgbaseinstdir}/include/sql3types.h
+%{pgbaseinstdir}/include/sqlca.h
+%{pgbaseinstdir}/include/sqlda*.h
+%{pgbaseinstdir}/lib/pkgconfig/libecpg*.pc
+%{pgbaseinstdir}/lib/pkgconfig/libpgtypes.pc
+
 %files libs -f pg_libpq5.lst
 %defattr(-,root,root)
 %{pgbaseinstdir}/lib/libpq.so.*
@@ -1142,6 +1183,37 @@ fi
 %files libs-oauth
 %defattr(-,root,root)
 %{pgbaseinstdir}/lib/libpq-oauth-%{pgmajorversion}.so
+
+%if %llvm
+%files llvmjit
+%defattr(-,root,root)
+%{pgbaseinstdir}/lib/bitcode/*
+%{pgbaseinstdir}/lib/llvmjit.so
+%{pgbaseinstdir}/lib/llvmjit_types.bc
+%endif
+
+%if %plperl
+%files plperl -f pg_plperl.lst
+%defattr(-,root,root)
+%{pgbaseinstdir}/lib/bool_plperl.so
+%{pgbaseinstdir}/lib/plperl.so
+%{pgbaseinstdir}/share/extension/plperl*
+%{pgbaseinstdir}/share/extension/bool_plperl*
+%endif
+
+%if %pltcl
+%files pltcl -f pg_pltcl.lst
+%defattr(-,root,root)
+%{pgbaseinstdir}/lib/pltcl.so
+%{pgbaseinstdir}/share/extension/pltcl*
+%endif
+
+%if %plpython3
+%files plpython3 -f pg_plpython3.lst
+%{pgbaseinstdir}/share/extension/plpython3*
+%{pgbaseinstdir}/lib/plpython3.so
+%{pgbaseinstdir}/share/extension/*_plpython3u*
+%endif
 
 %files server -f pg_server.lst
 %defattr(-,root,root)
@@ -1213,78 +1285,6 @@ fi
 %{pgbaseinstdir}/share/information_schema.sql
 %{pgbaseinstdir}/share/snowball_create.sql
 %{pgbaseinstdir}/share/sql_features.txt
-
-%files ecpg -f ecpg.lst
-%defattr(-,root,root)
-%{pgbaseinstdir}/bin/ecpg
-%{pgbaseinstdir}/lib/libecpg.so*
-%{pgbaseinstdir}/lib/libecpg_compat.so*
-%{pgbaseinstdir}/lib/libecpg.a
-%{pgbaseinstdir}/lib/libecpg_compat.a
-%{pgbaseinstdir}/lib/libpgtypes.a
-%{pgbaseinstdir}/lib/libpgtypes.so*
-%{pgbaseinstdir}/share/man/man1/ecpg.*
-
-%files ecpg-devel
-%defattr(-,root,root)
-%{pgbaseinstdir}/include/informix/*
-%{pgbaseinstdir}/include/pgtypes*h
-%{pgbaseinstdir}/include/ecpg*.h
-%{pgbaseinstdir}/include/sql3types.h
-%{pgbaseinstdir}/include/sqlca.h
-%{pgbaseinstdir}/include/sqlda*.h
-%{pgbaseinstdir}/lib/pkgconfig/libecpg*.pc
-%{pgbaseinstdir}/lib/pkgconfig/libpgtypes.pc
-
-%files devel -f pg_devel.lst
-%defattr(-,root,root)
-%{pgbaseinstdir}/include/libpq*.h
-%{pgbaseinstdir}/include/pg_config*.h
-%{pgbaseinstdir}/include/postgres_ext.h
-%{pgbaseinstdir}/include/internal/*
-%{pgbaseinstdir}/include/libpq/*
-%{pgbaseinstdir}/include/server/*
-
-%{pgbaseinstdir}/lib/libpq.so
-%{pgbaseinstdir}/lib/libpq.a
-%{pgbaseinstdir}/lib/libpq-oauth.a
-%{pgbaseinstdir}/lib/libpgcommon.a
-%{pgbaseinstdir}/lib/libpgcommon_shlib.a
-%{pgbaseinstdir}/lib/libpgport.a
-%{pgbaseinstdir}/lib/libpgport_shlib.a
-%{pgbaseinstdir}/lib/pgxs/*
-%{pgbaseinstdir}/lib/pkgconfig/libpq.pc
-
-%if %llvm
-%files llvmjit
-%defattr(-,root,root)
-%{pgbaseinstdir}/lib/bitcode/*
-%{pgbaseinstdir}/lib/llvmjit.so
-%{pgbaseinstdir}/lib/llvmjit_types.bc
-%endif
-
-%if %plperl
-%files plperl -f pg_plperl.lst
-%defattr(-,root,root)
-%{pgbaseinstdir}/lib/bool_plperl.so
-%{pgbaseinstdir}/lib/plperl.so
-%{pgbaseinstdir}/share/extension/plperl*
-%{pgbaseinstdir}/share/extension/bool_plperl*
-%endif
-
-%if %pltcl
-%files pltcl -f pg_pltcl.lst
-%defattr(-,root,root)
-%{pgbaseinstdir}/lib/pltcl.so
-%{pgbaseinstdir}/share/extension/pltcl*
-%endif
-
-%if %plpython3
-%files plpython3 -f pg_plpython3.lst
-%{pgbaseinstdir}/share/extension/plpython3*
-%{pgbaseinstdir}/lib/plpython3.so
-%{pgbaseinstdir}/share/extension/*_plpython3u*
-%endif
 
 %if %test
 %files test
