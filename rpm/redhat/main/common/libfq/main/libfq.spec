@@ -1,29 +1,25 @@
 Summary:	A wrapper library for the Firebird C API
 Name:		libfq
 Version:	0.6.1
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Source:		https://github.com/ibarwick/%{name}/archive/%{version}.tar.gz
+Patch0:		%{name}-c23.patch
 URL:		https://github.com/ibarwick/%{name}
 License:	PostgreSQL
-Group:		Development/Libraries/C and C++
 BuildRequires:	firebird-devel
 
-%if 0%{?rhel} && 0%{?rhel} == 7
-BuildRequires:	firebird-libfbclient
-Requires:	firebird-libfbclient
-%else
 BuildRequires:	libfbclient2
 Requires:	libfbclient2
-%endif
 
 %description
 A wrapper library for the Firebird C API, loosely based on libpq for PostgreSQL.
 
 %prep
 %setup -q -n %{name}-%{version}
+%patch -P 0 -p1
 
 %build
-./configure --prefix=%{_prefix} \
+%configure --prefix=%{_prefix} \
 	--with-ibase=%{_includedir}/firebird --libdir=%{_libdir}/
 
 %{__make} %{?_smp_mflags}
@@ -43,6 +39,9 @@ A wrapper library for the Firebird C API, loosely based on libpq for PostgreSQL.
 %{_includedir}/%{name}.h
 
 %changelog
+* Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 0.6.1-2PGDG
+- Remove RHEL 7 support
+
 * Thu May 23 2024 Devrim Gündüz <devrim@gunduz.org> - 0.6.1-1PGDG
 - Update to 0.6.1 per changes described at:
   https://github.com/ibarwick/libfq/releases/tag/0.6.1
