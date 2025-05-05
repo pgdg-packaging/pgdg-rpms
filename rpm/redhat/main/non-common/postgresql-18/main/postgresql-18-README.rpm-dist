@@ -152,6 +152,7 @@ postgresql18-docs:		Documentation, including PDF file
 postgresql18-ecpg:		Run-time library for ECPG programs
 postgresql18-ecpg-devel:	Development files for ECPG 
 postgresql18-libs:		Client shared libraries
+postgresql18-libs-oauth:	Client shared libraries - OAuth flow
 postgresql18-llvmjit:		Just-in-time compilation support
 postgresql18-test:		The regression tests and associated files
 postgresql18-plperl:		The Perl procedural language for PostgreSQL

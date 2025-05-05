@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
@@ -332,10 +333,8 @@ Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
 %if 0%{?suse_version} >= 1500
-Requires:	libcurl4
 Requires:	libopenssl1_1
 %else
-Requires:	curl
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -344,6 +343,27 @@ The postgresql%{pgmajorversion}-libs package provides the essential shared libra
 PostgreSQL client program or interface. You will need to install this package
 to use any other PostgreSQL package or any clients that need to connect to a
 PostgreSQL server.
+
+%package libs-oauth
+Summary:	The shared libraries required for any PostgreSQL clients - OAuth flow
+Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} = %{version}-%{release}
+
+%if 0%{?suse_version} >= 1500
+Requires:	libcurl4
+%else
+Requires:	curl
+%endif
+
+%description libs-oauth
+The postgresql%{pgmajorversion}-libs-oauth is an optional module for
+postgresql%{pgmajorversion}-libs implementing the Device Authorization
+flow for OAuth clients (RFC 8628). It is maintained as its own shared
+library in order to isolate its dependency on libcurl. If a connection
+string allows the use of OAuth, and the server asks for it, and a libpq
+client has not installed its own custom OAuth flow, libpq will attempt
+to delay-load this module using dlopen() and the following ABI. Failure
+to load results in a failed connection.
 
 %if %llvm
 %package llvmjit
@@ -1120,6 +1140,10 @@ fi
 %{pgbaseinstdir}/lib/libpqwalreceiver.so
 %config(noreplace) %attr (644,root,root) %{pgbaseinstdir}/share/%{sname}-%{pgmajorversion}-libs.conf
 
+%files libs-oauth
+%defattr(-,root,root)
+%{pgbaseinstdir}/lib/libpq-oauth-%{pgmajorversion}.so
+
 %files server -f pg_server.lst
 %defattr(-,root,root)
 %{pgbaseinstdir}/bin/%{sname}-%{pgmajorversion}-setup
@@ -1224,6 +1248,7 @@ fi
 
 %{pgbaseinstdir}/lib/libpq.so
 %{pgbaseinstdir}/lib/libpq.a
+%{pgbaseinstdir}/lib/libpq-oauth.a
 %{pgbaseinstdir}/lib/libpgcommon.a
 %{pgbaseinstdir}/lib/libpgcommon_shlib.a
 %{pgbaseinstdir}/lib/libpgport.a
