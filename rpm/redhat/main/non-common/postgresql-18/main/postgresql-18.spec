@@ -7,7 +7,6 @@
 %global sname postgresql
 %global pgbaseinstdir	/usr/pgsql-%{pgmajorversion}
 
-%global pgdg_build_timestamp %(date +"%Y%m%d")
 %global beta 1
 %{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
@@ -46,14 +45,13 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
+Release:	beta1_PGDG%{?dist}
 %else
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
+Release:	beta1_PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-
-Source0:	https://download.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}beta1/postgresql-%{version}beta1.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -478,7 +476,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}devel
+%setup -q -n %{sname}-%{pgpackageversion}beta1
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1299,6 +1297,9 @@ fi
 %endif
 
 %changelog
+* Tue May 6 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta1-1PGDG
+- Update to PostgreSQL 18 beta1
+
 * Mon Jul 1 2024 Devrim Gunduz <devrim@gunduz.org> - 18.0alpha-1PGDG
 - Initial cut for PostgreSQL 18
 
