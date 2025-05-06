@@ -33,23 +33,19 @@
  %{!?sdt:%global sdt 1}
 %endif
 
-%if 0%{?fedora} > 30
-%global _hardened_build 1
-%endif
-
 #Filter out some Perl "dependencies"
 %global __requires_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
 %global __provides_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	17.4
+Version:	17.5
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420004PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1218,6 +1214,10 @@ fi
 %endif
 
 %changelog
+* Tue May 6 2025 Devrim Gündüz <devrim@gunduz.org> - 17.5-1PGDG
+- Update to 17.5 per changes described at:
+  https://www.postgresql.org/docs/release/17.5/
+
 * Tue Apr 15 2025 Devrim Gunduz <devrim@gunduz.org> - 17.4-4PGDG
 - Rebuild against new GCC on Fedora 42
 
@@ -1229,7 +1229,7 @@ fi
 * Fri Mar 07 2025 Devrim Gunduz <devrim@gunduz.org> - 17.4-2PGDG
 - Remove redundant BR
 
-*  Mon Feb 17 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-1PGDG
+* Mon Feb 17 2025 Devrim Gündüz <devrim@gunduz.org> - 17.4-1PGDG
 - Update to 17.4 per changes described at:
   https://www.postgresql.org/docs/release/17.4/
 
