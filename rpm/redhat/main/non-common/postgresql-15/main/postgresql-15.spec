@@ -76,13 +76,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	15.12
+Version:	15.13
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420004PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1388,6 +1388,10 @@ fi
 %endif
 
 %changelog
+* Tue May 6 2025 Devrim Gündüz <devrim@gunduz.org> - 15.13-1PGDG
+- Update to 15.13, per changes described at
+  https://www.postgresql.org/docs/release/15.13/
+
 * Tue Apr 15 2025 Devrim Gunduz <devrim@gunduz.org> - 15.12-4PGDG
 - Rebuild against new GCC on Fedora 42
 
@@ -1399,7 +1403,7 @@ fi
 * Fri Mar 07 2025 Devrim Gunduz <devrim@gunduz.org> - 15.12-2PGDG
 - Remove redundant BR
 
-*  Mon Feb 17 2025 Devrim Gündüz <devrim@gunduz.org> - 15.12-1PGDG
+* Mon Feb 17 2025 Devrim Gündüz <devrim@gunduz.org> - 15.12-1PGDG
 - Update to 15.12, per changes described at
   https://www.postgresql.org/docs/release/15.12/
 
