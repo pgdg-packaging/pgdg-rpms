@@ -49,6 +49,13 @@ bfsrpm18testing: prep18
 	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18"  --define "pgpackageversion 18" \
 	--define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
 
+bfnoprepsrpm18testing:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm18testing/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm18testing/BUILDROOT" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18"  --define "pgpackageversion 18" \
+	--define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
+
 bfnosignsrpm18testing: prep18
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_buildrootdir $(HOME)/rpm18testing/BUILDROOT" \
