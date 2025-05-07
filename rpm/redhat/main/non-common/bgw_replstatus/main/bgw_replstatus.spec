@@ -3,8 +3,8 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.6
-Release:	5PGDG%{?dist}
+Version:	1.0.8
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL background worker to report wether a node is a replication master or standby
 License:	PostgreSQL
 URL:		https://github.com/mhagander/%{sname}
@@ -69,6 +69,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Wed May 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-1PGDG
+- Update to 1.0.8 per changes described at:
+  https://github.com/mhagander/bgw_replstatus/releases/tag/1.0.8
+  https://github.com/mhagander/bgw_replstatus/releases/tag/1.0.7
+
 * Fri Feb 21 2025 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-5PGDG
 - Update LLVM dependencies
 
