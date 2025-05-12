@@ -1,6 +1,6 @@
 %global sname	oracle_fdw
 %global ofdwmajver 2
-%global ofdwmidver 7
+%global ofdwmidver 8
 %global ofdwminver 0
 
 %{!?oi_release:%global oi_release 23.7.0.25.01}
@@ -58,6 +58,10 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 %{pginstdir}/doc/extension/README.%{sname}
 
 %changelog
+* Mon May 12 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-1PGDG
+- Update to 2.8.0 per changes described at:
+  https://github.com/laurenz/oracle_fdw/releases/tag/ORACLE_FDW_2_8_0
+
 * Mon Feb 10 2025 Devrim Gündüz <devrim@gunduz.org> 2.7.0-5PGDG
 - Update OIC dependency to 23.7.0.25.01
 
