@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
@@ -43,9 +44,9 @@ Version:	17.5
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420001PGDG%{?dist}
+Release:	420002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -450,6 +451,13 @@ CFLAGS=`echo $CFLAGS|xargs -n 1|grep -v ffast-math|xargs -n 100`
 LDFLAGS="-Wl,--as-needed"; export LDFLAGS
 %endif
 export CFLAGS
+
+# We need to export these even though they are under the standard
+# path. Buildfarm utilises ccache which may not be available on
+# users' instances, and that breaks extension builds as shown here:
+# https://www.postgresql.org/message-id/CACMiCkV%2BfQ4yAZqygyWx7ZQ8eWsj1AjoC6CGEUoyxY9jUm7paA%40mail.gmail.com
+# Previously reported by Muralikrishna Bandaru.
+export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config
 
 # These configure options must match main build
 ./configure --enable-rpath \
@@ -1214,6 +1222,11 @@ fi
 %endif
 
 %changelog
+* Tue May 13 2025 Devrim Gunduz <devrim@gunduz.org> - 17.5-2PGDG
+- Add explicit calls to CLANG and LLVM_CONFIG back to fix extension
+  builds. Per report from Muralikrishna Bandaru and
+  https://www.postgresql.org/message-id/CACMiCkV%2BfQ4yAZqygyWx7ZQ8eWsj1AjoC6CGEUoyxY9jUm7paA%40mail.gmail.com
+
 * Tue May 6 2025 Devrim Gündüz <devrim@gunduz.org> - 17.5-1PGDG
 - Update to 17.5 per changes described at:
   https://www.postgresql.org/docs/release/17.5/

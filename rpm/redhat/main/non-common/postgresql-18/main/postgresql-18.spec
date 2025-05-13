@@ -45,9 +45,9 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta1_PGDG%{?dist}
+Release:	beta1_4200002PGDG%{?dist}
 %else
-Release:	beta1_PGDG%{?dist}
+Release:	beta1_2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -505,6 +505,13 @@ LDFLAGS="-Wl,--as-needed"; export LDFLAGS
 %endif
 
 export CFLAGS
+
+# We need to export these even though they are under the standard
+# path. Buildfarm utilises ccache which may not be available on
+# users' instances, and that breaks extension builds as shown here:
+# https://www.postgresql.org/message-id/CACMiCkV%2BfQ4yAZqygyWx7ZQ8eWsj1AjoC6CGEUoyxY9jUm7paA%40mail.gmail.com
+# Previously reported by Muralikrishna Bandaru.
+export CLANG=%{_bindir}/clang LLVM_CONFIG=%{_bindir}/llvm-config
 
 ./configure --enable-rpath \
 	--prefix=%{pgbaseinstdir} \
@@ -1297,6 +1304,11 @@ fi
 %endif
 
 %changelog
+* Tue May 13 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta1-2PGDG
+- Add explicit calls to CLANG and LLVM_CONFIG back to fix extension
+  builds. Per report from Muralikrishna Bandaru and
+  https://www.postgresql.org/message-id/CACMiCkV%2BfQ4yAZqygyWx7ZQ8eWsj1AjoC6CGEUoyxY9jUm7paA%40mail.gmail.com
+
 * Tue May 6 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta1-1PGDG
 - Update to PostgreSQL 18 beta1
 
