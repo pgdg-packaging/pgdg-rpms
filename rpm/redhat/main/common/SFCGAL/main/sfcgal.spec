@@ -113,6 +113,7 @@ Development headers and libraries for SFCGAL.
 %{_includedir}/%{name}/
 %if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %{_libdir}/pkgconfig/sfcgal.pc
+%{_libdir}/cmake/%{name}/%{name}*cmake
 %endif
 
 %files libs
