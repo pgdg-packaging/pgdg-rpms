@@ -78,7 +78,7 @@ Version:	13.21
 # which overrides our packages. Increase our release number on SuSE.
 Release:	420001PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1342,6 +1342,9 @@ fi
 %endif
 
 %changelog
+* Wed May 14 2025 Devrim Gündüz <devrim@gunduz.org> - 13.21-2PGDG
+- Rebuild against LLVM 19 on RHEL 8
+
 * Tue May 6 2025 Devrim Gündüz <devrim@gunduz.org> - 13.21-1PGDG
 - Update to 13.21, per changes described at
   https://www.postgresql.org/docs/release/13.21/

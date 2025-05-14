@@ -45,7 +45,7 @@ Version:	17.5
 # which overrides our packages. Increase our release number on SuSE.
 Release:	420002PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1221,6 +1221,9 @@ fi
 %endif
 
 %changelog
+* Wed May 14 2025 Devrim Gündüz <devrim@gunduz.org> - 17.5-3PGDG
+- Rebuild against LLVM 19 on RHEL 8
+
 * Tue May 13 2025 Devrim Gunduz <devrim@gunduz.org> - 17.5-2PGDG
 - Add explicit calls to CLANG and LLVM_CONFIG back to fix extension
   builds. Per report from Muralikrishna Bandaru and

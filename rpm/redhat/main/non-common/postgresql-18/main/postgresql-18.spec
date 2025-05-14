@@ -47,7 +47,7 @@ Version:	18
 # which overrides our packages. Increase our release number on SuSE.
 Release:	beta1_4200002PGDG%{?dist}
 %else
-Release:	beta1_2PGDG%{?dist}
+Release:	beta1_3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1304,6 +1304,9 @@ fi
 %endif
 
 %changelog
+* Wed May 14 2025 Devrim Gündüz <devrim@gunduz.org> - 18.0beta1-3PGDG
+- Rebuild against LLVM 19 on RHEL 8
+
 * Tue May 13 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta1-2PGDG
 - Add explicit calls to CLANG and LLVM_CONFIG back to fix extension
   builds. Per report from Muralikrishna Bandaru and
