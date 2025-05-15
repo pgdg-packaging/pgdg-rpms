@@ -11,7 +11,7 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -19,6 +19,9 @@ URL:		https://github.com/%{sname}/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel
 BuildRequires:	krb5-devel meson
 Requires:	postgresql%{pgmajorversion}
+
+# llvmjit package is not built with meson:
+Obsoletes:	%{sname}_%{pgmajorversion} < 4.14.3
 
 %description
 Functions and operators that emulate a subset of functions and packages from the
@@ -57,6 +60,11 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Thu May 15 2025 Devrim Gündüz <devrim@gunduz.org> 4.14.3-2PGDG
+- Obsolete -llvmjit subpackage (not built by meson) per:
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/12
+  https://redmine.postgresql.org/issues/8110
+
 * Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> 4.14.3-1PGDG
 - Update to 4.14.3 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_14_3
