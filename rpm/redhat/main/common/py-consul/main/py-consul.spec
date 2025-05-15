@@ -2,7 +2,7 @@
 
 Name:		py-consul
 Version:	1.6.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -56,5 +56,10 @@ Python client for Consul
 %{python3_sitelib}/consul/api/acl/__pycache__/*.py*
 
 %changelog
+* Thu May 15 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-2PGDG
+- Rebuild on RHEL 8 against Python 3.6 . Apparently previous release was built
+  against Python 3.9 accidentally, breaking new installs.
+  Per report from Seda Yavuz.
+
 * Thu Apr 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
