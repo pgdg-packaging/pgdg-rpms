@@ -2,7 +2,7 @@
 
 %global plrmajver 8
 %global plrmidver 4
-%global plrminver 7
+%global plrminver 8
 
 %{!?llvm:%global llvm 1}
 
@@ -68,6 +68,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot}/ install
 %endif
 
 %changelog
+* Sun May 18 2025 Devrim Gunduz <devrim@gunduz.org> - 8.4.8-1PGDG
+- Update to 8.4.8
+
 * Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 8.4.7-2PGDG
 - Update LLVM dependencies
 
