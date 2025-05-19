@@ -26,7 +26,7 @@ Source1:	%{name}.logrotate
 Source2:	%{name}.cron
 BuildArch:	noarch
 
-BuildRequires:  python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
 Requires:	/usr/sbin/useradd rsync >= 3.0.4
 Requires:	python3-barman = %{version}
@@ -50,28 +50,24 @@ Summary:	The shared libraries required for Barman family components
 Requires:	python3-setuptools
 
 %if 0%{?rhel} && 0%{?rhel} <= 9
-Requires:	pgdg-python3-psycopg2 >= 2.9.10
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
+Requires:	python%{python3_pkgversion}-argcomplete python%{python3_pkgversion}-dateutil
 Requires:	python%{python3_pkgversion}-six
-Requires:	pgdg-python3-dateutil
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-psycopg2 >= 2.9.9
-Requires:	python3-six
+Requires:	python3-six python3-argcomplete
 %endif
 
 %if 0%{?rhel} %% 0%{?rhel} >= 10
 Requires:	python3-psycopg2 >= 2.9.9
-Requires:	python3-six
+Requires:	python3-six python3-argcomplete
 %endif
 
 %if 0%{?suse_version} >= 1500
-Requires:	python3-argcomplete python%{python3_pkgversion}-python-dateutil
-Requires:	pgdg-python3-psycopg2 >= 2.9.10
-%endif
-
-%if 0%{?rhel} >= 8 || 0%{?fedora}
-Requires:	python3-argcomplete python3-dateutil
+Requires:	python%{python3_pkgversion}-argcomplete python%{python3_pkgversion}-python-dateutil
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
 %endif
 
 %description -n python3-barman
