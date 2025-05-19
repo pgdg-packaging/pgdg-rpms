@@ -60,10 +60,6 @@ Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
 %endif
 
-%if 0%{?rhel} && 0%{?rhel} == 9
-Requires:	python%{python3_pkgversion}-argcomplete
-%endif
-
 %if 0%{?rhel} && 0%{?rhel} >= 10
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
