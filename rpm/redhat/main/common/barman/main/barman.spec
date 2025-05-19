@@ -50,24 +50,27 @@ Summary:	The shared libraries required for Barman family components
 Requires:	python3-setuptools
 
 %if 0%{?rhel} && 0%{?rhel} <= 9
+Requires:	python%{python3_pkgversion}-argcomplete
+Requires:	python%{python3_pkgversion}-dateutil
 Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
-Requires:	python%{python3_pkgversion}-argcomplete python%{python3_pkgversion}-dateutil
 Requires:	python%{python3_pkgversion}-six
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} <= 42
-Requires:	python3-psycopg2 >= 2.9.9
-Requires:	python3-six python3-argcomplete
+Requires:	python3-argcomplete python3-dateutil
+Requires:	python3-psycopg2 >= 2.9.9 python3-six
 %endif
 
 %if 0%{?rhel} %% 0%{?rhel} >= 10
-Requires:	python3-psycopg2 >= 2.9.9
-Requires:	python3-six python3-argcomplete
+Requires:	python3-argcomplete python3-dateutil
+Requires:	python3-psycopg2 >= 2.9.9 python3-six
 %endif
 
 %if 0%{?suse_version} >= 1500
-Requires:	python%{python3_pkgversion}-argcomplete python%{python3_pkgversion}-python-dateutil
+Requires:	python%{python3_pkgversion}-argcomplete
+Requires:	python%{python3_pkgversion}-python-dateutil
 Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
+Requires:	python%{python3_pkgversion}-six
 %endif
 
 %description -n python3-barman
@@ -140,7 +143,7 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 * Fri May 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.14.0-42PGDG
 - Update to 3.14.0, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.14.0
-- Build with Python 3.12 on RHEL 8 and 9 and SLES 15
+- Build with Python 3.12 on RHEL 9 & 8 and Python 3.11 on SLES 15.
 
 * Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.13.3-43PGDG
 - Rebuild on RHEL 8 per:
