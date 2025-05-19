@@ -1,24 +1,31 @@
-%global pname py_consul
+%global modname py_consul
+
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} < 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} >= 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+
+%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global pgdg_python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		py-consul
 Version:	1.6.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
 Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	python3-devel python3-wheel
-
-%if 0%{?rhel} == 8
-BuildRequires:	python39-wheel
-%endif
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
-BuildRequires:	pyproject-rpm-macros
-%endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	python-rpm-macros
-%endif
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools
 
 BuildArch:	noarch
 
@@ -30,16 +37,12 @@ Python client for Consul
 %prep
 %setup -q -n %{name}-%{version}
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
-%generate_buildrequires
-%pyproject_buildrequires
-%endif
-
 %build
-%pyproject_wheel
+%{__ospython} setup.py build
 
 %install
-%pyproject_install
+%{__ospython} setup.py install --no-compile --root %{buildroot}
+
 %{__rm} -rf %{buildroot}%{python3_sitelib}/docs
 %{__rm} -f %{buildroot}/usr/*requirements*
 
@@ -47,15 +50,21 @@ Python client for Consul
 %defattr(-,root,root,-)
 %doc README.md
 %license LICENSE
-%{python3_sitelib}/%{pname}-%{version}.dist-info/*
-%{python3_sitelib}/consul/*.py*
-%{python3_sitelib}/consul/__pycache__/*.py*
-%{python3_sitelib}/consul/api/*.py*
-%{python3_sitelib}/consul/api/__pycache__/*.py*
-%{python3_sitelib}/consul/api/acl/*.py*
-%{python3_sitelib}/consul/api/acl/__pycache__/*.py*
+%{pgdg_python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/*
+%{pgdg_python3_sitelib}/consul/*.py*
+%{pgdg_python3_sitelib}/consul/__pycache__/*.py*
+%{pgdg_python3_sitelib}/consul/api/*.py*
+%{pgdg_python3_sitelib}/consul/api/__pycache__/*.py*
+%{pgdg_python3_sitelib}/consul/api/acl/*.py*
+%{pgdg_python3_sitelib}/consul/api/acl/__pycache__/*.py*
 
 %changelog
+* Mon May 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-3PGDG
+- Build the package with Python 3.12 on RHEL 9 & 8 and Python 3.11 on SLES
+  15. For the other distros (Fedora and RHEL 10) use OS'd default Python
+  version.
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/16
+
 * Thu May 15 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-2PGDG
 - Rebuild on RHEL 8 against Python 3.6 . Apparently previous release was built
   against Python 3.9 accidentally, breaking new installs.
