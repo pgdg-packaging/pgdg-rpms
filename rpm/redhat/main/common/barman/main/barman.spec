@@ -1,26 +1,40 @@
 
-BuildRequires:	python3-devel
-Requires:	python3
-
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} <= 42
+%global __ospython %{_bindir}/python3
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 10
+%global __ospython %{_bindir}/python3
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
+%global __ospython %{_bindir}/python3.12
+%endif
+%if 0%{?suse_version} >= 1500
+%global __ospython %{_bindir}/python3.12
 %endif
 
-%global python_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+
+%global python_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.13.3
-Release:	43PGDG%{?dist}
+Version:	3.14.0
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
 Source1:	%{name}.logrotate
 Source2:	%{name}.cron
 BuildArch:	noarch
-BuildRequires:	python3-setuptools
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
+BuildRequires:	python3-devel python3-setuptools
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
+BuildRequires:	python3.12-devel python3.12-setuptools
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python312-devel python312-setuptools
+%endif
 Requires:	/usr/sbin/useradd rsync >= 3.0.4
 Requires:	python3-barman = %{version}
 
@@ -40,16 +54,25 @@ Client utilities for the integration of Barman in PostgreSQL clusters.
 
 %package -n python3-barman
 Summary:	The shared libraries required for Barman family components
-Requires:	python3-setuptools python3-psycopg2 >= 2.8.6
+Requires:	python3-setuptools
+%if 0%{?rhel} && 0%{?rhel} <= 9
+Requires:	pgdg-python3-psycopg2 >= 2.9.10
+Requires:	python3.12-six
+Requires:	pgdg-python3-dateutil
+
+%endif
+%if 0%{?fedora} <= 42 || 0%{?rhel} >= 10
+Requires:	python3-psycopg2 >= 2.9.9
+Requires:	python3-six
+%endif
 
 %if 0%{?suse_version} >= 1500
-Requires:	python3-argcomplete
-Requires:	python3-python-dateutil
+Requires:	python3-argcomplete python3-python-dateutil
+Requires:	pgdg-python3-psycopg2 >= 2.9.10
 %endif
 
 %if 0%{?rhel} >= 8 || 0%{?fedora}
-Requires:	python3-argcomplete
-Requires:	python3-dateutil
+Requires:	python3-argcomplete python3-dateutil
 %endif
 
 %description -n python3-barman
@@ -59,10 +82,10 @@ Python libraries used by Barman.
 %setup -q -n barman-release-%{version}
 
 %build
-%{__python3} setup.py build
+%{__ospython} setup.py build
 
 %install
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/bash_completion.d
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/cron.d/
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/logrotate.d/
@@ -119,6 +142,11 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %{python_sitelib}/%{name}/
 
 %changelog
+* Fri May 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.14.0-42PGDG
+- Update to 3.14.0, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.14.0
+- Build with Python 3.12 on RHEL 8 and 9 and SLES 15
+
 * Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.13.3-43PGDG
 - Rebuild on RHEL 8 per:
   https://github.com/EnterpriseDB/barman/issues/1084
