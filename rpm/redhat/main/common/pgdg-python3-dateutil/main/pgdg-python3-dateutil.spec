@@ -28,6 +28,18 @@ Patch:		relax-setuptools_scm-requires.patch
 
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+%if 0%{?fedora} && 0%{?fedora} <= 42
+BuildRequires:	python3-pip
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
+BuildRequires:	python%{python3_pkgversion}-pip
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 10
+BuildRequires:	python3-pip
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python%{python3_pkgversion}-pip
+%endif
 
 Requires:	tzdata
 
