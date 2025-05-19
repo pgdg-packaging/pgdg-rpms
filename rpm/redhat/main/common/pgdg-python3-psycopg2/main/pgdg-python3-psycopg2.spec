@@ -1,10 +1,16 @@
 %global sname psycopg2
 
-%if 0%{?fedora} <= 42
-%global __ospython %{_bindir}/python3.13
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
 %endif
-%if 0%{?rhel} < 10 || 0%{?suse_version} >= 1500
-%global __ospython %{_bindir}/python3.12
+%if 0%{?rhel} && 0%{?rhel} < 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} >= 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -20,15 +26,7 @@ Url:		https://www.psycopg.org
 Source0:	https://github.com/psycopg/psycopg2/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
-BuildRequires:	python3-devel python3-setuptools
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 9
-BuildRequires:	python3.12-devel python3.12-setuptools
-%endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	python312-devel python312-setuptools
-%endif
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
 Requires:	libpq5 >= 10.0
 
