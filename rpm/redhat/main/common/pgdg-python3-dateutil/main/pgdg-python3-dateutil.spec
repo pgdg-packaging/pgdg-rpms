@@ -2,12 +2,15 @@
 
 %if 0%{?fedora} <= 42
 %global __ospython %{_bindir}/python3.13
+%global python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} >= 1500
 %global __ospython %{_bindir}/python3.12
+%global python3_pkgversion 312
 %endif
 %if 0%{?rhel} && 0%{?rhel} < 10
 %global __ospython %{_bindir}/python3.12
+%global python3_pkgversion 3.12
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -24,8 +27,11 @@ Source:		%{pypi_source python-dateutil}
 Patch:		relax-setuptools_scm-requires.patch
 
 BuildArch:	noarch
-BuildRequires:	python3-devel
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+
 Requires:	tzdata
+
+Provides:	python%{python3_pkgversion}dist(python-dateutil)
 
 %description
 The dateutil module provides powerful extensions to the standard datetime\
