@@ -50,11 +50,11 @@ rsync -ave ssh --delete $EXTRAS_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/co
 rsync -ave ssh --delete $EXTRAS_SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
 
 # Sync SRPMs to S3 bucket:
-aws s3 sync $EXTRAS_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch --exclude "*.html"
+aws s3 sync $EXTRAS_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
 aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch/repodata/*
 
 # Sync debug* RPMs to S3 bucket:
-aws s3 sync $EXTRAS_DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html"
+aws s3 sync $EXTRAS_DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/$packageSyncVersion/$osdistro/$os-$osarch/
 aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 
 exit 0
