@@ -50,7 +50,6 @@ Summary:	The shared libraries required for Barman family components
 Requires:	python3-setuptools
 
 %if 0%{?rhel} && 0%{?rhel} <= 9
-Requires:	python%{python3_pkgversion}-argcomplete
 Requires:	python%{python3_pkgversion}-dateutil
 Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.9
 Requires:	python%{python3_pkgversion}-six
@@ -59,6 +58,10 @@ Requires:	python%{python3_pkgversion}-six
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
+%endif
+
+%if 0%{?rhel} && 0%{?rhel} == 9
+Requires:	python%{python3_pkgversion}-argcomplete
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} >= 10
