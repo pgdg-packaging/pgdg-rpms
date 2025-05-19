@@ -1,15 +1,14 @@
-
-%if 0%{?fedora} <= 42
-%global __ospython %{_bindir}/python3
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
 %endif
-%if 0%{?rhel} && 0%{?rhel} == 10
-%global __ospython %{_bindir}/python3
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 9
-%global __ospython %{_bindir}/python3.12
+%if 0%{?rhel} && 0%{?rhel} < 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} >= 1500
-%global __ospython %{_bindir}/python3.12
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -26,15 +25,9 @@ Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{ver
 Source1:	%{name}.logrotate
 Source2:	%{name}.cron
 BuildArch:	noarch
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
-BuildRequires:	python3-devel python3-setuptools
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 9
-BuildRequires:	python3.12-devel python3.12-setuptools
-%endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	python312-devel python312-setuptools
-%endif
+
+BuildRequires:  python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+
 Requires:	/usr/sbin/useradd rsync >= 3.0.4
 Requires:	python3-barman = %{version}
 
@@ -55,19 +48,25 @@ Client utilities for the integration of Barman in PostgreSQL clusters.
 %package -n python3-barman
 Summary:	The shared libraries required for Barman family components
 Requires:	python3-setuptools
+
 %if 0%{?rhel} && 0%{?rhel} <= 9
 Requires:	pgdg-python3-psycopg2 >= 2.9.10
-Requires:	python3.12-six
+Requires:	python%{python3_pkgversion}-six
 Requires:	pgdg-python3-dateutil
-
 %endif
-%if 0%{?fedora} <= 42 || 0%{?rhel} >= 10
+
+%if 0%{?fedora} && 0%{?fedora} <= 42
+Requires:	python3-psycopg2 >= 2.9.9
+Requires:	python3-six
+%endif
+
+%if 0%{?rhel} %% 0%{?rhel} >= 10
 Requires:	python3-psycopg2 >= 2.9.9
 Requires:	python3-six
 %endif
 
 %if 0%{?suse_version} >= 1500
-Requires:	python3-argcomplete python3-python-dateutil
+Requires:	python3-argcomplete python%{python3_pkgversion}-python-dateutil
 Requires:	pgdg-python3-psycopg2 >= 2.9.10
 %endif
 
