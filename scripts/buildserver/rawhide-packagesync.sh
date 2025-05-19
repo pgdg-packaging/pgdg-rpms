@@ -62,11 +62,11 @@ do
 	rsync --checksum -ave ssh --delete $SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch
 
 	# Sync SRPMs to S3 bucket:
-    	aws s3 sync $SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch
+    	aws s3 sync $SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html"
         aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 
 	# Sync debug* RPMs to S3 bucket:
-	aws s3 sync $DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/testing/debug/$packageSyncVersion/$osdistro/$os-$osarch/
+	aws s3 sync $DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/testing/debug/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html"
 	aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 done
 
