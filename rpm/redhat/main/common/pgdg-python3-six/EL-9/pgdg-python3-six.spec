@@ -1,1 +1,0 @@
-../main/pgdg-python3-six.spec

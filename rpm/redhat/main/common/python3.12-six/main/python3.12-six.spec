@@ -12,7 +12,7 @@
 
 %global python_wheelname six-%{version}-py2.py3-none-any.whl
 
-Name:		pgdg-python%{python3_pkgversion}-six
+Name:		python%{python3_pkgversion}-six
 Version:	1.16.0
 Release:	1PGDG%{?dist}
 Summary:	Python 2 and 3 compatibility utilities
