@@ -16,7 +16,7 @@
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %global pgdg_python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
-Name:		pgdg-python3-%{modname}
+Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
 Release:	1PGDG%{?dist}
 Summary:	Powerful extensions to the standard datetime module
@@ -66,4 +66,4 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %changelog
 * Sun May 18 2025 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-1PGDG
 - Inıtial packaging for the PostgreSQL RPM repository to support Barman
-  on RHEL 8, RHEL 9 and SLES 15.
+  on RHEL 9 and RHEL 8.
