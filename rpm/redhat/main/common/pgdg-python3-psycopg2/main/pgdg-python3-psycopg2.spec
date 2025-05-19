@@ -17,7 +17,7 @@
 %{expand: %%global pgdg_python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
 
 Summary:	A PostgreSQL database adapter for Python 3.11
-Name:		pgdg-python3-%{sname}
+Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.9.10
 Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
