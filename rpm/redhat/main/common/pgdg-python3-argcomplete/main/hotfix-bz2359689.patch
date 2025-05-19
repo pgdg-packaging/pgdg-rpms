@@ -1,0 +1,33 @@
+From 38e41e474749a2b4ee3d16bf5bbb3fb19a1998a2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Miro=20Hron=C4=8Dok?= <miro@hroncok.cz>
+Date: Thu, 17 Apr 2025 10:11:12 +0200
+Subject: [PATCH] Temporary hotfix for rhbz#2359689
+
+Reported upstream in https://github.com/kislyuk/argcomplete/issues/535
+
+Fedora RPM-packaged scripts using argcompelte all have Python shebangs.
+
+This checks if the interpreter is anything with python or pypy in it.
+
+Proper fix awaiting upstream response.
+---
+ argcomplete/bash_completion.d/_python-argcomplete | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/argcomplete/bash_completion.d/_python-argcomplete b/argcomplete/bash_completion.d/_python-argcomplete
+index 81c9d41..6520b93 100644
+--- a/argcomplete/bash_completion.d/_python-argcomplete
++++ b/argcomplete/bash_completion.d/_python-argcomplete
+@@ -193,7 +193,8 @@ _python_argcomplete_global() {
+             if (__python_argcomplete_scan_head_noerr "$SCRIPT_NAME" easy_install \
+                 && "${interpreter[@]}" "$(__python_argcomplete_which python-argcomplete-check-easy-install-script)" "$SCRIPT_NAME") >/dev/null 2>&1; then
+                 ARGCOMPLETE=1
+-            elif __python_argcomplete_run "${interpreter[@]}" -m argcomplete._check_console_script "$SCRIPT_NAME"; then
++            elif ([[ "${interpreter[@]}" == *python* ]] || [[ "${interpreter[@]}" == *pypy* ]])\
++                && __python_argcomplete_run "${interpreter[@]}" -m argcomplete._check_console_script "$SCRIPT_NAME"; then
+                 ARGCOMPLETE=1
+             fi
+         fi
+-- 
+2.49.0
+
