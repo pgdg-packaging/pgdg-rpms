@@ -9,7 +9,7 @@
 Summary:	Procedural language interface between PostgreSQL and R
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plrmajver}.%{plrmidver}.%{plrminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/postgres-%{sname}/%{sname}/archive/REL%{plrmajver}_%{plrmidver}_%{plrminver}.tar.gz
 URL:		https://github.com/postgres-%{sname}/%{sname}
