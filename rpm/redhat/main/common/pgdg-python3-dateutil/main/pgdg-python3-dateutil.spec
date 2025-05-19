@@ -13,7 +13,7 @@
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %global pgdg_python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
-Name:		pgdg-python-%{modname}
+Name:		pgdg-python3-%{modname}
 Version:	2.9.0.post0
 Release:	1PGDG%{?dist}
 Summary:	Powerful extensions to the standard datetime module
