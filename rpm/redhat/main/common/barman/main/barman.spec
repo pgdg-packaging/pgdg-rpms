@@ -52,7 +52,7 @@ Requires:	python3-setuptools
 %if 0%{?rhel} && 0%{?rhel} <= 9
 Requires:	python%{python3_pkgversion}-argcomplete
 Requires:	python%{python3_pkgversion}-dateutil
-Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.9
 Requires:	python%{python3_pkgversion}-six
 %endif
 
@@ -69,7 +69,7 @@ Requires:	python3-psycopg2 >= 2.9.9 python3-six
 %if 0%{?suse_version} >= 1500
 Requires:	python%{python3_pkgversion}-argcomplete
 Requires:	python%{python3_pkgversion}-python-dateutil
-Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.9
 Requires:	python%{python3_pkgversion}-six
 %endif
 
