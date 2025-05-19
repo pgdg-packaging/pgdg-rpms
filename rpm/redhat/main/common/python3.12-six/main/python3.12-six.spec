@@ -1,5 +1,6 @@
 %if 0%{?fedora} <= 42
 %global	__python3 %{_bindir}/python3.13
+%global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} >= 1500
 %global __python3 %{_bindir}/python3.12
