@@ -2,7 +2,7 @@
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
-%if 0%{?rhel} && 0%{?rhel} < 10
+%if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
@@ -61,7 +61,7 @@ Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
 %endif
 
-%if 0%{?rhel} %% 0%{?rhel} >= 10
+%if 0%{?rhel} && 0%{?rhel} >= 10
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
 %endif
