@@ -1,14 +1,14 @@
-%if 0%{?fedora} <= 42
-%global	__python3 %{_bindir}/python3.13
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} < 10
+%global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} >= 1500
-%global __python3 %{_bindir}/python3.12
-%global	python3_pkgversion 312
-%endif
-%if 0%{?rhel} && 0%{?rhel} < 10
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
 %endif
 
 %global python_wheelname six-%{version}-py2.py3-none-any.whl
@@ -30,7 +30,7 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-wheel
 
-Obsoletes:	python3.12-six <= 1.16.0
+Obsoletes:	python%{python3_pkgversion}-six <= 1.16.0
 
 %description
 Six is a Python 2 and 3 compatibility library. It provides utility functions
