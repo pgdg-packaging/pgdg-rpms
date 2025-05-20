@@ -16,7 +16,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.0.5
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -35,7 +35,7 @@ Requires:	python3-ydiff >= 1.2
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-click python3-cryptography >= 1.4 python3-psutil
 Requires:	python3-prettytable python%{python3_pkgversion}-pyyaml
-Requires:	python3-urllib3 >= 1.19.1
+Requires:	python3-urllib3 >= 1.19.1 python3-psycopg2 python3-wcwidth
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} <= 9
@@ -43,20 +43,25 @@ Requires:	python%{python3_pkgversion}-click >= 8.1.7
 Requires:	python%{python3_pkgversion}-cryptography >= 1.4
 Requires:	python%{python3_pkgversion}-prettytable
 Requires:	python%{python3_pkgversion}-psutil
+Requires:	python%{python3_pkgversion}-psycopg2
 Requires:	python%{python3_pkgversion}-pyyaml
 Requires:	python%{python3_pkgversion}-urllib3 >= 1.19.1
+Requires:	python%{python3_pkgversion}-wcwidth
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} == 10
 Requires:	python3-click python%{python3_pkgversion}-cryptography >= 1.4
 Requires:	python3-prettytable python%{python3_pkgversion}-pyyaml python3-psutil
-Requires:	python%{python3_pkgversion}-urllib3 >= 1.19.1
+Requires:	python%{python3_pkgversion}-urllib3 >= 1.19.1 python3-psycopg2
+Requires:	python3-wcwidth
 %endif
 
 %if 0%{?suse_version} >= 1500
 Requires:	python%{python3_pkgversion}-click python%{python3_pkgversion}-cryptography >= 1.4
+Requires:	python%{python3_pkgversion}-psycopg2
 Requires:	python%{python3_pkgversion}-psutil python%{python3_pkgversion}-PyYAML
 Requires:	python%{python3_pkgversion}-prettytable python%{python3_pkgversion}-urllib3 >= 1.19.1
+Requires:	python%{python3_pkgversion}-wcwidth
 %endif
 
 %description
@@ -219,6 +224,9 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-5PGDG
+- Add missing psycopg2 and wcwidth dependencies.
+
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-4PGDG
 - Build Patroni with Python 3.12 on RHEL 8 and 9 and with Python 3.11
   on SLES 15. Also adjust dependencies for new Python versions.
