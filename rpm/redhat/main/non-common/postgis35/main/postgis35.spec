@@ -40,7 +40,7 @@
 %ifarch ppc64 ppc64le
 %{!?sfcgal:%global	sfcgal 0}
 %else
-%{!?sfcgal:%global	sfcgal 1n}
+%{!?sfcgal:%global	sfcgal 1}
 %endif
 %endif
 
