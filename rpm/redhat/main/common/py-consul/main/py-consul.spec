@@ -18,7 +18,7 @@
 
 Name:		py-consul
 Version:	1.6.0
-Release:	3PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -59,6 +59,9 @@ Python client for Consul
 %{pgdg_python3_sitelib}/consul/api/acl/__pycache__/*.py*
 
 %changelog
+* Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-42PGDG
+- Rebuild on RHEL 8
+
 * Mon May 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-3PGDG
 - Build the package with Python 3.12 on RHEL 9 & 8 and Python 3.11 on SLES
   15. For the other distros (Fedora and RHEL 10) use OS'd default Python
