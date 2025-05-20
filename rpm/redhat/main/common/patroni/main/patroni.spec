@@ -1,13 +1,22 @@
-%global		debug_package %{nil}
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} >= 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
 
-%{expand: %%global py3ver %(python3 -c 'import sys;print(sys.version[0:3])')}
-%global __ospython %{_bindir}/python3
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.0.5
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -15,27 +24,39 @@ URL:		https://github.com/patroni/%{name}
 
 BuildArch:	noarch
 
-BuildRequires:	python3-setuptools python3-psycopg2 >= 2.5.4
+BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-devel
 
-Requires:	python3-cdiff python3-psutil >= 2.0.0
-Requires:	python3-psycopg2 >= 2.5.4
-Requires:	python3-psutil >= 2.0.0
+Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-dateutil
+
+# This package comes from PGDG repository:
 Requires:	python3-ydiff < 1.5
 Requires:	python3-ydiff >= 1.2
-Requires:	python3-cryptography >= 1.4
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
-Requires:	python3-click >= 4.1 python3-six >= 1.7
-Requires:	python3-dateutil python3-prettytable >= 0.7
-Requires:	python3-pyyaml python3-urllib3 >= 1.19.1
+%if 0%{?fedora} && 0%{?fedora} <= 42
+Requires:	python3-click python3-cryptography >= 1.4 python3-psutil
+Requires:	python3-prettytable python%{python3_pkgversion}-pyyaml
+Requires:	python3-urllib3 >= 1.19.1
 %endif
 
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1499
-Requires:	python3-click >= 7.0 python3-six >= 1.7
-Requires:	python3-PrettyTable >= 0.7 python3-PyYAML
-Requires:	python3-python-dateutil python3-urllib3 >= 1.19.1
+%if 0%{?rhel} && 0%{?rhel} <= 9
+Requires:	python%{python3_pkgversion}-click >= 8.1.7
+Requires:	python%{python3_pkgversion}-cryptography >= 1.4
+Requires:	python%{python3_pkgversion}-prettytable
+Requires:	python%{python3_pkgversion}-psutil
+Requires:	python%{python3_pkgversion}-pyyaml
+Requires:	python%{python3_pkgversion}-urllib3 >= 1.19.1
 %endif
+
+%if 0%{?rhel} && 0%{?rhel} == 10
+Requires:	python3-click python%{python3_pkgversion}-cryptography >= 1.4
+Requires:	python3-prettytable python%{python3_pkgversion}-pyyaml python3-psutil
+Requires:	python%{python3_pkgversion}-urllib3 >= 1.19.1
+%endif
+
+%if 0%{?suse_version} >= 1500
+Requires:	python%{python3_pkgversion}-click python%{python3_pkgversion}-cryptography >= 1.4
+Requires:	python%{python3_pkgversion}-psutil python%{python3_pkgversion}-PyYAML
+Requires:	python%{python3_pkgversion}-prettytable python%{python3_pkgversion}-urllib3 >= 1.19.1
 %endif
 
 %description
@@ -53,16 +74,27 @@ caveats. Use wisely.
 %package -n %{name}-consul
 Summary:	Related components to use patroni with Consul
 Requires:	%{name} = %{version}-%{release}
-Requires:	consul python3-requests
-Requires:	py-consul >= 1.6.0
-
+Requires:	consul py-consul >= 1.6.0
+%if 0%{?fedora} && 0%{?fedora} <= 42
+Requires:	python3-requests
+%endif
+%if 0%{?rhel} && 0%{?rhel} < 10
+Requires:	python%{python3_pkgversion}-requests
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 10
+Requires:	python3-requests
+%endif
+%if 0%{?suse_version} >= 1500
+Requires:	python%{python3_pkgversion}-requests
+%endif
 %description -n %{name}-consul
 Meta package to pull consul related dependencies for patroni
 
 %package -n %{name}-etcd
 Summary:	Related components to use patroni with etcd
 Requires:	%{name} = %{version}-%{release}
-Requires:	python3-etcd >= 0.4.3
+# This package comes from PGDG repository:
+Requires:	python%{python3_pkgversion}-etcd >= 0.4.3
 
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	python3-dns python3-certifi
@@ -80,7 +112,18 @@ Meta package to pull etcd related dependencies for patroni
 %package -n %{name}-aws
 Summary:	Related components to use patroni on AWS
 Requires:	%{name} = %{version}-%{release}
+%if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-boto3
+%endif
+%if 0%{?rhel} && 0%{?rhel} < 10
+Requires:	python%{python3_pkgversion}-boto3
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 10
+Requires:	python3-boto3
+%endif
+%if 0%{?suse_version} >= 1500
+Requires:	python%{python3_pkgversion}-boto3
+%endif
 
 %description -n %{name}-aws
 Meta package to pull AWS related dependencies for patroni
@@ -88,7 +131,18 @@ Meta package to pull AWS related dependencies for patroni
 %package -n %{name}-zookeeper
 Summary:	Related components to use patroni with Zookeeper
 Requires:	%{name} = %{version}-%{release}
+%if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-kazoo >= 1.3.1
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+Requires:	python%{python3_pkgversion}-kazoo >= 1.3.1
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 10
+Requires:	python3-kazoo >= 1.3.1
+%endif
+%if 0%{?suse_version} >= 1500
+Requires:	python%{python3_pkgversion}-kazoo >= 1.3.1
+%endif
 
 %description -n %{name}-zookeeper
 Meta package to pull zookeeper related dependencies for patroni
@@ -165,6 +219,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-4PGDG
+- Build Patroni with Python 3.12 on RHEL 8 and 9 and with Python 3.11
+  on SLES 15. Also adjust dependencies for new Python versions.
+
 * Sat Apr 19 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-3PGDG
 - Rebuild on RHEL 8 because of an issue on the build instance
 
