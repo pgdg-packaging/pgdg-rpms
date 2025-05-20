@@ -18,7 +18,7 @@
 
 Name:		python%{python3_pkgversion}-click
 Version:	8.1.7
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -27,6 +27,8 @@ Source0:	https://github.com/pallets/%{modname}/archive/%{version}/%{modname}-%{v
 
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
+
+Provides:	python%{python3_pkgversion}dist(click)
 
 %description
 click is a Python package for creating beautiful command line\
@@ -52,6 +54,9 @@ comes with good defaults out of the box.
 %{pgdg_python3_sitearch}/%{modname}/py.typed
 
 %changelog
+* Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-43PGDG
+- Add Provides:
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to support Patroni
   on RHEL 9 and 8.

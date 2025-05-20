@@ -16,7 +16,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.4.0
-Release:	42PGDG
+Release:	43PGDG%{dist}
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -28,6 +28,8 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	sed
+
+Provides:	python%{python3_pkgversion}dist(prettytable)
 
 %description
 PrettyTable is a simple Python library designed to make it quick and easy to
@@ -55,6 +57,9 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-43PGDG
+- Add Provides:
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-42PGDG
-- Inıtial packaging for the PostgreSQL RPM repository to support Patroni
+- Initial packaging for the PostgreSQL RPM repository to support Patroni
   on RHEL 9 and RHEL 8.

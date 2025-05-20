@@ -17,7 +17,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.1.1
-Release:	2PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -25,6 +25,8 @@ URL:		https://github.com/giampaolo/%{modname}
 Source:		%{url}/archive/release-%{version}/%{modname}-%{version}.tar.gz
 
 BuildRequires:	gcc sed python%{python3_pkgversion}-devel
+
+Provides:	python%{python3_pkgversion}dist(psutil)
 
 %description
 psutil is a module providing an interface for retrieving information on all
@@ -58,6 +60,9 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-42PGDG
+- Add Provides:
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-2PGDG
 - Inıtial packaging for the PostgreSQL RPM repository to support Patroni
   on RHEL 9 and RHEL 8.
