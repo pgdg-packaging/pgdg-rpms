@@ -17,7 +17,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.1.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -60,6 +60,10 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-43PGDG
+- Define python3_sitelib macro globally. For some reason it does not
+  build on RHEL 8 - aarch64 without this.
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-42PGDG
 - Add Provides:
 
