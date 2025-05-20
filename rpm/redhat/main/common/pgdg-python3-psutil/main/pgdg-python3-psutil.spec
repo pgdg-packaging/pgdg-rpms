@@ -58,6 +58,6 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
-* Fri Jan 24 2025 Yaakov Selkowitz <yselkowi@redhat.com> - 6.1.1-2PGDG
+* Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-2PGDG
 - Inıtial packaging for the PostgreSQL RPM repository to support Patroni
   on RHEL 9 and RHEL 8.
