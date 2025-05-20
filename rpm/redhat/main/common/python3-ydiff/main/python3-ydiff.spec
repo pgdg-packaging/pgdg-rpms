@@ -2,7 +2,7 @@
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
-%if 0%{?rhel} && 0%{?rhel} < 10
+%if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
@@ -16,7 +16,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -26,6 +26,9 @@ BuildArch:	noarch
 
 Requires:	less
 Requires:	python%{python3_pkgversion}-%{name}
+
+Provides:	python%{python3_pkgversion}dist(ydiff)
+
 %description
 Term based tool to view colored, incremental diff in a Git/Mercurial/Svn
 workspace or from stdin, with side by side (similar to diff -y) and auto
@@ -61,6 +64,9 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
 
 %changelog
+* Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-45PGDG
+- Add missing Provides
+
 * Sat Apr 19 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-44PGDG
 - Build the package with Python 3.12 on RHEL 9 & 8 and Python 3.11 on SLES
   15. For the other distros (Fedora and RHEL 10) use OS'd default Python
