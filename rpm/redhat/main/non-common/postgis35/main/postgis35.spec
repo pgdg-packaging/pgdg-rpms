@@ -22,9 +22,9 @@
 %global gdalfullversion %gdal310fullversion
 %global gdalmajorversion %gdal310majorversion
 %global gdalinstdir %gdal310instdir
-%global projmajorversion %proj96majorversion
-%global projfullversion %proj96fullversion
-%global projinstdir %proj96instdir
+%global projmajorversion %proj95majorversion
+%global projfullversion %proj95fullversion
+%global projinstdir %proj95instdir
 %endif
 
 %{!?llvm:%global llvm 1}
@@ -379,6 +379,7 @@ fi
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.3-1PGDG
 - Update to 3.5.3 per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.5.3/NEWS
+- Go back to PROJ 9.5. Will bump up PROJ, GeOS and SFCGAL separately.
 
 * Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-5PGDG
 - Rebuild against PROJ 9.6
