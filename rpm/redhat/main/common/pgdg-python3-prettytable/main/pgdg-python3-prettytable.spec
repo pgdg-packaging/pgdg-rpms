@@ -17,7 +17,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.4.0
-Release:	43PGDG%{dist}
+Release:	44PGDG%{dist}
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -58,6 +58,10 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-44PGDG
+- Define python3_sitelib macro globally. For some reason it does not
+  build on RHEL 8 - aarch64 without this.
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-43PGDG
 - Add Provides:
 
