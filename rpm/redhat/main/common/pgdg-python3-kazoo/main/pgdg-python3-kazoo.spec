@@ -25,8 +25,8 @@ URL:		https://kazoo.readthedocs.org
 Source0:	https://pypi.python.org/packages/source/k/%{modname}/%{modname}-%{version}.tar.gz
 BuildArch:	noarch
 
-BuildRequires:	python3%{python3_pkgversion}-devel
-BuildRequires:	python3%{python3_pkgversion}-setuptool
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptool
 
 %description
 Kazoo is a Python library designed to make working with Zookeeper a more\
