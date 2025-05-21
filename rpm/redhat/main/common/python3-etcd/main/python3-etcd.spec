@@ -19,7 +19,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.5
-Release:	47PGDG%{?dist}
+Release:	48PGDG%{?dist}
 Summary:	A python client library for etcd
 
 License:	MIT
@@ -34,25 +34,25 @@ BuildArch:	noarch
 # Also https://fedoraproject.org/wiki/Packaging:Guidelines#Noarch_with_Unported_Dependencies
 ExclusiveArch:	noarch %{ix86} x86_64 %{arm} aarch64 ppc64le s390x powerpc64le
 
-%if 0%{?fedora} ||0%{?fedora} >= 41
+%if 0%{?fedora} && 0%{?fedora} >= 41
 Requires:	python3-urllib3 >= 1.7.1
 Requires:	python3-dns >= 1.13.0
 %endif
 
-%if 0%{?rhel} ||0%{?rhel} >= 10
+%if 0%{?rhel} && 0%{?rhel} >= 10
 Requires:	python3-urllib3 >= 1.7.1
 Requires:	python3-dns >= 1.13.0
 %endif
 
-%if 0%{?rhel} ||0%{?rhel} <= 9
+%if 0%{?rhel} && 0%{?rhel} <= 9
 Requires:	python%{python3_pkgversion}-urllib3 >= 1.7.1
 Requires:	python%{python3_pkgversion}-dns >= 1.13.0
 %endif
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1315
-Requires:	python3-urllib3 >= 1.7.1
-Requires:	python3-dnspython >= 1.13.0
+Requires:	python%{python3_pkgversion}-urllib3 >= 1.7.1
+Requires:	python%{python3_pkgversion}-dnspython >= 1.13.0
 %endif
 %endif
 
@@ -78,6 +78,9 @@ election.
 %{python3_sitelib}/*
 
 %changelog
+* Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.5-48PGDG
+- Fix conditionals around dependency definitions.
+
 * Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.5-47PGDG
 - Rebuild against Python 3.12 on RHEL 8 and 9 and Python 3.11 on SLES 15.
 
