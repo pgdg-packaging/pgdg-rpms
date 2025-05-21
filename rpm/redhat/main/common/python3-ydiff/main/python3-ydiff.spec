@@ -16,7 +16,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -64,6 +64,10 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
 
 %changelog
+* Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-46PGDG
+- Rebuild the package per:
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/18
+
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-45PGDG
 - Add missing Provides
 
