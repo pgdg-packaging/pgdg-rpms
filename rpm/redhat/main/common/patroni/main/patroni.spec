@@ -16,7 +16,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.0.5
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -80,6 +80,7 @@ caveats. Use wisely.
 Summary:	Related components to use patroni with Consul
 Requires:	%{name} = %{version}-%{release}
 Requires:	consul py-consul >= 1.6.0
+
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-requests
 %endif
@@ -92,6 +93,7 @@ Requires:	python3-requests
 %if 0%{?suse_version} >= 1500
 Requires:	python%{python3_pkgversion}-requests
 %endif
+
 %description -n %{name}-consul
 Meta package to pull consul related dependencies for patroni
 
@@ -101,14 +103,17 @@ Requires:	%{name} = %{version}-%{release}
 # This package comes from PGDG repository:
 Requires:	python%{python3_pkgversion}-etcd >= 0.4.3
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
-Requires:	python3-dns python3-certifi
+%if 0%{?fedora} && 0%{?fedora} <= 42
+Requires:	python3-dns
 %endif
-
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1499
-Requires:	python3-dnspython
+%if 0%{?rhel} && 0%{?rhel} < 10
+Requires:	python%{python3_pkgversion}-dns
 %endif
+%if 0%{?rhel} && 0%{?rhel} == 10
+Requires:	python3-dns
+%endif
+%if 0%{?suse_version} >= 1500
+Requires:	python%{python3_pkgversion}-dnspython
 %endif
 
 %description -n %{name}-etcd
@@ -117,6 +122,7 @@ Meta package to pull etcd related dependencies for patroni
 %package -n %{name}-aws
 Summary:	Related components to use patroni on AWS
 Requires:	%{name} = %{version}-%{release}
+
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-boto3
 %endif
@@ -136,6 +142,7 @@ Meta package to pull AWS related dependencies for patroni
 %package -n %{name}-zookeeper
 Summary:	Related components to use patroni with Zookeeper
 Requires:	%{name} = %{version}-%{release}
+
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-kazoo >= 1.3.1
 %endif
@@ -224,6 +231,9 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-6PGDG
+- Fix -etcd subpackage dependencies.
+
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.5-5PGDG
 - Add missing psycopg2 and wcwidth dependencies.
 
