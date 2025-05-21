@@ -47,7 +47,7 @@ Client utilities for the integration of Barman in PostgreSQL clusters.
 
 %package -n python3-barman
 Summary:	The shared libraries required for Barman family components
-Requires:	python3-setuptools
+Requires:	python%{python3_pkgversion}-setuptools
 
 %if 0%{?rhel} && 0%{?rhel} <= 9
 Requires:	python%{python3_pkgversion}-dateutil
@@ -139,6 +139,10 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %{python_sitelib}/%{name}/
 
 %changelog
+* Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.14.0-43PGDG
+- Fix setuptools dependency of python3-barman package. Per report from
+  Matthew Gwillam-Kelly
+
 * Fri May 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.14.0-42PGDG
 - Update to 3.14.0, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.14.0
