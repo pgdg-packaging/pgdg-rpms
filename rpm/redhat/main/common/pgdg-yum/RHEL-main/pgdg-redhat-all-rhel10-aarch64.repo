@@ -7,7 +7,7 @@
 [pgdg-common]
 name=PostgreSQL common RPMs for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-$releasever-$basearch
-enabled=0
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -40,7 +40,7 @@ repo_gpgcheck = 1
 [pgdg17]
 name=PostgreSQL 17 for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/17/redhat/rhel-$releasever-$basearch
-enabled=0
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -48,7 +48,7 @@ repo_gpgcheck = 1
 [pgdg16]
 name=PostgreSQL 16 for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/16/redhat/rhel-$releasever-$basearch
-enabled=0
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -56,7 +56,7 @@ repo_gpgcheck = 1
 [pgdg15]
 name=PostgreSQL 15 for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-$releasever-$basearch
-enabled=0
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -64,7 +64,7 @@ repo_gpgcheck = 1
 [pgdg14]
 name=PostgreSQL 14 for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-$releasever-$basearch
-enabled=0
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -72,7 +72,7 @@ repo_gpgcheck = 1
 [pgdg13]
 name=PostgreSQL 13 for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/13/redhat/rhel-$releasever-$basearch
-enabled=0
+enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -82,7 +82,7 @@ repo_gpgcheck = 1
 [pgdg-common-testing]
 name=PostgreSQL common testing RPMs for RHEL / Rocky / AlmaLinux $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/common/redhat/rhel-$releasever-$basearch
-enabled=1
+enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -101,7 +101,7 @@ repo_gpgcheck = 1
 [pgdg17-updates-testing]
 name=PostgreSQL 17 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/17/redhat/rhel-$releasever-$basearch
-enabled=1
+enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -109,7 +109,7 @@ repo_gpgcheck = 1
 [pgdg16-updates-testing]
 name=PostgreSQL 16 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/16/redhat/rhel-$releasever-$basearch
-enabled=1
+enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -117,7 +117,7 @@ repo_gpgcheck = 1
 [pgdg15-updates-testing]
 name=PostgreSQL 15 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/15/redhat/rhel-$releasever-$basearch
-enabled=1
+enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -125,7 +125,7 @@ repo_gpgcheck = 1
 [pgdg14-updates-testing]
 name=PostgreSQL 14 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/14/redhat/rhel-$releasever-$basearch
-enabled=1
+enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
@@ -133,7 +133,7 @@ repo_gpgcheck = 1
 [pgdg13-updates-testing]
 name=PostgreSQL 13 for RHEL / Rocky / AlmaLinux $releasever - $basearch - Updates testing
 baseurl=https://download.postgresql.org/pub/repos/yum/testing/13/redhat/rhel-$releasever-$basearch
-enabled=1
+enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
