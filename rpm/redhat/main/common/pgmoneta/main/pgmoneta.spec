@@ -1,5 +1,5 @@
 Name:		pgmoneta
-Version:	0.16.1
+Version:	0.17.0
 Release:	1PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
@@ -114,6 +114,10 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Fri May 23 2025 Devrim Gündüz <devrim@gunduz.org> 0.17.0-1PGDG
+- Update to 0.17.0 per changes described at:
+  https://github.com/pgmoneta/pgmoneta/releases/tag/0.17.0
+
 * Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.16.1-1PGDG
 - Update to 0.16.1 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.16.1
