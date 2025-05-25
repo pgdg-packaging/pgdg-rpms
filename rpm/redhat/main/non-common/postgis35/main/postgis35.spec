@@ -6,22 +6,39 @@
 
 %pgdg_set_gis_variables
 
-# Override some variables. PostGIS 3.5 is best served with GeOS 3.13,
-# PROJ 9.6 and GDAL 3.10 (except on RHEL 8 where PROJ 9.5 and GDAL 3.8 are available):
+# Override some variables:
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
-%if 0%{?rhel} == 8
+
+%if 0%{?fedora} && 0%{?fedora} >= 41
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
 %global projmajorversion %proj95majorversion
 %global projfullversion %proj95fullversion
 %global projinstdir %proj95instdir
-%else
+%endif
+%if 0%{?rhel} && 0%{?rhel} >= 9
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
+%endif
+%if  0%{?suse_version} >= 1500
 %global gdalfullversion %gdal310fullversion
 %global gdalmajorversion %gdal310majorversion
-%global gdalinstdir %gdal310instdir
+%global gdalinstdir %gdal311instdir
 %global projmajorversion %proj95majorversion
 %global projfullversion %proj95fullversion
 %global projinstdir %proj95instdir
@@ -82,8 +99,8 @@ BuildRequires:	libxml2-devel
 BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
-BuildRequires:	SFCGAL SFCGAL-devel >= 2.0.0
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
+BuildRequires:	SFCGAL SFCGAL-devel >= 2.1.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
 BuildRequires:	SFCGAL SFCGAL-devel
@@ -199,7 +216,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for PostGIS 3.5
+This package provides JIT support for PostGIS 3.5
 %endif
 
 %prep
@@ -379,7 +396,7 @@ fi
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.3-1PGDG
 - Update to 3.5.3 per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.5.3/NEWS
-- Go back to PROJ 9.5. Will bump up PROJ, GeOS and SFCGAL separately.
+- Keep using PROJ 9.5 and GDAL 3.10. Use GDAL 3.11 where available.
 
 * Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-5PGDG
 - Rebuild against PROJ 9.6
