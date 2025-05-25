@@ -133,7 +133,7 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
-* Sun May 25 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-9PGDG
+* Sun May 25 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-9PGDG
 - Fix BR on RHEL 10 and Fedora.
 
 * Wed Apr 16 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-8PGDG
