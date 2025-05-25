@@ -80,7 +80,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.45 gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.49 gmp-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 BuildRequires:	pcre2-devel
 Requires:	pcre2
