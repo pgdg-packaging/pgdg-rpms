@@ -1,4 +1,4 @@
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 %global debug_package %{nil}
 %endif
 
@@ -8,13 +8,13 @@
 %global	libspatialitemajorversion	50
 
 %pgdg_set_gis_variables
+
 # Override some variables.
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
-
 # Override PROJ:
-%if 0%{?rhel} == 8
+%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
 %global	projmajorversion %proj95majorversion
 %global	projfullversion %proj95fullversion
 %global	projinstdir %proj95instdir
@@ -26,7 +26,7 @@
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -34,7 +34,20 @@ Source0:	http://www.gaia-gis.it/gaia-sins/%{sname}-sources/%{sname}-%{version}.t
 Source1:	%{name}-pgdg-libs.conf
 
 BuildRequires:	gcc librttopo-devel
-BuildRequires:	minizip-devel pgdg-srpm-macros >= 1.0.36
+BuildRequires:	pgdg-srpm-macros >= 1.0.49
+%if 0%{?rhel} && 0%{?rhel} <= 9
+BuildRequires:	minizip-devel
+%endif
+%if 0%{?suse_version} || 0%{?suse_version} >= 1500
+BuildRequires:	minizip-devel
+%endif
+%if 0%{?rhel} && 0%{?rhel} >= 10
+BuildRequires:	minizip-ng-compat-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} >= 41
+BuildRequires:	minizip-ng-compat-devel
+%endif
+
 BuildRequires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	proj%{projmajorversion}-devel >= %{projfullversion}
 BuildRequires:	sqlite-devel zlib-devel libxml2-devel
@@ -120,6 +133,9 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Sun May 25 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-9PGDG
+- Fix BR on RHEL 10 and Fedora.
+
 * Wed Apr 16 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-8PGDG
 - Rebuild against PROJ 9.6
 
