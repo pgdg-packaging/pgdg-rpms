@@ -6,25 +6,42 @@
 
 %pgdg_set_gis_variables
 
-# Override some variables. PostGIS 3.5 is best served with GeOS 3.13,
-# PROJ 9.6 and GDAL 3.10 (except on RHEL 8 where PROJ 9.5 and GDAL 3.8 are available):
+# Override some variables:
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
-%if 0%{?rhel} == 8
+
+%if 0%{?fedora} && 0%{?fedora} >= 41
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
 %global projmajorversion %proj95majorversion
 %global projfullversion %proj95fullversion
 %global projinstdir %proj95instdir
-%else
-%global gdalfullversion %gdal310fullversion
-%global gdalmajorversion %gdal310majorversion
-%global gdalinstdir %gdal310instdir
+%endif
+%if 0%{?rhel} && 0%{?rhel} >= 9
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
 %global projmajorversion %proj96majorversion
 %global projfullversion %proj96fullversion
 %global projinstdir %proj96instdir
+%endif
+%if  0%{?suse_version} >= 1500
+%global gdalfullversion %gdal310fullversion
+%global gdalmajorversion %gdal310majorversion
+%global gdalinstdir %gdal311instdir
+%global projmajorversion %proj95majorversion
+%global projfullversion %proj95fullversion
+%global projinstdir %proj95instdir
 %endif
 
 %{!?llvm:%global llvm 1}
@@ -47,7 +64,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.4
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -57,7 +74,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.45 gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.49 gmp-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 BuildRequires:	pcre2-devel
 Requires:	pcre2
@@ -374,6 +391,9 @@ fi
 %endif
 
 %changelog
+* Sun May 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-7PGDG
+- Keep using PROJ 9.5 and GDAL 3.10. Use GDAL 3.11 where available.
+
 * Wed Apr 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-6PGDG
 - Rebuild against PROJ 9.6
 
