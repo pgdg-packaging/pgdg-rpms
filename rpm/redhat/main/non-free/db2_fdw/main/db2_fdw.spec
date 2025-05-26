@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL DB2 Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
-Version:	6.0.1
-Release:	2PGDG%{?dist}
+Version:	7.0.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/wolfgangbrandl/%{sname}
@@ -65,6 +65,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %endif
 
 %changelog
+* Mon May 26 2025- Devrim Gündüz <devrim@gunduz.org> 7.0.0-1PGDG
+- Update to 7.0.0
+
 * Fri Feb 21 2025 - Devrim Gündüz <devrim@gunduz.org> 6.0.1-2PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support
