@@ -19,7 +19,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.5
-Release:	48PGDG%{?dist}
+Release:	49PGDG%{?dist}
 Summary:	A python client library for etcd
 
 License:	MIT
@@ -78,6 +78,9 @@ election.
 %{python3_sitelib}/*
 
 %changelog
+* Mon May 26 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.5-49PGDG
+- Rebuild
+
 * Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.5-48PGDG
 - Fix conditionals around dependency definitions.
 
