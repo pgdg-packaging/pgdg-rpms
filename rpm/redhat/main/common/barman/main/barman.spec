@@ -18,7 +18,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.14.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -51,25 +51,31 @@ Requires:	python%{python3_pkgversion}-setuptools
 
 %if 0%{?rhel} && 0%{?rhel} <= 9
 Requires:	python%{python3_pkgversion}-dateutil
+Requires:	python%{python3_pkgversion}-lz4
 Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.9
 Requires:	python%{python3_pkgversion}-six
+Requires:	python%{python3_pkgversion}-zstandard
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} >= 41
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
+Requires:	python3-lz4 python3-zstandard
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} >= 10
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
+Requires:	python3-lz4 python3-zstandard
 %endif
 
 %if 0%{?suse_version} >= 1500
 Requires:	python%{python3_pkgversion}-argcomplete
+Requires:	python%{python3_pkgversion}-lz4
 Requires:	python%{python3_pkgversion}-python-dateutil
 Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.9
 Requires:	python%{python3_pkgversion}-six
+Requires:	python%{python3_pkgversion}-zstandard
 %endif
 
 %description -n python3-barman
@@ -139,6 +145,10 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %{python_sitelib}/%{name}/
 
 %changelog
+* Tue May 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.14.0-44PGDG
+- Add lz4 and zstandard dependencies per:
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/33
+
 * Wed May 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.14.0-43PGDG
 - Fix setuptools dependency of python3-barman package. Per report from
   Matthew Gwillam-Kelly
