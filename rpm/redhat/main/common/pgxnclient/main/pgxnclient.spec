@@ -1,7 +1,6 @@
 %global debug_package %{nil}
 
-%global __ospython %{_bindir}/python3
-%if 0%{?fedora} >= 35
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -11,7 +10,7 @@
 Summary:	Command line tool designed to interact with the PostgreSQL Extension Network
 Name:		pgxnclient
 Version:	1.3.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Source0:	https://pypi.python.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 License:	BSD
 Url:		https://github.com/pgxn/pgxnclient
@@ -26,11 +25,11 @@ removing extensions in a PostgreSQL installation or database.
 %setup -q -n %{name}-%{version}
 
 %build
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__ospython} setup.py install --root %{buildroot}
+%{__python3} setup.py install --root %{buildroot}
 
 %files
 %defattr(-,root,root)
@@ -50,6 +49,9 @@ removing extensions in a PostgreSQL installation or database.
 %{python3_sitelib}/%{name}/utils/__pycache__/*.p*
 
 %changelog
+* Wed May 28 2025 Devrim Gündüz <devrim@gunduz.org> 1.3.2-4PGDG
+- Add RHEL 10 support
+
 * Mon Aug 21 2023 Devrim Gündüz <devrim@gunduz.org> 1.3.2-3PGDG
 - Remove RHEL 6 bits
 - Add PGDG branding
