@@ -1,11 +1,11 @@
 %global pgodbcmajver 17
 %global pgodbcmidver 00
-%global pgodbcminver 0004
+%global pgodbcminver 0005
 
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	4PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -88,6 +88,10 @@ popd
 %license license.txt
 
 %changelog
+* Wed May 28 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0005-1PGDG
+- Update to 17.00.0005 per changes described at:
+  https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-17_00_0005
+
 * Wed Feb 26 2025  Devrim Gündüz <devrim@gunduz.org> - 17.00.0004-4PGDG
 - Add missing BR and remove redundant BR
 
