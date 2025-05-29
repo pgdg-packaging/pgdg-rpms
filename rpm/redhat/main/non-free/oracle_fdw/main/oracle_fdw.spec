@@ -3,7 +3,7 @@
 %global ofdwmidver 8
 %global ofdwminver 0
 
-%{!?oi_release:%global oi_release 23.8.0.0.0}
+%{!?oi_release:%global oi_release 23.8.0.25.04}
 
 %global		__find_requires %{SOURCE1}
 
@@ -59,7 +59,7 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 
 %changelog
 * Wed May 28 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-6PGDG
-- Update OIC dependency to 23.8.0.0.0
+- Update OIC dependency to 23.8.0.25.04
 
 * Mon May 12 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-5PGDG
 - Update to 2.8.0 per changes described at:
