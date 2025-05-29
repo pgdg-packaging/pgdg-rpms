@@ -56,8 +56,6 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %files devel
-%{pginstdir}/lib/pgxs/src/test/perl/AccessNode.pm
-%{pginstdir}/lib/pgxs/src/test/perl/DataNode.pm
 %{pginstdir}/lib/pgxs/src/test/perl/TimescaleNode.pm
 
 %changelog
