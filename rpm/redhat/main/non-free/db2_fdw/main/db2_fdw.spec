@@ -13,7 +13,7 @@ Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/wolfgangbrandl/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
-BuildRequires:	libstdc++(x86-32) pam(x86-32)
+BuildRequires:	libstdc++ pam
 
 Obsoletes:	%{sname}%{pgmajorversion} < 4.0.0-2
 
