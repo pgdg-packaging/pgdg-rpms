@@ -67,7 +67,7 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %endif
 
 %changelog
-* Mon May 26 2025- Devrim Gündüz <devrim@gunduz.org> 7.0.0-1PGDG
+* Mon May 26 2025 - Devrim Gündüz <devrim@gunduz.org> 7.0.0-1PGDG
 - Update to 7.0.0
 
 * Fri Feb 21 2025 - Devrim Gündüz <devrim@gunduz.org> 6.0.1-2PGDG
