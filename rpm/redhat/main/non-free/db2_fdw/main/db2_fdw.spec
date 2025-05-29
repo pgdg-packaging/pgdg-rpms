@@ -2,6 +2,8 @@
 %global sname db2_fdw
 %global db2_home "/opt/ibm/db2/V11.5/"
 
+%{!?llvm:%global llvm 1}
+
 Summary:	PostgreSQL DB2 Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
 Version:	7.0.0
