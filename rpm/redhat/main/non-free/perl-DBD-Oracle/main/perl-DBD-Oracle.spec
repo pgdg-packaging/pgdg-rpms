@@ -15,7 +15,6 @@ Summary:	DBD-Oracle - Oracle database driver for the DBI module
 License:	GPL+ or Artistic
 URL:		https://github.com/pythian/DBD-Oracle
 Source0:	https://github.com/perl5-dbi/DBD-Oracle/archive/refs/tags/v%{version}.tar.gz
-Patch0:		%{name}-gcc14.patch
 Requires:	libaio
 Requires:	perl(:MODULE_COMPAT_%(eval "$(%{__perl} -V:version)"; echo $version))
 Requires:	perl(ExtUtils::MakeMaker) >= 6.30
@@ -40,7 +39,6 @@ access to Oracle databases.
 %prep
 %setup -q -n %{pkgname}-%{version}
 chmod -R u+w %{_builddir}/%{pkgname}-%{version}
-%patch -P 0 -p1
 
 %build
 export ORACLE_HOME=$(dirname $(dirname $(rpm -ql oracle-instantclient-sqlplus | grep '/usr/lib/oracle/.*/sqlplus')))
