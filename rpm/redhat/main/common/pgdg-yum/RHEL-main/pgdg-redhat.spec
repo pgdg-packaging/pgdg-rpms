@@ -43,6 +43,10 @@ Source2:	pgdg-redhat-all-rhel9.repo
 Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 Source2:	pgdg-redhat-all-rhel10-aarch64.repo
 %endif
+%ifarch ppc64le
+Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-RHEL
+Source2:	pgdg-redhat-all-rhel10-ppc64le.repo
+%endif
 %ifarch x86_64
 Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-RHEL
 Source2:	pgdg-redhat-all-rhel10.repo
