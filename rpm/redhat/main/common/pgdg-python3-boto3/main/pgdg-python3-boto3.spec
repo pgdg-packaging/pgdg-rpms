@@ -18,7 +18,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.38.19
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -30,6 +30,8 @@ BuildRequires:	python%{python3_pkgversion}-devel
 
 # Save space by hardlinking duplicate JSON resource files
 BuildRequires:	hardlink
+
+Requires:	python%{python3_pkgversion}-botocore
 
 %description
 Boto3 is the Amazon Web Services (AWS) Software Development Kit (SDK) for
@@ -73,6 +75,10 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Sat May 31 2025 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-2PGDG
+- Add missing botocore dependency, per:
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/36
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support Patroni
   on RHEL 9 and 8.
