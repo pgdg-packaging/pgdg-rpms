@@ -26,7 +26,7 @@ URL:		https://github.com/boto/botocore
 Source0:	https://files.pythonhosted.org/packages/source/b/botocore/botocore-%{version}.tar.gz
 
 BuildArch:	noarch
-BuildRequires:	ython%{python3_version}-devel
+BuildRequires:	python%{python3_version}-devel
 Provides:	bundled(python%{python3_version}-six) = 1.16.0
 Provides:	bundled(python%{python3_version}-requests) = 2.7.0
 
