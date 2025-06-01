@@ -5,12 +5,22 @@
 
 %pgdg_set_gis_variables
 
-# Use GDAL 3.10 on all of the platforms except RHEL 8:
-%if 0%{?rhel} == 8
+%if 0%{?fedora} && 0%{?fedora} >= 41
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
+%endif
+%if 0%{?rhel} && 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
-%else
+%endif
+%if 0%{?rhel} && 0%{?rhel} >= 9
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
+%endif
+%if  0%{?suse_version} >= 1500
 %global gdalfullversion %gdal310fullversion
 %global gdalmajorversion %gdal310majorversion
 %global gdalinstdir %gdal310instdir
@@ -18,7 +28,7 @@
 
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.6
+Version:	1.1.7
 Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
@@ -86,6 +96,10 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Sun Jun 1 2025 Devrim Gündüz <devrim@gunduz.org> 1.1.7-1PGDG
+- Update to 1.1.7 per changes described at:
+  https://github.com/pramsey/pgsql-ogr-fdw/releases/tag/v1.1.7
+
 * Wed Mar 12 2025 Devrim Gündüz <devrim@gunduz.org> 1.1.6-1PGDG
 - Update to 1.1.6 per changes described at:
   https://github.com/pramsey/pgsql-ogr-fdw/releases/tag/v1.1.6
