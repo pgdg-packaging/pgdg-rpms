@@ -38,7 +38,7 @@
 %if  0%{?suse_version} >= 1500
 %global gdalfullversion %gdal310fullversion
 %global gdalmajorversion %gdal310majorversion
-%global gdalinstdir %gdal311instdir
+%global gdalinstdir %gdal310instdir
 %global projmajorversion %proj95majorversion
 %global projfullversion %proj95fullversion
 %global projinstdir %proj95instdir
@@ -64,7 +64,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -393,6 +393,9 @@ fi
 %endif
 
 %changelog
+* Sun Jun 1 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.3-2PGDG
+- Fix SLES 15 linker issue.
+
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.3-1PGDG
 - Update to 3.5.3 per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.5.3/NEWS
