@@ -4,7 +4,7 @@
 %pgdg_set_gis_variables
 
 Name:		%{sname}96
-Version:	9.6.0
+Version:	9.6.1
 Release:	1PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
@@ -114,5 +114,8 @@ popd
 %{proj96instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Mon Jun 2 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.1-1PGDG
+- Update to 9.6.1
+
 * Wed Apr 2 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.0-1PGDG
 - Initial 9.6 packaging for PostgreSQL RPM Repository.
