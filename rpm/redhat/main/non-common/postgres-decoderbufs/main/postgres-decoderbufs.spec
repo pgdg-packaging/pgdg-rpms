@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.0.2
+Version:	3.1.1
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Protocol Buffers logical decoder plugin
 
@@ -14,7 +14,7 @@ Source0:	https://github.com/debezium/%{sname}/archive/refs/tags/v%{version}.Fina
 
 BuildRequires:	gcc
 BuildRequires:	postgresql%{pgmajorversion}-devel
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libprotobuf-c-devel
 Requires:	libprotobuf-c1
 %else
@@ -27,7 +27,7 @@ A PostgreSQL logical decoder output plugin to deliver data as Protocol Buffers m
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for postgres-decoderbufs
+Summary:	Just-in-time compilation support for xxx
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
@@ -39,7 +39,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for postgres-decoderbufs
+This package provides JIT support for xxx
 %endif
 
 %prep
@@ -64,6 +64,10 @@ PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Mon Jun 2 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.1-1PGDG
+- Update to 3.1.1 per changes described at
+  https://github.com/debezium/postgres-decoderbufs/releases/tag/v3.1.1.Final
+
 * Mon Nov 18 2024 Devrim Gündüz <devrim@gunduz.org> - 3.0.2-1PGDG
 - Update to 3.0.2 per changes described at
   https://github.com/debezium/postgres-decoderbufs/releases/tag/v3.0.2.Final
