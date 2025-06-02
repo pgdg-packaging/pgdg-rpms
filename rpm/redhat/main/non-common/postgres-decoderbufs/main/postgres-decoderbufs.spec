@@ -27,7 +27,7 @@ A PostgreSQL logical decoder output plugin to deliver data as Protocol Buffers m
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for xxx
+Summary:	Just-in-time compilation support for postgres-decoderbufs
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
@@ -39,7 +39,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This package provides JIT support for xxx
+This package provides JIT support for postgres-decoderbufs
 %endif
 
 %prep
