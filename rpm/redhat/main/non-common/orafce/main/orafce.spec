@@ -4,14 +4,14 @@
 %global sname orafce
 %global orafcemajver 4
 %global orafcemidver 14
-%global orafceminver 3
+%global orafceminver 4
 
 %{!?llvm:%global llvm 1}
 
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -60,6 +60,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Wed Jun 4 2025 Devrim Gündüz <devrim@gunduz.org> 4.14.4-1PGDG
+- Update to 4.14.4 per changes described at
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_14_4
+
 * Thu May 15 2025 Devrim Gündüz <devrim@gunduz.org> 4.14.3-2PGDG
 - Obsolete -llvmjit subpackage (not built by meson) per:
   https://github.com/pgdg-packaging/pgdg-rpms/issues/12
