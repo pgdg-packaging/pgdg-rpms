@@ -82,14 +82,15 @@ do
 	rsync --checksum -ave ssh --delete $DEBUG_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/non-free/debug/$packageSyncVersion/$osdistro/$os-$osarch
 	rsync --checksum -ave ssh --delete $SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch
 
-      # Sync SRPMs to S3 bucket:
-        aws s3 sync $SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html"
-        aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
+	# Sync SRPMs to S3 bucket:
+	aws s3 sync $SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html"
+	~/bin/s3indexbuilder.py dnf-srpms.postgresql.org20250313103537584600000001 srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch --cfdistribution $CF_SRPM_DISTRO_ID
+	aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 
-        # Sync debug* RPMs to S3 bucket:
-        aws s3 sync $DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html"
-  	aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
-
+	# Sync debug* RPMs to S3 bucket:
+	aws s3 sync $DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html"
+	~/bin/s3indexbuilder.py dnf-debuginfo.postgresql.org20250312201116649700000001 debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch --cfdistribution $CF_SRPM_DISTRO_ID
+	aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 done
 
 exit 0
