@@ -57,9 +57,13 @@ do
 	echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $DEBUG_RPM_DIR/repodata/repomd.xml
 	echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $SRPM_DIR/repodata/repomd.xml
 
-	# Finally, perform the rsync:
-	rsync --checksum -ave ssh --delete $RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/$packageSyncVersion/$osdistro/$os-$osarch
-	rsync --checksum -ave ssh --delete $SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/$packageSyncVersion/$osdistro/$os-$osarch
+	# We currently sync only x86_64 packages to yonada. The rest is pulled from yonada:
+	if [ "$osarch" = "x86_64" ]
+	then
+		# Finally, perform the rsync:
+		rsync --checksum -ave ssh --delete $RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/$packageSyncVersion/$osdistro/$os-$osarch
+		rsync --checksum -ave ssh --delete $SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/$packageSyncVersion/$osdistro/$os-$osarch
+	fi
 
 	# Sync SRPMs to S3 bucket:
 	aws s3 sync $SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html"
@@ -70,7 +74,6 @@ do
 	aws s3 sync $DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html"
 	~/bin/s3indexbuilder.py dnf-debuginfo.postgresql.org20250312201116649700000001 debug/$packageSyncVersion/$osdistro/$os-$osarch --cfdistribution $CF_DEBUG_DISTRO_ID
 	aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
-
 done
 
 exit 0
