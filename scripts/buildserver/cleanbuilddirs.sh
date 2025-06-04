@@ -32,6 +32,13 @@ do
 	rm -rf /var/lib/pgsql/rpm${packageCleanVersion}testing/BUILDROOT/*
 done
 
+# Clean up extras build directory:
+if [ $extrasrepoenabled = 1 ]
+then
+	rm -rf /var/lib/pgsql/pgdg.$osshort.extras/BUILD/*
+	rm -rf /var/lib/pgsql/pgdg.$osshort.extras/BUILDROOT/*
+fi
+
 # Finally, delete stable dirs:
 for packageCleanVersion in ${pgStableBuilds[@]}
 do
