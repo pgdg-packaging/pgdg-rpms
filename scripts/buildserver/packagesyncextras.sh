@@ -44,10 +44,13 @@ echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --b
 echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $EXTRAS_SRPM_DIR/repodata/repomd.xml
 echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $EXTRAS_DEBUG_RPM_DIR/repodata/repomd.xml
 
-# Finally, perform the rsync:
-
-rsync -ave ssh --delete $EXTRAS_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
-rsync -ave ssh --delete $EXTRAS_SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
+# We currently sync only x86_64 packages to yonada. The rest is pulled from yonada:
+if [ "$osarch" = "x86_64" ]
+then
+	# Finally, perform the rsync:
+	rsync -ave ssh --delete $EXTRAS_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
+	rsync -ave ssh --delete $EXTRAS_SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
+fi
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $EXTRAS_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch --exclude "*.html"
