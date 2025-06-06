@@ -18,7 +18,7 @@
 
 Name:		py-consul
 Version:	1.6.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -30,6 +30,7 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildArch:	noarch
 
 Obsoletes:	python3-consul <= 1.1.0-42
+Provides:	python%{python3_pkgversion}dist(%{name})%{?_isa} = %{version}-%{release}
 
 %description
 Python client for Consul
@@ -59,6 +60,10 @@ Python client for Consul
 %{pgdg_python3_sitelib}/consul/api/acl/__pycache__/*.py*
 
 %changelog
+* Fri Jun 6 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-43PGDG
+- Provide python3Xdist(py-consul) to satisfy patroni dependency
+  introduced in 4.0.6
+
 * Tue May 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-42PGDG
 - Rebuild on RHEL 8
 
