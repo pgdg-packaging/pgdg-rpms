@@ -9,6 +9,12 @@
 # Include common values:
 source ~/bin/global.sh
 
+if [ $extrasrepoenabled != 1 ]
+then
+	echo "Extras repo is not enabled on this platform"
+	exit 1
+fi
+
 export BASE_DIR=/var/lib/pgsql/pgdg.$osshort.extras
 
 export EXTRAS_RPM_DIR=$BASE_DIR/ALLRPMS
