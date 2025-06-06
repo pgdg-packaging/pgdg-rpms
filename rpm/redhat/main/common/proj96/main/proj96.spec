@@ -4,7 +4,7 @@
 %pgdg_set_gis_variables
 
 Name:		%{sname}96
-Version:	9.6.1
+Version:	9.6.2
 Release:	1PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
@@ -114,6 +114,10 @@ popd
 %{proj96instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Fri Jun 6 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.2-1PGDG
+- Update to 9.6.2 per changes described at:
+  https://github.com/OSGeo/PROJ/releases/tag/9.6.2
+
 * Mon Jun 2 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.1-1PGDG
 - Update to 9.6.1
 
