@@ -35,9 +35,12 @@ createrepo --changelog-limit=3 --workers=4 -d --update $SYSUPDATES_SRPM_DIR
 echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $SYSUPDATES_RPM_DIR/repodata/repomd.xml
 echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $SYSUPDATES_SRPM_DIR/repodata/repomd.xml
 
-# Finally, perform the rsync:
-
-rsync -ave ssh --delete $SYSUPDATES_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/common/pgdg-$ossysupdates-sysupdates/$osdistro/$os-$osarch
+# We currently sync only x86_64 packages to yonada. The rest is pulled from yonada:
+if [ "$osarch" = "x86_64" ]
+then
+	# Finally, perform the rsync:
+	rsync -ave ssh --delete $SYSUPDATES_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/common/pgdg-$ossysupdates-sysupdates/$osdistro/$os-$osarch
+fi
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $SYSUPDATES_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/pgdg-$ossysupdates-sysupdates/$osdistro/$os-$osarch --exclude "*.html"
