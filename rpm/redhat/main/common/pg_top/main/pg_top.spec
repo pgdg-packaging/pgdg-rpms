@@ -3,19 +3,19 @@
 
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
-Version:	4.1.1
-Release:	10PGDG%{?dist}
+Version:	4.1.2
+Release:	42PGDG%{?dist}
 License:	BSD
-Source0:	https://github.com/markwkm/pg_top/archive/refs/tags/v%{version}.tar.gz
-URL:		https://github.com/markwkm/%{sname}
+URL:		https://gitlab.com/%{sname}/%{sname}
+Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
 BuildRequires:	libpq5-devel ncurses-devel
 BuildRequires:	libbsd-devel
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libelf-devel
 %else
 BuildRequires:	elfutils-libelf-devel
 %endif
-Requires:	libpq postgresql-server
+Requires:	libpq5 postgresql-server
 Requires(post):	%{_sbindir}/update-alternatives
 Requires(postun):	%{_sbindir}/update-alternatives
 
@@ -32,20 +32,14 @@ pg_top allows you to monitor PostgreSQL processes. It also allows you to:
  - View replication statistics for downstream nodes.
 
 %prep
-%setup -q -n %{sname}-%{version}
+%setup -q -n %{sname}-v%{version}
 
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
 %cmake
-%endif
-%else
-%cmake3
-%endif
 
 %{__make} -C "%{_vpath_builddir}" %{?_smp_mflags}
 
 %install
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 pushd build
 %endif
 %{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install/fast \
@@ -55,10 +49,14 @@ pushd build
 %defattr(-,root,root,-)
 %doc README.rst
 %license LICENSE
-%{_bindir}/pg_top
-%{_mandir}/man1/pg_top.1.gz
+%{_bindir}/%{sname}
+%{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Fri Jun 6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-42PGDG
+- Update to 4.1.2 per changes described at:
+  https://gitlab.com/pg_top/pg_top/-/releases#2025-06-04-v412
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 4.1.1-10PGDG
 - Update to 4.1.1
 
