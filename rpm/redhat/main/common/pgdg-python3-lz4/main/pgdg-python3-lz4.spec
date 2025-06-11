@@ -17,15 +17,19 @@
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.3.3
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
 License:	LicenseRef-Callaway-BSD
 Source:		https://files.pythonhosted.org/packages/source/l/%{srcname}/%{srcname}-%{version}.tar.gz
 
-BuildRequires:	gcc lz4-devel
-BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	gcc python%{python3_pkgversion}-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+%else
+BuildRequires:	lz4-devel
+%endif
 
 %description
 Python 3 bindings for the lz4 compression library.
@@ -59,6 +63,9 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %{python3_sitearch}/%{srcname}/frame/__pycache__/*.py*
 
 %changelog
+* Wed Jun 11 2025 Devrim Gunduz <devrim@gunduz.org> - 4.3.3-43PGDG
+- Add SLES 15 support
+
 * Tue May 27 2025 Devrim Gunduz <devrim@gunduz.org> - 4.3.3-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to support Barman
   on RHEL 9 and RHEL 8.
