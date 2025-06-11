@@ -4,7 +4,7 @@
 # Powa archivist version
 %global powamajorversion 5
 %global powamidversion 0
-%global powaminorversion 2
+%global powaminorversion 3
 
 %global __ospython %{_bindir}/python3
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
@@ -84,6 +84,10 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Sat Jun 7 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-1PGDG
+- Update 5.0.3 per changes described at:
+  https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_3
+
 * Sun Apr 13 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.2-1PGDG
 - Update 5.0.2 per changes described at:
   https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_2
