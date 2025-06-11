@@ -14,6 +14,7 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.3.3
@@ -58,13 +59,15 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %{python3_sitearch}/%{srcname}-%{version}-py%{pybasever}.egg-info/*
 %{python3_sitearch}/%{srcname}/*.py*
 %{python3_sitearch}/%{srcname}/*.so
-%{python3_sitearch}/%{srcname}/__pycache__/*.py*
 %{python3_sitearch}/%{srcname}/block/*.py*
 %{python3_sitearch}/%{srcname}/block/*.so
-%{python3_sitearch}/%{srcname}/block/__pycache__/*.py*
 %{python3_sitearch}/%{srcname}/frame/*.py*
 %{python3_sitearch}/%{srcname}/frame/*.so
+%if 0%{?rhel} || 0%{?fedora}
+%{python3_sitearch}/%{srcname}/__pycache__/*.py*
+%{python3_sitearch}/%{srcname}/block/__pycache__/*.py*
 %{python3_sitearch}/%{srcname}/frame/__pycache__/*.py*
+%endif
 
 %changelog
 * Wed Jun 11 2025 Devrim Gunduz <devrim@gunduz.org> - 4.3.3-43PGDG
