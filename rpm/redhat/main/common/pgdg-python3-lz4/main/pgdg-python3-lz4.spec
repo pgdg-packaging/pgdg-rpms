@@ -25,10 +25,14 @@ License:	LicenseRef-Callaway-BSD
 Source:		https://files.pythonhosted.org/packages/source/l/%{srcname}/%{srcname}-%{version}.tar.gz
 
 BuildRequires:	gcc python%{python3_pkgversion}-devel
+%if 0%{?rhel} && 0%{?rhel} >= 8
+BuildRequires:	lz4-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} >= 41
+BuildRequires:	lz4-devel
+%endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
-%else
-BuildRequires:	lz4-devel
 %endif
 
 %description
