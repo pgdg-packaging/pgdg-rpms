@@ -14,10 +14,11 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.23.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
@@ -51,11 +52,16 @@ compression library. A C extension and CFFI interface are provided.
 %doc README.rst
 %{python3_sitearch}/%{pypi_name}-%{version}-py%{pybasever}.egg-info/*
 %{python3_sitearch}/%{pypi_name}/*.py*
-%{python3_sitearch}/%{pypi_name}/__pycache__/*.py*
 %{python3_sitearch}/%{pypi_name}/py.typed
 %{python3_sitearch}/%{pypi_name}/*.so
+%if 0%{?rhel} || 0%{?fedora}
+%{python3_sitearch}/%{pypi_name}/__pycache__/*.py*
+%endif
 
 %changelog
+* Fri Jun 13 2025 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-43PGDG
+- Add SLES 15 support
+
 * Tue May 27 2025 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to support Barman
   on RHEL 9 and RHEL 8.
