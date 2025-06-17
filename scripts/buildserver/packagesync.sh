@@ -62,7 +62,6 @@ do
 	then
 		# Finally, perform the rsync:
 		rsync --checksum -ave ssh --delete $RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/$packageSyncVersion/$osdistro/$os-$osarch
-		rsync --checksum -ave ssh --delete $SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/$packageSyncVersion/$osdistro/$os-$osarch
 	fi
 
 	# Sync SRPMs to S3 bucket:

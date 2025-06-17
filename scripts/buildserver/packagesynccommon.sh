@@ -47,7 +47,6 @@ if [ "$osarch" = "x86_64" ]
 then
 	# Finally, perform the rsync:
 	rsync --checksum -ave ssh --delete $COMMON_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/common/$osdistro/$os-$osarch
-	rsync --checksum -ave ssh --delete $COMMON_SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/common/$osdistro/$os-$osarch
 fi
 
 # Sync SRPMs to S3 bucket:

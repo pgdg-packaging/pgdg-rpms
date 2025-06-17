@@ -53,9 +53,8 @@ echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --b
 # We currently sync only x86_64 packages to yonada. The rest is pulled from yonada:
 if [ "$osarch" = "x86_64" ]
 then
-	# Finally, perform the rsync:
+	# Sync binary RPMS:
 	rsync -ave ssh --delete $EXTRAS_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
-	rsync -ave ssh --delete $EXTRAS_SRPM_DIR/ yumupload@yum.postgresql.org:yum/yum/srpms/common/pgdg-$osshort-extras/$osdistro/$os-$osarch
 fi
 
 # Sync SRPMs to S3 bucket:
