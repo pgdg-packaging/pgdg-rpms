@@ -4,9 +4,9 @@
 
 Summary:	PostgreSQL tool for transferring data with URL syntax
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.4.3
-Release:	2PGDG%{?dist}
-URL:		https://github.com/pramsey/%{sname}
+Version:	2.4.4
+Release:	1PGDG%{?dist}
+URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
@@ -60,6 +60,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
     %{pginstdir}/lib/bitcode/%{sname}/*.bc
 %endif
 %changelog
+* Tue Jun 17 2025 Devrim Gunduz <devrim@gunduz.org> - 2.4.4-1PGDG
+- Update to 2.4.4
+
 * Tue Apr 1 2025 Devrim Gunduz <devrim@gunduz.org> - 2.4.3-2PGDG
 - Fix llvmjit subpackage description and summary
 
