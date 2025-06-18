@@ -3,7 +3,7 @@
 
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
-Version:	4.2.1
+Version:	4.3.0
 Release:	1PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -76,6 +76,10 @@ popd
 %{_libdir}/cmake/%{sname}/*.cmake
 
 %changelog
+* Wed Jun 18 2025 Devrim Gündüz <devrim@gunduz.org> - 4.3.0-1PGDG
+- Update to 4.3.0 per changes described at:
+  https://github.com/uber/h3/releases/tag/v4.3.0
+
 * Wed Mar 12 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.1-1PGDG
 - Update to 4.2.1 per changes described at:
   https://github.com/uber/h3/releases/tag/v4.2.1
