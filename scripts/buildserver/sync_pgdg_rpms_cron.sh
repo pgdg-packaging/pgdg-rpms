@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Location of sync script
-SYNC_SCRIPT="/home/yumupload/bin/sync_pgdg_rpms.sh"
+SYNC_SCRIPT="~/bin/sync_pgdg_rpms.sh"
 
 # Supported OSes
 VALID_OS=("redhat" "fedora")
