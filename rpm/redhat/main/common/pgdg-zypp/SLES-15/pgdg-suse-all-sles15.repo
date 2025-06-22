@@ -86,17 +86,6 @@ gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES15
 keeppackages=0
 priority=1
 
-[pgdg-12]
-name=PostgreSQL 12 SLES $releasever - $basearch
-enabled=1
-autorefresh=1
-baseurl=https://download.postgresql.org/pub/repos/zypp/12/suse/sles-$releasever-$basearch
-type=rpm-md
-gpgcheck=1
-gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES15
-keeppackages=0
-priority=1
-
 # PGDG SuSE Enterprise Linux Updates Testing common repositories.
 
 [pgdg-common-testing]
@@ -311,17 +300,6 @@ priority=1
 [pgdg13-debuginfo]
 name=PostgreSQL 13 for SuSE Enterprise Linux $releasever - $basearch - Debuginfo
 baseurl=https://zypp-debuginfo.postgresql.org/debug/13/suse/sles-$releasever-$basearch
-enabled=0
-autorefresh=0
-type=rpm-md
-gpgcheck=1
-gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES15
-keeppackages=0
-priority=1
-
-[pgdg12-debuginfo]
-name=PostgreSQL 12 for SuSE Enterprise Linux $releasever - $basearch - Debuginfo
-baseurl=https://zypp-debuginfo.postgresql.org/debug/12/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
 type=rpm-md
