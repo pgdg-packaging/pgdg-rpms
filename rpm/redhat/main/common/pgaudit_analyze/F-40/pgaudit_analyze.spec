@@ -1,1 +1,0 @@
-../main/pgaudit_analyze.spec

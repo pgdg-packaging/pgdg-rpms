@@ -1,1 +1,0 @@
-../main/pgexporter_ext.spec

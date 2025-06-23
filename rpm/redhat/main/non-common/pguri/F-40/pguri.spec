@@ -1,1 +1,0 @@
-../main/../main/pguri.spec

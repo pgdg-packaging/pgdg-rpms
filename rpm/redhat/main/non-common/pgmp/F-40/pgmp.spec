@@ -1,1 +1,0 @@
-../main/../main/pgmp.spec

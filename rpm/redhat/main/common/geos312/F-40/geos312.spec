@@ -1,1 +1,0 @@
-../main/geos312.spec

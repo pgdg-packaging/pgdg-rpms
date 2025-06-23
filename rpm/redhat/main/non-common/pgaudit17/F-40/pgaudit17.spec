@@ -1,1 +1,0 @@
-../main/pgaudit17.spec

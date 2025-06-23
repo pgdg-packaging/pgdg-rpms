@@ -1,1 +1,0 @@
-../main/../main/ogr_fdw.spec
