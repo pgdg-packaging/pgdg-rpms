@@ -59,7 +59,7 @@ popd
 %{pginstdir}/share/extension/h3_postgis.control
 
 %changelog
-* Tue Jun 242025 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-1PGDG
+* Tue Jun 24 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-1PGDG
 - Update to 4.2.3 per changes described at:
   https://github.com/zachasme/h3-pg/releases/tag/v4.2.3
 
