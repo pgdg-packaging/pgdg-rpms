@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.9.0
+Version:	1.10.0
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL extension to expose functionality from ICU to PostgreSQL applications
 License:	PostgreSQL
@@ -59,5 +59,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Thu Jun 26 2025 Devrim Gündüz <devrim@gunduz.org> 1.10.0-1PGDG
+- Update to 1.10.0 per changes described at:
+  https://github.com/dverite/icu_ext/releases/tag/v1.10.0
+
 * Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> 1.9.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
