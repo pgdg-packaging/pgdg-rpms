@@ -1,0 +1,12 @@
+--- src/pl/plperl/GNUmakefile.old	2022-09-13 11:28:29.530773939 +0100
++++ src/pl/plperl/GNUmakefile	2022-09-13 11:28:51.739821139 +0100
+@@ -55,6 +55,9 @@
+ 
+ SHLIB_LINK = $(perl_embed_ldflags)
+ 
++# Force rpath to be used even though we disable it everywhere else
++SHLIB_LINK += $(rpath)
++
+ # see https://www.postgresql.org/message-id/flat/8c4fcb72-2574-ff7c-4c25-1f032d4a2a57%40enterprisedb.com
+ ifeq ($(PORTNAME), cygwin)
+ SHLIB_LINK += -Wl,--export-all-symbols

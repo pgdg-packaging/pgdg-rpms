@@ -1,0 +1,22 @@
+--- src/backend/utils/misc/guc_tables.c.old	2025-01-13 01:27:40.440387857 -0600
++++ src/backend/utils/misc/guc_tables.c	2025-01-13 01:28:11.679896303 -0600
+@@ -4508,7 +4508,7 @@
+ 			GUC_LIST_INPUT | GUC_LIST_QUOTE | GUC_SUPERUSER_ONLY
+ 		},
+ 		&Unix_socket_directories,
+-		DEFAULT_PGSOCKET_DIR,
++		DEFAULT_PGSOCKET_DIR ", /tmp",
+ 		NULL, NULL, NULL
+ 	},
+ 
+--- src/include/pg_config_manual.h.old	2025-01-13 01:27:54.953624073 -0600
++++ src/include/pg_config_manual.h	2025-01-13 01:28:11.679896303 -0600
+@@ -190,7 +190,7 @@
+  * support them yet.
+  */
+ #ifndef WIN32
+-#define DEFAULT_PGSOCKET_DIR  "/tmp"
++#define DEFAULT_PGSOCKET_DIR  "/run/postgresql"
+ #else
+ #define DEFAULT_PGSOCKET_DIR ""
+ #endif

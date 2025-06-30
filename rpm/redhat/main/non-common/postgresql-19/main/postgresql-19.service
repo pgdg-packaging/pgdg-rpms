@@ -1,0 +1,57 @@
+# It's not recommended to modify this file in-place, because it will be
+# overwritten during package upgrades.  It is recommended to use systemd
+# "dropin" feature;  i.e. create file with suffix .conf under
+# /etc/systemd/system/postgresql-19.service.d directory overriding the
+# unit's defaults. You can also use "systemctl edit postgresql-19"
+# Look at systemd.unit(5) manual page for more info.
+
+# Note: changing PGDATA will typically require adjusting SELinux
+# configuration as well.
+
+# Note: do not use a PGDATA pathname containing spaces, or you will
+# break postgresql-19-setup.
+[Unit]
+Description=PostgreSQL 19 database server
+Documentation=https://www.postgresql.org/docs/19/static/
+After=syslog.target
+After=network-online.target
+
+[Service]
+Type=notify
+
+User=postgres
+Group=postgres
+
+# Note: avoid inserting whitespace in these Environment= lines, or you may
+# break postgresql-setup.
+
+# Location of database directory
+Environment=PGDATA=/var/lib/pgsql/19/data/
+
+# Where to send early-startup messages from the server (before the logging
+# options of postgresql.conf take effect)
+# This is normally controlled by the global default set by systemd
+# StandardOutput=syslog
+
+# Disable OOM kill on postgres main process
+OOMScoreAdjust=-1000
+Environment=PG_OOM_ADJUST_FILE=/proc/self/oom_score_adj
+Environment=PG_OOM_ADJUST_VALUE=0
+
+ExecStartPre=/usr/pgsql-19/bin/postgresql-19-check-db-dir ${PGDATA}
+ExecStart=/usr/pgsql-19/bin/postgres -D ${PGDATA}
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGINT
+ 
+# Do not set any timeout value, so that systemd will not kill postgres 
+# main process during crash recovery.
+TimeoutSec=0
+
+# 0 is the same as infinity, but "infinity" needs systemd 229
+TimeoutStartSec=0
+
+TimeoutStopSec=1h
+
+[Install]
+WantedBy=multi-user.target

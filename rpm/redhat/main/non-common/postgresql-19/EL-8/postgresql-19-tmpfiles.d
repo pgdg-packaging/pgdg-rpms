@@ -1,0 +1,1 @@
+../main/postgresql-19-tmpfiles.d
