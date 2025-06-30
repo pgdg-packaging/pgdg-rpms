@@ -4,8 +4,8 @@
 
 Summary:	Hypothetical Indexes support for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.1
-Release:	3PGDG%{?dist}
+Version:	1.4.2
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/HypoPG/hypopg/archive/%{version}.tar.gz
 URL:		https://github.com/HypoPG/%{sname}
@@ -35,7 +35,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for hypopg
+This package provides JIT support for hypopg
 %endif
 
 %prep
@@ -67,6 +67,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Jun 30 2025 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-1PGDG
+- Update to 1.4.2 per changes described at:
+  https://github.com/HypoPG/hypopg/releases/tag/1.4.2
+
 * Thu Jan 2 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-3PGDG
 - Update LLVM dependencies and improve description
 
