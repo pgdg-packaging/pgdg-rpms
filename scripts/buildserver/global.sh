@@ -37,8 +37,8 @@ export CF_SRPM_DISTRO_ID=XXXXXXXXXXXXXXXXXX
 
 declare -a pgStableBuilds=("17 16 15 14 13" )
 declare -a pgTestBuilds=("17 16 15 14 13" )
-declare -a pgBetaVersion=("18" )
-declare -a pgAlphaVersion=("19" )
+declare -a pgBetaVersion=18
+declare -a pgAlphaVersion=19
 
 # Common function to sign the package.
 sign_package(){
