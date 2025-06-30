@@ -77,8 +77,8 @@ echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --b
 echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $TESTING_SRPM_DIR/repodata/repomd.xml
 echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $TESTING_DEBUG_RPM_DIR/repodata/repomd.xml
 
-# Finally, perform the rssync:
-rsync --checksum -ave ssh --delete $TESTING_RPM_DIR/ yumupload@yum.postgresql.org:/srv/yum/yum/testing/$packageSyncVersion/$osdistro/$os-$osarch
+# We currently pull packages from yonada, so skip the next line:
+# rsync --checksum -ave ssh --delete $TESTING_RPM_DIR/ yumupload@yum.postgresql.org:yum/yum/testing/$packageSyncVersion/$osdistro/$os-$osarch
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $TESTING_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html"
