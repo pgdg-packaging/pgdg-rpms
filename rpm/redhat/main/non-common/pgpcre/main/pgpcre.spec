@@ -4,11 +4,12 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20190509
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL extension that exposes PCRE functionality as functions and operators
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
 Source0:	https://github.com/petere/%{sname}/archive/refs/tags/%{version}.tar.gz
+Patch0:		%{sname}-pcre2.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pcre-devel
 Requires:	postgresql%{pgmajorversion} pcre
@@ -37,6 +38,7 @@ This package provides JIT support for pgpcre
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
@@ -63,5 +65,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sat Jul 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.20190509-2PGDG
+- Add a patch to support pcre2. Per https://github.com/petere/pgpcre/pull/9
+
 * Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> 0.20190509-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
