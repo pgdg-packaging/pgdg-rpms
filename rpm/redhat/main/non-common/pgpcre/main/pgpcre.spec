@@ -11,7 +11,12 @@ URL:		https://github.com/petere/%{sname}
 Source0:	https://github.com/petere/%{sname}/archive/refs/tags/%{version}.tar.gz
 Patch0:		%{sname}-pcre2.patch
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pcre-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+%if 0%{?rhel} && 0%{?rhel} >= 10
+BuildRequires:	pcre2-devel
+%else
+BuildRequires:	pcre-devel
+%endif
 Requires:	postgresql%{pgmajorversion} pcre
 
 %description
