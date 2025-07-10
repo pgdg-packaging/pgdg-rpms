@@ -3,7 +3,7 @@
 
 Summary:	Database Test 2 Differences from the TPC-C - Common package
 Name:		%{sname}-common
-Version:	0.61.6
+Version:	0.61.7
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -82,6 +82,9 @@ popd
 %{_mandir}/man1/dbt2*
 
 %changelog
+* Thu Jul 10 2025 Devrim Gündüz <devrim@gunduz.org> - 0.61.7-1PGDG
+- Update to 0.61.7
+
 * Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 0.61.6-1PGDG
 - Update to 0.61.6
 - Add missing BRs
