@@ -4,7 +4,7 @@
 
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.1
+Version:	2.2.0
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
@@ -82,6 +82,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Jul 10 2025 - Devrim Gündüz <devrim@gunduz.org> - 2.2.0-1PGDG
+- Update to 2.2.0 per changes described at:
+  https://github.com/percona/pg_stat_monitor/releases/tag/2.2.0
+
 * Mon Feb 24 2025 - Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
 - Update to 2.1.1 per changes described at:
   https://github.com/percona/pg_stat_monitor/releases/tag/2.1.1
