@@ -45,13 +45,13 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta1_4200002PGDG%{?dist}
+Release:	beta2_4200001PGDG%{?dist}
 %else
-Release:	beta1_3PGDG%{?dist}
+Release:	beta2_1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}beta1/postgresql-%{version}beta1.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}beta2/postgresql-%{version}beta2.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -476,7 +476,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}beta1
+%setup -q -n %{sname}-%{pgpackageversion}beta2
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1304,6 +1304,9 @@ fi
 %endif
 
 %changelog
+* Tue Jul 15 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta2-1PGDG
+- Update to PostgreSQL 18 beta2
+
 * Wed May 14 2025 Devrim Gündüz <devrim@gunduz.org> - 18.0beta1-3PGDG
 - Rebuild against LLVM 19 on RHEL 8
 
