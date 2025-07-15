@@ -14,8 +14,8 @@
 
 Summary:	The user interface of PoWA
 Name:		%{sname}
-Version:	5.0.1
-Release:	2PGDG%{?dist}
+Version:	5.0.2
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
 Source2:        %{sname}.service
@@ -74,6 +74,10 @@ This is the user interface of POWA.
 %{_unitdir}/%{sname}.service
 
 %changelog
+* Tue Jul 15 2025 Devrim Gunduz <devrim@gunduz.org> - 5.0.2-1PGDG
+- Update to 5.0.2 for changes described at
+  https://github.com/powa-team/powa-web/releases/tag/5.0.2
+
 * Tue Dec 17 2024 Devrim Gunduz <devrim@gunduz.org> - 5.0.1-2PGDG
 - Add RHEL 10 support
 
