@@ -7,41 +7,21 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global geosfullversion %geos313fullversion
-%global geosmajorversion %geos313majorversion
-%global geosinstdir %geos313instdir
+%global	geosfullversion %geos313fullversion
+%global	geosmajorversion %geos313majorversion
+%global	geosinstdir %geos313instdir
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
 
-%if 0%{?fedora} && 0%{?fedora} >= 41
-%global gdalfullversion %gdal311fullversion
-%global gdalmajorversion %gdal311majorversion
-%global gdalinstdir %gdal311instdir
-%global projmajorversion %proj96majorversion
-%global projfullversion %proj96fullversion
-%global projinstdir %proj96instdir
-%endif
 %if 0%{?rhel} && 0%{?rhel} == 8
-%global gdalfullversion %gdal38fullversion
-%global gdalmajorversion %gdal38majorversion
-%global gdalinstdir %gdal38instdir
-%global projmajorversion %proj95majorversion
-%global projfullversion %proj95fullversion
-%global projinstdir %proj95instdir
-%endif
-%if 0%{?rhel} && 0%{?rhel} >= 9
-%global gdalfullversion %gdal311fullversion
-%global gdalmajorversion %gdal311majorversion
-%global gdalinstdir %gdal311instdir
-%global projmajorversion %proj96majorversion
-%global projfullversion %proj96fullversion
-%global projinstdir %proj96instdir
-%endif
-%if  0%{?suse_version} >= 1500
-%global gdalfullversion %gdal310fullversion
-%global gdalmajorversion %gdal310majorversion
-%global gdalinstdir %gdal311instdir
-%global projmajorversion %proj95majorversion
-%global projfullversion %proj95fullversion
-%global projinstdir %proj95instdir
+%global	gdalfullversion %gdal38fullversion
+%global	gdalmajorversion %gdal38majorversion
+%global	gdalinstdir %gdal38instdir
+%else
+%global	gdalfullversion %gdal311fullversion
+%global	gdalmajorversion %gdal311majorversion
+%global	gdalinstdir %gdal311instdir
 %endif
 
 %global	libgeotiffmajorversion 17
@@ -69,7 +49,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.12
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -388,6 +368,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 17 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-8PGDG
+- Use GDAL 3.11 and PROJ 9.6 on RHEL 8 and SLES 15 as well.
+
 * Sun May 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-7PGDG
 - Keep using PROJ 9.5 and GDAL 3.10. Use GDAL 3.11 where available.
 
