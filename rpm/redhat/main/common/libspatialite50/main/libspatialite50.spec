@@ -13,20 +13,13 @@
 %global geosfullversion %geos313fullversion
 %global geosmajorversion %geos313majorversion
 %global geosinstdir %geos313instdir
-# Override PROJ:
-%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
-%global	projmajorversion %proj95majorversion
-%global	projfullversion %proj95fullversion
-%global	projinstdir %proj95instdir
-%else
 %global	projmajorversion %proj96majorversion
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
-%endif
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -133,6 +126,9 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Thu Jul 17 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-10PGDG
+- Rebuild against PROJ 9.6 on SLES 15 and RHEL 8 as well.
+
 * Sun May 25 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-9PGDG
 - Fix BR on RHEL 10 and Fedora.
 
