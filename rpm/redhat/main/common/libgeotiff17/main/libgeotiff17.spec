@@ -5,19 +5,13 @@
 %pgdg_set_gis_variables
 
 # Override PROJ:
-%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
-%global	projmajorversion %proj95majorversion
-%global	projfullversion %proj95fullversion
-%global	projinstdir %proj95instdir
-%else
 %global	projmajorversion %proj96majorversion
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
-%endif
 
 Name:		%{sname}%{libgeotiffversion}
 Version:	1.7.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GeoTIFF format library
 License:	MIT
 URL:		https://github.com/OSGeo/%{sname}
@@ -138,6 +132,9 @@ EOF
 %{libgeotiff17instdir}/lib/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Jul 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-2PGDG
+- Rebuild against PROJ 9.6 on SLES 15 and RHEL 8 as well.
+
 * Mon Jun 23 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-1PGDG
 - Update to 1.7.4 per changes described at:
   https://github.com/OSGeo/libgeotiff/releases/tag/1.7.4
