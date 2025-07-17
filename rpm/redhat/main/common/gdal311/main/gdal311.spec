@@ -30,15 +30,9 @@
 %global libspatialitemajorversion	50
 
 # Override PROJ:
-%if 0%{?rhel} == 8
-%global	projmajorversion %proj95majorversion
-%global	projfullversion %proj95fullversion
-%global	projinstdir %proj95instdir
-%else
 %global	projmajorversion %proj96majorversion
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
-%endif
 
 %if 0%{?suse_version} <= 1500 || 0%{?rhel} >= 10
 %global	g2clib_enabled 0
@@ -53,7 +47,7 @@
 
 Name:		%{sname}311
 Version:	3.11.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
