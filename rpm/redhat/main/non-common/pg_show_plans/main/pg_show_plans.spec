@@ -4,7 +4,7 @@
 
 Summary:	A PostgreSQL extension that shows query plans of all the currently running SQL statements.
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.3
+Version:	2.1.6
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -66,6 +66,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Jul 21 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.8-1PGDG
+- Update to 2.1.8 per described at:
+  https://github.com/cybertec-postgresql/pg_show_plans/releases/tag/v2.1.8
+
 * Tue Apr 29 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.3-1PGDG
 - Update to 2.1.3 per described at:
   https://github.com/cybertec-postgresql/pg_show_plans/releases/tag/v2.1.3
