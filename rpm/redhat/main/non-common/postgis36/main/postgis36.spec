@@ -44,10 +44,10 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	alpha1_2PGDG%{?dist}
+Release:	beta1_1PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}alpha1.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}alpha1-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta1.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta1-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
@@ -184,7 +184,7 @@ The %{name}-utils package provides the utilities for PostGIS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for PostGIS 3.5
+Summary:	Just-in-time compilation support for PostGIS 3.6
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
@@ -196,11 +196,11 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This package provides JIT support for PostGIS 3.5
+This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}alpha1
+%setup -q -n %{sname}-%{version}beta1
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -373,6 +373,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 23 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0beta1-1PGDG
+- Update to 3.6.0 beta1
+
 * Thu Jul 17 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0alpha1-2PGDG
 - Use GDAL 3.11 and PROJ 9.6 on RHEL 8 and SLES 15 as well.
 
