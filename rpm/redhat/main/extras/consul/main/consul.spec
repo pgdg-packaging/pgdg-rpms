@@ -14,7 +14,7 @@ ExcludeArch:	ppc64le
 %endif
 
 Name:		consul
-Version:	1.21.2
+Version:	1.21.3
 Release:	1PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
@@ -97,6 +97,10 @@ exit 0
 %doc
 
 %changelog
+* Thu Jul 24 2025 Devrim Gündüz <devrim@gunduz.org> 1.21.3-1PGDG
+- Update to 1.21.3 per changes described at:
+  https://github.com/hashicorp/consul/releases/tag/v1.21.3
+
 * Tue Jun 24 2025 Devrim Gündüz <devrim@gunduz.org> 1.21.2-1PGDG
 - Update to 1.21.2 per changes described at:
   https://github.com/hashicorp/consul/releases/tag/v1.21.2
