@@ -20,10 +20,9 @@ fi
 tar xvf gdal-"${VERSION}${PRE}".tar.xz
 mv gdal-"${VERSION}"{,-fedora} && pushd gdal-"${VERSION}"-fedora
 
-rm data/cubewerx_extra.wkt
-rm data/esri_StatePlane_extra.wkt
-rm data/ecw_cs.wkt
-
+rm -v ogr/data/cubewerx_extra.wkt
+rm -v ogr/data/esri_StatePlane_extra.wkt
+rm -v ogr/data/ecw_cs.wkt
 
 sed -i 's|data/cubewerx_extra.wkt||' gdal.cmake
 sed -i 's|data/esri_StatePlane_extra.wkt||' gdal.cmake
