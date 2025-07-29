@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+w#!/usr/bin/bash
 
 #########################################################
 #							#
@@ -49,10 +49,8 @@ rsync --checksum -ave ssh --delete $TESTING_COMMON_SRPM_DIR/ yumupload@yum.postg
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $TESTING_COMMON_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html"
-aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/common/$osdistro/$os-$osarch/repodata/*
 
 # Sync debug* RPMs to S3 bucket:
 aws s3 sync $TESTING_COMMON_DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/testing/debug/common/$osdistro/$os-$osarch/ --exclude "*.html"
-aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/common/$osdistro/$os-$osarch/repodata/*
 
 exit 0

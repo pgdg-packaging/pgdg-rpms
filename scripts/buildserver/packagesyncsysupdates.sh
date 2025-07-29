@@ -44,6 +44,5 @@ fi
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $SYSUPDATES_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/pgdg-$ossysupdates-sysupdates/$osdistro/$os-$osarch --exclude "*.html"
-aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
 
 exit 0
