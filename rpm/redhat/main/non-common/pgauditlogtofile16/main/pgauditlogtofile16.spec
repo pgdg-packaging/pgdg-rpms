@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.6.4
-Release:	3PGDG%{?dist}
+Version:	1.7.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
@@ -37,7 +37,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pgauditlogtofile
+This package provides JIT support for pgauditlogtofile
 %endif
 
 %prep
@@ -68,6 +68,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Jul 28 2025 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-1PGDG
+- Update to 1.7.1 per changes described at:
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.7.0
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.7.1
+
 * Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.4-3PGDG
 - Add missing BRs
 
