@@ -14,12 +14,12 @@ BuildRequires:	CGAL-devel >= 5.4
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} >= 9
-Version:	2.1.0
+Version:	2.2.0
 BuildRequires:	CGAL-devel >= 5.6
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} >= 41
-Version:	2.1.0
+Version:	2.2.0
 BuildRequires:	CGAL-devel >= 5.6
 %endif
 
@@ -120,6 +120,10 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Thu Jul 31 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-1PGDG
+- Update to 2.2.0 on RHEL 9+ and Fedora per changes described at:
+  https://gitlab.com/sfcgal/SFCGAL/-/releases/v2.2.0
+
 * Wed May 14 2025 Devrim Gunduz <devrim@gunduz.org> - 2.1.0-1PGDG
 - Update to 2.1.0 on RHEL and Fedora per changes described at:
   https://gitlab.com/sfcgal/SFCGAL/-/releases/v2.1.0
