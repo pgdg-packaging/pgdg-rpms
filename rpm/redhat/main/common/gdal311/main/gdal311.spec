@@ -47,7 +47,7 @@
 
 Name:		%{sname}311
 Version:	3.11.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -118,7 +118,6 @@ BuildRequires:	mariadb-connector-c-devel
 %endif
 BuildRequires:	libpq5-devel
 BuildRequires:	pcre2-devel
-BuildRequires:	ogdi%{ogdimajorversion}-devel
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	%{_bindir}/pkg-config
 %if 0%{?suse_version} >= 1500
@@ -231,7 +230,6 @@ Summary:	GDAL file format library
 # See frmts/grib/degrib/README.TXT
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
-Requires:	geos%{geosmajorversion} ogdi%{ogdimajorversion}
 Requires:	netcdf >= 4.7 gpsbabel
 Requires:	libgeotiff%{libgeotiffmajorversion}-devel
 Requires:	libspatialite%{libspatialitemajorversion}-devel
@@ -314,16 +312,15 @@ export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 %else
 export CFLAGS="$RPM_OPT_FLAGS -fpic"
 %endif
-export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include"
-export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include"
+export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include"
+export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include"
 # SLES 15 has -Itirpc on /usr/include, so use the following only on Fedora and RHEL:
 %if 0%{?fedora} >= 30 || 0%{?rhel} >= 8
 export CXXFLAGS="$CFLAGS -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{_includedir}/tirpc"
 %endif
-LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{ogdiinstdir}/lib -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{_libdir}"; export LDFLAGS
-SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{ogdiinstdir}/lib,%{libgeotiffinstdir}/lib,%{geosinstdir}/lib64,%{libspatialiteinstdir}/lib" ; export SHLIB_LINK
-export OGDI_CFLAGS='-I%{ogdiinstdir}/include/'
+LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{_libdir}"; export LDFLAGS
+SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib,%{geosinstdir}/lib64,%{libspatialiteinstdir}/lib" ; export SHLIB_LINK
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1315
@@ -346,8 +343,6 @@ export OGDI_CFLAGS='-I%{ogdiinstdir}/include/'
  -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}" \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
  -DGDAL_USE_SHAPELIB=OFF \
- -DOGDI_INCLUDE_DIRS='%{ogdiinstdir}/include' \
- -DOGDI_LIBRARY='%{ogdiinstdir}/lib/libogdi.so' \
 %if %gdaljava
  -DBUILD_JAVA_BINDINGS=ON \
 %else
@@ -477,6 +472,10 @@ done
 %endif
 
 %changelog
+* Thu Jul 31 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.3-3PGDG
+- Remove OGDI support, per https://github.com/OSGeo/gdal/pull/11744
+- Rebuild against SFCGAL 2.2.0
+
 * Tue Jul 15 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.3-1PGDG
 - Update to 3.11.3 per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.11.3
