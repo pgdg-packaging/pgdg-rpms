@@ -371,6 +371,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 31 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-9PGDG
+- Rebuild against GDAL 3.11.3
+
 * Thu Jul 17 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-8PGDG
 - Use GDAL 3.11 and PROJ 9.6 on RHEL 8 and SLES 15 as well.
 

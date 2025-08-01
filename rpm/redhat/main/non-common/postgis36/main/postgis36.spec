@@ -44,7 +44,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	beta1_1PGDG%{?dist}
+Release:	beta1_2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta1.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta1-en.pdf
@@ -373,6 +373,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 31 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0beta1-2PGDG
+- Rebuild against GDAL 3.11.3
+
 * Wed Jul 23 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0beta1-1PGDG
 - Update to 3.6.0 beta1
 

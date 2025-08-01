@@ -49,7 +49,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.8
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -375,6 +375,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 31 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-9PGDG
+- Rebuild against GDAL 3.11.3
+
 * Thu Jul 17 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-8PGDG
 - Use GDAL 3.11 and PROJ 9.6 on RHEL 8 and SLES 15 as well.
 
