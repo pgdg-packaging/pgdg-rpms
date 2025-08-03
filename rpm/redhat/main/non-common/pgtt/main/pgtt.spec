@@ -4,7 +4,7 @@
 
 Summary:	PostgreSQL Global Temporary Tables Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.3
+Version:	4.4
 Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/darold/%{sname}/archive/v%{version}.tar.gz
@@ -70,6 +70,10 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %make_install install DESTDIR=%{buildroot
 %endif
 
 %changelog
+* Sun Aug 3 2025 Devrim Gündüz <devrim@gunduz.org> - 4.4-1PGDG
+- Update to 4.4 per changes described at:
+  https://github.com/darold/pgtt/releases/tag/v4.4
+
 * Wed Jun 11 2025 Devrim Gündüz <devrim@gunduz.org> - 4.3-1PGDG
 - Update to 4.3 per changes described at:
   https://github.com/darold/pgtt/releases/tag/v4.3
