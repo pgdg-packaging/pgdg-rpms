@@ -1,0 +1,11 @@
+--- a/configfile.c
++++ b/configfile.c
+@@ -159,7 +159,7 @@ load_config(const char *config_file, bool verbose, bool terse, t_configuration_o
+ 	if (config_file_provided == false)
+ 	{
+ 		/* packagers: if feasible, patch configuration file path into "package_conf_file" */
+-		char		package_conf_file[MAXPGPATH] = "";
++		char		package_conf_file[MAXPGPATH] = "/etc/repmgr/18/repmgr.conf";
+ 		char		my_exec_path[MAXPGPATH] = "";
+ 		char		sysconf_etc_path[MAXPGPATH] = "";
+ 

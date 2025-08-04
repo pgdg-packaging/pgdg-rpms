@@ -1,0 +1,11 @@
+--- repmgr.conf.sample.old	2018-01-18 17:25:14.240760492 +0000
++++ repmgr.conf.sample	2018-01-18 17:25:27.333825591 +0000
+@@ -129,7 +129,7 @@
+ # Environment/command settings
+ #------------------------------------------------------------------------------
+ 
+-#pg_bindir=''				# Path to PostgreSQL binary directory (location
++pg_bindir='/usr/pgsql-18/bin/'				# Path to PostgreSQL binary directory (location
+ 					# of pg_ctl, pg_basebackup etc.). Only needed
+ 					# if these files are not in the system $PATH.
+ 					#

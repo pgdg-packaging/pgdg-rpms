@@ -1,0 +1,40 @@
+# It's not recommended to modify this file in-place, because it will be
+# overwritten during package upgrades.  If you want to customize, the
+# best way is to create a file "/etc/systemd/system/repmgr-18.service",
+# containing
+#	.include /lib/systemd/system/repmgr-18.service
+#	...make your changes here...
+# For more info about custom unit files, see
+# http://fedoraproject.org/wiki/Systemd#How_do_I_customize_a_unit_file.2F_add_a_custom_unit_file.3F
+
+[Unit]
+Description=A replication manager, and failover management tool for PostgreSQL
+After=syslog.target
+After=network.target
+After=postgresql-18.service
+
+[Service]
+Type=forking
+
+User=postgres
+Group=postgres
+
+# PID file
+PIDFile=/run/repmgr/repmgrd-18.pid
+
+# Location of repmgr conf file:
+Environment=REPMGRDCONF=/etc/repmgr/18/repmgr.conf
+Environment=PIDFILE=/run/repmgr/repmgrd-18.pid
+
+# Where to send early-startup messages from the server 
+# This is normally controlled by the global default set by systemd
+# StandardOutput=syslog
+ExecStart=/usr/pgsql-18/bin/repmgrd -f ${REPMGRDCONF} -p ${PIDFILE} -d --verbose 
+ExecStop=/usr/bin/kill -TERM $MAINPID
+ExecReload=/usr/bin/kill -HUP $MAINPID
+
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
