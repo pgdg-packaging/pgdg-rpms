@@ -1,13 +1,14 @@
 %global sname pg_permissions
 
-%global tarballversion REL_1_3
+%global permissionsmajver 1
+%global permissionsminver 3
 
 Summary:	PostgreSQL permission reports and checks
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.3
-Release:	2PGDG%{?dist}
+Version:	1.4
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
-Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/%{tarballversion}.tar.gz
+Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/REL_%{permissionsmajver}_%{permissionsminver}.tar.gz
 URL:		https://github.com/cybertec-postgresql/pg_permissions/
 BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
 Requires:	postgresql%{pgmajorversion}-server
@@ -18,7 +19,7 @@ This extension allows you to review object permissions on a PostgreSQL
 database.
 
 %prep
-%setup -q -n %{sname}-%{tarballversion}
+%setup -q -n %{sname}-REL_%{permissionsmajver}_%{permissionsminver}
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -35,6 +36,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}*.*
 
 %changelog
+* Mon Aug 4 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4-1PGDG
+- Update to 1.4 per changes described at:
+  https://github.com/cybertec-postgresql/pg_permissions/releases/tag/REL_1_4
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3-2PGDG
 - Fix tarball version
 
