@@ -1,7 +1,7 @@
 %global sname pg_squeeze
 
 %global squeezemajver 1
-%global squeezemidver 8
+%global squeezemidver 9
 %global squeezeminver 0
 
 %{!?llvm:%global llvm 1}
@@ -68,6 +68,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Aug 4 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9.0-1PGDG
+- Update to 1.9.0 per changes described at:
+  https://github.com/cybertec-postgresql/pg_squeeze/releases/tag/REL1_9_0
+
 * Sun Jan 26 2025 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-1PGDG
 - Update to 1.8.0 per changes described at:
   https://github.com/cybertec-postgresql/pg_squeeze/releases/tag/REL1_8_0
