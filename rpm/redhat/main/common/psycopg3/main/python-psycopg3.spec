@@ -1,5 +1,6 @@
 %global sname psycopg3
 %global pname python-%{sname}
+%global psycopg_old_version %(%{__ospython} -c "import psycopg; print(psycopg.__version__)")
 
 %{!?with_docs:%global with_docs 0}
 
@@ -102,6 +103,12 @@ popd
 %{__rm} -f %{buildroot}%{python3_sitearch}/%{sname}/tests/test_async_keyword.py
 %endif
 
+%post
+# Remove old psycopg3 directory on updates
+if [ $1 -gt 1 ] ; then
+%{__rm} -rf %{python3_sitelib}/psycopg-%{psycopg_old_version}-py%{py3ver}.egg-info
+fi
+
 %files
 %defattr(-,root,root)
 %doc README.rst
@@ -134,6 +141,12 @@ popd
 %endif
 
 %changelog
+* Mon Aug 4 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.9-1PGDG
+- Remove old psycopg3 directory on updates. Per report and patch from
+  Alexandre Pereira: https://github.com/pgdg-packaging/pgdg-rpms/issues/66
+- Update to 3.2.9 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.9
+
 * Mon May 12 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.8-1PGDG
 - Update to 3.2.8 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.2.8
