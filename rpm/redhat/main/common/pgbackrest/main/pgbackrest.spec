@@ -4,7 +4,7 @@
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.56.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/pgbackrest/pgbackrest/archive/release/%{version}.tar.gz
@@ -13,9 +13,8 @@ Source2:	%{name}-tmpfiles.d
 Source3:	%{name}.logrotate
 Source4:	%{name}.service
 
-BuildRequires:	openssl-devel zlib-devel postgresql%{pgmajorversion}-devel
-BuildRequires:	libzstd-devel libxml2-devel libyaml-devel libssh2-devel
-BuildRequires:	meson
+BuildRequires:	libpq5-devel libssh2-devel libxml-devel libyaml-devel
+BuildRequires:	libzstd-devel meson openssl-devel zlib-devel
 
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	lz4-libs libzstd libssh2
@@ -126,6 +125,9 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Mon Aug 11 2025 Devrim Gündüz <devrim@gunduz.org> - 2.56.0-2PGDG
+- Add missing libpq5-devel. Per report from Christoph.
+
 * Tue Jul 22 2025 Devrim Gündüz <devrim@gunduz.org> - 2.56.0-1PGDG
 - Update to 2.56.0, per changes described at:
   https://pgbackrest.org/release.html#2.56.0
