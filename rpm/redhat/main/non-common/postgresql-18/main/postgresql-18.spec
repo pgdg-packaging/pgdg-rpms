@@ -45,9 +45,9 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta2_4200001PGDG%{?dist}
+Release:	beta2_4200002PGDG%{?dist}
 %else
-Release:	beta2_1PGDG%{?dist}
+Release:	beta2_2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -248,6 +248,33 @@ Summary:	PostgreSQL development header files and libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
+Provides:	postgresql-devel >= %{version}-%{release}
+Obsoletes:	libpq-devel <= 42.0
+
+%description devel
+The postgresql%{pgmajorversion}-devel package contains the header files and
+libraries needed to compile C or C++ applications which will directly interact
+with a PostgreSQL database management server. You need to install this package
+if you want to develop applications which will interact with a PostgreSQL
+server.
+
+%package docs
+Summary:	Extra documentation for PostgreSQL
+Provides:	postgresql-docs >= %{version}-%{release}
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	docbook-style-xsl libxslt
+%endif
+%if 0%{?suse_version} >= 1499
+BuildRequires:	docbook-xsl-stylesheets
+%endif
+
+%description docs
+The postgresql%{pgmajorversion}-docs package includes the SGML source for the
+documentation as well as the documentation in PDF format and some extra
+documentation. Install this package if you want to help with the PostgreSQL
+documentation project, or if you want to generate printed documentation. This
+package also includes HTML version of the documentation.
+
 %package ecpg
 Summary:	Run-time library for ECPG programs
 
@@ -276,57 +303,6 @@ The postgresql%{pgmajorversion}-ecpg-devel pacakge contains the necessary
 files to build ECPG (Embedded PostgreSQL for C) programs.  It includes the
 development libraries and the preprocessor program ecpg.
 
-%if %enabletaptests
-BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
-Requires:	perl-IPC-Run
-# SLES 15 does not have a separate perl-TimeHires package. It is part
-# of the main perl package.
-%if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	perl-Time-HiRes
-%endif
-%endif
-
-%if %icu
-Requires:	libicu-devel
-%endif
-
-%if %llvm
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
-Requires:	llvm17-devel clang17-devel
-%endif
-%if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel => 17.0 clang-devel >= 17.0
-%endif
-%endif
-
-Provides:	postgresql-devel >= %{version}-%{release}
-Obsoletes:	libpq-devel <= 42.0
-
-%description devel
-The postgresql%{pgmajorversion}-devel package contains the header files and
-libraries needed to compile C or C++ applications which will directly interact
-with a PostgreSQL database management server. You need to install this package
-if you want to develop applications which will interact with a PostgreSQL
-server.
-
-%package docs
-Summary:	Extra documentation for PostgreSQL
-Provides:	postgresql-docs >= %{version}-%{release}
-%if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	docbook-style-xsl libxslt
-%endif
-%if 0%{?suse_version} >= 1499
-BuildRequires:	docbook-xsl-stylesheets
-%endif
-
-%description docs
-The postgresql%{pgmajorversion}-docs package includes the SGML source for the
-documentation as well as the documentation in PDF format and some extra
-documentation. Install this package if you want to help with the PostgreSQL
-documentation project, or if you want to generate printed documentation. This
-package also includes HTML version of the documentation.
-
 %package libs
 Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
@@ -345,7 +321,7 @@ need to connect to a PostgreSQL server.
 
 %package libs-oauth
 Summary:	The shared libraries required for any PostgreSQL clients - OAuth flow
-Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
+Provides:	postgresql-libs-oauth = %{pgmajorversion}
 Requires:	postgresql%{pgmajorversion}-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} >= 1500
@@ -473,6 +449,31 @@ Provides:	postgresql-test >= %{version}-%{release}
 The postgresql%{pgmajorversion}-test package contains files needed for various
 tests for the PostgreSQL database management system, including regression tests
 and benchmarks.
+
+%if %enabletaptests
+BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
+Requires:	perl-IPC-Run
+# SLES 15 does not have a separate perl-TimeHires package. It is part
+# of the main perl package.
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	perl-Time-HiRes
+%endif
+%endif
+
+%if %icu
+Requires:	libicu-devel
+%endif
+
+%if %llvm
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if 0%{?suse_version} >= 1500
+Requires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+Requires:	llvm-devel => 17.0 clang-devel >= 17.0
+%endif
+%endif
+
 %endif
 
 %prep
@@ -1304,6 +1305,10 @@ fi
 %endif
 
 %changelog
+* Mon Aug 11 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta2-2PGDG
+- Fix a few issues mentioned at:
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/69
+
 * Tue Jul 15 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta2-1PGDG
 - Update to PostgreSQL 18 beta2
 
