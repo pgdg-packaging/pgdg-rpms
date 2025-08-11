@@ -13,7 +13,7 @@ Source2:	%{name}-tmpfiles.d
 Source3:	%{name}.logrotate
 Source4:	%{name}.service
 
-BuildRequires:	libpq5-devel libssh2-devel libxml2-devel libyaml-devel
+BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel libyaml-devel
 BuildRequires:	libzstd-devel meson openssl-devel zlib-devel
 
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
