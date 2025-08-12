@@ -45,13 +45,13 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta2_4200002PGDG%{?dist}
+Release:	beta3_4200001PGDG%{?dist}
 %else
-Release:	beta2_2PGDG%{?dist}
+Release:	beta3_1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}beta2/postgresql-%{version}beta2.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}beta3/postgresql-%{version}beta3.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -477,7 +477,7 @@ Requires:	llvm-devel => 17.0 clang-devel >= 17.0
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}beta2
+%setup -q -n %{sname}-%{pgpackageversion}beta3
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1305,6 +1305,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 12 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta3-1PGDG
+- Update to PostgreSQL 18 beta3
+
 * Mon Aug 11 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta2-2PGDG
 - Fix a few issues mentioned at:
   https://github.com/pgdg-packaging/pgdg-rpms/issues/69
