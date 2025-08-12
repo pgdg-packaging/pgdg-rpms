@@ -72,13 +72,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	13.21
+Version:	13.22
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
 Release:	420001PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1342,6 +1342,10 @@ fi
 %endif
 
 %changelog
+* Tue Aug 12 2025 Devrim Gündüz <devrim@gunduz.org> - 13.22-1PGDG
+- Update to 13.22, per changes described at
+  https://www.postgresql.org/docs/release/13.22/
+
 * Wed May 14 2025 Devrim Gündüz <devrim@gunduz.org> - 13.21-2PGDG
 - Rebuild against LLVM 19 on RHEL 8
 
