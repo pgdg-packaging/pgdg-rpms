@@ -1,28 +1,28 @@
 %global sname	pg_hint_plan
 
+%if %{pgmajorversion} == 18
+%global pghintplanversion 1.8.0
+%global git_tag	1_8_0
+%endif
 %if %{pgmajorversion} == 17
-%global pghintplanversion 1.7.0
-%global git_tag	1_7_0
+%global pghintplanversion 1.7.1
+%global git_tag	1_7_1
 %endif
 %if %{pgmajorversion} == 16
-%global pghintplanversion 1.6.1
-%global git_tag	1_6_1
+%global pghintplanversion 1.6.2
+%global git_tag	1_6_2
 %endif
 %if %{pgmajorversion} == 15
-%global pghintplanversion 1.5.2
-%global git_tag	1_5_2
+%global pghintplanversion 1.5.3
+%global git_tag	1_5_3
 %endif
 %if %{pgmajorversion} == 14
-%global pghintplanversion 1.4.3
-%global git_tag	1_4_3
+%global pghintplanversion 1.4.4
+%global git_tag	1_4_4
 %endif
 %if %{pgmajorversion} == 13
-%global pghintplanversion 1.3.10
-%global git_tag	1_3_10
-%endif
-%if %{pgmajorversion} == 12
-%global pghintplanversion 1.3.10
-%global git_tag	1_3_10
+%global pghintplanversion 1.3.11
+%global git_tag	1_3_11
 %endif
 
 %{!?llvm:%global llvm 1}
@@ -30,7 +30,7 @@
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
@@ -97,6 +97,20 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Aug 18 2025 Devrim Gündüz <devrim@gunduz.org> - %{pghintplanversion}-1PGDG
+- Update to 1.8.0 for PostgreSQL 18 per changes described at.:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL18_1_8_0
+- Update to 1.7.1 for PostgreSQL 17 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL17_1_7_1
+- Update to 1.6.2 for PostgreSQL 16 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL16_1_6_2
+- Update to 1.5.3 for PostgreSQL 15 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL15_1_5_3
+- Update to 1.4.4 for PostgreSQL 14 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL14_1_4_4
+- Update to 1.3.11 for PostgreSQL 13 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL13_1_3_11
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - %{pghintplanversion}-3PGDG
 - Add missing BR
 
