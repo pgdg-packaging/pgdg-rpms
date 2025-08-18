@@ -16,7 +16,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.0.6
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -30,7 +30,7 @@ Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-dateutil
 
 # This package comes from PGDG repository:
 Requires:	python3-ydiff < 1.5
-Requires:	python3-ydiff >= 1.2
+Requires:	python3-ydiff >= 1.4.2
 
 %if 0%{?fedora} && 0%{?fedora} <= 42
 Requires:	python3-click python3-cryptography >= 1.4 python3-psutil
@@ -231,6 +231,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Mon Aug 18 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.6-2PGDG
+- Make sure that OS picks up the latest python3-ydiff package.
+  Otherwise many patronictl commands will fail.
+
 * Fri Jun 6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.6-1PGDG
 - Update to 4.0.6, per changes described at:
   https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-406
