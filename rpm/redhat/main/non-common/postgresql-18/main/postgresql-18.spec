@@ -45,9 +45,9 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta3_4200001PGDG%{?dist}
+Release:	beta3_4200002PGDG%{?dist}
 %else
-Release:	beta3_1PGDG%{?dist}
+Release:	beta3_2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -258,6 +258,30 @@ with a PostgreSQL database management server. You need to install this package
 if you want to develop applications which will interact with a PostgreSQL
 server.
 
+%if %icu
+Requires:	libicu2-devel
+%endif
+
+%if %llvm
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if 0%{?suse_version} >= 1500
+Requires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+Requires:	llvm-devel => 17.0 clang-devel >= 17.0
+%endif
+%endif
+
+%if %enabletaptests
+BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
+Requires:	perl-IPC-Run
+# SLES 15 does not have a separate perl-TimeHires package. It is part
+# of the main perl package.
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	perl-Time-HiRes
+%endif
+%endif
+
 %package docs
 Summary:	Extra documentation for PostgreSQL
 Provides:	postgresql-docs >= %{version}-%{release}
@@ -449,31 +473,6 @@ Provides:	postgresql-test >= %{version}-%{release}
 The postgresql%{pgmajorversion}-test package contains files needed for various
 tests for the PostgreSQL database management system, including regression tests
 and benchmarks.
-
-%if %enabletaptests
-BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
-Requires:	perl-IPC-Run
-# SLES 15 does not have a separate perl-TimeHires package. It is part
-# of the main perl package.
-%if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	perl-Time-HiRes
-%endif
-%endif
-
-%if %icu
-Requires:	libicu-devel
-%endif
-
-%if %llvm
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
-Requires:	llvm17-devel clang17-devel
-%endif
-%if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel => 17.0 clang-devel >= 17.0
-%endif
-%endif
-
 %endif
 
 %prep
@@ -1305,6 +1304,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 20 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta3-2PGDG
+- More fixes after 3faf5edd. Per report from Muralikrishna Bandaru.
+
 * Tue Aug 12 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta3-1PGDG
 - Update to PostgreSQL 18 beta3
 
