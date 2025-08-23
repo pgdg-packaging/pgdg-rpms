@@ -249,46 +249,18 @@ Summary:	PostgreSQL development header files and libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
-%package ecpg
-Summary:	Run-time library for ECPG programs
+Provides:	postgresql-devel >= %{version}-%{release}
+Obsoletes:	libpq-devel <= 42.0
 
-%if 0%{?suse_version} >= 1500
-Requires:	libopenssl1_1
-%else
-Requires:	openssl-libs >= 1.1.1k
-%endif
-
-%description ecpg
-The postgresql%{pgmajorversion}-ecpg is used by programs built with ECPG
-(Embedded PostgreSQL for C).
-
-%package ecpg-devel
-Summary:	Development files for ECPG (Embedded PostgreSQL for C)
-Requires:	%{name}-ecpg%{?_isa} = %{version}-%{release}
-
-%if 0%{?suse_version} >= 1500
-Requires:	libopenssl1_1
-%else
-Requires:	openssl-libs >= 1.1.1k
-%endif
-
-%description ecpg-devel
-The postgresql%{pgmajorversion}-ecpg-devel pacakge contains the necessary
-files to build ECPG (Embedded PostgreSQL for C) programs.  It includes the
-development libraries and the preprocessor program ecpg.
-
-%if %enabletaptests
-BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
-Requires:	perl-IPC-Run
-# SLES 15 does not have a separate perl-TimeHires package. It is part
-# of the main perl package.
-%if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	perl-Time-HiRes
-%endif
-%endif
+%description devel
+The postgresql%{pgmajorversion}-devel package contains the header files and
+libraries needed to compile C or C++ applications which will directly interact
+with a PostgreSQL database management server. You need to install this package
+if you want to develop applications which will interact with a PostgreSQL
+server.
 
 %if %icu
-Requires:	libicu-devel
+Requires:	libicu2-devel
 %endif
 
 %if %llvm
@@ -301,15 +273,15 @@ Requires:	llvm-devel => 17.0 clang-devel >= 17.0
 %endif
 %endif
 
-Provides:	postgresql-devel >= %{version}-%{release}
-Obsoletes:	libpq-devel <= 42.0
-
-%description devel
-The postgresql%{pgmajorversion}-devel package contains the header files and
-libraries needed to compile C or C++ applications which will directly interact
-with a PostgreSQL database management server. You need to install this package
-if you want to develop applications which will interact with a PostgreSQL
-server.
+%if %enabletaptests
+BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
+Requires:	perl-IPC-Run
+# SLES 15 does not have a separate perl-TimeHires package. It is part
+# of the main perl package.
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	perl-Time-HiRes
+%endif
+%endif
 
 %package docs
 Summary:	Extra documentation for PostgreSQL
@@ -327,6 +299,34 @@ documentation as well as the documentation in PDF format and some extra
 documentation. Install this package if you want to help with the PostgreSQL
 documentation project, or if you want to generate printed documentation. This
 package also includes HTML version of the documentation.
+
+%package ecpg-libs
+Summary:	Run-time libraries for ECPG programs
+
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl1_1
+%else
+Requires:	openssl-libs >= 1.1.1k
+%endif
+
+%description ecpg-libs
+The postgresql%{pgmajorversion}-ecpg-libs is used by programs built with ECPG
+(Embedded PostgreSQL for C).
+
+%package ecpg-devel
+Summary:	Development files for ECPG (Embedded PostgreSQL for C)
+Requires:	%{name}-ecpg%{?_isa} = %{version}-%{release}
+
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl1_1
+%else
+Requires:	openssl-libs >= 1.1.1k
+%endif
+
+%description ecpg-devel
+The postgresql%{pgmajorversion}-ecpg-devel package contains the necessary
+files to build ECPG (Embedded PostgreSQL for C) programs. It includes the
+development libraries and the preprocessor program ecpg.
 
 %package libs
 Summary:	The shared libraries required for any PostgreSQL clients
@@ -346,7 +346,7 @@ need to connect to a PostgreSQL server.
 
 %package libs-oauth
 Summary:	The shared libraries required for any PostgreSQL clients - OAuth flow
-Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
+Provides:	postgresql-libs-oauth = %{pgmajorversion}
 Requires:	postgresql%{pgmajorversion}-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} >= 1500
@@ -1163,9 +1163,8 @@ fi
 %doc src/tutorial
 %doc doc/html
 
-%files ecpg -f ecpg.lst
+%files ecpg-libs -f ecpg.lst
 %defattr(-,root,root)
-%{pgbaseinstdir}/bin/ecpg
 %{pgbaseinstdir}/lib/libecpg.so*
 %{pgbaseinstdir}/lib/libecpg_compat.so*
 %{pgbaseinstdir}/lib/libecpg.a
@@ -1176,6 +1175,7 @@ fi
 
 %files ecpg-devel
 %defattr(-,root,root)
+%{pgbaseinstdir}/bin/ecpg
 %{pgbaseinstdir}/include/informix/*
 %{pgbaseinstdir}/include/pgtypes*h
 %{pgbaseinstdir}/include/ecpg*.h
@@ -1307,4 +1307,3 @@ fi
 %changelog
 * Mon Jun 30 2025 Devrim Gunduz <devrim@gunduz.org> - 19.0alpha-1PGDG
 - Initial cut for PostgreSQL 19
-
