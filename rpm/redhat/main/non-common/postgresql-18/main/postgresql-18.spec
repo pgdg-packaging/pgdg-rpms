@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
@@ -45,9 +46,9 @@ Version:	18
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta3_4200002PGDG%{?dist}
+Release:	beta3_4200003PGDG%{?dist}
 %else
-Release:	beta3_2PGDG%{?dist}
+Release:	beta3_3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -299,8 +300,8 @@ documentation. Install this package if you want to help with the PostgreSQL
 documentation project, or if you want to generate printed documentation. This
 package also includes HTML version of the documentation.
 
-%package ecpg
-Summary:	Run-time library for ECPG programs
+%package ecpg-libs
+Summary:	Run-time libraries for ECPG programs
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl1_1
@@ -308,13 +309,13 @@ Requires:	libopenssl1_1
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
-%description ecpg
-The postgresql%{pgmajorversion}-ecpg is used by programs built with ECPG
+%description ecpg-libs
+The postgresql%{pgmajorversion}-ecpg-libs is used by programs built with ECPG
 (Embedded PostgreSQL for C).
 
 %package ecpg-devel
 Summary:	Development files for ECPG (Embedded PostgreSQL for C)
-Requires:	%{name}-ecpg%{?_isa} = %{version}-%{release}
+Requires:	%{name}-ecpg-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl1_1
@@ -323,8 +324,8 @@ Requires:	openssl-libs >= 1.1.1k
 %endif
 
 %description ecpg-devel
-The postgresql%{pgmajorversion}-ecpg-devel pacakge contains the necessary
-files to build ECPG (Embedded PostgreSQL for C) programs.  It includes the
+The postgresql%{pgmajorversion}-ecpg-devel package contains the necessary
+files to build ECPG (Embedded PostgreSQL for C) programs. It includes the
 development libraries and the preprocessor program ecpg.
 
 %package libs
@@ -1162,9 +1163,8 @@ fi
 %doc src/tutorial
 %doc doc/html
 
-%files ecpg -f ecpg.lst
+%files ecpg-libs -f ecpg.lst
 %defattr(-,root,root)
-%{pgbaseinstdir}/bin/ecpg
 %{pgbaseinstdir}/lib/libecpg.so*
 %{pgbaseinstdir}/lib/libecpg_compat.so*
 %{pgbaseinstdir}/lib/libecpg.a
@@ -1175,6 +1175,7 @@ fi
 
 %files ecpg-devel
 %defattr(-,root,root)
+%{pgbaseinstdir}/bin/ecpg
 %{pgbaseinstdir}/include/informix/*
 %{pgbaseinstdir}/include/pgtypes*h
 %{pgbaseinstdir}/include/ecpg*.h
@@ -1304,6 +1305,10 @@ fi
 %endif
 
 %changelog
+* Sat Aug 23 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta3-3PGDG
+- Move ecpg binary to ecpg-devel and also rename ecpg package to ecpg-libs.
+  Per discussion with Sandeep.
+
 * Wed Aug 20 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0beta3-2PGDG
 - More fixes after 3faf5edd. Per report from Muralikrishna Bandaru.
 
