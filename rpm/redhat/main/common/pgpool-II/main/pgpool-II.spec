@@ -4,7 +4,7 @@
 
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
-Version:		4.6.2
+Version:		4.6.3
 Release:		1PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
@@ -205,6 +205,10 @@ fi
 %{_libdir}/libpcp.so*
 
 %changelog
+* Sat Aug 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-1PGDG
+- Update to 4.6.3 per changes described at:
+  https://www.pgpool.net/docs/latest/en/html/release-4-6-3.html
+
 * Wed Jun 4 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.2-1PGDG
 - Update to 4.6.2 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-6-2.html
