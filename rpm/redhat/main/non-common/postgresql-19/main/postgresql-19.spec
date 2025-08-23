@@ -315,7 +315,7 @@ The postgresql%{pgmajorversion}-ecpg-libs is used by programs built with ECPG
 
 %package ecpg-devel
 Summary:	Development files for ECPG (Embedded PostgreSQL for C)
-Requires:	%{name}-ecpg%{?_isa} = %{version}-%{release}
+Requires:	%{name}-ecpg-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl1_1
