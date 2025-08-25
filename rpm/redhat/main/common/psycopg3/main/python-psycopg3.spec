@@ -23,8 +23,8 @@
 
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
-Version:	3.2.8
-Release:	1PGDG%{?dist}
+Version:	3.2.9
+Release:	2PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -103,10 +103,10 @@ popd
 %{__rm} -f %{buildroot}%{python3_sitearch}/%{sname}/tests/test_async_keyword.py
 %endif
 
-%post
+%pre
 # Remove old psycopg3 directory on updates
 if [ $1 -gt 1 ] ; then
-%{__rm} -rf %{python3_sitelib}/psycopg-%{psycopg_old_version}-py%{py3ver}.egg-info
+%{__rm} -rf %{python3_sitelib}/psycopg-3*-py%{py3ver}.egg-info
 fi
 
 %files
@@ -141,6 +141,11 @@ fi
 %endif
 
 %changelog
+* Mon Aug 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.9-2PGDG
+- Forgot to bump up the version number in previous commit. Fixed.
+- Fix logic in removing "old" psycopg egg directory. Improves the
+  solution in https://github.com/pgdg-packaging/pgdg-rpms/issues/66
+
 * Mon Aug 4 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.9-1PGDG
 - Remove old psycopg3 directory on updates. Per report and patch from
   Alexandre Pereira: https://github.com/pgdg-packaging/pgdg-rpms/issues/66
