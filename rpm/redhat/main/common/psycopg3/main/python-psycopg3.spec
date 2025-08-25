@@ -1,6 +1,5 @@
 %global sname psycopg3
 %global pname python-%{sname}
-%global psycopg_old_version %(%{__ospython} -c "import psycopg; print(psycopg.__version__)")
 
 %{!?with_docs:%global with_docs 0}
 
