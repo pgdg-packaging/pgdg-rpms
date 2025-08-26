@@ -20,17 +20,17 @@
 %endif
 
 %if 0%{?rhel} == 8
-%global pyver 3.9
+%global pyver 3.12
 %endif
 
 %global bashcompletiondir %(pkg-config --variable=compatdir bash-completion)
 
-%global geosfullversion %geos313fullversion
-%global geosmajorversion %geos313majorversion
-%global geosinstdir %geos313instdir
-%global	projmajorversion %proj95majorversion
-%global	projfullversion %proj95fullversion
-%global	projinstdir %proj95instdir
+%global geosfullversion %geos314fullversion
+%global geosmajorversion %geos314majorversion
+%global geosinstdir %geos314instdir
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
 
 %global gdalinstdir /usr/%{name}
 %global gdalsomajorversion	34
@@ -57,7 +57,7 @@
 
 Name:		%{sname}38
 Version:	3.8.5
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -193,7 +193,7 @@ BuildRequires:	libtirpc-devel
 BuildRequires:	python3-devel
 %endif
 %if 0%{?rhel} == 8
-BuildRequires:	python39-devel
+BuildRequires:	python3.12-devel
 %endif
 BuildRequires:	python3-numpy
 BuildRequires:	python3-setuptools
@@ -324,7 +324,7 @@ export OGDI_INCLUDE='-I%{ogdiinstdir}/include/ogdi'
 export OGDI_LIBS='-L%{ogdiinstdir}/lib'
 
 %if 0%{?rhel} == 8
-export PYTHON=/usr/bin/python3.9
+export PYTHON=/usr/bin/python3.12
 %endif
 
 %if 0%{?suse_version}
@@ -471,6 +471,10 @@ done
 %endif
 
 %changelog
+* Tue Aug 26 2025 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-8PGDG
+- Rebuild against PROJ 9.6 and GeOS 3.14
+- Use Python 3.12 on RHEL 8 to match Patroni and other packages.
+
 * Fri Jan 24 2025 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-7PGDG
 - Fix long standing python3-tools subpackage bug:
   https://redmine.postgresql.org/issues/7931
