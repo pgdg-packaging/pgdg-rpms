@@ -10,16 +10,16 @@
 %pgdg_set_gis_variables
 
 # Override some variables.
-%global geosfullversion %geos313fullversion
-%global geosmajorversion %geos313majorversion
-%global geosinstdir %geos313instdir
+%global geosfullversion %geos314fullversion
+%global geosmajorversion %geos314majorversion
+%global geosinstdir %geos314instdir
 %global	projmajorversion %proj96majorversion
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -27,7 +27,7 @@ Source0:	http://www.gaia-gis.it/gaia-sins/%{sname}-sources/%{sname}-%{version}.t
 Source1:	%{name}-pgdg-libs.conf
 
 BuildRequires:	gcc librttopo-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.49
+BuildRequires:	pgdg-srpm-macros >= 1.0.50
 %if 0%{?rhel} && 0%{?rhel} <= 9
 BuildRequires:	minizip-devel
 %endif
@@ -126,6 +126,9 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Tue Aug 26 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-11PGDG
+- Rebuild against GeOS 3.14
+
 * Thu Jul 17 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-10PGDG
 - Rebuild against PROJ 9.6 on SLES 15 and RHEL 8 as well.
 
