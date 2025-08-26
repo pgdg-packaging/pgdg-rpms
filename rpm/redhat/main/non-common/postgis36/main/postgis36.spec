@@ -7,9 +7,9 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global	geosfullversion %geos313fullversion
-%global	geosmajorversion %geos313majorversion
-%global	geosinstdir %geos313instdir
+%global	geosfullversion %geos314fullversion
+%global	geosmajorversion %geos314majorversion
+%global	geosinstdir %geos314instdir
 %global	projmajorversion %proj96majorversion
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
@@ -375,6 +375,7 @@ fi
 %changelog
 * Tue Aug 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0rc2-1PGDG
 - Update to 3.6.0 rc2
+- Rebuild against GeOS 3.14
 
 * Sat Aug 23 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0rc1-1PGDG
 - Update to 3.6.0 rc1
