@@ -1,8 +1,3 @@
-%if 0%{?rhel} == 8
-# gdal-3.8 cmake build does not work in source directory
-%undefine __cmake_in_source_build
-%endif
-
 %global sname gdal
 
 %{!?gdaljava:%global gdaljava 1}
@@ -15,15 +10,11 @@
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
 %endif
 
-%if 0%{?rhel} == 8
-%global pyver 3.9
-%endif
-
 %global bashcompletiondir %(pkg-config --variable=compatdir bash-completion)
 
-%global geosfullversion %geos313fullversion
-%global geosmajorversion %geos313majorversion
-%global geosinstdir %geos313instdir
+%global geosfullversion %geos314fullversion
+%global geosmajorversion %geos314majorversion
+%global geosinstdir %geos314instdir
 
 %global gdalinstdir /usr/%{name}
 %global gdalsomajorversion	37
@@ -47,7 +38,7 @@
 
 Name:		%{sname}311
 Version:	3.11.3
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -72,7 +63,7 @@ BuildRequires:	lz4-devel bash-completion
 Requires:	lz4
 %endif
 
-BuildRequires:	ant cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.44
+BuildRequires:	ant cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.50
 
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
@@ -84,10 +75,10 @@ BuildRequires:	freexl-devel
 BuildRequires:	g2clib-devel
 BuildRequires:	g2clib-static
 %endif
-BuildRequires:	geos%{geosmajorversion}-devel >= 3.12.2
+BuildRequires:	geos%{geosmajorversion}-devel >= 3.13.3
 BuildRequires:	ghostscript
 BuildRequires:	jpackage-utils
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
 %ifnarch %{ppc64le}
@@ -145,11 +136,7 @@ BuildRequires:	tex(xtab.sty)
 BuildRequires:	unixODBC-devel
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} <= 1315
-BuildRequires:	java-1_8_0-openjdk-devel
-%else
 BuildRequires:	java-11-openjdk-devel
-%endif
 %endif
 
 %if 0%{?suse_version} >= 1315
@@ -181,8 +168,7 @@ BuildRequires:	python3-setuptools
 BuildRequires:	qhull-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
-%endif
-%if 0%{?rhel} == 8 || 0%{?suse_version} >= 1315
+%else
 BuildRequires:	SFCGAL-devel
 %endif
 %if 0%{?suse_version} >= 1500
@@ -197,7 +183,7 @@ BuildRequires:	openjpeg2-devel >= 2.3.1
 
 # Run time dependencies
 Requires:	gpsbabel
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 Requires:	libarchive >= 3.5.0
 %endif
 %if 0%{?suse_version} >= 1499
@@ -239,7 +225,7 @@ Requires:	libspatialite%{libspatialitemajorversion}-devel
 Requires:	libarmadillo10
 %endif
 %endif
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
 Requires:	armadillo
 %endif
 
@@ -247,7 +233,6 @@ Requires:	armadillo
 This package contains the GDAL file format library.
 
 %if %gdaljava
-# No complete java yet in EL8
 %package java
 Summary:	Java modules for the GDAL file format library
 Requires:	jpackage-utils
@@ -315,7 +300,7 @@ export CFLAGS="$RPM_OPT_FLAGS -fpic"
 export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include"
 export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include"
 # SLES 15 has -Itirpc on /usr/include, so use the following only on Fedora and RHEL:
-%if 0%{?fedora} >= 30 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 9
 export CXXFLAGS="$CFLAGS -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{_includedir}/tirpc"
 %endif
@@ -472,6 +457,10 @@ done
 %endif
 
 %changelog
+* Tue Aug 26 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.3-4PGDG
+- Rebuild against GeOS 3.14
+- Remove RHEL 8 and SLES 12 support
+
 * Thu Jul 31 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.3-3PGDG
 - Remove OGDI support, per https://github.com/OSGeo/gdal/pull/11744
 - Rebuild against SFCGAL 2.2.0
