@@ -60,7 +60,7 @@ Version:	16.10
 # which overrides our packages. Increase our release number on SuSE.
 Release:	420001PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1234,6 +1234,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 27 2025 Devrim Gunduz <devrim@gunduz.org> - 16.10-2PGDG
+- Rebuild against new GCC on Fedora 42
+
 * Tue Aug 12 2025 Devrim Gunduz <devrim@gunduz.org> - 16.10-1PGDG
 - Update to 16.10, per changes described at:
   https://www.postgresql.org/docs/release/16.10/
