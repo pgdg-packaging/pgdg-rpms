@@ -7,9 +7,9 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global	geosfullversion %geos313fullversion
-%global	geosmajorversion %geos313majorversion
-%global	geosinstdir %geos313instdir
+%global	geosfullversion %geos314fullversion
+%global	geosmajorversion %geos314majorversion
+%global	geosinstdir %geos314instdir
 %global	projmajorversion %proj96majorversion
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
@@ -49,7 +49,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.8
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -60,7 +60,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.49 gmp-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 BuildRequires:	pcre2-devel
 Requires:	pcre2
@@ -375,6 +375,9 @@ fi
 %endif
 
 %changelog
+* Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-10PGDG
+- Rebuild against GeOS 3.14
+
 * Thu Jul 31 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.8-9PGDG
 - Rebuild against GDAL 3.11.3
 
