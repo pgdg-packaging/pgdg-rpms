@@ -11,8 +11,8 @@
 
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.0
-Release:	2PGDG%{?dist}
+Version:	3.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
@@ -50,7 +50,7 @@ Requires:	llvm => 17.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for multicorn2
+This package provides JIT support for multicorn2
 %endif
 
 %prep
@@ -85,6 +85,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1-1PGDG
+- Update to 3.1
+
 * Fri Jan 3 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0-2PGDG
 - Add RHEL 10 support
 - Update LLVM dependencies
