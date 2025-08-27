@@ -9,6 +9,7 @@ Source1:	%{name}.service
 Source2:	%{name}-tmpfiles.d
 
 Patch0:		%{name}-conf-rpm.patch
+Patch1:		%{name}-0.19.0-build-man-pages.patch
 BuildRequires:	gcc cmake make python3-docutils zlib-devel
 BuildRequires:	libzstd-devel lz4-devel bzip2-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
@@ -40,12 +41,13 @@ pgmoneta is a backup / restore solution for PostgreSQL.
 %prep
 %setup -q -n %{name}-%{version}
 %patch -P 0 -p0
+%patch -P 1 -p1
 
 %build
 
 %{__mkdir} build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_INSTALL_PREFIX=/usr
+cmake -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_INSTALL_PREFIX=/usr -DDOCS=OFF
 %{__make}
 
 %install
@@ -54,13 +56,13 @@ cd build
 
 # Install some files manually
 %{__mkdir} -p %{buildroot}%{_docdir}/%{name}/shell_comp
-%{__mkdir} -p %{buildroot}%{_docdir}/%{name}/tutorial
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/shell_comp/pgmoneta_comp.* %{buildroot}%{_docdir}/%{name}/shell_comp/
-%{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/tutorial/0*.md %{buildroot}%{_docdir}/%{name}/tutorial/
 
 # Install config file
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
-%{__mv} %{buildroot}/%{_docdir}/%{name}/etc/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}
+pushd ..
+%{__mv} doc/etc/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}
+%{__mv} doc/etc/%{name}_walinfo.conf %{buildroot}%{_sysconfdir}/%{name}
 
 # Install unit file
 %{__install} -d %{buildroot}%{_unitdir}
@@ -105,6 +107,7 @@ fi
 %{_bindir}/%{name}-cli
 %{_bindir}/%{name}-walinfo
 %config %{_sysconfdir}/%{name}/%{name}.conf
+%config %{_sysconfdir}/%{name}/%{name}_walinfo.conf
 %{_libdir}/libpgmoneta.so*
 %dir %{_docdir}/%{name}
 %{_docdir}/%{name}/*
@@ -117,6 +120,7 @@ fi
 * Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> 0.19.0-1PGDG
 - Update to 0.19.0 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.19.0
+- Add a temp patch from upstream to build man pages.
 
 * Fri Jul 11 2025 Devrim Gündüz <devrim@gunduz.org> 0.18.0-1PGDG
 - Update to 0.18.0 per changes described at:
