@@ -1,6 +1,6 @@
 Name:		pgdg-suse-repo
 Version:	42.0
-Release:	44PGDG
+Release:	45PGDG
 Summary:	PostgreSQL PGDG RPMs - Zypper Repository Configuration for SuSE Enterprise Linux
 License:	PostgreSQL
 URL:		https://zypp.postgresql.org
@@ -36,6 +36,9 @@ This package contains zypper configuration for SuSE Enterprise Linux.
 %{_sysconfdir}/pki/PGDG-RPM-GPG-KEY-SLES15
 
 %changelog
+* Thu Aug 28 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-45PGDG
+- Add PostgreSQL 19 repos
+
 * Sun Jun 22 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-44PGDG
 - Remove v12 repos
 
