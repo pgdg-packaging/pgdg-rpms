@@ -1,6 +1,6 @@
 Name:		pgdg-fedora-repo
 Version:	42.0
-Release:	40PGDG
+Release:	41PGDG
 Summary:	PostgreSQL PGDG RPMs - Yum Repository Configuration for Fedora
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
@@ -35,6 +35,9 @@ key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Thu Aug 28 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-41PGDG
+- Enable gpgcheck for v18 repositories.
+
 * Mon Jun 30 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-40PGDG
 - Introduce PostgreSQL 19 testing repo
 
