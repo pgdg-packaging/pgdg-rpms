@@ -44,10 +44,10 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc2_1PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc2.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc2-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
@@ -200,7 +200,7 @@ This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}rc2
+%setup -q -n %{sname}-%{version}
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -373,6 +373,10 @@ fi
 %endif
 
 %changelog
+* Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0-1PGDG
+- Update to 3.6.0 per:
+  https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.6.0/NEWS
+
 * Tue Aug 26 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0rc2-1PGDG
 - Update to 3.6.0 rc2
 - Rebuild against GeOS 3.14
