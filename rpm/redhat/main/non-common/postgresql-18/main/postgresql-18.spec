@@ -248,16 +248,6 @@ Summary:	PostgreSQL development header files and libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
-Provides:	postgresql-devel >= %{version}-%{release}
-Obsoletes:	libpq-devel <= 42.0
-
-%description devel
-The postgresql%{pgmajorversion}-devel package contains the header files and
-libraries needed to compile C or C++ applications which will directly interact
-with a PostgreSQL database management server. You need to install this package
-if you want to develop applications which will interact with a PostgreSQL
-server.
-
 %if %icu
 Requires:	libicu2-devel
 %endif
@@ -281,6 +271,16 @@ Requires:	perl-IPC-Run
 BuildRequires:	perl-Time-HiRes
 %endif
 %endif
+
+Provides:	postgresql-devel >= %{version}-%{release}
+Obsoletes:	libpq-devel <= 42.0
+
+%description devel
+The postgresql%{pgmajorversion}-devel package contains the header files and
+libraries needed to compile C or C++ applications which will directly interact
+with a PostgreSQL database management server. You need to install this package
+if you want to develop applications which will interact with a PostgreSQL
+server.
 
 %package docs
 Summary:	Extra documentation for PostgreSQL
