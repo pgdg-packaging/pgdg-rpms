@@ -5,13 +5,14 @@
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.6.3
-Release:		1PGDG%{?dist}
+Release:		2PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
 Source1:		%{sname}.service
 Source2:		%{sname}.sysconfig
 Patch1:			%{sname}-conf.sample.patch
+Patch2:			%{sname}-gcc-15-c23.patch
 
 BuildRequires:		postgresql%{pgmajorversion}-devel pam-devel
 BuildRequires:		libmemcached-devel openssl-devel pgdg-srpm-macros
@@ -34,22 +35,14 @@ Requires(preun):	systemd
 Requires(postun):	systemd
 
 %description
-pgpool-II is a inherited project of pgpool (to classify from
-pgpool-II, it is sometimes called as pgpool-I). For those of
-you not familiar with pgpool-I, it is a multi-functional
-middle ware for PostgreSQL that features connection pooling,
-replication and load balancing functions. pgpool-I allows a
-user to connect at most two PostgreSQL servers for higher
-availability or for higher search performance compared to a
-single PostgreSQL server.
-
-pgpool-II, on the other hand, allows multiple PostgreSQL
-servers (DB nodes) to be connected, which enables queries
-to be executed simultaneously on all servers. In other words,
-it enables "parallel query" processing. Also, pgpool-II can
-be started as pgpool-I by changing configuration parameters.
-pgpool-II that is executed in pgpool-I mode enables multiple
-DB nodes to be connected, which was not possible in pgpool-I.
+Pgpool-II is a middleware that works between PostgreSQL servers and a
+PostgreSQL database client. It provides the following features:
+ * Connection Pooling
+ * Replication
+ * Load Balancing
+ * Limiting Exceeding Connections
+ * Watchdog
+ * In Memory Query Cache
 
 %package devel
 Summary:	The development files for pgpool-II
@@ -68,6 +61,7 @@ multiple Pgpool installations.
 %prep
 %setup -q -n %{sname}-%{version}
 %patch -P 1 -p0
+%patch -P 2 -p1
 
 %build
 
@@ -205,6 +199,10 @@ fi
 %{_libdir}/libpcp.so*
 
 %changelog
+* Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-2PGDG
+- Add a patch to fix compilation against GCC 15, per:
+  https://github.com/pgpool/pgpool2/issues/124
+
 * Sat Aug 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-1PGDG
 - Update to 4.6.3 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-6-3.html
