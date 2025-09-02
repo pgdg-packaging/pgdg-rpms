@@ -2,7 +2,7 @@
 %global pname emaj
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.6.0
+Version:	4.7.0
 Release:	1PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
@@ -37,6 +37,9 @@ in time.
 %{pginstdir}/share/extension/%{pname}*.sql
 
 %changelog
+* Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 4.7.0-1PGDG
+- Update to 4.7.0
+
 * Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-1PGDG
 - Update to 4.6.0
 
