@@ -2,7 +2,7 @@
 
 Summary:	Web-based Emaj administration
 Name:		%{sname}
-Version:	4.6.0
+Version:	4.7.0
 Release:	1PGDG%{?dist}
 License:	GPL
 URL:		https://github.com/dalibo/%{sname}
@@ -82,6 +82,9 @@ perform all E-Maj operations.
 %attr(644,root,root) %{_emajwebdir}/*.php
 
 %changelog
+* Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 4.7.0-1PGDG
+- Update to 4.7.0
+
 * Sat Mar 22 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-1PGDG
 - Update to 4.6.0
 
