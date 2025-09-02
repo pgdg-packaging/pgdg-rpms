@@ -1,13 +1,12 @@
-%global pgbigmpackagever 20240606
+%global pgbigmpackagever 20250903
 %global pgbigmver 1.2
 %global sname pg_bigm
-
 %{!?llvm:%global llvm 1}
 
 Summary:	2-gram (bigram) index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbigmver}_%{pgbigmpackagever}
-Release:	3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 URL:		https://github.com/pgbigm/%{sname}
 Source0:	https://github.com/pgbigm/%{sname}/archive/refs/tags/v%{pgbigmver}-%{pgbigmpackagever}.tar.gz
 License:	PostgreSQL
@@ -28,12 +27,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_bigm
+This package provides JIT support for pg_bigm
 %endif
 
 %prep
@@ -68,6 +67,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Sep 2 2025 Devrim Gunduz <devrim@gunduz.org> - 1.2-20250903-1PGDG
+- Update to 1.2-20250903 per changes described at:
+  https://github.com/pgbigm/pg_bigm/releases/tag/v1.2-20250903
+
 * Mon Jul 29 2024 Devrim Gunduz <devrim@gunduz.org> - 1.2-20240606-2PGDG
 - Update LLVM dependencies and update license.
 
