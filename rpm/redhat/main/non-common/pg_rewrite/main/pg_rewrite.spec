@@ -1,7 +1,7 @@
 %global sname pg_rewrite
 
-%global pgrwmajver 1
-%global pgrwmidver 1
+%global pgrwmajver 2
+%global pgrwmidver 0
 %global pgrwminver 0
 
 %{!?llvm:%global llvm 1}
@@ -60,5 +60,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
+- Update to 2.0.0 per changes described at:
+  https://github.com/cybertec-postgresql/pg_rewrite/releases/tag/REL2_0_0
+
 * Wed Jul 30 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository
