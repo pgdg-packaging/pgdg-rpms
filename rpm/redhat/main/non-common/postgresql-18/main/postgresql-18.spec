@@ -249,7 +249,7 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %if %icu
-Requires:	libicu2-devel
+Requires:	libicu-devel
 %endif
 
 %if %llvm
