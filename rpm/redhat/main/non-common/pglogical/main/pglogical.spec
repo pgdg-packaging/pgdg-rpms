@@ -1,15 +1,18 @@
 %global sname pglogical
-%global tag 2_4_5
+
+%global pglogicalmajver 2
+%global pglogicalmidver 4
+%global pglogicalminver 6
 
 %{!?llvm:%global llvm 1}
 
 Summary:	Logical Replication extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.4.5
-Release:	3PGDG%{dist}
+Version:	%{pglogicalmajver}.%{pglogicalmidver}.%{pglogicalminver}
+Release:	1PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
-Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{tag}.tar.gz
+Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -63,7 +66,7 @@ This packages provides JIT support for pglogical
 %endif
 
 %prep
-%setup -q -n %{sname}-REL%{tag}
+%setup -q -n %{sname}-REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}
 
 %build
 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
@@ -95,6 +98,10 @@ PATH=%{pginstdir}/bin:$PATH %make_install
 %endif
 
 %changelog
+* Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 2.4.6-1PGDG
+- Update to 2.4.6 per changes described at:
+  https://github.com/2ndQuadrant/pglogical/releases/tag/REL2_4_6
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 2.4.5-3PGDG
 - Add missing BRs
 
