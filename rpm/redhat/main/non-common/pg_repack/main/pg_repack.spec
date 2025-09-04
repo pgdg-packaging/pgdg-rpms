@@ -5,7 +5,7 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
@@ -44,19 +44,19 @@ performance comparable to using CLUSTER directly.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pg_repack
+Summary:	Just-in-time compilation support for xxx
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_repack
+This package provides JIT support for xxx
 %endif
 
 %prep
@@ -85,6 +85,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Fri Sep 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-5PGDG
+- Update LLVM dependencies
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-4PGDG
 - Add missing BRs and dependencies
 
