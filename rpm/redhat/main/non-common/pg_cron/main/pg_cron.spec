@@ -4,10 +4,12 @@
 
 Summary:	Run periodic jobs in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.6.6
+Version:	1.6.7
 Release:	1PGDG%{dist}
 License:	AGPLv3
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
+Patch0:		pg_cron-1.6.6-gcc14-15.patch
+Patch1:		b95d41d2802f401add38208d09ba285e589a69d8.patch
 URL:		https://github.com/citusdata/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
@@ -47,6 +49,8 @@ This packages provides JIT support for pg_cron
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
+%patch -P 1 -p1
 
 %build
 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -73,8 +77,9 @@ PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
-* Thu Sep 4 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.6-1PGDG
-- Update to 1.6.6, per changes described at:
+* Thu Sep 4 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.7-1PGDG
+- Update to 1.6.7, per changes described at:
+  https://github.com/citusdata/pg_cron/releases/tag/v1.6.7
   https://github.com/citusdata/pg_cron/releases/tag/v1.6.6
 
 * Thu Dec 12 2024 Devrim Gündüz <devrim@gunduz.org> - 1.6.5-1PGDG
