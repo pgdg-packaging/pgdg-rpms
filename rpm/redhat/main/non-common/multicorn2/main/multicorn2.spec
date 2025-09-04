@@ -3,10 +3,20 @@
 
 %{!?llvm:%global llvm 1}
 
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%endif
+%if 0%{?suse_version} >= 1500
+%global	__ospython %{_bindir}/python3.11
+%endif
+
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
 %endif
 
 Summary:	Multicorn Python bindings for Postgres FDW
@@ -58,12 +68,10 @@ This package provides JIT support for multicorn2
 %patch -P 0 -p0
 
 %build
-export PYTHON_OVERRIDE="python%{pyver}"
 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 
 %install
 %{__rm} -rf %{buildroot}
-export PYTHON_OVERRIDE="python%{pyver}"
 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install
 # Install Python portions manually:
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{pname}
@@ -87,6 +95,7 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %changelog
 * Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1-1PGDG
 - Update to 3.1
+- Build with Python 3.12 on RHEL 8 and 9.
 
 * Fri Jan 3 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0-2PGDG
 - Add RHEL 10 support
