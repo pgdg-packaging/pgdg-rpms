@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.3
-Release:	3PGDG%{?dist}
+Version:	1.5
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/vibhorkum/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vibhorkum/%{sname}
@@ -64,6 +64,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Sep 4 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5-1PGDG
+- Update to 1.5 per changes described at:
+  https://github.com/vibhorkum/pg_background/releases/tag/v1.4
+  https://github.com/vibhorkum/pg_background/releases/tag/v1.5
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3-3PGDG
 - Add missing BRs
 
