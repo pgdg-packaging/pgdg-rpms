@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20190509
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PostgreSQL extension that exposes PCRE functionality as functions and operators
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -33,8 +33,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
@@ -70,6 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Fri Sep 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.20190509-3PGDG
+- Update LLVM dependencies
+
 * Sat Jul 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.20190509-2PGDG
 - Add a patch to support pcre2. Per https://github.com/petere/pgpcre/pull/9
 
