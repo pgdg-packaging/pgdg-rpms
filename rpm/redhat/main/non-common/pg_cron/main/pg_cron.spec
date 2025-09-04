@@ -8,8 +8,6 @@ Version:	1.6.7
 Release:	1PGDG%{dist}
 License:	AGPLv3
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
-Patch0:		pg_cron-1.6.6-gcc14-15.patch
-Patch1:		b95d41d2802f401add38208d09ba285e589a69d8.patch
 URL:		https://github.com/citusdata/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
@@ -49,8 +47,6 @@ This packages provides JIT support for pg_cron
 
 %prep
 %setup -q -n %{sname}-%{version}
-%patch -P 0 -p1
-%patch -P 1 -p1
 
 %build
 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
