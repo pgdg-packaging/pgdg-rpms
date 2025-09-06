@@ -1,6 +1,6 @@
---- src/backend/utils/misc/postgresql.conf.sample.old	2025-03-17 10:21:27.833589978 +0300
-+++ src/backend/utils/misc/postgresql.conf.sample	2025-03-17 10:22:53.648146234 +0300
-@@ -468,31 +468,31 @@
+--- src/backend/utils/misc/postgresql.conf.sample.old	2025-09-06 20:46:26.414734299 +0300
++++ src/backend/utils/misc/postgresql.conf.sample	2025-09-06 20:47:45.243773899 +0300
+@@ -481,31 +481,31 @@
  
  # - Where to Log -
  
@@ -23,7 +23,7 @@
 +log_directory = 'log'			# directory where log files are written,
  					# can be absolute or relative to PGDATA
 -#log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'	# log file name pattern,
-+log_filename = 'postgresql-%a.log'	# log file name pattern,
++log_filename = 'postgresql-%a.log'		# log file name pattern,
  							# can include strftime() escapes
  #log_file_mode = 0600			# creation mode for log files,
  					# begin with 0 to use octal notation
@@ -39,7 +39,7 @@
  					# same name as the new log file will be
  					# truncated rather than appended to.
  					# But such truncation only occurs on
-@@ -585,7 +585,7 @@
+@@ -598,7 +598,7 @@
  #log_duration = off # log statement duration
  #log_error_verbosity = default		# terse, default, or verbose messages
  #log_hostname = off
