@@ -22,8 +22,8 @@
 
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
-Version:	3.2.9
-Release:	2PGDG%{?dist}
+Version:	3.2.10
+Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -140,6 +140,10 @@ fi
 %endif
 
 %changelog
+* Mon Sep 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.10-1PGDG
+- Update to 3.2.10 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.10
+
 * Mon Aug 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.9-2PGDG
 - Forgot to bump up the version number in previous commit. Fixed.
 - Fix logic in removing "old" psycopg egg directory. Improves the
