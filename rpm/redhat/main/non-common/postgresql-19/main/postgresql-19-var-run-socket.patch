@@ -1,11 +1,11 @@
---- src/include/pg_config_manual.h.old	2025-09-06 20:41:28.744507084 +0300
-+++ src/include/pg_config_manual.h	2025-09-06 20:42:51.360504025 +0300
-@@ -187,7 +187,7 @@
+--- src/include/pg_config_manual.h.old	2025-09-08 16:31:22.158917114 +0100
++++ src/include/pg_config_manual.h	2025-09-08 16:31:46.832225246 +0100
+@@ -190,7 +190,7 @@
+  * support them yet.
+  */
  #ifndef WIN32
- #define DEFAULT_PGSOCKET_DIR  "/tmp"
+-#define DEFAULT_PGSOCKET_DIR  "/tmp"
++#define DEFAULT_PGSOCKET_DIR  "/run/postgresql"
  #else
--#define DEFAULT_PGSOCKET_DIR ""
-+#define DEFAULT_PGSOCKET_DIR "/run/postgresql"
+ #define DEFAULT_PGSOCKET_DIR ""
  #endif
- 
- /*
