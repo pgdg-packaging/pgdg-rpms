@@ -53,6 +53,8 @@ Source5:	%{sname}-cleaner.sh
 
 Source6:	%{name}-pgdg-libs.conf
 
+Patch0:		%{name}-cleanup.patch
+
 # lz4 and bash-completion dependencies
 %if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 BuildRequires:	liblz4-devel bash-completion-devel
@@ -275,6 +277,8 @@ manipulating GDAL file format library
 
 %prep
 %setup -q -n %{sname}-%{version}-fedora
+
+%patch -P 0 -p0
 
 # Delete bundled libraries
 rm -rf frmts/png/libpng
