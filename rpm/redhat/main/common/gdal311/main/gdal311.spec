@@ -37,8 +37,8 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}311
-Version:	3.11.3
-Release:	4PGDG%{?dist}
+Version:	3.11.4
+Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -457,6 +457,10 @@ done
 %endif
 
 %changelog
+* Thu Sep 11 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-1PGDG
+- Update to 3.11.4, per changes described at:
+  https://github.com/OSGeo/gdal/releases/tag/v3.11.4
+
 * Tue Aug 26 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.3-4PGDG
 - Rebuild against GeOS 3.14
 - Remove RHEL 8 and SLES 12 support
