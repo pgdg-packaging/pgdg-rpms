@@ -1,5 +1,5 @@
 Name:		pgexporter
-Version:	0.6.1
+Version:	0.7.0
 Release:	1PGDG%{dist}
 Summary:	Prometheus exporter for PostgreSQL
 License:	BSD
@@ -32,9 +32,11 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 %{__mkdir} -p %{buildroot}%{_docdir}/%{name}/shell_comp
 %{__mkdir} -p %{buildroot}%{_docdir}/%{name}/tutorial
 %{__mkdir} -p %{buildroot}%{_docdir}/%{name}/yaml
+%{__mkdir} -p %{buildroot}%{_docdir}/%{name}/prometheus_scrape
 %{__mkdir} -p %{buildroot}%{_mandir}/man1
 %{__mkdir} -p %{buildroot}%{_mandir}/man5
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
+%{__mkdir} -p %{buildroot}%{_datadir}/%{name}/extensions
 
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/LICENSE %{buildroot}%{_docdir}/%{name}/LICENSE
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/CODE_OF_CONDUCT.md %{buildroot}%{_docdir}/%{name}/CODE_OF_CONDUCT.md
@@ -48,7 +50,11 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/etc/%{name}.service %{buildroot}%{_docdir}/%{name}/etc/%{name}.service
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/shell_comp/pgexporter_comp.* %{buildroot}%{_docdir}/%{name}/shell_comp/
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/yaml/postgresql-*.yaml %{buildroot}%{_docdir}/%{name}/yaml/
-%{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/tutorial/*.md %{buildroot}%{_docdir}/%{name}/tutorial/
+
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/prometheus_scrape/extra.info %{buildroot}%{_docdir}/%{name}/prometheus_scrape/extra.info
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/prometheus_scrape/prometheus.py %{buildroot}%{_docdir}/%{name}/prometheus_scrape/prometheus.py
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/prometheus_scrape/README.md %{buildroot}%{_docdir}/%{name}/prometheus_scrape/README.md
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/extensions/*.yaml %{buildroot}%{_datadir}/%{name}/extensions/
 
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/etc/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}/%{name}.conf
 
@@ -77,7 +83,10 @@ cd %{buildroot}%{_libdir}/
 %{_docdir}/%{name}/etc/%{name}.service
 %{_docdir}/%{name}/shell_comp/*
 %{_docdir}/%{name}/yaml/postgresql-*.yaml
-%{_docdir}/%{name}/tutorial/*.md
+%{_docdir}/%{name}/prometheus_scrape/extra.info
+%{_docdir}/%{name}/prometheus_scrape/prometheus.py
+%{_docdir}/%{name}/prometheus_scrape/README.md
+%{_datadir}/%{name}/extensions/*.yaml
 %{_mandir}/man1/%{name}.1*
 %{_mandir}/man1/%{name}-admin.1*
 %{_mandir}/man1/%{name}-cli.1*
@@ -91,6 +100,11 @@ cd %{buildroot}%{_libdir}/
 %{_libdir}/libpgexporter.so.%{version}
 
 %changelog
+* Thu Sep 11 2025 - Devrim Gündüz <devrim@gunduz.org> 0.7.0-1PGDG
+- Update to 0.7.0 per changes described at:
+  https://github.com/pgexporter/pgexporter/releases/tag/0.7.0
+  Fixes: https://github.com/pgdg-packaging/pgdg-rpms/issues/79
+
 * Tue Feb 11 2025 - Devrim Gündüz <devrim@gunduz.org> 0.6.1-1PGDG
 - Update to 0.6.1 per changes described at:
   https://github.com/pgexporter/pgexporter/releases/tag/0.6.1
