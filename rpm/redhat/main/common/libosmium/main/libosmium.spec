@@ -6,23 +6,23 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global geosfullversion %geos313fullversion
-%global geosmajorversion %geos313majorversion
-%global geosinstdir %geos313instdir
-# Use GDAL 3.10 on all of the platforms except RHEL 8:
+%global geosfullversion %geos314fullversion
+%global geosmajorversion %geos314majorversion
+%global geosinstdir %geos314instdir
+# Use GDAL 3.11 on all of the platforms except RHEL 8:
 %if 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
 %else
-%global gdalfullversion %gdal310fullversion
-%global gdalmajorversion %gdal310majorversion
-%global gdalinstdir %gdal310instdir
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
 %endif
 
 Name:		libosmium
 Version:	2.22.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Fast and flexible C++ library for working with OpenStreetMap data
 
 License:	BSL-1.0
@@ -67,7 +67,7 @@ Requires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
 This package contains libraries and header files for developing
 applications that use %{name}.
 
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 %package	doc
 Summary:	Documentation for %{name}
 BuildArch:	noarch
@@ -106,13 +106,16 @@ cd libosmium
 %license %{name}/LICENSE
 %{_includedir}/osmium
 
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 %files doc
 %doc libosmium/%{__cmake_builddir}/doc/html/*
 %license libosmium/LICENSE
 %endif
 
 %changelog
+* Wed Sep 17 2025 Devrim Gündüz <devrim@gunduz.org> - 2.22.0-44PGDG
+- Rebuild against GeOS 3.14 and GDAL 3.11 (except GDAL 3.8 on RHEL 8)
+
 * Tue Apr 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.22.0-43PGDG
 - Rebuild to fix incorrect release number in previous changelog entry
 
