@@ -16,8 +16,8 @@
 
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
-Version:	2.1.1
-Release:	2PGDG%{?dist}
+Version:	2.2.0
+Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
@@ -94,10 +94,14 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
-* Wed Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-2PGDG
+* Wed Sep 17 2025 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-1PGDG
+- Update to 2.2.0 per changes described at:
+  https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.2.0
+
+* Thu Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-2PGDG
 - Rebuild against PROJ 9.6
 
-* Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
+* Thu Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
 - Update to 2.1.1 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.1.1
 - Enable osmium and generalizations support only on Fedora because
