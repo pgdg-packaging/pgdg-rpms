@@ -4,8 +4,8 @@
 
 Summary:	Store execution plans like pg_stat_statements does for queries
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8
-Release:	3PGDG%{?dist}
+Version:	1.9
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/ossc-db/%{sname}/archive/%{version}.tar.gz
 Source1:	README-%{sname}.txt
@@ -26,8 +26,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
@@ -62,6 +62,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Thu Sep 18 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9-1PGDG
+- Update to 1.9 per changes described at:
+  https://github.com/ossc-db/pg_store_plans/releases/tag/1.9
+
 * Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 1.8-3PGDG
 - Update LLVM dependencies
 - Update project URL
