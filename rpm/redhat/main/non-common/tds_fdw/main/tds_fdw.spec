@@ -4,8 +4,8 @@
 
 Summary:	TDS Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.4
-Release:	2PGDG%{?dist}
+Version:	2.0.5
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/tds-fdw/%{sname}/archive/v%{version}.zip
 URL:		https://github.com/tds-fdw/%{sname}
@@ -74,6 +74,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Thu Sep 18 2025 John Harvey <john.harvey@crunchydata.com> - 2.0.5-1PGDG
+- Update to 2.0.5 per changes described at:
+  https://github.com/tds-fdw/tds_fdw/releases
+
 * Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-2PGDG
 - Update LLVM dependencies and remove redundant BR
 
