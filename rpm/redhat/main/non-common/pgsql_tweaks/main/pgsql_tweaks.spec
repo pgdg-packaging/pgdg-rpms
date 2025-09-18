@@ -1,14 +1,12 @@
 %global sname pgsql_tweaks
-%global pname pgsql-tweaks
 
 Summary:	PostgreSQL functions which a DBA regularly needs
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.11.3
+Version:	1.0.0
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
-URL:		https://gitlab.com/sjstoelting/%{pname}
-Source0:	https://gitlab.com/sjstoelting/%{pname}/-/archive/v%{version}/%{pname}-v%{version}.tar.bz2
-BuildRequires:	postgresql%{pgmajorversion}-devel
+URL:		https://codeberg.org/%{sname}/%{sname}/
+Source0:	https://api.pgxn.org/dist/pgsql_tweaks/%{version}/pgsql_tweaks-%{version}.zip
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
 
@@ -16,7 +14,7 @@ BuildArch:	noarch
 The package includes several functions and views to help daily PostgreSQL work.
 
 %prep
-%setup -q -n %{pname}-v%{version}
+%setup -q -n %{sname}-%{version}
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -40,6 +38,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Sep 18 2025 Devrim Gündüz <devrim@gunduz.org> 1.0.0-1PGDG
+- Update to 1.0.0
+
 * Wed Jun 11 2025 Devrim Gündüz <devrim@gunduz.org> 0.11.3-1PGDG
 - Update to 0.11.3
 
