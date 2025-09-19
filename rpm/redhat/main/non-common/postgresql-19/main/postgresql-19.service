@@ -43,8 +43,8 @@ ExecStart=/usr/pgsql-19/bin/postgres -D ${PGDATA}
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=mixed
 KillSignal=SIGINT
- 
-# Do not set any timeout value, so that systemd will not kill postgres 
+
+# Do not set any timeout value, so that systemd will not kill postgres
 # main process during crash recovery.
 TimeoutSec=infinity
 
