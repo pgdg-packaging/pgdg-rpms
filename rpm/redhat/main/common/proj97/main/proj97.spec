@@ -5,7 +5,7 @@
 
 Name:		%{sname}97
 Version:	9.7.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -114,5 +114,8 @@ popd
 %{proj96instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Fri Sep 19 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.7.0-2PGDG
+- Rebuild due to a package signing issue
+
 * Thu Sep 18 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.7.0-1PGDG
 - Initial 9.7 packaging for the PostgreSQL RPM Repository.
