@@ -1,7 +1,7 @@
 Summary:	A wrapper library for the Firebird C API
 Name:		libfq
 Version:	0.6.1
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Source:		https://github.com/ibarwick/%{name}/archive/%{version}.tar.gz
 Patch0:		%{name}-c23.patch
 URL:		https://github.com/ibarwick/%{name}
@@ -39,6 +39,10 @@ A wrapper library for the Firebird C API, loosely based on libpq for PostgreSQL.
 %{_includedir}/%{name}.h
 
 %changelog
+* Fri Sep 19 2025 Devrim Gündüz <devrim@gunduz.org> - 0.6.1-3PGDG
+- Fix builds on Fedora 42 (GCC 15). Took the patch from upstream:
+  e966732, bf8f611, 809ef0b, so will be removed in next release.
+
 * Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 0.6.1-2PGDG
 - Remove RHEL 7 support
 
