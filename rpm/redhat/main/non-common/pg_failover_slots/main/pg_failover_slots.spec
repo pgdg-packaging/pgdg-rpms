@@ -4,8 +4,8 @@
 
 Summary:	Makes PostgreSQL logical replication slots practically usable across physical failover.
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.0
-Release:	3PGDG%{?dist}
+Version:	1.2.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -36,16 +36,17 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_failover_slots
+This package provides JIT support for pg_failover_slots
 %endif
 
 %prep
 %setup -q -n %{sname}-%{version}
+
 %build
 
 PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags}
@@ -75,6 +76,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-1PGDG
+- Update to 1.2.0 per changes described at:
+  https://github.com/EnterpriseDB/pg_failover_slots/releases/tag/v1.2.0
+
 * Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-3PGDG
 - Add missing BRs and remove redundant BRs
 
