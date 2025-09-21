@@ -1,0 +1,1 @@
+../main/gdal38.spec
