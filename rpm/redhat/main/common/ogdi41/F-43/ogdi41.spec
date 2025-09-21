@@ -1,1 +1,0 @@
-../main/../main/ogdi41.spec

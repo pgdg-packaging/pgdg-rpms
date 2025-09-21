@@ -1,1 +1,0 @@
-../main/../main/passwordcheck_cracklib.spec

@@ -1,1 +1,0 @@
-../main/geos314.spec

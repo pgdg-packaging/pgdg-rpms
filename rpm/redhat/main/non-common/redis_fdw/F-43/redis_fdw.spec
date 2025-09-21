@@ -1,1 +1,0 @@
-../main/../main/redis_fdw.spec

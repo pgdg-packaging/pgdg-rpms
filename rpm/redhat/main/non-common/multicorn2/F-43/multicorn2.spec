@@ -1,1 +1,0 @@
-../main/multicorn2.spec

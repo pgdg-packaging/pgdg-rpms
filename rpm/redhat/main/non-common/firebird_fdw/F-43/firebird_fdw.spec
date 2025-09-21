@@ -1,1 +1,0 @@
-../main/firebird_fdw.spec

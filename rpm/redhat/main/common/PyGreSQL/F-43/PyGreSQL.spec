@@ -1,1 +1,0 @@
-../main/../main/PyGreSQL.spec

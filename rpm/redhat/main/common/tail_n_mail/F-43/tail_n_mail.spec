@@ -1,1 +1,0 @@
-../main/../main/tail_n_mail.spec

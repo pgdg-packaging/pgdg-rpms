@@ -1,1 +1,0 @@
-../main/postgresql-19-pg_config.h
