@@ -82,7 +82,7 @@ Version:	14.19
 # which overrides our packages. Increase our release number on SuSE.
 Release:	420001PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -110,6 +110,9 @@ Patch1:		%{sname}-%{pgmajorversion}-rpm-pgsql.patch
 Patch3:		%{sname}-%{pgmajorversion}-conf.patch
 Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
+%if 0%{?fedora} == 43
+Patch7:		%{sname}-%{pgmajorversion}-llvm21.patch
+%endif
 
 BuildRequires:	perl glibc-devel bison flex >= 2.5.31
 BuildRequires:	gcc-c++
@@ -569,6 +572,9 @@ benchmarks.
 %patch -P 3 -p0
 %patch -P 5 -p0
 %patch -P 6 -p0
+%if 0%{?fedora} == 43
+%patch -P 7 -p1
+%endif
 
 %{__cp} -p %{SOURCE12} .
 
@@ -1379,6 +1385,10 @@ fi
 %endif
 
 %changelog
+* Sun Sep 21 2025 Devrim Gunduz <devrim@gunduz.org> - 14.19-3PGDG
+- Add a temp patch from upstream to fix builds on Fedora 43 (LLVM 21).
+  Will be removed in next minor release set.
+
 * Wed Aug 27 2025 Devrim Gunduz <devrim@gunduz.org> - 14.19-2PGDG
 - Rebuild against new GCC on Fedora 42
 
