@@ -1,11 +1,11 @@
-%global pgmajorversion 17
+%global pgmajorversion 18
 
 # Macros that define the configure parameters:
 %{!?kerbdir:%global kerbdir "/usr"}
 
 Summary:	PostgreSQL Client Library
 Name:		libpq5
-Version:	%{pgmajorversion}.6
+Version:	%{pgmajorversion}.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
@@ -31,7 +31,7 @@ BuildRequires:	systemtap-sdt-devel
 BuildRequires:	systemtap-sdt-dtrace
 %endif
 BuildRequires:	perl(ExtUtils::MakeMaker)
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
 BuildRequires:	perl-FindBin
 %endif
 
@@ -49,7 +49,7 @@ BuildRequires:	perl-ExtUtils-Embed
 BuildRequires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel => 17.0 clang-devel >= 17.0
+BuildRequires:	llvm-devel => 19.0 clang-devel >= 19.0
 %endif
 
 Requires:	/sbin/ldconfig libicu
@@ -65,7 +65,7 @@ BuildRequires:	openssl-devel-engine
 %endif
 
 # lz4 dependency
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
 Requires:	liblz4-1
 %endif
@@ -75,7 +75,7 @@ Requires:	lz4-libs
 %endif
 
 # zstd dependency
-%if 0%{?suse_version} >= 1499
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd1 >= 1.4.0
 %endif
@@ -85,7 +85,7 @@ Requires:	libzstd >= 1.4.0
 %endif
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 BuildRequires:	openldap2-devel
 %endif
 %else
@@ -96,11 +96,6 @@ BuildRequires:	gettext >= 0.10.35
 
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
-# SLES: SLES 15 does not have selinux-policy package. Use
-# it only on SLES 12:
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-BuildRequires:	selinux-policy >= 3.9.13
-%endif
 # RHEL/Fedora has selinux-policy:
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	selinux-policy >= 3.9.13
@@ -119,7 +114,8 @@ Provides:	postgresql-libs >= 9.2 libpq >= 10.0 libpq.so.5
 Provides:	libpq.so.5(RHPG_9.6)(64bit) libpq.so.5(RHPG_10)(64bit)
 Provides:	libpq.so.5(RHPG_11)(64bit) libpq.so.5(RHPG_12)(64bit)
 Provides:	libpq.so.5(RHPG_13)(64bit) libpq.so.5(RHPG_14)(64bit)
-Provides:	libpq.so.5(RHPG_15)(64bit)
+Provides:	libpq.so.5(RHPG_15)(64bit) libpq.so.5(RHPG_16)(64bit)
+Provides:	libpq.so.5(RHPG_17)(64bit) libpq.so.5(RHPG_18)(64bit)
 
 %description
 The libpq5 package provides the essential shared libraries for any
@@ -249,6 +245,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 18.0-42-1PGDG
+- Update to 18.0
+
 * Fri Aug 29 2025 Devrim Gündüz <devrim@gunduz.org> - 17.6-42-1PGDG
 - Update to 17.6
 
