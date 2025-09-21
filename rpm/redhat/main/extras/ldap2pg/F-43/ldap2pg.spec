@@ -1,0 +1,1 @@
+../main/ldap2pg.spec

@@ -1,0 +1,1 @@
+../main/libpg_query.spec
