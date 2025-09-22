@@ -252,9 +252,7 @@ PostgreSQL server.
 Summary:	The programs needed to create and run a PostgreSQL server
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-%if %sysuserd
-:
-%else
+%if ! %sysuserd
 Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
 %endif
 
@@ -681,7 +679,7 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 
 %if %sysuserd
 # Install sysusers.d config file to allow rpm to create users/groups automatically.
-%{__install} -m 0644 -D %{SOURCE20} %{buildroot}%{_sysusersdir}/%{sname}%{pgpackageversion}.conf
+%{__install} -m 0644 -D %{SOURCE20} %{buildroot}%{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
 %endif
 
 %if %test
@@ -781,9 +779,7 @@ cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorve
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
 %endif
 
-%if %sysuserd
-:
-%else
+%if ! %sysuserd
 # This is replaced by sysusers.d in recent OSes:
 %pre server
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
@@ -1126,7 +1122,7 @@ fi
 %{_bindir}/%{sname}-%{pgmajorversion}-setup
 %{pgbaseinstdir}/bin/%{sname}-%{pgmajorversion}-check-db-dir
 %if %sysuserd
-%{_sysusersdir}/%{sname}%{pgpackageversion}.conf
+%{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
 %endif
 %{_tmpfilesdir}/%{sname}-%{pgmajorversion}.conf
 %{_unitdir}/%{sname}-%{pgmajorversion}.service
