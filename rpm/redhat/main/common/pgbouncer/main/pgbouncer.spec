@@ -85,6 +85,8 @@ sed -i.fedora \
 %{__mkdir} -p %{buildroot}%{_tmpfilesdir}
 cat > %{buildroot}%{_tmpfilesdir}/%{name}.conf <<EOF
 d %{_rundir}/%{name} 0700 pgbouncer pgbouncer -
+d /home/%{name} 0700 pgbouncer pgbouncer -
+
 EOF
 
 # Install sysusers.d config file to allow rpm to create users/groups automatically.
