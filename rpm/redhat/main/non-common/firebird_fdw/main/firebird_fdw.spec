@@ -4,13 +4,13 @@
 
 Summary:	A PostgreSQL foreign data wrapper (FDW) for Firebird
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.0
-Release:	4PGDG%{dist}
+Version:	1.4.1
+Release:	1PGDG%{dist}
 Source0:	https://github.com/ibarwick/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/ibarwick/%{sname}
 License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel firebird-devel
-BuildRequires:	libfq >= 0.6.1 pgdg-srpm-macros
+BuildRequires:	libfq >= 0.6.1
 Requires:	postgresql%{pgmajorversion}-server
 
 %if %llvm
@@ -22,8 +22,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
@@ -62,6 +62,10 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Sep 22 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-1PGDG
+- Update to 1.4.1 per changes described at
+  https://github.com/ibarwick/firebird_fdw/releases/tag/1.4.1
+
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-4PGDG
 - Update LLVM dependencies
 
