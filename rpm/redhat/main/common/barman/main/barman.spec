@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -18,7 +22,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.15.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -145,6 +149,9 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %{python_sitelib}/%{name}/
 
 %changelog
+* Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.15.0-43PGDG
+- Add Fedora 43 support
+
 * Thu Aug 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.15.0-42PGDG
 - Update to 3.15.0, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.15.0
