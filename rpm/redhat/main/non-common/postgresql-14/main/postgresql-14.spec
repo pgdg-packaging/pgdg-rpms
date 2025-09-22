@@ -41,6 +41,11 @@
 %{!?pltcl:%global pltcl 1}
 %{!?plperl:%global plperl 1}
 %{!?ssl:%global ssl 1}
+%if 0%{?fedora} >= 43
+%{!?sysuserd:%global sysuserd 1}
+%else
+%{!?sysuserd:%global sysuserd 0}
+%endif
 %{!?test:%global test 1}
 %{!?runselftest:%global runselftest 0}
 %{!?uuid:%global uuid 1}
@@ -104,6 +109,9 @@ Source17:	%{sname}-%{pgmajorversion}-setup
 Source10:	%{sname}-%{pgmajorversion}-check-db-dir
 Source18:	%{sname}-%{pgmajorversion}.service
 Source19:	%{sname}-%{pgmajorversion}-tmpfiles.d
+%endif
+%if %sysuserd
+Source20:	%{sname}-%{pgmajorversion}-sysusers.conf
 %endif
 
 Patch1:		%{sname}-%{pgmajorversion}-rpm-pgsql.patch
@@ -319,7 +327,9 @@ PostgreSQL server.
 Summary:	The programs needed to create and run a PostgreSQL server
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+%if ! %sysuserd
 Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
+%endif
 # for /sbin/ldconfig
 Requires(post):		glibc
 Requires(postun):	glibc
@@ -833,6 +843,11 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %{__install} -d -m 755 %{buildroot}%{pgbaseinstdir}/share/
 %{__install} -m 700 %{SOURCE9} %{buildroot}%{pgbaseinstdir}/share/
 
+%if %sysuserd
+# Install sysusers.d config file to allow rpm to create users/groups automatically.
+%{__install} -m 0644 -D %{SOURCE20} %{buildroot}%{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
+%endif
+
 %if %test
 	# tests. There are many files included here that are unnecessary,
 	# but include them anyway for completeness. We replace the original
@@ -929,10 +944,13 @@ cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorve
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
 %endif
 
+%if ! %sysuserd
+# This is replaced by sysusers.d in recent OSes:
 %pre server
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
 useradd -M -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
 	-c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
+%endif
 
 %post server
 /sbin/ldconfig
@@ -1257,6 +1275,9 @@ fi
 %{pgbaseinstdir}/bin/%{sname}-%{pgmajorversion}-setup
 %{_bindir}/%{sname}-%{pgmajorversion}-setup
 %{pgbaseinstdir}/bin/%{sname}-%{pgmajorversion}-check-db-dir
+%if %sysuserd
+%{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
+%endif
 %{_tmpfilesdir}/%{sname}-%{pgmajorversion}.conf
 %{_unitdir}/%{sname}-%{pgmajorversion}.service
 %endif
@@ -1388,6 +1409,8 @@ fi
 * Sun Sep 21 2025 Devrim Gunduz <devrim@gunduz.org> - 14.19-3PGDG
 - Add a temp patch from upstream to fix builds on Fedora 43 (LLVM 21).
   Will be removed in next minor release set.
+- Add sysusers.d config file to allow rpm to create users/groups automatically.
+  Only for Fedora 43+.
 
 * Wed Aug 27 2025 Devrim Gunduz <devrim@gunduz.org> - 14.19-2PGDG
 - Rebuild against new GCC on Fedora 42
