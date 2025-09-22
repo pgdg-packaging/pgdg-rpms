@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -16,7 +20,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.0.6
-Release:	2PGDG%{?dist}
+Release:	2PGDG%{?dist}.1
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -231,6 +235,9 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 4.0.6-2PGDG.1
+- Add Fedora 43 support
+
 * Mon Aug 18 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.6-2PGDG
 - Make sure that OS picks up the latest python3-ydiff package.
   Otherwise many patronictl commands will fail.

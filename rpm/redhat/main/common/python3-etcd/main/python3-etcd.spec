@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -19,7 +23,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.5
-Release:	49PGDG%{?dist}
+Release:	49PGDG%{?dist}.1
 Summary:	A python client library for etcd
 
 License:	MIT
@@ -78,6 +82,9 @@ election.
 %{python3_sitelib}/*
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-49PGDG.1
+- Add Fedora 43 support
+
 * Mon May 26 2025 Devrim Gündüz <devrim@gunduz.org> - 0.4.5-49PGDG
 - Rebuild
 

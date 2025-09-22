@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -13,7 +17,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	1.15.0
-Release:	42PGDG%{?dist}
+Release:	42PGDG%{?dist}.1
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -56,6 +60,9 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-42PGDG.1
+- Add Fedora 43 support
+
 * Wed May 21 2025 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to support
   patroni-etcd package on RHEL 9.

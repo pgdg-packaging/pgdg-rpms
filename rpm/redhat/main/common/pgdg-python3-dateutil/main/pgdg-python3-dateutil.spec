@@ -1,5 +1,9 @@
 %global modname dateutil
 
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -18,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	1PGDG%{?dist}
+Release:	1PGDG%{?dist}.1
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -76,6 +80,9 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/*
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-1PGDG.1
+- Add Fedora 43 support
+
 * Sun May 18 2025 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-1PGDG
 - Inıtial packaging for the PostgreSQL RPM repository to support Barman
   on RHEL 9 and RHEL 8.

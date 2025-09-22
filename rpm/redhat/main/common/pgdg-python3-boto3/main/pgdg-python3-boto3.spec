@@ -1,5 +1,9 @@
 %global modname boto3
 
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -18,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.38.19
-Release:	2PGDG%{?dist}
+Release:	2PGDG%{?dist}.1
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -75,6 +79,9 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-2PGDG.1
+- Add Fedora 43 support
+
 * Sat May 31 2025 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-2PGDG
 - Add missing botocore dependency, per:
   https://github.com/pgdg-packaging/pgdg-rpms/issues/36

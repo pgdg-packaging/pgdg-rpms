@@ -1,5 +1,9 @@
 %global modname click
 
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -18,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-click
 Version:	8.1.7
-Release:	43PGDG%{?dist}
+Release:	43PGDG%{?dist}.1
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -54,6 +58,9 @@ comes with good defaults out of the box.
 %{pgdg_python3_sitearch}/%{modname}/py.typed
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-43PGDG.1
+- Add Fedora 43 support
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-43PGDG
 - Add Provides:
 

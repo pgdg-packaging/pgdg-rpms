@@ -1,5 +1,9 @@
 %global modname wcwidth
 
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -19,7 +23,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.2.13
-Release:	1PGDG%{dist}
+Release:	1PGDG%{dist}.1
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -52,6 +56,9 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-1PGDG.1
+- Add Fedora 43 support
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 0.2.3-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support Patroni
   on RHEL 9 and RHEL 8.

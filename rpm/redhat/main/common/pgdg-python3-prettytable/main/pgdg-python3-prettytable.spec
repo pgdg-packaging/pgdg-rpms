@@ -1,4 +1,9 @@
 %global modname prettytable
+
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -17,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.4.0
-Release:	44PGDG%{dist}
+Release:	44PGDG%{dist}.1
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -58,6 +63,9 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-44PGDG.1
+- Add Fedora 43 support
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-44PGDG
 - Define python3_sitelib macro globally. For some reason it does not
   build on RHEL 8 - aarch64 without this.

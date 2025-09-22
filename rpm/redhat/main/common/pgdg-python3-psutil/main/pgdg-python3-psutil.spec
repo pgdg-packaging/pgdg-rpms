@@ -1,5 +1,9 @@
 %global modname psutil
 
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -18,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.1.1
-Release:	43PGDG%{?dist}
+Release:	43PGDG%{?dist}.1
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -61,6 +65,9 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-43PGDG.1
+- Add Fedora 43 support
+
 * Tue May 20 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-43PGDG
 - Define python3_sitelib macro globally. For some reason it does not
   build on RHEL 8 - aarch64 without this.
