@@ -22,7 +22,7 @@ prep19:
 	# Update spec file, patches, etc, before running spectool:
 	git pull
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" $(SPECFILE)
+	spectool -g -S --define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" $(SPECFILE)
 
 build19testing: prep19
 	rpmbuild --define "_sourcedir $(PWD)" \
