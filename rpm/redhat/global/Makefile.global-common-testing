@@ -13,7 +13,7 @@ commonbfsrpmtesting: prep
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17"  --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18"  --define "pgpackageversion 18" \
 	--define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
 
 commonbuildtesting: prep
@@ -23,7 +23,7 @@ commonbuildtesting: prep
 	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 	make commonbfsrpmtesting
 
@@ -34,14 +34,14 @@ commonrpmtesting: prep
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
 commonnoprepbuildtesting:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -50,7 +50,7 @@ commonnoprepbuildtesting:
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
 commonnopreprpmtesting:
@@ -60,13 +60,13 @@ commonnopreprpmtesting:
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
 commonnoprepsrpmtesting:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	--define "_rpmdir ." --define "dist $(DIST)" --nodeps -bs $(SPECFILE)
 
