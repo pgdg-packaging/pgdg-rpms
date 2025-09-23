@@ -46,9 +46,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}.1
+Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
 %else
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}.1
+Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -833,6 +833,19 @@ if [ $1 -eq 1 ] ; then
    %systemd_post %{sname}-%{pgpackageversion}.service
    %endif
 fi
+
+# postgres' .bash_profile.
+# We now don't install .bash_profile as we used to in pre 9.0. Instead, use cat,
+# so that package manager will be happy during upgrade to new major version.
+echo "[ -f /etc/profile ] && source /etc/profile
+PGDATA=/var/lib/pgsql/%{pgmajorversion}/data
+export PGDATA
+# If you want to customize your settings,
+# Use the file below. This is not overridden
+# by the RPMS.
+[ -f /var/lib/pgsql/.pgsql_profile ] && source /var/lib/pgsql/.pgsql_profile" > /var/lib/pgsql/.bash_profile
+chown postgres: /var/lib/pgsql/.bash_profile
+chmod 700 /var/lib/pgsql/.bash_profile
 
 %preun server
 if [ $1 -eq 0 ] ; then
