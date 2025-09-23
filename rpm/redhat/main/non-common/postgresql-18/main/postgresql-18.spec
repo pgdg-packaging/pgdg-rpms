@@ -41,17 +41,17 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	18
+Version:	18.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	rc1_4200002PGDG%{?dist}
+Release:	4200001PGDG%{?dist}
 %else
-Release:	rc1_2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}rc1/postgresql-%{version}rc1.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -479,7 +479,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}rc1
+%setup -q -n %{sname}-%{version}
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1309,6 +1309,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 23 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0-1PGDG
+- Update to 18.0 Gold!
+
 * Sun Sep 21 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0rc1-2PGDG
 - Add sysusers.d config file to allow rpm to create users/groups automatically
 - Add a temp patch from upstream to fix builds on Fedora 43 (LLVM 21).
