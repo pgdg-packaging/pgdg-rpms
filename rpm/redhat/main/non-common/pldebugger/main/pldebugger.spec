@@ -3,8 +3,8 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8
-Release:	3PGDG%{?dist}
+Version:	1.9
+Release:	1PGDG%{?dist}
 Summary:	PL/pgSQL debugger server-side code
 License:	Artistic 2.0
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -66,6 +66,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Sep 23 2025 Devrim Gunduz <devrim@gunduz.org> - 1.9-1PGDG
+- Update to 1.9 per changes described at:
+  https://github.com/EnterpriseDB/pldebugger/releases/tag/v1.9
+
 * Wed Feb 26 2025 Devrim Gunduz <devrim@gunduz.org> - 1.8-3PGDG
 - Add missing BRs and remove redundant BR
 
