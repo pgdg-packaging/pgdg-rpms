@@ -44,7 +44,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.4
-Release:	10PGDG%{?dist}
+Release:	10PGDG%{?dist}.1
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -371,6 +371,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 23 2025 Devrim Gunduz <devrim@gunduz.org> - 3.4.4-10PGDG.1
+- Rebuild for Fedora 43
+
 * Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.4.4-10PGDG
 - Rebuild against GeOS 3.14
 
