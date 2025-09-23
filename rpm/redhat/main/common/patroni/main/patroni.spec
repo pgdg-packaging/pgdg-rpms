@@ -19,7 +19,7 @@
 
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
-Version:	4.0.7
+Version:	4.1.0
 Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
@@ -190,7 +190,7 @@ touch /etc/patroni/callbacks/callbacks.sh
 if [ $1 -eq 1 ] ; then
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
    %if 0%{?suse_version}
-   %if 0%{?suse_version} >= 1315
+   %if 0%{?suse_version} >= 1500
    %service_add_pre %{name}.service
    %endif
    %else
@@ -235,6 +235,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue Sep 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-1PGDG
+- Update to 4.1.0, per changes described at:
+  https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-410
+
 * Tue Sep 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.7-1PGDG
 - Update to 4.0.7, per changes described at:
   https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-407
