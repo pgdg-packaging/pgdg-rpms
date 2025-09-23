@@ -22,17 +22,18 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.15.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
 Source1:	%{name}.logrotate
 Source2:	%{name}.cron
+Source3:	%{name}-sysusers.conf
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
-Requires:	/usr/sbin/useradd rsync >= 3.0.4 file
+Requires:	rsync >= 3.0.4 file systemd
 Requires:	python3-barman = %{version}
 
 %description
@@ -106,10 +107,13 @@ Python libraries used by Barman.
 %{__install} -pm 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/cron.d/barman
 touch %{buildroot}/var/log/barman/barman.log
 
-%pre
-groupadd -f -r barman >/dev/null 2>&1 || :
-useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
-	-c "Backup and Recovery Manager for PostgreSQL" barman >/dev/null 2>&1 || :
+# Install sysusers.d config file to allow rpm to create users/groups automatically.
+%{__install} -m 0644 -D %{SOURCE3} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
+
+%{__mkdir} -p %{buildroot}%{_tmpfilesdir}
+cat > %{buildroot}%{_tmpfilesdir}/%{name}.conf <<EOF
+d /var/lib/%{name} 0700 barman barman -
+EOF
 
 %files
 %defattr(-,root,root)
@@ -122,6 +126,8 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %config(noreplace) %{_sysconfdir}/cron.d/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/barman.d/
+%{_tmpfilesdir}/%{name}.conf
+%{_sysusersdir}/%{name}-pgdg.conf
 %attr(700,barman,barman) %dir /var/lib/%{name}
 %attr(755,barman,barman) %dir /var/log/%{name}
 %attr(600,barman,barman) %ghost /var/log/%{name}/%{name}.log
@@ -149,6 +155,10 @@ useradd -M -g barman -r -d /var/lib/barman -s /bin/bash \
 %{python_sitelib}/%{name}/
 
 %changelog
+* Tue Sep 23 2025 Devrim Gündüz <devrim@gunduz.org> - 3.15.0-44PGDG
+- Add sysusers.d and tmpfiles.d config file to allow rpm to create
+  users/groups automatically.
+
 * Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.15.0-43PGDG
 - Add Fedora 43 support
 
