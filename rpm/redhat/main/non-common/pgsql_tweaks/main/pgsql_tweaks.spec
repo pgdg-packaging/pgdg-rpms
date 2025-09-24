@@ -2,7 +2,7 @@
 
 Summary:	PostgreSQL functions which a DBA regularly needs
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.0
+Version:	1.0.2
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://codeberg.org/%{sname}/%{sname}/
@@ -38,6 +38,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Wed Sep 24 2025 Devrim Gündüz <devrim@gunduz.org> 1.0.2-1PGDG
+- Update to 1.0.2
+
 * Thu Sep 18 2025 Devrim Gündüz <devrim@gunduz.org> 1.0.0-1PGDG
 - Update to 1.0.0
 
