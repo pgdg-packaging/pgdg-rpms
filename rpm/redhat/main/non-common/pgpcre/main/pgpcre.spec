@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20190509
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	PostgreSQL extension that exposes PCRE functionality as functions and operators
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -12,12 +12,20 @@ Source0:	https://github.com/petere/%{sname}/archive/refs/tags/%{version}.tar.gz
 Patch0:		%{sname}-pcre2.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
-%if 0%{?rhel} && 0%{?rhel} >= 10
+Requires:	postgresql%{pgmajorversion}
+
+%if 0%{?rhel} >= 10 || 0%{?fedora} >= 43
 BuildRequires:	pcre2-devel
-%else
-BuildRequires:	pcre-devel
+Requires:	pcre2
 %endif
-Requires:	postgresql%{pgmajorversion} pcre
+%if 0%{?fedora} <= 42 || 0%{?rhel} <= 9
+BuildRequires:	pcre-devel
+Requires:	pcre
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	pcre2-devel
+Requires:	libpcre2-32-0
+%endif
 
 %description
 This is a module for PostgreSQL that exposes Perl-compatible regular
@@ -70,6 +78,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Thu Sep 25 2025 Devrim Gündüz <devrim@gunduz.org> 0.20190509-4PGDG
+- Fix RHEL 10, Fedora 43 and SLES 15 dependencies
+
 * Fri Sep 5 2025 Devrim Gündüz <devrim@gunduz.org> 0.20190509-3PGDG
 - Update LLVM dependencies
 
