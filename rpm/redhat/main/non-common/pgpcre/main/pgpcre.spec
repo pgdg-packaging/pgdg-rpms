@@ -14,11 +14,19 @@ Patch0:		%{sname}-pcre2.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}
 
-%if 0%{?rhel} >= 10 || 0%{?fedora} >= 43
+%if 0%{?rhel} && 0%{?rhel} == 10
 BuildRequires:	pcre2-devel
 Requires:	pcre2
 %endif
-%if 0%{?fedora} <= 42 || 0%{?rhel} <= 9
+%if 0%{?fedora} && 0%{?fedora} >= 43
+BuildRequires:	pcre2-devel
+Requires:	pcre2
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+BuildRequires:	pcre-devel
+Requires:	pcre
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
 BuildRequires:	pcre-devel
 Requires:	pcre
 %endif
