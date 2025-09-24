@@ -779,9 +779,13 @@ cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorve
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
 %endif
 
-%if ! %sysuserd
-# This is replaced by sysusers.d in recent OSes:
 %pre server
+%if %sysuserd
+# We need this user to be created ASAP so that we can set up
+# ownership of some directories:
+%sysusers_create_package %{name} %SOURCE20
+%else
+# This is replaced by sysusers.d in recent OSes:
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
 useradd -M -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
 	-c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
