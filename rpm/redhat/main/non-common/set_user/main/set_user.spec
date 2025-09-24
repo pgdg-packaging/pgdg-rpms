@@ -1,7 +1,7 @@
 %global sname	set_user
 
 %global setusermajver 4
-%global setusermidver 1
+%global setusermidver 2
 %global setuserminver 0
 
 %{!?llvm:%global llvm 1}
@@ -9,7 +9,7 @@
 Summary:	PostgreSQL extension allowing privilege escalation with enhanced logging and control
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{setusermajver}.%{setusermidver}.%{setuserminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgaudit/%{sname}
 Source0:	https://github.com/pgaudit/%{sname}/archive/refs/tags/REL%{setusermajver}_%{setusermidver}_%{setuserminver}.tar.gz
@@ -31,8 +31,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
@@ -70,6 +70,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Wed Sep 24 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.0-1PGDG
+  Update to 4.2.0 per changes described at
+  https://github.com/pgaudit/set_user/releases/tag/REL4_2_0
+
 * Wed Jan 29 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-2PGDG
 - Update LLVM dependencies
 
