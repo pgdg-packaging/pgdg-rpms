@@ -1,7 +1,7 @@
 
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
-Version:	42.7.7
+Version:	42.7.8
 Release:	1PGDG%{?dist}
 # ASL 2.0 applies only to postgresql-jdbc.pom file, the rest is BSD
 License:	BSD and ASL 2.0
@@ -149,6 +149,10 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
+* Thu Sep 25 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.8-1PGDG
+- Update to 42.7.8 per changes described at:
+  https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.8
+
 * Wed Jun 11 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.7-1PGDG
 - Update to 42.7.7 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.7
