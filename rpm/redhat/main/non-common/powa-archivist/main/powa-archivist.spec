@@ -84,7 +84,7 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
-* Thu Sep 205 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-2PGDG
+* Thu Sep 25 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-2PGDG
 - Rebuild
 
 * Sat Jun 7 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-1PGDG
