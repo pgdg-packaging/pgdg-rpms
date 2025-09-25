@@ -19,7 +19,7 @@
 Summary:	PostgreSQL Workload Analyzer Archivist
 Name:		%{sname}-archivist_%{pgmajorversion}
 Version:	%{powamajorversion}.%{powamidversion}.%{powaminorversion}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/powa-archivist/archive/REL_%{powamajorversion}_%{powamidversion}_%{powaminorversion}.tar.gz
 URL:		https://powa.readthedocs.io/
@@ -45,8 +45,8 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
@@ -84,6 +84,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Thu Sep 205 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-2PGDG
+- Rebuild
+
 * Sat Jun 7 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-1PGDG
 - Update 5.0.3 per changes described at:
   https://github.com/powa-team/powa-archivist/releases/tag/REL_5_0_3
