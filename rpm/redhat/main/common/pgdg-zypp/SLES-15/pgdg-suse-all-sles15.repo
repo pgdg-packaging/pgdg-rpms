@@ -31,6 +31,17 @@ priority=1
 
 # PGDG SuSE Enterprise Linux stable repositories:
 
+[pgdg-18]
+name=PostgreSQL 18 SLES $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/zypp/18/suse/sles-$releasever-$basearch
+enabled=1
+autorefresh=1
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES15
+keeppackages=0
+priority=1
+
 [pgdg-17]
 name=PostgreSQL 17 SLES $releasever - $basearch
 baseurl=https://download.postgresql.org/pub/repos/zypp/17/suse/sles-$releasever-$basearch
