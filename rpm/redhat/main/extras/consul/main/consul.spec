@@ -1,4 +1,4 @@
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 %global		debug_package %{nil}
 %global		_missing_build_ids_terminate_build 0
 %endif
@@ -15,7 +15,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul
 Version:	1.21.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
 License:	MPLv2.0
@@ -25,15 +25,10 @@ Source1:	%{name}.sysconfig
 Source2:	%{name}.service
 Source4:	%{name}.json
 Source5:	%{name}.logrotate
+Source6:	%{name}-sysusers.conf
+Source7:	%{name}-tmpfiles.d
 
-BuildRequires:	systemd
 Requires:	systemd
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 7
-Requires(pre):	shadow-utils
-%endif
-%if 0%{?suse_version} >= 1315
-Requires(pre):	shadow
-%endif
 
 %description
 Consul is a tool for service discovery and configuration. Consul is
@@ -70,12 +65,13 @@ any number of regions without complex configuration.
 %{__mkdir} -p %{buildroot}/%{_unitdir}
 %{__cp} %{SOURCE2} %{buildroot}/%{_unitdir}/
 
+%{__install} -m 0644 -D %{SOURCE6} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
+
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
+
 %pre
-getent group consul >/dev/null || groupadd -r consul
-getent passwd consul >/dev/null || \
-    useradd -r -g consul -d /var/lib/consul -s /sbin/nologin \
-    -c "consul.io user" consul
-exit 0
+%sysusers_create_package %{name} %SOURCE6
 
 %post
 %systemd_post %{name}.service
@@ -94,9 +90,15 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_unitdir}/%{name}.service
 %attr(755, root, root) %{_bindir}/consul
+%{_sysusersdir}/%{name}-pgdg.conf
+%{_tmpfilesdir}/%{name}.conf
 %doc
 
 %changelog
+* Thu Sep 25 2025 Devrim Gündüz <devrim@gunduz.org> 1.21.5-2PGDG
+- Add sysusers.d and tmpfiles.d config file to allow rpm to create
+  users/groups automatically.
+
 * Tue Sep 23 2025 Devrim Gündüz <devrim@gunduz.org> 1.21.5-1PGDG
 - Update to 1.21.5 per changes described at:
   https://github.com/hashicorp/consul/releases/tag/v1.21.5
