@@ -2,14 +2,14 @@
 
 %global kcachemajver 2
 %global kcachemidver 3
-%global kcacheminver 0
+%global kcacheminver 1
 
 %{!?llvm:%global llvm 1}
 
 Summary:	A PostgreSQL extension gathering CPU and disk acess statistics
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{kcachemajver}.%{kcachemidver}.%{kcacheminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/powa-team/%{sname}
 Source0:	https://github.com/powa-team/%{sname}/archive/REL%{kcachemajver}_%{kcachemidver}_%{kcacheminver}.tar.gz
@@ -29,12 +29,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pg_stat_kcache
+This package provides JIT support for pg_stat_kcache
 %endif
 
 %prep
@@ -69,6 +69,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.1-1PGDG
+- Update to 2.3.1 per changes described at:
+  https://github.com/powa-team/pg_stat_kcache/releases/tag/REL2_3_1
+
 * Tue Jan 14 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-2PGDG
 - Add missing -contrib requirement
 - Simplify package description
