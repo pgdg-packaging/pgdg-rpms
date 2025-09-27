@@ -5,7 +5,7 @@
 Summary:	SI Units for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	7.10
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ChristophBerg/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/ChristophBerg/%{sname}
@@ -27,12 +27,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This package2 provides JIT support for postgresql-unit
+This package provides JIT support for postgresql-unit
 %endif
 
 %prep
@@ -64,7 +64,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
-* Wed Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-3PGDG
+* Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 7.7-3PGDG
+- Update LLVM dependencies
+
+* Tue Feb 25 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-3PGDG
 - Add missing BR
 
 * Mon Jan 27 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-2PGDG
