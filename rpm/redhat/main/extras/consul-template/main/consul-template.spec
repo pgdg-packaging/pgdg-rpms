@@ -18,7 +18,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul-template
 Version:	%{_verstr}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
 License:	MPLv2.0
@@ -27,14 +27,10 @@ Source0:	https://releases.hashicorp.com/%{name}/%{version}/%{name}_%{version}_li
 Source1:	%{name}.sysconfig
 Source2:	%{name}.service
 Source4:	%{name}.json
+Source6:	%{name}-sysusers.conf
+Source7:	%{name}-tmpfiles.d
 
 Requires:	systemd
-
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
-Requires(pre):	shadow-utils
-%else
-Requires(pre):	shadow
-%endif
 
 %description
 consul-template watches a series of templates on the file system, writing
@@ -59,12 +55,13 @@ unless the -once flag is specified.
 %{__mkdir} -p %{buildroot}/%{_unitdir}
 %{__cp} %{SOURCE2} %{buildroot}/%{_unitdir}/
 
+%{__install} -m 0644 -D %{SOURCE6} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
+
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
+
 %pre
-getent group consul-template >/dev/null || groupadd -r consul-template
-getent passwd consul-template >/dev/null || \
-    useradd -r -g consul-template -d /var/lib/consul-template -s /sbin/nologin \
-    -c "consul-template user" consul-template
-exit 0
+%sysusers_create_package %{name} %SOURCE6
 
 %post
 %systemd_post %{name}.service
@@ -81,10 +78,16 @@ exit 0
 %attr(640, root, consul-template) %{_sysconfdir}/%{name}.d/consul-template.json-dist
 %dir %attr(750, consul-template, consul-template) %{_sharedstatedir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-%{_unitdir}/%{name}.service
 %attr(755, root, root) %{_bindir}/consul-template
+%{_unitdir}/%{name}.service
+%{_sysusersdir}/%{name}-pgdg.conf
+%{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Thu Sep 25 2025 Devrim Gündüz <devrim@gunduz.org> 0.41.2-2PGDG
+- Add sysusers.d and tmpfiles.d config file to allow rpm to create
+  users/groups automatically.
+
 * Fri Sep 19 2025 Devrim Gündüz <devrim@gunduz.org> 0.41.2-1PGDG
 - Update to 0.41.2 per changes described at
   https://github.com/hashicorp/consul-template/releases/tag/v0.41.2
