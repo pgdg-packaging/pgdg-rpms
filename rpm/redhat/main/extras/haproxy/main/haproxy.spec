@@ -8,7 +8,7 @@
 
 Name:		haproxy
 Version:	3.2.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
 License:	GPLv2+
@@ -20,15 +20,11 @@ Source2:	%{name}.cfg
 Source3:	%{name}.logrotate
 Source4:	%{name}.sysconfig
 Source5:	halog.1
+Source6:	%{name}-sysusers.conf
+Source7:	%{name}-tmpfiles.d
 
 BuildRequires:	gcc lua-devel pcre2-devel make
 BuildRequires:	openssl-devel systemd-devel systemd
-
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
-Requires(pre):	shadow-utils
-%else
-Requires(pre):	shadow
-%endif
 
 %{?systemd_requires}
 
@@ -107,13 +103,13 @@ do
     %{__rm} -f $textfile.old
 done
 
+%{__install} -m 0644 -D %{SOURCE6} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
+
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
+
 %pre
-getent group %{haproxy_group} >/dev/null || \
-    groupadd -r %{haproxy_group}
-getent passwd %{haproxy_user} >/dev/null || \
-    useradd -r -g %{haproxy_user} -d %{haproxy_homedir} \
-    -s /sbin/nologin -c "haproxy" %{haproxy_user}
-exit 0
+%sysusers_create_package %{name} %SOURCE6
 
 %post
 %systemd_post %{name}.service
@@ -141,8 +137,14 @@ exit 0
 %{_bindir}/iprange
 %{_bindir}/ip6range
 %{_mandir}/man1/*
+%{_sysusersdir}/%{name}-pgdg.conf
+%{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> 3.2.5-2PGDG
+- Add sysusers.d and tmpfiles.d config file to allow rpm to create
+  users/groups automatically.
+
 * Wed Sep 24 2025 Devrim Gündüz <devrim@gunduz.org> 3.2.5-1PGDG
 - Update to 3.2.5 per changes described at:
   https://www.mail-archive.com/haproxy@formilux.org/msg46051.html
