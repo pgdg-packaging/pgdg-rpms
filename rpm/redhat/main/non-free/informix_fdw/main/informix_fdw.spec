@@ -62,6 +62,9 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 %{__install} -d -m 755 %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{__install} -m 700 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 
+%post
+/usr/sbin/ldconfig
+
 %files
 %defattr(-,root,root,-)
 %doc README
