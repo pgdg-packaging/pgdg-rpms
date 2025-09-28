@@ -38,7 +38,7 @@ AlmaLinux non-free repository, and also the GPG key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
-* Sun Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-20PGDG
+* Sun Sep 28 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-20PGDG
 - Rebuild because of a missing signature
 
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-19PGDG
