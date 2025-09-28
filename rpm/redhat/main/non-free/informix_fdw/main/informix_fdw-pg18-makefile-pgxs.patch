@@ -5,7 +5,7 @@
  
  ifndef PG_CONFIG
 -PG_CONFIG=pg_config
-+PG_CONFIG=/usr/pgsql-12/bin/pg_config
++PG_CONFIG=/usr/pgsql-18/bin/pg_config
  endif
  
  ##

@@ -30,7 +30,7 @@ import remote data and more.
 %patch -P 0 -p0
 
 %build
-PATH=/opt/IBM/informix/bin:$PATH INFORMIXDIR=/opt/IBM/informix USE_PGXS=1 %{__make} %{?_smp_mflags}
+PATH=/opt/IBM/Informix/bin:$PATH INFORMIXDIR=/opt/IBM/Informix USE_PGXS=1 %{__make} %{?_smp_mflags}
 
 %install
 %{__rm} -rf  %{buildroot}

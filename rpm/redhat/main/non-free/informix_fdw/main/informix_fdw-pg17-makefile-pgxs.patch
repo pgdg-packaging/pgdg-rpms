@@ -1,0 +1,11 @@
+--- Makefile.old	2016-08-25 19:13:03.387968042 +0300
++++ Makefile	2016-08-25 19:13:15.230356548 +0300
+@@ -3,7 +3,7 @@
+ ESQL=esql
+ 
+ ifndef PG_CONFIG
+-PG_CONFIG=pg_config
++PG_CONFIG=/usr/pgsql-17/bin/pg_config
+ endif
+ 
+ ##
