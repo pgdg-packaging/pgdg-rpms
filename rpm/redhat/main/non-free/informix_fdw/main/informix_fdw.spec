@@ -71,7 +71,7 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 %{pginstdir}/lib/*.so
 %{pginstdir}/share/extension/*.sql
 %{pginstdir}/share/extension/*.control
-%config %{_sysconfdir}/ld.so.conf.d/informix_fdw.conf
+%config %{_sysconfdir}/ld.so.conf.d/informix_fdw-libs.conf
 
 %if %llvm
 %files llvmjit
