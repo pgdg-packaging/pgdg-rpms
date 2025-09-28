@@ -3,6 +3,8 @@
 %global ifxfdwmidver 6
 %global ifxfdwminver 2
 
+%{!?llvm:%global llvm 1}
+
 Summary:	A PostgreSQL Foreign Data Wrapper for Informix
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ifxfdwmajver}.%{ifxfdwmidver}.%{ifxfdwminver}
@@ -45,6 +47,11 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 %{pginstdir}/lib/*.so
 %{pginstdir}/share/extension/*.sql
 %{pginstdir}/share/extension/*.control
+%if %llvm
+%files llvmjit
+    %{pginstdir}/lib/bitcode/ifx_fdw.*bc
+    %{pginstdir}/lib/bitcode/ifx_fdw/*bc
+%endif
 
 %changelog
 * Wed Aug 28 2024 2024 Devrim Gündüz <devrim@gunduz.org> - 0.6.2-1PGDG
