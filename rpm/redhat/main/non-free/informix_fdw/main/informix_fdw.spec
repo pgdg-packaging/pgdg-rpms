@@ -59,8 +59,8 @@ PATH=/opt/IBM/Informix/bin:$PATH INFORMIXDIR=/opt/IBM/Informix USE_PGXS=1 %{__ma
 USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 
 # Install linker conf file:
-%{__install} -d -m 755 %{buildroot}%{_sysconndir}/ld.so.conf.d/
-%{__install} -m 700 %{SOURCE1} %{buildroot}%{_sysconndir}/ld.so.conf.d/
+%{__install} -d -m 755 %{buildroot}%{_sysconfdir}/ld.so.conf.d/
+%{__install} -m 700 %{SOURCE1} %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 
 %files
 %defattr(-,root,root,-)
@@ -68,7 +68,7 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 %{pginstdir}/lib/*.so
 %{pginstdir}/share/extension/*.sql
 %{pginstdir}/share/extension/*.control
-%config %{_sysconndir}/ld.so.conf.d/informix_fdw.conf
+%config %{_sysconfdir}/ld.so.conf.d/informix_fdw.conf
 
 %if %llvm
 %files llvmjit
