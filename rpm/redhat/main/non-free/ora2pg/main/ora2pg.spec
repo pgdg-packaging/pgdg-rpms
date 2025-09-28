@@ -3,7 +3,7 @@
 Summary:	Oracle, MySQL and SQL Server to PostgreSQL database schema converter
 Name:		ora2pg
 Version:	25.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv3
 URL:		http://ora2pg.darold.net/
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
@@ -62,6 +62,9 @@ to a PostgreSQL database.
 %{_docdir}/%{name}-%{version}/*
 
 %changelog
+* Sun Sep 28 2025 Devrim Gündüz <devrim@gunduz.org> 25.0-2PGDG
+- Rebuild
+
 * Sun Apr 20 2025 Devrim Gündüz <devrim@gunduz.org> 25.0-1PGDG
 - Update to 25.0 per changes described at:
   https://github.com/darold/ora2pg/releases/tag/v25.0
