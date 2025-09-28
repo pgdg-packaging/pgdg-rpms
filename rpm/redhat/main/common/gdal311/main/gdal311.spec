@@ -38,7 +38,7 @@
 
 Name:		%{sname}311
 Version:	3.11.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -109,6 +109,17 @@ BuildRequires:	mariadb-devel
 %if 0%{?fedora}
 BuildRequires:	mariadb-connector-c-devel
 %endif
+
+# Enable muparser library for VRT expressions
+%if 0%{?fedora} >= 42
+BuildRequires:	muParser-devel
+Requires:	muParser
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	muparser-devel
+Requires:	libmuparser2_3_3
+%endif
+
 BuildRequires:	libpq5-devel
 BuildRequires:	pcre2-devel
 BuildRequires:	perl(ExtUtils::MakeMaker)
@@ -461,6 +472,10 @@ done
 %endif
 
 %changelog
+* Thu Sep 11 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-1PGDG
+* Enable muparser library for VRT expressions.
+  (only for Fedora 42+ and SLES 15. Other distros do not have muParser)
+
 * Thu Sep 11 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-1PGDG
 - Update to 3.11.4, per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.11.4
