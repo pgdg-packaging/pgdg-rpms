@@ -27,6 +27,23 @@ Foreign Tables are transparently accessed as normal PostgreSQL tables,
 they can be used to join remote data against real PostgreSQL tables,
 import remote data and more.
 
+%if %llvm
+%package llvmjit
+Summary:	Just-in-time compilation support for informix_fdw
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if 0%{?suse_version} >= 1500
+BuildRequires:	llvm17-devel clang17-devel
+Requires:	llvm17
+%endif
+%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
+%endif
+
+%description llvmjit
+This package provides JIT support for informix_fdw
+%endif
+
 %prep
 %setup -q -n %{sname}-REL%{ifxfdwmajver}_%{ifxfdwmidver}_%{ifxfdwminver}
 %patch -P 0 -p0
