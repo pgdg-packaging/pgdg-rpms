@@ -1,3 +1,5 @@
+%global _privatelibs (libifasf15a|libifgen15a|libifgls|libifos15a|libifsql15a)\\.so
+%global __requires_exclude (%{_privatelibs})
 %global sname	informix_fdw
 %global ifxfdwmajver 0
 %global ifxfdwmidver 6
@@ -8,7 +10,7 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Informix
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ifxfdwmajver}.%{ifxfdwmidver}.%{ifxfdwminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/credativ/%{sname}
 Source0:	https://github.com/credativ/%{sname}/archive/REL%{ifxfdwmajver}_%{ifxfdwmidver}_%{ifxfdwminver}.tar.gz
@@ -52,11 +54,8 @@ This package provides JIT support for informix_fdw
 PATH=/opt/IBM/Informix/bin:$PATH INFORMIXDIR=/opt/IBM/Informix USE_PGXS=1 %{__make} %{?_smp_mflags}
 
 %install
-%{__rm} -rf  %{buildroot}
+%{__rm} -rf %{buildroot}
 USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
-
-%clean
-%{__rm} -rf  %{buildroot}
 
 %files
 %defattr(-,root,root,-)
@@ -71,6 +70,13 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Sun Sep 28 2025 2024 Devrim Gündüz <devrim@gunduz.org> - 0.6.2-2PGDG
+- Fix a few packaging issues:
+  * Add patches for recent PostgreSQL versions
+  * Ignore Informix related dependencies. They need be a parf of
+    LD_LIBRARY_PATH or so.
+  * Add LLVM subpackage
+
 * Wed Aug 28 2024 2024 Devrim Gündüz <devrim@gunduz.org> - 0.6.2-1PGDG
 - Update to 0.6.2
 - Add PGDG branding
