@@ -2,7 +2,7 @@
 
 %{!?llvm:%global llvm 1}
 
-	Summary:	Server side rollback at statement level for PostgreSQL
+Summary:	Server side rollback at statement level for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5
 Release:	1PGDG%{?dist}
