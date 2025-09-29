@@ -1,7 +1,7 @@
 %global sname	pljava
 %global pljavamajver 1
 %global pljavamidver 6
-%global pljavaminver 9
+%global pljavaminver 10
 
 %global relver %{pljavamajver}_%{pljavamidver}_%{pljavaminver}
 
@@ -28,21 +28,15 @@ Source1:	%{sname}.pom
 
 %if 0%{?rhel} == 8
 BuildRequires:	java-11-openjdk-devel
-%else
-BuildRequires:	java-devel
-%endif
-
-BuildRequires:	openssl-devel krb5-devel
-
-%if 0%{?rhel} == 8
 Requires:	java-11-openjdk
 %else
+BuildRequires:	java-devel
 Requires:	java
 %endif
 
-BuildRequires:	maven
+BuildRequires:	maven openssl-devel krb5-devel
 
-Obsoletes:	%{sname}-%{pgmajorversion} < 1.5.6-2
+Obsoletes: %{sname}-%{pgmajorversion} < 1.5.6-2
 
 %description
 PL/Java is a free open-source extension for PostgreSQL™ that allows
@@ -104,6 +98,10 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Mon Sep 29 2025 - Devrim Gündüz <devrim@gunduz.org> - 1.6.10-1PGDG
+- Update to 1.6.10 per changes described at:
+  https://github.com/tada/pljava/releases/tag/V1_6_10
+
 * Mon Mar 24 2025 - Devrim Gündüz <devrim@gunduz.org> - 1.6.9-1PGDG
 - Update to 1.6.9 per changes described at:
   https://github.com/tada/pljava/releases/tag/V1_6_9
