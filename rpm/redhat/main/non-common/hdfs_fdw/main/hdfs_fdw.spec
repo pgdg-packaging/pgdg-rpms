@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.3.2
-Release:	5PGDG%{?dist}
+Version:	2.3.3
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -27,13 +27,13 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 9
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for hdfs_fdw
+This package provides JIT support for hdfs_fdw
 %endif
 
 %prep
@@ -57,7 +57,7 @@ export JVM_LIB="/usr/lib64/jvm/java/lib/server/"
 %endif
 
 pushd libhive
-PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 popd
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -67,7 +67,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 
 pushd libhive
 %{__mkdir} -p %{buildroot}%{pginstdir}/lib
-%{__make} %{?_smp_mflags} install INSTALL_DIR=%{buildroot}/%{pginstdir}/lib
+USE_PGXS=1 %{__make} %{?_smp_mflags} install INSTALL_DIR=%{buildroot}/%{pginstdir}/lib
 popd
 
 pushd libhive/jdbc
@@ -100,6 +100,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install INSTAL
 %endif
 
 %changelog
+* Tue Sep 30 2025 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-1PGDG
+- Update to 2.3.3 per changes described at:
+  https://github.com/EnterpriseDB/hdfs_fdw/releases/tag/v2.3.3
+
 * Mon Feb 24 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-5PGDG
 - Add missing BR.
 
