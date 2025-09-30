@@ -1,7 +1,7 @@
 %global sname mysql_fdw
 %global mysqlfdwmajver 2
 %global mysqlfdwmidver 9
-%global mysqlfdwminver 2
+%global mysqlfdwminver 3
 
 %{!?llvm:%global llvm 1}
 
@@ -38,12 +38,12 @@ BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm => 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for mysql_fdw
+This package provides JIT support for mysql_fdw
 %endif
 
 %prep
@@ -80,6 +80,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Sep 30 2025 Devrim Gunduz <devrim@gunduz.org> - 2.9.3-1PGDG
+- Update to 2.9.3 per changes described at:
+  https://github.com/EnterpriseDB/mysql_fdw/releases/tag/REL-2_9_3
+
 * Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.2-3PGDG
 - Update LLVM dependencies
 - Fix location of the README file.
