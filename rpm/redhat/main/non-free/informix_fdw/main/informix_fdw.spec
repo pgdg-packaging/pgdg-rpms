@@ -67,7 +67,7 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc README
+%doc README.md
 %{pginstdir}/lib/*.so
 %{pginstdir}/share/extension/*.sql
 %{pginstdir}/share/extension/*.control
