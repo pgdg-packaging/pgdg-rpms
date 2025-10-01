@@ -3,14 +3,14 @@
 %global sname	informix_fdw
 %global ifxfdwmajver 0
 %global ifxfdwmidver 6
-%global ifxfdwminver 2
+%global ifxfdwminver 3
 
 %{!?llvm:%global llvm 1}
 
 Summary:	A PostgreSQL Foreign Data Wrapper for Informix
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ifxfdwmajver}.%{ifxfdwmidver}.%{ifxfdwminver}
-Release:	3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/credativ/%{sname}
 Source0:	https://github.com/credativ/%{sname}/archive/REL%{ifxfdwmajver}_%{ifxfdwmidver}_%{ifxfdwminver}.tar.gz
@@ -80,6 +80,10 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Wed Oct 1 2025 2024 Devrim Gündüz <devrim@gunduz.org> - 0.6.3-1PGDG
+- Update to 0.6.3 per changes described at:
+  https://github.com/credativ/informix_fdw/releases/tag/REL0_6_3
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 0.6.2-3PGDG
 - Bump release number (missed in previous commit)
 
