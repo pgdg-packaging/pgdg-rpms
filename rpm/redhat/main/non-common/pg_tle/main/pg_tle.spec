@@ -4,8 +4,8 @@
 
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5.1
-Release:	2PGDG%{?dist}
+Version:	1.5.2
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
@@ -65,6 +65,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Wed Oct 1 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-1PGDG
+- Update to 1.5.2 per changes described at:
+  https://github.com/aws/pg_tle/releases/tag/v1.5.2
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.5.1-2PGDG
 - Bump release number (missed in previous commit)
 
