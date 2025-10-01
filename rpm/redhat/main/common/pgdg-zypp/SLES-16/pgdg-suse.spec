@@ -1,0 +1,1 @@
+../SLES-main/pgdg-suse.spec

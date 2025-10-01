@@ -1,0 +1,1 @@
+../main/../main/libspatialite43.spec

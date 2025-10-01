@@ -1,0 +1,1 @@
+../main/gdalcpp.spec

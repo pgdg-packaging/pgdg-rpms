@@ -1,0 +1,1 @@
+../main/python3_rollbar.spec

@@ -1,0 +1,1 @@
+../main/pgsodium.spec
