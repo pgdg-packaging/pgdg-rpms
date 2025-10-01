@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20140221
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PL/XSLT Procedural Language Handler for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -62,6 +62,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 0.20140221-2PGDG
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 

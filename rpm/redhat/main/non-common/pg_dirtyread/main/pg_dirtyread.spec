@@ -5,7 +5,7 @@
 Summary:	Read dead but unvacuumed rows from a PostgreSQL relation
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.7
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/df7cb/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/df7cb/%{sname}
@@ -61,6 +61,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.7-5PGDG
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 

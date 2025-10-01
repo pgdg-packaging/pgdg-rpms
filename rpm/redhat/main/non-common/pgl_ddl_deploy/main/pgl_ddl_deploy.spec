@@ -5,7 +5,7 @@
 Summary:	Transparent Logical DDL Replication (pgl_ddl_deploy)
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/enova/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/enova/%{sname}
@@ -60,6 +60,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.2.1-4PGDG
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 

@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension for sampling active session history
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -61,5 +61,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.2.0-2PGDG
+- Bump release number (missed in previous commit)
+
 * Wed Jul 30 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository

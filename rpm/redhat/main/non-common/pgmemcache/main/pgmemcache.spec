@@ -5,7 +5,7 @@
 Summary:	A PostgreSQL API to interface with memcached
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ohmu/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/Ohmu/%{sname}
@@ -64,6 +64,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.3.0-10PGDG
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 

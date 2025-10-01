@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	RoaringBitmap extension for PostgreSQL
 License:	Apache 2.0
 URL:		https://github.com/ChenHuajun/%{sname}
@@ -63,6 +63,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 0.5.5-2PGDG
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 

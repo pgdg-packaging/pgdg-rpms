@@ -46,9 +46,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
+Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}.1
 %else
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
+Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}.1
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1306,6 +1306,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 19-alpha_20251001_PGDG.1
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 

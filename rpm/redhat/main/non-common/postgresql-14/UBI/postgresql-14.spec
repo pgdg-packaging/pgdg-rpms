@@ -65,7 +65,7 @@
 Summary:	PostgreSQL client programs and libraries for Red Hat's UBI image
 Name:		%{sname}%{pgmajorversion}
 Version:	14.1
-Release:	1PGDG_UBI%{?dist}
+Release:	2PGDG_UBI%{?dist}
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
 
@@ -1248,6 +1248,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 14.1_2PGDG_UBI
+- Bump release number (missed in previous commit)
+
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 
