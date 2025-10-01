@@ -9,7 +9,7 @@ BuildRequires:	cgal-devel
 
 %if 0%{?rhel} && 0%{?rhel} == 8
 Version:	1.4.1
-Requires:	CGAL => 4.7
+Requires:	CGAL >= 4.7
 BuildRequires:	CGAL-devel >= 5.4
 %endif
 
@@ -120,6 +120,9 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Thu Jul 31 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-1PGDG
 - Update to 2.2.0 on RHEL 9+ and Fedora per changes described at:
   https://gitlab.com/sfcgal/SFCGAL/-/releases/v2.2.0

@@ -10,7 +10,7 @@ Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{ve
 Source2:	%{sname}-%{pgmajorversion}.service
 URL:		https://github.com/pgadmin-org/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	cmake => 3.0.0
+BuildRequires:	cmake >= 3.0.0
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libboost_filesystem1_66_0-devel libboost_regex1_66_0-devel
@@ -151,6 +151,9 @@ fi
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Mon Jan 6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-1PGDG
 - Update to 4.2.3 per changes described at
   https://github.com/pgadmin-org/pgagent/releases/tag/pgagent-4.2.3

@@ -118,7 +118,7 @@ Requires(post):	%{_sbindir}/update-alternatives
 
 Provides:	%{sname} = %{version}-%{release}
 Obsoletes:	%{sname}3_%{pgmajorversion} <= %{postgismajorversion}.0-1
-Provides:	%{sname}3_%{pgmajorversion} => %{postgismajorversion}.0
+Provides:	%{sname}3_%{pgmajorversion} >= %{postgismajorversion}.0
 
 %description
 PostGIS adds support for geographic objects to the PostgreSQL object-relational
@@ -133,7 +133,7 @@ Summary:	Client tools and their libraries of PostGIS
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Provides:	%{sname}-client = %{version}-%{release}
 Obsoletes:	%{sname}2_%{pgmajorversion}-client <= %{postgismajorversion}.2-1
-Provides:	%{sname}2_%{pgmajorversion}-client => %{postgismajorversion}.0
+Provides:	%{sname}2_%{pgmajorversion}-client >= %{postgismajorversion}.0
 
 %description client
 The %{name}-client package contains the client tools and their libraries
@@ -144,7 +144,7 @@ Summary:	Development headers and libraries for PostGIS
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Provides:	%{sname}-devel = %{version}-%{release}
 Obsoletes:	%{sname}2_%{pgmajorversion}-devel <= %{postgismajorversion}.2-1
-Provides:	%{sname}2_%{pgmajorversion}-devel => %{postgismajorversion}.0
+Provides:	%{sname}2_%{pgmajorversion}-devel >= %{postgismajorversion}.0
 
 %description devel
 The %{name}-devel package contains the header files and libraries
@@ -154,7 +154,7 @@ with PostGIS.
 %package docs
 Summary:	Extra documentation for PostGIS
 Obsoletes:	%{sname}2_%{pgmajorversion}-docs <= %{postgismajorversion}.2-1
-Provides:	%{sname}2_%{pgmajorversion}-docs => %{postgismajorversion}.0
+Provides:	%{sname}2_%{pgmajorversion}-docs >= %{postgismajorversion}.0
 
 %description docs
 The %{name}-docs package includes PDF documentation of PostGIS.
@@ -174,7 +174,7 @@ Summary:	The utils for PostGIS
 Requires:	%{name} = %{version}-%{release} perl-DBD-Pg
 Provides:	%{sname}-utils = %{version}-%{release}
 Obsoletes:	%{sname}2_%{pgmajorversion}-utils <= %{postgismajorversion}.2-1
-Provides:	%{sname}2_%{pgmajorversion}-utils => %{postgismajorversion}.0
+Provides:	%{sname}2_%{pgmajorversion}-utils >= %{postgismajorversion}.0
 
 %description utils
 The %{name}-utils package provides the utilities for PostGIS.
@@ -192,7 +192,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+Requires:	llvm >= 17.0
 %endif
 
 %description llvmjit
@@ -373,6 +373,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Tue Sep 23 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-1PGDG.1
 - Rebuild for Fedora 43
 

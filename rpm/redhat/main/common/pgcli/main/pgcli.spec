@@ -19,9 +19,9 @@ BuildRequires:	python3-mock python3-pexpect
 BuildRequires:	python3-pgspecial python3-psycopg3
 BuildRequires:	python3-setproctitle python3-sshtunnel python3-tzlocal
 
-Requires:	python3-click => 3.2, python3-pygments => 2.0
+Requires:	python3-click >= 3.2, python3-pygments >= 2.0
 Requires:	python3-sqlparse >= 0.1.14, python3-%{name}
-Requires:	python3-jedi => 0.8.1 python3-setproctitle >= 1.1.9
+Requires:	python3-jedi >= 0.8.1 python3-setproctitle >= 1.1.9
 Requires:	python3-wcwidth >= 0.1.6 python3-humanize >= 0.5.1
 Requires:	python3-configobj >= 5.0.6
 Requires:	python3-cli-helpers python3-cli-helpers+styles
@@ -69,6 +69,9 @@ This is a build of the pgcli for the debug build of Python 3.
 %doc LICENSE.txt
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Sun Mar 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.3.0-1PGDG
 - Update to 4.3.0
 

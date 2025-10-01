@@ -28,7 +28,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+Requires:	llvm >= 17.0
 %endif
 
 %description llvmjit
@@ -60,6 +60,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-4PGDG
 - Add missing BR
 

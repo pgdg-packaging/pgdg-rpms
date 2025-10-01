@@ -61,7 +61,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+Requires:	llvm >= 17.0
 %endif
 
 %description llvmjit
@@ -115,6 +115,9 @@ make %{?_smp_mflags}
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Fri Aug 29 2025 Devrim Gunduz <devrim@gunduz.org> - 13.2.0-1PGDG
 - Update to 13.2.0 per changes described at:
   https://github.com/citusdata/citus/blob/main/CHANGELOG.md#citus-v1320-august-18-2025

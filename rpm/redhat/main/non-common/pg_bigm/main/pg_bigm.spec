@@ -28,7 +28,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
-Requires:	llvm => 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -67,6 +67,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Tue Sep 2 2025 Devrim Gunduz <devrim@gunduz.org> - 1.2-20250903-1PGDG
 - Update to 1.2-20250903 per changes described at:
   https://github.com/pgbigm/pg_bigm/releases/tag/v1.2-20250903

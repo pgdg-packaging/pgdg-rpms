@@ -395,7 +395,7 @@ Requires:	llvm
 Requires:	llvm11
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-Requires:	llvm => 5.0
+Requires:	llvm >= 5.0
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
@@ -1248,6 +1248,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Mon Jan 10 2022 Devrim Gündüz <devrim@gunduz.org> - 14.1_1-UBI
 - Update to 14.1
 

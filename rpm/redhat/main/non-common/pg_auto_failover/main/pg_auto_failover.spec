@@ -52,7 +52,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+Requires:	llvm >= 17.0
 %endif
 
 %description llvmjit
@@ -90,6 +90,9 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Thu Apr 3 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2-1PGDG
 - Update to 2.2, per changes described at:
   https://github.com/hapostgres/pg_auto_failover/releases/tag/v2.2

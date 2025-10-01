@@ -31,7 +31,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+Requires:	llvm >= 17.0
 %endif
 
 %description llvmjit
@@ -59,6 +59,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.0-3PGDG
 - Update LLVM dependencies
 - Remove SLES 12 support

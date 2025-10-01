@@ -139,7 +139,7 @@ Requires:	libicu
 BuildRequires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel => 13.0 clang-devel >= 13.0
+BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
 %endif
 %endif
 
@@ -344,7 +344,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-Requires:       llvm-devel => 17.0 clang-devel >= 17.0
+Requires:       llvm-devel >= 17.0 clang-devel >= 17.0
 %endif
 %endif
 
@@ -385,7 +385,7 @@ Requires:	%{name}-server%{?_isa} = %{version}-%{release}
 Requires:	libLLVM17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-Requires:	llvm => 13
+Requires:	llvm >= 13
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
@@ -1264,6 +1264,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Sun Sep 21 2025 Devrim Gunduz <devrim@gunduz.org> - 16.10-3PGDG
 - Add a temp patch from upstream to fix builds on Fedora 43 (LLVM 21).
   Will be removed in next minor release set.

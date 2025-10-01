@@ -15,7 +15,7 @@ Requires:	libboost_program_options1_66_0 libpqxx-6_4
 BuildRequires:	expat-devel
 Requires:	boost-program-options libpqxx
 %endif
-BuildRequires:	cmake => 2.8.8
+BuildRequires:	cmake >= 2.8.8
 BuildRequires:	boost-devel >= 1.53 pgdg-srpm-macros >= 1.0.37
 Requires:	libpq5
 
@@ -66,6 +66,9 @@ cd build/
 %{_datadir}/%{sname}/mapconfig_for_pedestrian.xml
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Sun Feb 18 2024 Devrim Gündüz <devrim@gunduz.org> - 2.3.8-5PGDG
 - Add SLES-15 support, remove RHEL 7 support.
 

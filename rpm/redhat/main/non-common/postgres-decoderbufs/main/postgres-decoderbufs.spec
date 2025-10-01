@@ -35,7 +35,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm => 17.0
+Requires:	llvm >= 17.0
 %endif
 
 %description llvmjit
@@ -64,6 +64,9 @@ PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Sat Jul 19 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.0-1PGDG
 - Update to 3.2.0 per changes described at
   https://github.com/debezium/postgres-decoderbufs/releases/tag/v3.2.0.Final

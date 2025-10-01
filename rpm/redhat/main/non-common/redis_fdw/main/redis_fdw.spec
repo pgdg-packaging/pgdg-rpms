@@ -38,7 +38,7 @@ Requires:	llvm17
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm => 13.0
+Requires:	llvm >= 13.0
 %endif
 
 %description llvmjit
@@ -70,6 +70,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Mon Jul 29 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1-5PGDG
 - Update LLVM dependencies
 - Remove RHEL 7 support

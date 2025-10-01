@@ -144,7 +144,7 @@ BuildRequires:	liburing-devel
 BuildRequires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel => 17.0 clang-devel >= 17.0
+BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
 %endif
 %endif
 
@@ -259,7 +259,7 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel => 17.0 clang-devel >= 17.0
+Requires:	llvm-devel >= 17.0 clang-devel >= 17.0
 %endif
 %endif
 
@@ -372,7 +372,7 @@ Requires:	%{name}-server%{?_isa} = %{version}-%{release}
 Requires:	libLLVM17
 %endif
 %if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm => 17
+Requires:	llvm >= 17
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
@@ -1306,6 +1306,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Tue Sep 23 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0-1PGDG
 - Update to 18.0 Gold!
 - Remove temp Patch 7 (now in upstream)

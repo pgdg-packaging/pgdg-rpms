@@ -49,7 +49,7 @@ BuildRequires:	perl-ExtUtils-Embed
 BuildRequires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel => 19.0 clang-devel >= 19.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 
 Requires:	/sbin/ldconfig libicu
@@ -245,6 +245,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 18.0-42-1PGDG
 - Update to 18.0
 

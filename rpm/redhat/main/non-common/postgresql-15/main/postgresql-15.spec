@@ -180,7 +180,7 @@ BuildRequires:	llvm6-devel clang6-devel
 BuildRequires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel => 13.0 clang-devel >= 13.0
+BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
 %endif
 %endif
 
@@ -1419,6 +1419,9 @@ fi
 %endif
 
 %changelog
+* Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
+- Change => to >= in Requires and BuildRequires
+
 * Sun Sep 21 2025 Devrim Gunduz <devrim@gunduz.org> - 15.14-3PGDG
 - Add a temp patch from upstream to fix builds on Fedora 43 (LLVM 21).
   Will be removed in next minor release set.
