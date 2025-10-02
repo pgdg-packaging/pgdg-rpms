@@ -40,7 +40,7 @@ This package contains zypper configuration for SuSE Enterprise Linux.
 %{_sysconfdir}/pki/PGDG-RPM-GPG-KEY-SLES1*
 
 %changelog
-* Wed Oct 1 025 Devrim Gündüz <devrim@gunduz.org> - 42.0-48PGDG
+* Wed Oct 1 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-48PGDG
 - Add SLES 16 support
 
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-47PGDG
