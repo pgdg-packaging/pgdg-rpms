@@ -9,9 +9,9 @@ Version:	%{pgmajorversion}.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -45,8 +45,11 @@ BuildRequires:	libuuid-devel
 BuildRequires:	perl-ExtUtils-Embed
 %endif
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -245,6 +248,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Wed Oct 1 2025 Devrim Gündüz <devrim@gunduz.org> - 18.0-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 18.0-2PGDG
 - Bump release number (missed in previous commit)
 
