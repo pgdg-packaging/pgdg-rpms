@@ -46,9 +46,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}.1
+Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
 %else
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}.1
+Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -209,14 +209,9 @@ BuildRequires:	libuuid-devel
 BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -310,9 +305,13 @@ package also includes HTML version of the documentation.
 %package ecpg-libs
 Summary:	Run-time libraries for ECPG programs
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -324,9 +323,13 @@ The postgresql%{pgmajorversion}-ecpg-libs is used by programs built with ECPG
 Summary:	Development files for ECPG (Embedded PostgreSQL for C)
 Requires:	%{name}-ecpg-libs%{?_isa} = %{version}-%{release}
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -339,9 +342,13 @@ development libraries and the preprocessor program ecpg.
 Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -462,6 +469,7 @@ Requires(postun):	systemd
 %endif
 
 Provides:	postgresql-server >= %{version}-%{release}
+Provides:	group(postgres) user(postgres)
 
 %description server
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
