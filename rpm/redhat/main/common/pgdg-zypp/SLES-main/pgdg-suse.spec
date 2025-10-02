@@ -1,11 +1,17 @@
 Name:		pgdg-suse-repo
 Version:	42.0
-Release:	47PGDG
+Release:	48PGDG
 Summary:	PostgreSQL PGDG RPMs - Zypper Repository Configuration for SuSE Enterprise Linux
 License:	PostgreSQL
 URL:		https://zypp.postgresql.org
+%if %{?suse_version} == 1500
 Source0:	pgdg-suse-all-sles15.repo
 Source1:	PGDG-RPM-GPG-KEY-SLES15
+%endif
+%if %{?suse_version} == 1600
+Source0:	pgdg-suse-all-sles16.repo
+Source1:	PGDG-RPM-GPG-KEY-SLES16
+%endif
 BuildArch:	noarch
 Requires:	sles-release
 
@@ -21,21 +27,22 @@ This package contains zypper configuration for SuSE Enterprise Linux.
 %{__rm} -rf %{buildroot}
 
 %{__install} -dm 755 %{buildroot}%{_sysconfdir}/zypp/repos.d
+%{__mkdir} -p %{buildroot}%{_sysconfdir}/pki/
 
 %{__install} -pm 644 %{SOURCE0} \
 	%{buildroot}%{_sysconfdir}/zypp/repos.d/pgdg-sles-all.repo
-
-%{__mkdir} -p %{buildroot}%{_sysconfdir}/pki/
-
 %{__install} -Dpm 644 %{SOURCE1} \
 		%{buildroot}%{_sysconfdir}/pki/
 
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/zypp/repos.d/*
-%{_sysconfdir}/pki/PGDG-RPM-GPG-KEY-SLES15
+%{_sysconfdir}/pki/PGDG-RPM-GPG-KEY-SLES1*
 
 %changelog
+* Wed Oct 1 025 Devrim Gündüz <devrim@gunduz.org> - 42.0-48PGDG
+- Add SLES 16 support
+
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-47PGDG
 - Add missing source and debuginfo repos
 
