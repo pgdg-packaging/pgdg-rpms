@@ -106,9 +106,13 @@ BuildRequires:	selinux-policy >= 3.9.13
 
 BuildRequires:	openssl-devel
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.0.2k
 %endif
 
