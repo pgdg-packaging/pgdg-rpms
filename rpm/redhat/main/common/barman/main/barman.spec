@@ -10,9 +10,13 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -21,14 +25,15 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.15.0
-Release:	44PGDG%{?dist}
+Version:	3.16.0
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
 Source1:	%{name}.logrotate
 Source2:	%{name}.cron
 Source3:	%{name}-sysusers.conf
+Source4:	%{name}-tmpfiles.d
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
@@ -110,10 +115,11 @@ touch %{buildroot}/var/log/barman/barman.log
 # Install sysusers.d config file to allow rpm to create users/groups automatically.
 %{__install} -m 0644 -D %{SOURCE3} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
 
-%{__mkdir} -p %{buildroot}%{_tmpfilesdir}
-cat > %{buildroot}%{_tmpfilesdir}/%{name}.conf <<EOF
-d /var/lib/%{name} 0700 barman barman -
-EOF
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE4} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
+
+%pre
+%sysusers_create_package %{name} %SOURCE3
 
 %files
 %defattr(-,root,root)
@@ -155,6 +161,10 @@ EOF
 %{python_sitelib}/%{name}/
 
 %changelog
+* Fri Oct 3 2025 Devrim Gündüz <devrim@gunduz.org> - 3.16.0-42PGDG
+- Update to 3.16.0, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.16.0
+
 * Tue Sep 23 2025 Devrim Gündüz <devrim@gunduz.org> - 3.15.0-44PGDG
 - Add sysusers.d and tmpfiles.d config file to allow rpm to create
   users/groups automatically.
