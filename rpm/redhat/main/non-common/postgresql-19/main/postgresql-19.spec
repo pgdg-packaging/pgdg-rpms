@@ -385,8 +385,11 @@ Requires:	%{name}-server%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} >= 1500
 Requires:	libLLVM17
 %endif
+%if 0%{?suse_version} == 1600
+Requires:	libLLVM19
+%endif
 %if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm >= 17
+Requires:	llvm >= 19
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
