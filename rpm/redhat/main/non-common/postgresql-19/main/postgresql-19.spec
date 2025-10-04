@@ -276,7 +276,7 @@ Requires:	llvm-devel >= 17.0 clang-devel >= 17.0
 %endif
 
 %if %enabletaptests
-BuildRequires:	perl-IPC-Run perl-Test-Harness perl-Test-Simple
+BuildRequires:	perl-IPC-Run perl-Test-Simple
 Requires:	perl-IPC-Run
 # SLES 15 does not have a separate perl-TimeHires package. It is part
 # of the main perl package.
