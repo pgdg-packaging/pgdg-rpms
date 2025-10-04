@@ -15,7 +15,7 @@
 %global __ospython %{_bindir}/python3
 %global python3_runtimes python3
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -24,7 +24,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	%{ppg2majver}.%{ppg2midver}.%{ppg2minver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Sat Oct 4 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.10-5PGDG
+- Add SLES 16 support
+
 * Sat Mar 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.10-4PGDG
 - Remove redundant BR
 
