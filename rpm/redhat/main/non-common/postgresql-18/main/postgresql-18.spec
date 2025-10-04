@@ -45,9 +45,9 @@ Version:	18.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200002PGDG%{?dist}
+Release:	4200003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -140,11 +140,14 @@ BuildRequires:	liburing-devel
 %endif
 
 %if %llvm
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
 %if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -205,14 +208,9 @@ BuildRequires:	libuuid-devel
 BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -255,8 +253,11 @@ Requires:	libicu-devel
 
 %if %llvm
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
-Requires:	llvm17-devel clang17-devel
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
 Requires:	llvm-devel >= 17.0 clang-devel >= 17.0
@@ -303,9 +304,13 @@ package also includes HTML version of the documentation.
 %package ecpg-libs
 Summary:	Run-time libraries for ECPG programs
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -317,9 +322,13 @@ The postgresql%{pgmajorversion}-ecpg-libs is used by programs built with ECPG
 Summary:	Development files for ECPG (Embedded PostgreSQL for C)
 Requires:	%{name}-ecpg-libs%{?_isa} = %{version}-%{release}
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -368,11 +377,14 @@ and the following ABI. Failure to load results in a failed connection.
 %package llvmjit
 Summary:	Just-in-time compilation support for PostgreSQL
 Requires:	%{name}-server%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libLLVM17
 %endif
+%if 0%{?suse_version} == 1600
+Requires:	libLLVM19
+%endif
 %if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm >= 17
+Requires:	llvm >= 19
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
@@ -455,6 +467,8 @@ Requires(postun):	systemd
 %endif
 
 Provides:	postgresql-server >= %{version}-%{release}
+Provides:	group(postgres) user(postgres)
+
 
 %description server
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -1306,6 +1320,9 @@ fi
 %endif
 
 %changelog
+* Sat Oct 4 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 18.0-2PGDG
 - Bump release number (missed in previous commit)
 
