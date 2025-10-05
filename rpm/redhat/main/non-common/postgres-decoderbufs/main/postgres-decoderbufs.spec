@@ -3,8 +3,8 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.2.0
-Release:	2PGDG%{?dist}
+Version:	3.3.0
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Protocol Buffers logical decoder plugin
 
 License:	MIT
@@ -29,18 +29,23 @@ A PostgreSQL logical decoder output plugin to deliver data as Protocol Buffers m
 %package llvmjit
 Summary:	Just-in-time compilation support for postgres-decoderbufs
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
 This package provides JIT support for postgres-decoderbufs
 %endif
+
 
 %prep
 %setup -qn %{sname}-%{version}.Final
@@ -64,6 +69,11 @@ PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-1PGDG
+- Update to 3.3.0 per changes described at
+  https://github.com/debezium/postgres-decoderbufs/releases/tag/v3.3.0.Final
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.2.0-2PGDG
 - Bump release number (missed in previous commit)
 
