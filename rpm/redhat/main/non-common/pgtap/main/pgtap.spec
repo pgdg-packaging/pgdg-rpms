@@ -1,20 +1,18 @@
 %global sname	pgtap
-%global tapparserversion	3.36
+%global tapparserversion	3.37
 
 Summary:	Unit testing for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.3.3
+Version:	1.3.4
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/theory/%{sname}
 Source0:	https://github.com/theory/%{sname}/archive/refs/tags/v%{version}.tar.gz
 # Use this source for pg_prove and pg_tapgen
 Source1:	https://search.cpan.org/CPAN/authors/id/D/DW/DWHEELER/TAP-Parser-SourceHandler-pgTAP-%{tapparserversion}.tar.gz
-BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 BuildRequires:	perl-Test-Pod perl-Test-Pod-Coverage perl-Module-Build
 BuildArch:	noarch
-
-Obsoletes:	%{sname}%{pgmajorversion} < 1.1.0-2
 
 Requires:	postgresql%{pgmajorversion}-server, perl-Test-Harness >= 3.0
 
@@ -60,6 +58,10 @@ popd
 %{perl_privlib}/TAP/Parser/SourceHandler/pgTAP.pm
 
 %changelog
+* Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.4-1PGDG
+- Update to 1.3.4
+- Update TAP parser version to 3.37
+
 * Tue Apr 9 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3.3-1PGDG
 - Update to 1.3.3
 
