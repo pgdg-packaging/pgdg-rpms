@@ -115,9 +115,13 @@ BuildRequires:	mariadb-connector-c-devel
 BuildRequires:	muParser-devel
 Requires:	muParser
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	muparser-devel
 Requires:	libmuparser2_3_3
+%endif
+%if 0%{?suse_version} == 1500
+BuildRequires:	muparser-devel
+Requires:	libmuparser2_3_4
 %endif
 
 BuildRequires:	libpq5-devel
@@ -480,6 +484,7 @@ done
 %changelog
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-3PGDG
 - Add SLES 16 support
+- Enable g2clib support on RHEL 10 as well.
 
 * Thu Sep 11 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-2PGDG
 * Enable muparser library for VRT expressions.
