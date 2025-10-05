@@ -44,7 +44,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	2PGDG%{?dist}.1
+Release:	3PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -55,7 +55,7 @@ URL:		https://www.postgis.net/
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
 BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 BuildRequires:	pcre2-devel
 Requires:	pcre2
 %else
@@ -186,13 +186,17 @@ The %{name}-utils package provides the utilities for PostGIS.
 %package llvmjit
 Summary:	Just-in-time compilation support for PostGIS 3.6
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -373,6 +377,9 @@ fi
 %endif
 
 %changelog
+* Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.6.0-2PGDG.1
 - Bump release number (missed in previous commit)
 
