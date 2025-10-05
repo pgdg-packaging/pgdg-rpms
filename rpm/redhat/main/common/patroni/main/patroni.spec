@@ -1,7 +1,3 @@
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -10,9 +6,13 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
@@ -20,7 +20,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -235,6 +235,9 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-2PGDG
+- Add SLES 16 support
+
 * Tue Sep 23 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-1PGDG
 - Update to 4.1.0, per changes described at:
   https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-410
