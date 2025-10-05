@@ -5,7 +5,7 @@
 Name:		%{sname}_%{pgmajorversion}
 Summary:	IPv4/v6 and IPv4/v6 range index type for PostgreSQL
 Version:	2.4.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/RhodiumToad/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/RhodiumToad/ip4r
@@ -21,21 +21,25 @@ ip6r, ipaddress and iprange are types that contain a single IPv4/IPv6 address
 and a range of IPv4/IPv6 addresses respectively. They can be used as a more
 flexible, indexable version of the cidr type.
 
-%if %llvm
+~%if %llvm
 %package llvmjit
 Summary:	Just-in-time compilation support for ip4r
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for ip4r
+This package provides JIT support for ip4r
 %endif
 
 %prep
@@ -63,6 +67,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 2.4.2-5PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.4.2-4PGDG
 - Bump release number (missed in previous commit)
 

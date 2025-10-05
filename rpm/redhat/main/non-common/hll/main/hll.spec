@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension adding HyperLogLog data structures as a native data type
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.18
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
@@ -25,18 +25,23 @@ distinct values with only a few percent error.
 %package llvmjit
 Summary:	Just-in-time compilation support for hll
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for hll
+This package provides JIT support for hll
 %endif
+
 
 %prep
 %setup -q -n postgresql-%{sname}-%{version}
@@ -65,6 +70,9 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 2.18-5PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.18-4PGDG
 - Bump release number (missed in previous commit)
 

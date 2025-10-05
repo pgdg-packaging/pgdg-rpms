@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -23,9 +23,13 @@ the hdfs.
 %package llvmjit
 Summary:	Just-in-time compilation support for hdfs_fdw
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -100,6 +104,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install INSTAL
 %endif
 
 %changelog
+* Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.3.3-2PGDG
 - Bump release number (missed in previous commit)
 
