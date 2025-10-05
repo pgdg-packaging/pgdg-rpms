@@ -26,8 +26,8 @@ BuildRequires:	gcc12-c++
 BuildRequires:	gcc-c++
 %endif
 
-%if 0%{?suse_version} == 1500
-# Unfortunately SLES 15 ships the libraries with -devel subpackage:
+%if 0%{?suse_version} >= 1500
+# SLES ships the libraries with -devel subpackage:
 Requires:	sqlite3-devel >= 3.7
 %else
 # All other sane distributions have a separate -libs subpackage:
