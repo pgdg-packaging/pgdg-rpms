@@ -3,7 +3,7 @@
 %global ofdwmidver 8
 %global ofdwminver 0
 
-%{!?oi_release:%global oi_release 23.8.0.25.04}
+%{!?oi_release:%global oi_release 23.9.0.25.07}
 
 %global		__find_requires %{SOURCE1}
 
@@ -13,15 +13,13 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Oracle.
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ofdwmajver}.%{ofdwmidver}.%{ofdwminver}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://laurenz.github.io/%{sname}
 Source0:	https://github.com/laurenz/%{sname}/archive/ORACLE_FDW_%{ofdwmajver}_%{ofdwmidver}_%{ofdwminver}.tar.gz
 Source1:	%{sname}-filter-requires-libclntsh.sh
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	postgresql%{pgmajorversion}-server
-
-Obsoletes:	%{sname}%{pgmajorversion} < 2.3.0-2
 
 Requires:	postgresql%{pgmajorversion}-server
 # Package builder needs to adjust this as needed.
@@ -58,6 +56,9 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 %{pginstdir}/doc/extension/README.%{sname}
 
 %changelog
+* Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-7PGDG
+- Update OIC dependency to 23.9.0.25.07
+
 * Wed May 28 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.0-6PGDG
 - Update OIC dependency to 23.8.0.25.04
 
