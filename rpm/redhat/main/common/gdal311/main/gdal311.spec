@@ -4,7 +4,7 @@
 
 %pgdg_set_gis_variables
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -25,7 +25,7 @@
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
 
-%if 0%{?suse_version} <= 1500 || 0%{?rhel} >= 10
+%if 0%{?suse_version} <= 1600
 %global	g2clib_enabled 0
 %else
 %global	g2clib_enabled 1
@@ -38,7 +38,7 @@
 
 Name:		%{sname}311
 Version:	3.11.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -56,7 +56,7 @@ Source6:	%{name}-pgdg-libs.conf
 Patch0:		%{name}-cleanup.patch
 
 # lz4 and bash-completion dependencies
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
+%if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel bash-completion-devel
 Requires:	liblz4-1
 %endif
@@ -148,18 +148,27 @@ BuildRequires:	tex(xtab.sty)
 %endif
 BuildRequires:	unixODBC-devel
 
-%if 0%{?suse_version}
-BuildRequires:	java-11-openjdk-devel
-%endif
-
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} == 1500
 BuildRequires:	hdf hdf-devel hdf-devel-static
 BuildRequires:	hdf5 hdf5-devel hdf5-devel-static
 BuildRequires:	libexpat-devel libjson-c-devel
 BuildRequires:	libjasper-devel
 BuildRequires:	libxerces-c-devel
 BuildRequires:	python3-numpy-devel
-%else
+BuildRequires:	python311-devel
+BuildRequires:	libshp-devel libcurl-devel >= 7.68
+BuildRequires:	java-11-openjdk-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	hdf5 hdf5-devel
+BuildRequires:	libexpat-devel libjson-c-devel
+BuildRequires:	libjasper-devel
+BuildRequires:	libxerces-c-devel
+BuildRequires:	python3-numpy-devel
+BuildRequires:	python3-devel
+BuildRequires:	java-21-openjdk-devel
+%endif
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 BuildRequires:	libdap-devel
 BuildRequires:	expat-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
@@ -184,15 +193,12 @@ BuildRequires:	SFCGAL-devel >= 2.0.0
 %else
 BuildRequires:	SFCGAL-devel
 %endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	libshp-devel libcurl-devel >= 7.68
-BuildRequires:	python311-devel
-%else
+%if 0%{?suse_version} == 1500
+%endif
+
 BuildRequires:	shapelib-devel curl-devel >= 7.68
 BuildRequires:	python3-devel >= 3.8
 BuildRequires:	openjpeg2-devel >= 2.3.1
-
-%endif
 
 # Run time dependencies
 Requires:	gpsbabel
@@ -303,7 +309,7 @@ cp -a %{SOURCE4} .
 
 %build
 # Use a newer GCC on SLES 15 to build this version of GDAL:
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 export CC=/usr/bin/gcc-13
 export CXX=/usr/bin/g++-13
 %endif
@@ -323,7 +329,7 @@ LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinst
 SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib,%{geosinstdir}/lib64,%{libspatialiteinstdir}/lib" ; export SHLIB_LINK
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
  %{__install} -d build
  pushd build
  cmake .. -DCMAKE_INSTALL_PREFIX:PATH=%{gdalinstdir} \
@@ -355,7 +361,7 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib
 
 %install
 # Use a newer GCC on SLES 15 to install this version of GDAL:
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 export CC=/usr/bin/gcc-13
 export CXX=/usr/bin/g++-13
 %endif
@@ -472,7 +478,10 @@ done
 %endif
 
 %changelog
-* Thu Sep 11 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-1PGDG
+* Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-3PGDG
+- Add SLES 16 support
+
+* Thu Sep 11 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-2PGDG
 * Enable muparser library for VRT expressions.
   (only for Fedora 42+ and SLES 15. Other distros do not have muParser)
 
