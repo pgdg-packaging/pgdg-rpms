@@ -341,9 +341,13 @@ development libraries and the preprocessor program ecpg.
 Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:       libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
