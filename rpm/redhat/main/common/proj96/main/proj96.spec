@@ -5,7 +5,7 @@
 
 Name:		%{sname}96
 Version:	9.6.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -19,14 +19,14 @@ BuildRequires:	libtiff-devel pgdg-srpm-macros >= 1.0.48
 
 # Default GCC version on SLES 15 is not sufficient to build PROJ 9.4,
 # so use a newer one:
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	gcc12-c++
 %else
 # The rest is safe:
 BuildRequires:	gcc-c++
 %endif
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 # Unfortunately SLES 15 ships the libraries with -devel subpackage:
 Requires:	sqlite3-devel >= 3.7
 %else
@@ -56,8 +56,8 @@ This package contains libproj and the appropriate header files and man pages.
 pushd build
 LDFLAGS="-Wl,-rpath,%{proj96instdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
 SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{proj96instdir}/lib64" ; export SHLIB_LINK
-
-%if 0%{?suse_version} >= 1500
+ 
+%if 0%{?suse_version} == 1500
 export CXX=/usr/bin/g++-12
 %endif
 
@@ -114,6 +114,9 @@ popd
 %{proj96instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.2-2PGDG
+- Add SLES 16 support
+
 * Fri Jun 6 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.2-1PGDG
 - Update to 9.6.2 per changes described at:
   https://github.com/OSGeo/PROJ/releases/tag/9.6.2
