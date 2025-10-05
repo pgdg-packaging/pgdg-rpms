@@ -48,9 +48,9 @@ Version:	17.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420005PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -122,11 +122,14 @@ Requires:	libicu
 %endif
 
 %if %llvm
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
 %if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -202,16 +205,10 @@ BuildRequires:	libuuid-devel
 BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%endif
-%else
 Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -236,9 +233,13 @@ if you're installing the postgresql%{pgmajorversion}-server package.
 Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -273,6 +274,7 @@ Requires(postun):	systemd
 %endif
 
 Provides:	postgresql-server >= %{version}-%{release}
+Provides:	group(postgres) user(postgres)
 
 %description server
 PostgreSQL is an advanced Object-Relational database management system (DBMS).
@@ -315,12 +317,14 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %if %llvm
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
-Requires:	llvm17-devel clang17-devel
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel >= 17.0 clang-devel >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -357,11 +361,14 @@ to develop applications which will interact with a PostgreSQL server.
 %package llvmjit
 Summary:	Just-in-time compilation support for PostgreSQL
 Requires:	%{name}-server%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libLLVM17
 %endif
+%if 0%{?suse_version} == 1600
+Requires:	libLLVM19
+%endif
 %if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm >= 17
+Requires:	llvm >= 19
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
@@ -912,9 +919,6 @@ if [ "$1" -eq 0 ]
 	/sbin/ldconfig
 fi
 
-%clean
-%{__rm} -rf %{buildroot}
-
 # FILES section.
 
 %files -f pg_main.lst
@@ -1253,6 +1257,9 @@ fi
 %endif
 
 %changelog
+* Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 17.6-5PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 17.6-4PGDG
 - Bump release number (missed in previous commit)
 
