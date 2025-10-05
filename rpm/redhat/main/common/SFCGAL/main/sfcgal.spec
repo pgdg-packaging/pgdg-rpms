@@ -96,11 +96,10 @@ Development headers and libraries for SFCGAL.
 %endif
 	-D LIB_INSTALL_DIR=%{_lib} -DBoost_NO_BOOST_CMAKE=BOOL:ON .
 
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags}
+%cmake_build
 
 %install
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install/fast \
-	DESTDIR=%{buildroot}
+%cmake_install
 
 %post
 /sbin/ldconfig
@@ -115,7 +114,7 @@ Development headers and libraries for SFCGAL.
 /sbin/ldconfig
 
 %files
-%doc AUTHORS README.md NEWS
+%doc AUTHORS README.md NEWS example/
 %license LICENSE
 %{_bindir}/sfcgal-config
 
@@ -123,7 +122,9 @@ Development headers and libraries for SFCGAL.
 %{_includedir}/%{name}/
 %if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 %{_libdir}/pkgconfig/sfcgal.pc
+%if 0%{?suse_version} == 1600 || 0%{?rhel} >= 9 || 0%{?fedora} >= 41
 %{_libdir}/cmake/%{name}/%{name}*cmake
+%endif
 %endif
 
 %files libs
@@ -132,6 +133,7 @@ Development headers and libraries for SFCGAL.
 %changelog
 * Sat Oct 4 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-3PGDG
 - Add SLES 16 support
+- Modernise spec file, use cmake macros.
 
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.2.0-2PGDG
 - Bump release number (missed in previous commit)
