@@ -27,7 +27,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -46,12 +46,12 @@ Requires:	python3.12-wcwidth
 
 %if 0%{?rhel} >= 9 || 0%{?fedora}
 BuildRequires:	python3-setuptools >= 53.0
-Requires:	python3-blessed
-Requires:	python3 >= 3.9 python3-attrs
-Requires:	python3-six python3-psutil
-Requires:	python3-psycopg3 >= 3.1.8
-Requires:	python3-humanize >= 2.6.0
-Requires:	python3-wcwidth
+Requires:	python3.12-blessed
+Requires:	python3.12 python3.12-attrs
+Requires:	python3.12-six python3.12-psutil
+Requires:	python3.12-psycopg2 >= 2.9.10
+Requires:	python3.12-humanize >= 2.6.0
+Requires:	python3.12-wcwidth
 %endif
 
 %if 0%{?suse_version} == 1500
@@ -104,6 +104,9 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-43PGDG
+- Update RHEL 9 dependencies
+
 * Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-42PGDG
 - Update to 3.6.1 per changes described at:
   https://github.com/dalibo/pg_activity/releases/tag/v3.6.1
