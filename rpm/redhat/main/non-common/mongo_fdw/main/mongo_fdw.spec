@@ -2,7 +2,7 @@
 
 %global mongofdwmajver 5
 %global mongofdwmidver 5
-%global mongofdwminver 2
+%global mongofdwminver 3
 
 %global relver %{mongofdwmajver}_%{mongofdwmidver}_%{mongofdwminver}
 
@@ -11,7 +11,7 @@
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	4PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	LGPLv3
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{relver}.tar.gz
@@ -41,17 +41,21 @@ MongoDB.
 %package llvmjit
 Summary:	Just-in-time compilation support for mongo_fdw
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for mongo_fdw
+This package provides JIT support for mongo_fdw
 %endif
 
 %prep
@@ -107,6 +111,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
+* Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-1PGDG
+- Update to 5.5.3 per changes described at:
+  https://github.com/EnterpriseDB/mongo_fdw/releases/tag/REL-5_5_3
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 5.5.2-4PGDG
 - Bump release number (missed in previous commit)
 
