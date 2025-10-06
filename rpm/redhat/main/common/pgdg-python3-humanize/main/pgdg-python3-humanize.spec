@@ -1,4 +1,5 @@
-%global pypi_name humanize
+%global sname humanize
+
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -24,14 +25,14 @@
 
 %global python_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-Name:		python%{python3_pkgversion}-humanize
+Name:		python%{python3_pkgversion}-%{sname}
 Version:	3.13.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
-URL:		https://github.com/jmoiron/humanize
-Source0:	%{pypi_source humanize}
+URL:		https://github.com/jmoiron/%{sname}
+Source0:	https://files.pythonhosted.org/packages/source/h/%{sname}/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
@@ -45,7 +46,7 @@ readable size or throughput.\
 %description %_description
 
 %prep
-%autosetup -n humanize-%{version}
+%autosetup -n %{sname}-%{version}
 
 # Remove shebangs from libs.
 for lib in src/humanize/time.py src/humanize/filesize.py src/humanize/number.py; do
@@ -68,12 +69,15 @@ sed -Ei 's/ ?--cov(-[^ ]+)? +[^ ]+//g' tox.ini
 
 %files
 %doc README.md
-%{python3_sitelib}/%{pypi_name}/*.py
-%{python3_sitelib}/%{pypi_name}/locale/*
-%{python3_sitelib}/%{pypi_name}-0.0.0-py%{pyver}.egg-info
-%{python3_sitelib}/%{pypi_name}/__pycache__/*.pyc
+%{python3_sitelib}/%{sname}/*.py
+%{python3_sitelib}/%{sname}/locale/*
+%{python3_sitelib}/%{sname}-0.0.0-py%{pyver}.egg-info
+%{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-43PGDG
+- Use more macros and get rid of pypi_source macro.
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to satisfy
   pg_activity dependency. Package is RHEL 8 only.
