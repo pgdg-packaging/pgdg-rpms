@@ -38,7 +38,7 @@ BuildArch:	noarch
 BuildRequires:	python3-setuptools >= 39.2
 Requires:	python3.12 python3.12-attrs
 Requires:	python3.12-six python3.12-psutil
-Requires:	python3-psycopg2 >= 2.9.9
+Requires:	python3-psycopg2 >= 2.9.5
 Requires:	python3.12-humanize >= 3.13.1
 Requires:	python3.12-blessed
 Requires:	python3.12-wcwidth
