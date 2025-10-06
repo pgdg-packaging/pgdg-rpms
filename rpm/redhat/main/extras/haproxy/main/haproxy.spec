@@ -7,8 +7,8 @@
 %global _hardened_build 1
 
 Name:		haproxy
-Version:	3.2.5
-Release:	2PGDG%{?dist}
+Version:	3.2.6
+Release:	1PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
 License:	GPLv2+
@@ -141,6 +141,10 @@ done
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> 3.2.6-1PGDG
+- Update to 3.2.6 per changes described at:
+  https://www.mail-archive.com/haproxy@formilux.org/msg46185.html
+
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> 3.2.5-2PGDG
 - Add sysusers.d and tmpfiles.d config file to allow rpm to create
   users/groups automatically.
