@@ -23,7 +23,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.2.13
-Release:	1PGDG%{dist}.1
+Release:	2PGDG%{dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -31,6 +31,8 @@ License:	MIT AND HPND-Markus-Kuhn
 URL:		https://github.com/jquast/%{modname}
 Source:		https://files.pythonhosted.org/packages/source/w/%{modname}/%{modname}-%{version}.tar.gz
 BuildArch:	noarch
+
+Provides:	python%{python3_pkgversion}dist(wcwidth)
 
 %description
 This API is mainly for Terminal Emulator implementors, or those writing programs
@@ -56,6 +58,9 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-2PGDG
+- Provide dist(wcwidth). Needed at least on RHEL 9
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-1PGDG.1
 - Add Fedora 43 support
 
