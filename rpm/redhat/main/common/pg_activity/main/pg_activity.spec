@@ -4,8 +4,12 @@
 %if 0%{?rhel} >= 9 || 0%{?fedora}
 %global __ospython %{_bindir}/python3
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global __ospython %{_bindir}/python3.11
+%endif
+
+%if 0%{?suse_version} == 1600
+%global __ospython %{_bindir}/python3.13
 %endif
 
 %if 0%{?fedora} >= 40 || 0%{?suse_version} >= 1500 || 0%{?rhel} >= 10
@@ -18,7 +22,7 @@
 
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
-Version:	3.6.0
+Version:	3.6.1
 Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
@@ -45,13 +49,23 @@ Requires:	python3-humanize >= 2.6.0
 Requires:	python3-wcwidth
 %endif
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	python311-setuptools >= 67.7.2
 Requires:	python311-blessings
 Requires:	python311 >= 3.11 python311-attrs
 Requires:	python311-six python311-psutil
 Requires:	python3-psycopg3 >= 3.1.8
 Requires:	python311-humanfriendly
+Requires:	python311-wcwidth
+%endif
+
+%if 0%{?suse_version} == 1600
+BuildRequires:	python3-setuptools >= 67.7.2
+Requires:	python313-blessings
+Requires:	python3 >= 3.11 python313-attrs
+Requires:	python313-six python313-psutil
+Requires:	python3-psycopg3 >= 3.1.8
+Requires:	python313-humanfriendly
 Requires:	python311-wcwidth
 %endif
 
@@ -88,6 +102,11 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-42PGDG
+- Update to 3.6.1 per changes described at:
+  https://github.com/dalibo/pg_activity/releases/tag/v3.6.1
+- Add SLES 16 support
+
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0-42PGDG
 - Update to 3.6.0 per changes described at:
   https://github.com/dalibo/pg_activity/releases/tag/v3.6.0
