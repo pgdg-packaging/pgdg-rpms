@@ -31,7 +31,7 @@ Summary:	Easy, practical library for making terminal apps, by providing an elega
 
 License:	MIT
 URL:		https://github.com/jquast/%{sname}
-Source0:	https://files.pythonhosted.org/packages/source/h/%{sname}/%{sname}-%{version}.tar.gz
+Source0:	https://files.pythonhosted.org/packages/source/b/%{sname}/%{sname}-%{version}.tar.gz
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
