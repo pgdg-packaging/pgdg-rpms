@@ -1,0 +1,11 @@
+--- pyproject.toml.old	2025-06-03 16:35:03.000000000 +0300
++++ pyproject.toml	2025-10-06 12:26:32.133694137 +0300
+@@ -7,7 +7,7 @@
+ dynamic = ["version"]
+ description = "Command line tool for PostgreSQL server activity monitoring."
+ readme = "README.md"
+-license = "PostgreSQL"
++license = {text = "PostgreSQL"}
+ requires-python = ">=3.9"
+ authors = [
+     { name = "Julien Tachoires", email = "julmon@gmail.com" },

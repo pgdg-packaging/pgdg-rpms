@@ -27,6 +27,7 @@ Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
+Patch0:		%{name}-3.6.1-pyproject.patch
 BuildArch:	noarch
 
 %if 0%{?rhel} == 8
@@ -75,25 +76,22 @@ top like application for PostgreSQL server activity monitoring.
 
 %prep
 %setup -q -n %{name}-%{version}
-
+%patch -P 0 -p0
 %build
 # Change the name of the Python module in the source code. SLES packages
 # this module in a different name:
 %if 0%{?suse_version} >= 1500
 find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %endif
-
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
-%{__mkdir} -p %{buildroot}%{_mandir}/man1/
+%pyproject_install
 
 %files
 %defattr(-,root,root)
 %{_bindir}/%{name}
-%dir %{python_sitelib}/%{name}-%{version}-py%{pybasever}.egg-info/
-%{python_sitelib}/%{name}-%{version}-py%{pybasever}.egg-info/*
+%{python_sitelib}/%{name}-%{version}.dist-info/*
 %{python_sitelib}/pgactivity/*.py*
 %{python_sitelib}/pgactivity/__pycache__/*.pyc
 %{python_sitelib}/pgactivity/profiles/*.conf
@@ -106,6 +104,7 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 - Update to 3.6.1 per changes described at:
   https://github.com/dalibo/pg_activity/releases/tag/v3.6.1
 - Add SLES 16 support
+- Switch to pyproject build
 
 * Fri Feb 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.0-42PGDG
 - Update to 3.6.0 per changes described at:
