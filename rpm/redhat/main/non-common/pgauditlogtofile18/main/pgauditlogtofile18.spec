@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
@@ -72,6 +72,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 1.7.3-2PGDG
+- Rebuild because of RPM signing issue.
+
 * Sat Oct 4 2025 Devrim Gunduz <devrim@gunduz.org> - 1.7.3-1PGDG
 - Update to 1.7.3 per changes described at:
   https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.7.3
