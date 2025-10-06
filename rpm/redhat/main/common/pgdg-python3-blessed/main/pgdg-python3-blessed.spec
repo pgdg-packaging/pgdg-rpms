@@ -1,5 +1,4 @@
-%global	pypi_name blessed
-%global	pypi_version 1.19.1
+%global	sname blessed
 
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -25,14 +24,14 @@
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-Name:		python%{python3_pkgversion}-%{pypi_name}
-Version:	%{pypi_version}
-Release:	42PGDG%{?dist}
+Name:		python%{python3_pkgversion}-%{sname}
+Version:	1.22.0
+Release:	43PGDG%{?dist}
 Summary:	Easy, practical library for making terminal apps, by providing an elegant, well- documented interface to Colors, Keyboard input, and screen Positioning capabilities
 
 License:	MIT
-URL:		https://github.com/jquast/blessed
-Source0:	%{pypi_source}
+URL:		https://github.com/jquast/%{sname}
+Source0:	https://files.pythonhosted.org/packages/source/h/%{sname}/%{sname}-%{version}.tar.gz
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
@@ -47,9 +46,9 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 // 2))...
 
 %prep
-%autosetup -n %{pypi_name}-%{pypi_version}
+%autosetup -n %{sname}-%{version}
 # Remove bundled egg-info
-rm -rf %{pypi_name}.egg-info
+%{__rm} -rf %{sname}.egg-info
 
 %build
 %{__ospython} setup.py build
@@ -60,10 +59,14 @@ rm -rf %{pypi_name}.egg-info
 %files
 %license LICENSE
 %doc README.rst
-%{python3_sitelib}/%{pypi_name}
-%{python3_sitelib}/%{pypi_name}-%{pypi_version}-py%{pyver}.egg-info
+%{python3_sitelib}/%{sname}
+%{python3_sitelib}/%{sname}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> - 1.22.0-42PGDG
+- Update to 1.22.0
+- Use more macros and get rid of pypi_source macro.
+
 * Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> - 1.19.1-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to satisfy
   pg_activity dependency. Package is for RHEL 8 only.
