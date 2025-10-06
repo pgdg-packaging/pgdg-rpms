@@ -1,22 +1,26 @@
-%if 0%{?rhel} == 8
-%global __ospython %{_bindir}/python3.9
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
-%if 0%{?rhel} >= 9 || 0%{?fedora}
-%global __ospython %{_bindir}/python3
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} == 1500
-%global __ospython %{_bindir}/python3.11
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
 %endif
-
 %if 0%{?suse_version} == 1600
-%global __ospython %{_bindir}/python3.13
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
-%if 0%{?fedora} >= 40 || 0%{?suse_version} >= 1500 || 0%{?rhel} >= 10
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%endif
+
 %global python_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 
