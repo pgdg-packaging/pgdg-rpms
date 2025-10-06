@@ -23,7 +23,7 @@
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-Name:		python%{python3_pkgversion}-humanize
+Name:		python%{python3_pkgversion}-attrs
 Version:	22.1.0
 Release:	42PGDG%{?dist}
 Summary:	Python attributes without boilerplate
