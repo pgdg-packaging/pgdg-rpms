@@ -36,12 +36,12 @@ BuildArch:	noarch
 
 %if 0%{?rhel} == 8
 BuildRequires:	python3-setuptools >= 39.2
-Requires:	python39 python39-attrs
-Requires:	python39-six python39-psutil
+Requires:	python3.12 python3.12-attrs
+Requires:	python3.12-six python3.12-psutil
 Requires:	python3-psycopg2 >= 2.9.9
-Requires:	python39-humanize >= 3.13.1
-Requires:	python39-blessed
-Requires:	python39-wcwidth
+Requires:	python3.12-humanize >= 3.13.1
+Requires:	python3.12-blessed
+Requires:	python3.12-wcwidth
 %endif
 
 %if 0%{?rhel} >= 9 || 0%{?fedora}
