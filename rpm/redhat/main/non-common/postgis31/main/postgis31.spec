@@ -7,21 +7,24 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global	geosfullversion %geos314fullversion
-%global	geosmajorversion %geos314majorversion
-%global	geosinstdir %geos314instdir
-%global	projmajorversion %proj96majorversion
-%global	projfullversion %proj96fullversion
-%global	projinstdir %proj96instdir
+%global geosfullversion %geos314fullversion
+%global geosmajorversion %geos314majorversion
+%global geosinstdir %geos314instdir
 
 %if 0%{?rhel} && 0%{?rhel} == 8
-%global	gdalfullversion %gdal38fullversion
-%global	gdalmajorversion %gdal38majorversion
-%global	gdalinstdir %gdal38instdir
+%global gdalfullversion %gdal38fullversion
+%global gdalmajorversion %gdal38majorversion
+%global gdalinstdir %gdal38instdir
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
 %else
-%global	gdalfullversion %gdal311fullversion
-%global	gdalmajorversion %gdal311majorversion
-%global	gdalinstdir %gdal311instdir
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
+%global projmajorversion %proj97majorversion
+%global projfullversion %proj97fullversion
+%global projinstdir %proj97instdir
 %endif
 
 %global	libgeotiffmajorversion 17
@@ -49,7 +52,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.12
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -61,7 +64,7 @@ URL:		https://www.postgis.net/
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
 BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 BuildRequires:	pcre2-devel
 Requires:	pcre2
 %else
@@ -187,19 +190,23 @@ The %{name}-utils package provides the utilities for PostGIS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for postgis31
+Summary:	Just-in-time compilation support for PostGIS 3.1
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm >= 13.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for postgis31
+This package provides JIT support for PostGIS 3.1
 %endif
 
 %prep
@@ -368,6 +375,10 @@ fi
 %endif
 
 %changelog
+* Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-12PGDG
+- Rebuild against PROJ 9.7 on all platforms except RHEL 8
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.1.12-11PGDG
 - Bump release number (missed in previous commit)
 
