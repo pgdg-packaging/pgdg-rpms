@@ -71,7 +71,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
-* Sun Oct 5 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.0.8-3PGDG
+* Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-3PGDG
 - Add SLES 16 support
 
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.0.8-2PGDG
