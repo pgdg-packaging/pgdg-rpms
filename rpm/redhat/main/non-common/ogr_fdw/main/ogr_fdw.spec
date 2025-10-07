@@ -20,24 +20,27 @@
 %global gdalmajorversion %gdal311majorversion
 %global gdalinstdir %gdal311instdir
 %endif
-%if  0%{?suse_version} >= 1500
+%if  0%{?suse_version} == 1500
 %global gdalfullversion %gdal310fullversion
 %global gdalmajorversion %gdal310majorversion
 %global gdalinstdir %gdal310instdir
+%endif
+%if  0%{?suse_version} == 1500
+%global gdalfullversion %gdal311fullversion
+%global gdalmajorversion %gdal311majorversion
+%global gdalinstdir %gdal311instdir
 %endif
 
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.7
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
 BuildRequires:	postgresql%{pgmajorversion}-devel gdal%{gdalmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.45
+BuildRequires:	pgdg-srpm-macros >= 1.0.51
 Requires:	postgresql%{pgmajorversion}-server gdal%{gdalmajorversion}-libs
-
-Obsoletes:	%{sname}%{pgmajorversion} < 1.0.12-3
 
 %description
 This library contains a PostgreSQL extension, a Foreign Data Wrapper (FDW)
@@ -47,13 +50,17 @@ handler of PostgreSQL which provides easy way for interacting with OGR.
 %package llvmjit
 Summary:	Just-in-time compilation support for ogr_fdw
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -96,6 +103,9 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 1.1.7-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.1.7-2PGDG
 - Bump release number (missed in previous commit)
 
