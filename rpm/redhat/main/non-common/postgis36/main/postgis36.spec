@@ -10,18 +10,21 @@
 %global	geosfullversion %geos314fullversion
 %global	geosmajorversion %geos314majorversion
 %global	geosinstdir %geos314instdir
-%global	projmajorversion %proj96majorversion
-%global	projfullversion %proj96fullversion
-%global	projinstdir %proj96instdir
 
 %if 0%{?rhel} && 0%{?rhel} == 8
 %global	gdalfullversion %gdal38fullversion
 %global	gdalmajorversion %gdal38majorversion
 %global	gdalinstdir %gdal38instdir
+%global	projmajorversion %proj96majorversion
+%global	projfullversion %proj96fullversion
+%global	projinstdir %proj96instdir
 %else
 %global	gdalfullversion %gdal311fullversion
 %global	gdalmajorversion %gdal311majorversion
 %global	gdalinstdir %gdal311instdir
+%global	projmajorversion %proj97majorversion
+%global	projfullversion %proj97fullversion
+%global	projinstdir %proj97instdir
 %endif
 
 %{!?llvm:%global llvm 1}
@@ -44,7 +47,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -377,6 +380,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-4PGDG
+- Rebuild against PROJ 9.7 on all platforms except RHEL 8
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-3PGDG
 - Add SLES 16 support
 
