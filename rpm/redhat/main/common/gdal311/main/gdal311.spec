@@ -20,10 +20,15 @@
 %global gdalsomajorversion	37
 %global libspatialitemajorversion	50
 
-# Override PROJ:
-%global	projmajorversion %proj96majorversion
-%global	projfullversion %proj96fullversion
-%global	projinstdir %proj96instdir
+%if 0%{?rhel} && 0%{?rhel} == 8
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
+%else
+%global projmajorversion %proj97majorversion
+%global projfullversion %proj97fullversion
+%global projinstdir %proj97instdir
+%endif
 
 %if 0%{?suse_version} <= 1600
 %global	g2clib_enabled 0
@@ -38,7 +43,7 @@
 
 Name:		%{sname}311
 Version:	3.11.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -482,6 +487,9 @@ done
 %endif
 
 %changelog
+* Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-4PGDG
+- Rebuild against PROJ 9.7 on all platforms except RHEL 8.
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-3PGDG
 - Add SLES 16 support
 - Enable g2clib support on RHEL 10 as well.
