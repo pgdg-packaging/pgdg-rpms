@@ -2,11 +2,11 @@
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
 Version:	42.7.8
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # ASL 2.0 applies only to postgresql-jdbc.pom file, the rest is BSD
 License:	BSD and ASL 2.0
 URL:		https://jdbc.postgresql.org/
-Source0:	https://jdbc.postgresql.org/download/postgresql-jdbc-%{version}.src.tar.gz
+Source0:	https://repo1.maven.org/maven2/org/postgresql/postgresql/%{version}/postgresql-%{version}-jdbc-src.tar.gz
 Source1:	%{name}.pom
 %if 0%{?rhel} == 8
 Patch0:		%{name}-downgradeshade-rhel8.patch
@@ -149,6 +149,9 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
+* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.8-2PGDG
+- Update download URL to point to the new location. Per Dave Cramer.
+
 * Thu Sep 25 2025 Devrim Gündüz <devrim@gunduz.org> - 42.7.8-1PGDG
 - Update to 42.7.8 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.8
