@@ -11,18 +11,21 @@
 %global geosfullversion %geos314fullversion
 %global geosmajorversion %geos314majorversion
 %global geosinstdir %geos314instdir
-%global projmajorversion %proj96majorversion
-%global projfullversion %proj96fullversion
-%global projinstdir %proj96instdir
 
 %if 0%{?rhel} && 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
+%global projmajorversion %proj96majorversion
+%global projfullversion %proj96fullversion
+%global projinstdir %proj96instdir
 %else
 %global gdalfullversion %gdal311fullversion
 %global gdalmajorversion %gdal311majorversion
 %global gdalinstdir %gdal311instdir
+%global projmajorversion %proj97majorversion
+%global projfullversion %proj97fullversion
+%global projinstdir %proj97instdir
 %endif
 
 %global libgeotiffmajorversion 17
@@ -54,19 +57,19 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.9
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
-Source2:	http://download.osgeo.org/%{sname}/docs/%{sname}-%{version}.pdf
+Source2:	https://download.osgeo.org/%{sname}/docs/%{sname}-%{version}.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 Patch0:		%{sname}%{postgiscurrmajorversion}-%{postgismajorversion}.0-gdalfpic.patch
 
-URL:		http://www.postgis.net/
+URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
 BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-%if 0%{?rhel} && 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 BuildRequires:	pcre2-devel
 %else
 BuildRequires:	pcre-devel
@@ -190,19 +193,23 @@ The %{name}-utils package provides the utilities for PostGIS.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for postgis30
+Summary:	Just-in-time compilation support for PostGIS 3.0
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm >= 13.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for postgis30
+This package provides JIT support for PostGIS 3.0
 %endif
 
 %prep
@@ -371,6 +378,10 @@ fi
 %endif
 
 %changelog
+* Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0.9-9PGDG
+- Rebuild against PROJ 9.7 on all platforms except RHEL 8
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.0.9-8PGDG
 - Bump release number (missed in previous commit)
 
