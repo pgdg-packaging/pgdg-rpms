@@ -8,7 +8,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	PostgreSQL extension to allow to access to memory usage diagnostics
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -25,17 +25,21 @@ a PostgreSQL server.
 %package llvmjit
 Summary:	Just-in-time compilation support for pgmeminfo
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pgmeminfo
+This package provides JIT support for pgmeminfo
 %endif
 
 %prep
@@ -61,6 +65,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/bitcode/%{sname}/src/*.bc
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-5PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.0.0-4PGDG
 - Bump release number (missed in previous commit)
 

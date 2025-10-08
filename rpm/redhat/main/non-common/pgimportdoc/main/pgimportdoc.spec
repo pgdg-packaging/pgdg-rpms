@@ -3,7 +3,7 @@
 Summary:	command line tool for import XML, TEXT and BYTEA documents to PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
@@ -33,7 +33,22 @@ Requires:	libzstd1 >= 1.4.0
 BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
-BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
+
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+
+
+BuildRequires:	libxml2-devel libxslt-devel pam-devel
 BuildRequires:	krb5-devel readline-devel zlib-devel
 Requires:	postgresql%{pgmajorversion}
 
@@ -62,6 +77,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-4PGDG
+- Add SLES 16 support
+
 * Tue Feb 25 2025 - Devrim Gündüz <devrim@gunduz.org> 0.1.4-3PGDG
 - Add missing BRs
 
