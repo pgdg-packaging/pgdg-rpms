@@ -9,7 +9,7 @@
 Summary:	Logical Replication extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pglogicalmajver}.%{pglogicalmidver}.%{pglogicalminver}
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
@@ -32,7 +32,19 @@ BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
 %endif
-BuildRequires:	libxml2-devel libxslt-devel openssl-devel pam-devel
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+BuildRequires:	libxml2-devel libxslt-devel pam-devel
 BuildRequires:	krb5-devel zlib-devel
 
 Requires:	postgresql%{pgmajorversion}-server
@@ -52,17 +64,21 @@ PostgreSQL, using a publish/subscribe model.
 %package llvmjit
 Summary:	Just-in-time compilation support for pglogical
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pglogical
+This package provides JIT support for pglogical
 %endif
 
 %prep
@@ -98,6 +114,9 @@ PATH=%{pginstdir}/bin:$PATH %make_install
 %endif
 
 %changelog
+* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.4.6-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.4.6-2PGDG
 - Bump release number (missed in previous commit)
 

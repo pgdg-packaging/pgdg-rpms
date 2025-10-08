@@ -5,13 +5,13 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
-BuildRequires:	openssl-devel readline-devel zlib-devel
+BuildRequires:	readline-devel zlib-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
@@ -30,6 +30,18 @@ Requires:	libzstd1 >= 1.4.0
 BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 
 Requires:	postgresql%{pgmajorversion}
 
@@ -44,11 +56,15 @@ performance comparable to using CLUSTER directly.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for xxx
+Summary:	Just-in-time compilation support for pg_repack
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -56,7 +72,7 @@ Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This package provides JIT support for xxx
+This package provides JIT support for pg_repack
 %endif
 
 %prep
@@ -85,6 +101,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-7PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.5.2-6PGDG
 - Bump release number (missed in previous commit)
 
