@@ -6,7 +6,7 @@
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.1
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -30,17 +30,21 @@ spherical objects.
 %package llvmjit
 Summary:	Just-in-time compilation support for pgsphere
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for pgsphere
+This package provides JIT support for pgsphere
 %endif
 
 %prep
@@ -72,6 +76,9 @@ This packages provides JIT support for pgsphere
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-6PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.5.1-5PGDG
 - Bump release number (missed in previous commit)
 

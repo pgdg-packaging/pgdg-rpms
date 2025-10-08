@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.9
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -15,8 +15,11 @@ Requires:	postgresql%{pgmajorversion}-server
 %if 0%{?fedora} || 0%{?rhel}
 Requires:	libsodium
 %endif
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} == 1500
 Requires:	libsodium23
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libsodium26
 %endif
 
 %description
@@ -33,18 +36,23 @@ key id. This id (type bigint) can then be stored instead of the derived key.
 %package llvmjit
 Summary:	Just-in-time compilation support for pgsodium
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
 This package provides JIT support for pgsodium
 %endif
+
 
 %prep
 %setup -q -n %{sname}-%{version}
@@ -75,6 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.9-6PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.1.9-5PGDG
 - Bump release number (missed in previous commit)
 

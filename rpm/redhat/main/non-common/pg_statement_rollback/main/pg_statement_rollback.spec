@@ -5,7 +5,7 @@
 Summary:	Server side rollback at statement level for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/lzlabs/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/lzlabs/%{sname}
@@ -20,9 +20,13 @@ transaction with rollback at statement level like in Oracle or DB2.
 %package llvmjit
 Summary:	Just-in-time compilation support for pg_statement_rollback
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -59,6 +63,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.5-2PGDG
 - Bump release number (missed in previous commit)
 

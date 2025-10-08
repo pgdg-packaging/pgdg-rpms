@@ -5,12 +5,25 @@
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel flex krb5-devel openssl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel flex krb5-devel
 Requires:	postgresql%{pgmajorversion}-server
+
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 
 %description
 Trusted Language Extensions (TLE) for PostgreSQL (pg_tle) is an open source
@@ -21,19 +34,23 @@ restricted filesystems and work with PostgreSQL internals through a SQL API.
 
 %if %llvm
 %package llvmjit
-Summary:	Just-in-time compilation support for pg_tle
+Summary:	Just-in-time compilation support for xxx
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This package provides JIT support for pg_tle
+This package provides JIT support for xxx
 %endif
 
 %prep
@@ -65,6 +82,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-2PGDG
+- Add SLES 16 support
+
 * Wed Oct 1 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-1PGDG
 - Update to 1.5.2 per changes described at:
   https://github.com/aws/pg_tle/releases/tag/v1.5.2
