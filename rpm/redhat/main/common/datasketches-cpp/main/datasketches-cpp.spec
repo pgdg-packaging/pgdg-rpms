@@ -4,7 +4,7 @@
 Summary:	Routing functionality for PostGIS
 Name:		datasketches-cpp
 Version:	5.2.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/apache/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		%{name}-cmakelist-lib64.patch
@@ -33,7 +33,11 @@ create adaptors for target systems, such as PostgreSQL.
 %build
 %{__install} -d build
 pushd build
-%cmake .. \
+%if 0%{?suse_version} >= 1500
+cmake .. \
+%else
+%cmake3 .. \
+%endif
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DBUILD_TESTS=OFF \
@@ -60,6 +64,9 @@ popd
 %{_libdir}/DataSketches/*
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.0-2PGDG
+- Fix SLES builds
+
 * Mon Apr 7 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.0-1PGDG
 - Update to 5.2.0
 - Add missing BRs
