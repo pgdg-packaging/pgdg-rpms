@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20140221
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PL/XSLT Procedural Language Handler for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -21,13 +21,17 @@ you to write stored procedures in XSLT.
 %package llvmjit
 Summary:	Just-in-time compilation support for plxslt
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -62,6 +66,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> 0.20140221-3PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 0.20140221-2PGDG
 - Bump release number (missed in previous commit)
 

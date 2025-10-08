@@ -7,7 +7,7 @@
 %global powaminorversion 3
 
 %global __ospython %{_bindir}/python3
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -19,7 +19,7 @@
 Summary:	PostgreSQL Workload Analyzer Archivist
 Name:		%{sname}-archivist_%{pgmajorversion}
 Version:	%{powamajorversion}.%{powamidversion}.%{powaminorversion}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/powa-archivist/archive/REL_%{powamajorversion}_%{powamidversion}_%{powaminorversion}.tar.gz
 URL:		https://powa.readthedocs.io/
@@ -40,9 +40,13 @@ monitor and tune your PostgreSQL servers.
 %package llvmjit
 Summary:	Just-in-time compilation support for powa-archivist
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -84,6 +88,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 5.0.3-4PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 5.0.3-3PGDG
 - Bump release number (missed in previous commit)
 

@@ -5,7 +5,7 @@
 Summary:	A Postgres extension for exposing system metrics such as CPU, memory and disk information
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
@@ -24,13 +24,17 @@ NULL is returned for affected values.
 %package llvmjit
 Summary:	Just-in-time compilation support for system_stats
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -66,6 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2-45PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.2-3PGDG
 - Bump release number (missed in previous commit)
 

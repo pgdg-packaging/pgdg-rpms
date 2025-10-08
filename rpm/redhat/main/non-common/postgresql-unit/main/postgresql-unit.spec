@@ -5,7 +5,7 @@
 Summary:	SI Units for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	7.10
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ChristophBerg/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/ChristophBerg/%{sname}
@@ -22,9 +22,13 @@ input and output, and quantities can be converted to arbitrary scale.
 %package llvmjit
 Summary:	Just-in-time compilation support for postgresql-unit
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -64,6 +68,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 7.10-6PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 7.10-5PGDG
 - Bump release number (missed in previous commit)
 

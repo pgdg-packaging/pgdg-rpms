@@ -6,14 +6,12 @@
 Summary:	JSON output plugin for changeset extraction
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.6
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{wal2json_rel}.tar.gz
 URL:		https://github.com/eulerto/wal2json
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
-
-Obsoletes:	%{sname}%{pgmajorversion} < 2.3-3
 
 %description
 wal2json is an output plugin for logical decoding. It means that the
@@ -31,13 +29,17 @@ schema-qualified, data types, and transaction ids.
 %package llvmjit
 Summary:	Just-in-time compilation support for wal2json
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit

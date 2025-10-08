@@ -5,7 +5,7 @@
 Summary:	PostgreSQL logical decoding output plugin for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.7
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/HighgoSoftware/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/HighgoSoftware/%{sname}
@@ -23,13 +23,17 @@ to a JSON-like format accepted by mongo.
 %package llvmjit
 Summary:	Just-in-time compilation support for wal2mongo
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -61,6 +65,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.7-5PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.0.7-4PGDG
 - Bump release number (missed in previous commit)
 

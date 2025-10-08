@@ -5,7 +5,7 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Redis
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/nahanni/rw_redis_fdw/
 Source0:	https://github.com/nahanni/rw_redis_fdw/archive/v%{version}.tar.gz
@@ -16,7 +16,7 @@ Requires:	postgresql%{pgmajorversion}-server
 %if 0%{?fedora} && 0%{?rhel} >= 8
 Requires:	libnsl hiredis
 %endif
-%if 0%{?suse_version}
+%if 0%{?suse_version} >= 1500
 Requires:	libnsl2 libhiredis1_1_0
 %endif
 
@@ -32,17 +32,21 @@ list, zset, and pubsub.
 %package llvmjit
 Summary:	Just-in-time compilation support for redis_fdw
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
-Requires:	llvm >= 13.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
-This packages provides JIT support for redis_fdw
+This package provides JIT support for redis_fdw
 %endif
 
 %prep
@@ -70,6 +74,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1-7PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.1-6PGDG
 - Bump release number (missed in previous commit)
 

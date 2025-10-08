@@ -8,7 +8,7 @@
 %global ppmajorver %{plprofilermajver}.%{plprofilermidver}
 
 %global __ospython %{_bindir}/python3
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -19,7 +19,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ppmajorver}.5
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 Summary:	PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -33,19 +33,19 @@ PL/pgSQL profiler is an extension and command line tool to generate performance
 profiles of PL/pgSQL code.
 
 %package server
-Provides:		%{name}%{version}-server%{?_isa} = %{version}-%{release}
-Summary:		PostgreSQL server side extension part of the PL/pgSQL profiler
-Requires:		postgresql%{pgmajorversion}-server
+Provides:	%{name}%{version}-server%{?_isa} = %{version}-%{release}
+Summary:	PostgreSQL server side extension part of the PL/pgSQL profiler
+Requires:	postgresql%{pgmajorversion}-server
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
 %description server
 PostgreSQL server side extension part of the PL/pgSQL profiler.
 
 %package client
-Provides:		%{name}%{version}-client%{?_isa} = %{version}-%{release}
-Summary:		Command Line Tool for the PL/pgSQL profiler
-Requires:		python3
-Requires:		python3-psycopg2
+Provides:	%{name}%{version}-client%{?_isa} = %{version}-%{release}
+Summary:	Command Line Tool for the PL/pgSQL profiler
+Requires:	python3
+Requires:	python3-psycopg2
 BuildRequires:	python3-six >= 1.4
 BuildRequires:	python3-psycopg2
 BuildRequires:	python3-devel python3-setuptools
@@ -57,13 +57,17 @@ Command Line Tool for the PL/pgSQL profiler
 %package llvmjit
 Summary:	Just-in-time compilation support for plprofiler
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -107,6 +111,9 @@ cd ..
 %endif
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-4PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 4.2.5-3PGDG
 - Bump release number (missed in previous commit)
 

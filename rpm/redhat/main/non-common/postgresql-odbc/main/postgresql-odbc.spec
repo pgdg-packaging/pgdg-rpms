@@ -5,7 +5,7 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -13,7 +13,7 @@ Source0:	https://github.com/postgresql-interfaces/psqlodbc/archive/refs/tags/REL
 Source1:	acinclude.m4
 
 BuildRequires:	autoconf krb5-devel pam-devel automake
-BuildRequires:	openssl-devel pam-devel postgresql%{pgmajorversion}-devel
+BuildRequires:	pam-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	unixODBC-devel
 
 Requires:	postgresql%{pgmajorversion}-libs
@@ -34,6 +34,18 @@ Requires:	zlib
 %if 0%{?suse_version} >= 1500
 BuildRequires:	zlib-devel
 Requires:	libz1
+%endif
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
 %endif
 
 Provides:	postgresql-odbc%{?_isa} >= 08.00.0100
@@ -88,6 +100,9 @@ popd
 %license license.txt
 
 %changelog
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0006-2PGDG
+- Add/improve SLES 16 support
+
 * Thu Jun 12 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0006-1PGDG
 - Update to 17.00.0006 per changes described at:
   https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-17_00_0006
