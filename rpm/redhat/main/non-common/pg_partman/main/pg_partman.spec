@@ -5,16 +5,14 @@
 Summary:	A PostgreSQL extension to manage partitioned tables by time or ID
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	5.2.4
-Release:	4PGDG%{?dist}
+Version:	5.3.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgpartman/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgpartman/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 Requires:	python3-psycopg2
-
-Obsoletes:	%{sname}%{pgmajorversion} < 4.4.0-2
 
 %description
 pg_partman is an extension to create and manage both time-based and
@@ -90,6 +88,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Oct 9 2025 Devrim Gündüz <devrim@gunduz.org> - 5.3.0-1PGDG
+- Update to 5.3.0 per changes described at:
+  https://github.com/pgpartman/pg_partman/releases/tag/v5.3.0
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 5.2.4-4PGDG
 - Add SLES 16 support
 
