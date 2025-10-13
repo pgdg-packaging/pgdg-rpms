@@ -24,16 +24,12 @@
 %global	python3_pkgversion 313
 %endif
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%endif
 
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.1
-Release:	3PGDG%{?dist}
+Version:	3.2
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
@@ -108,6 +104,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2-1PGDG
+- Update to 3.2
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 3.1-3PGDG
 - Add SLES 16 support
 
