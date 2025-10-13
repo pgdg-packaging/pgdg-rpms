@@ -16,7 +16,7 @@
 %endif
 Name:		%{sname}%{libgeotiffversion}
 Version:	1.7.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	GeoTIFF format library
 License:	MIT
 URL:		https://github.com/OSGeo/%{sname}
@@ -25,7 +25,7 @@ Source2:	%{name}-pgdg-libs.conf
 Patch0:		%{sname}_cmake.patch
 Patch1:		%{sname}-1.7.4-proj.patch
 BuildRequires:	libtiff-devel libjpeg-devel proj%{projmajorversion}-devel zlib-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.49 cmake
+BuildRequires:	pgdg-srpm-macros >= 1.0.51 cmake gcc gcc-c++ ccache
 
 %description
 GeoTIFF represents an effort by over 160 different remote sensing,
@@ -68,6 +68,8 @@ set -x
 %{__install} -d build
 pushd build
 cmake .. -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+	-DPROJ_LIBRARY=%{projinstdir}/lib64/libproj.so \
+	-DPROJ_INCLUDE_DIR=%{projinstdir}/include \
 	-DCMAKE_INSTALL_INCLUDEDIR=%{libgeotiff17instdir}/include \
 	-DCMAKE_INSTALL_BINDIR=%{libgeotiff17instdir}/bin \
 	-DCMAKE_INSTALL_LIBDIR=%{libgeotiff17instdir}/lib \
@@ -137,6 +139,9 @@ EOF
 %{libgeotiff17instdir}/lib/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-4PGDG
+- Fix mock builds. Per report from Christoph Berg.
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-3PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8.
 
