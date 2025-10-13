@@ -26,7 +26,6 @@
 %global projfullversion %proj97fullversion
 %global projinstdir %proj97instdir
 %endif
-%endif
 
 %global libgeotiffmajorversion 17
 %global libgeotiffinstdir %libgeotiff17instdir
