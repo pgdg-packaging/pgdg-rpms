@@ -1,10 +1,11 @@
+
 %global sname plpgsql_check
 
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.8.2
-Release:	3PGDG%{?dist}
+Version:	2.8.3
+Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -65,6 +66,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> 2.8.3-1PGDG
+- Update to 2.8.3 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.8.3
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.8.2-3PGDG
 - Add SLES 16 support
 
