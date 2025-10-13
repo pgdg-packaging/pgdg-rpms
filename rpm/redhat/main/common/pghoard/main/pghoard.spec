@@ -1,10 +1,10 @@
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
-Version:	2.5.1
+Version:	2.6.2
 Release:	1PGDG%{?dist}
 License:	BSD
-Source0:	https://github.com/ohmu/%{name}/archive/%{version}.tar.gz
-URL:		https://github.com/ohmu/%{name}
+Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
+URL:		https://github.com/Aiven-Open/%{name}
 BuildArch:	noarch
 BuildRequires:	python3-devel
 Requires:	python3-snappy python3-cryptography python3-boto
@@ -51,6 +51,9 @@ sed -e "s@#!/bin/python@#!%{_bindir}/python@" -i %{buildroot}%{_bindir}/*
 %license LICENSE
 
 %changelog
+* Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 2.6.2-1PGDG
+- Update to 2.6.2
+
 * Tue Feb 20 2024 Devrim Gündüz <devrim@gunduz.org> - 2.5.1-1PGDG
 - Update to 2.5.1
 - Add PGDG branding
