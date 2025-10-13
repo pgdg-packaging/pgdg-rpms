@@ -8,7 +8,7 @@
 %global ppg2minver 6
 %else
 %global ppg2midver 9
-%global ppg2minver 10
+%global ppg2minver 11
 %endif
 %{!?with_docs:%global with_docs 0}
 
@@ -24,7 +24,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	%{ppg2majver}.%{ppg2midver}.%{ppg2minver}
-Release:	5PGDG%{?dist}
+Release:	42PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -117,6 +117,10 @@ done
 %endif
 
 %changelog
+* Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.11-42PGDG
+- Update to 2.9.11 per changes descrihed at:
+  https://github.com/psycopg/psycopg2/releases/tag/2.9.11
+
 * Sat Oct 4 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.10-5PGDG
 - Add SLES 16 support
 
