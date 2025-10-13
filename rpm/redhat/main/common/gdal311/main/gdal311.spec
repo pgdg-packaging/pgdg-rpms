@@ -43,7 +43,7 @@
 
 Name:		%{sname}311
 Version:	3.11.4
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -245,8 +245,8 @@ Summary:	GDAL file format library
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
 Requires:	netcdf >= 4.7 gpsbabel
-Requires:	libgeotiff%{libgeotiffmajorversion}-devel
-Requires:	libspatialite%{libspatialitemajorversion}-devel
+Requires:	libgeotiff%{libgeotiffmajorversion}
+Requires:	libspatialite%{libspatialitemajorversion}
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} <= 1499
@@ -487,6 +487,11 @@ done
 %endif
 
 %changelog
+* Mon Oct 13 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-5PGDG
+- Remove dependency to libgeotiff-devel and libspatialite-devel
+  in the -libs subpackage. They are a part of BR. Per report from
+  Sagar Yedida.
+
 * Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-4PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8.
 
