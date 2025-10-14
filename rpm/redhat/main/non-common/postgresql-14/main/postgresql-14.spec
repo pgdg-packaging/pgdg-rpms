@@ -265,7 +265,7 @@ BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} <= 1315
 Requires(post):		systemd-sysvinit
 %endif
 %else
