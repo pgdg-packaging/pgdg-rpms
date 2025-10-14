@@ -1,9 +1,9 @@
 %global sname check_pgactivity
 
-%global		_tag REL2_7
+%global		_tag REL2_8
 
 Name:		nagios-plugins-pgactivity
-Version:	2.7
+Version:	2.8
 Release:	1PGDG%{dist}
 Summary:	PostgreSQL monitoring plugin for Nagios
 License:	PostgreSQL
@@ -33,8 +33,9 @@ check_pgactivity is part of Open PostgreSQL Monitoring.
 %license LICENSE
 
 %changelog
-* Mon Sep 25 2023 Devrim Gündüz <devrim@gunduz.org> 2.7-1
-- Update to 2.7
+* Tue Oct 14 2025 Devrim Gündüz <devrim@gunduz.org> 2.8-1PGDG
+- Update to 2.8 per changes described at:
+  https://github.com/OPMDG/check_pgactivity/releases/tag/REL2_8
 
 * Mon Aug 21 2023 Devrim Gündüz <devrim@gunduz.org> 2.6-2PGDG
 - Remove RHEL 6 bits
