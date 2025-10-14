@@ -36,7 +36,7 @@ BuildRequires:	libopenssl-1_1-devel
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
-BuildRequires:	libopenssl3-devel
+BuildRequires:	libopenssl-3-devel
 %endif
 %if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
