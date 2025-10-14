@@ -58,7 +58,7 @@ URL:		https://www.postgis.net/
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
 BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 BuildRequires:	pcre2-devel
 Requires:	pcre2
 %else
