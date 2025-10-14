@@ -176,11 +176,14 @@ BuildRequires:	llvm5.0-devel >= 5.0 llvm-toolset-7-clang >= 4.0.1
 %if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 BuildRequires:	llvm6-devel clang6-devel
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 13.0 clang-devel >= 13.0
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -308,19 +311,19 @@ if you're installing the postgresql%{pgmajorversion}-server package.
 Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
-%if 0%{?rhel} && 0%{?rhel} <= 6
-Requires:	openssl
-%else
 %if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 Requires:	libopenssl1_0_0
-%else
-%if 0%{?suse_version} >= 1500
+%endif
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
-Requires:	openssl-libs >= 1.0.2k
 %endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
 %endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
 %endif
+
 
 %if 0%{?rhel} && 0%{?rhel} == 7
 %ifarch ppc64 ppc64le
@@ -416,11 +419,14 @@ Requires:	llvm5.0-devel >= 5.0 llvm-toolset-7-clang >= 4.0.1
 %if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 Requires:	llvm6-devel clang6-devel
 %endif
-%if 0%{?suse_version} >= 1500
-Requires:	llvm17-devel clang17-devel
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
-Requires:	llvm-devel >= 13.0 clang-devel >= 13.0
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
+%if 0%{?fedora} || 0%{?rhel}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -473,11 +479,14 @@ Requires:	llvm5.0 >= 5.0
 %if 0%{?suse_version} == 1315
 Requires:	llvm
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libLLVM17
 %endif
+%if 0%{?suse_version} == 1600
+Requires:	libLLVM19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-Requires:	llvm >= 13.0
+Requires:	llvm >= 19.0
 %endif
 
 Provides:	postgresql-llvmjit >= %{version}-%{release}
@@ -1419,6 +1428,9 @@ fi
 %endif
 
 %changelog
+* Tue Oct 14 2025 Devrim Gunduz <devrim@gunduz.org> - 15.14-5PGDG
+- Add SLES 16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 15.14-4PGDG
 - Bump release number (missed in previous commit)
 
