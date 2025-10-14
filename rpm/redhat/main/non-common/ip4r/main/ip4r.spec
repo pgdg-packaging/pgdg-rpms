@@ -21,7 +21,7 @@ ip6r, ipaddress and iprange are types that contain a single IPv4/IPv6 address
 and a range of IPv4/IPv6 addresses respectively. They can be used as a more
 flexible, indexable version of the cidr type.
 
-~%if %llvm
+%if %llvm
 %package llvmjit
 Summary:	Just-in-time compilation support for ip4r
 Requires:	%{name}%{?_isa} = %{version}-%{release}
