@@ -47,7 +47,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -58,7 +58,7 @@ URL:		https://www.postgis.net/
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
 BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
++%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 BuildRequires:	pcre2-devel
 Requires:	pcre2
 %else
@@ -380,6 +380,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 15 2025 Devrim Gunduz <devrim@gunduz.org> - 3.5.3-8PGDG
+- Fix SLES 16 support
+
 * Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.5.3-7PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8
 - Add SLES 16 support
