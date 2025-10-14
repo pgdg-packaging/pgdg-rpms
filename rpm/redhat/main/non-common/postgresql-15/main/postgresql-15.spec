@@ -280,7 +280,6 @@ Requires:		systemd
 Requires(post):		systemd-sysvinit
 %endif
 %else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
