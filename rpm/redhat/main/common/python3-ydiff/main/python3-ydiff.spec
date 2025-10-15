@@ -10,9 +10,13 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -20,7 +24,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	46PGDG%{?dist}.1
+Release:	47PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -68,6 +72,9 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
 
 %changelog
+* Wed Oct 15 2025 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-47PGDG
+- Add SLES 16 support
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-46PGDG.1
 - Add Fedora 43 support
 
