@@ -4,15 +4,13 @@
 
 Summary:	A PostgreSQL extension collecting statistics about predicates
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.2
-Release:	3PGDG%{?dist}
+Version:	2.1.3
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/powa-team/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
-
-Obsoletes:	%{sname}%{pgmajorversion} < 2.0.2-2
 
 %description
 pg_qualstats is a PostgreSQL extension keeping statistics on
@@ -81,6 +79,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 15 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.3-1PGDG
+- Update to 2.1.3 per changes described at:
+  https://github.com/powa-team/pg_qualstats/releases/tag/2.1.3
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.2-3PGDG
 - Add SLES 16 support
 
