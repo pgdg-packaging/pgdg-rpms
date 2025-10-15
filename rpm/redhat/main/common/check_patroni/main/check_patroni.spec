@@ -24,13 +24,17 @@
 
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
 Source0:	https://github.com/dalibo/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildArch:	noarch
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
 BuildRequires:	pyproject-rpm-macros
+%endif
 Requires:	nagios-plugins
 Provides:	%{sname} = %{version}
 
@@ -56,6 +60,9 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Wed Oct 15 2025 Devrim Gündüz <devrim@gunduz.org> 2.2.0-3PGDG
+- Fix builds on SLES
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> 2.2.0-2PGDG
 - Add SLES 16 support
 - Use Python 3.1x on all platforms
