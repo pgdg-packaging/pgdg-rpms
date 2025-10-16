@@ -1,5 +1,4 @@
 %global modname py_consul
-
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -12,9 +11,13 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -22,7 +25,7 @@
 
 Name:		py-consul
 Version:	1.6.0
-Release:	44PGDG%{?dist}.1
+Release:	45PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -64,6 +67,9 @@ Python client for Consul
 %{pgdg_python3_sitelib}/consul/api/acl/__pycache__/*.py*
 
 %changelog
+* Thu Oct 16 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.0-45PGDG
+- Add SLES 16 support
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.0-44PGDG.1
 - Add Fedora 43 support
 
