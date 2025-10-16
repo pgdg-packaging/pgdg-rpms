@@ -3,15 +3,15 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.0
-Release:	4PGDG%{?dist}
+Version:	4.0
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/MigOpsRepos/%{sname}
 Source0:	https://github.com/MigOpsRepos//%{sname}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	krb5-devel openssl-devel
+BuildRequires:	krb5-devel openssl-devel cracklib-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -66,6 +66,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Oct 16 2025 Devrim Gunduz <devrim@gunduz.org> - 4.0-1PGDG
+- Update to 4.0 per changes described at
+  https://github.com/MigOpsRepos/credcheck/releases/tag/v4.0
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0-3PGDG
 - Add SLES 16 support
 
