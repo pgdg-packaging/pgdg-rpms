@@ -60,11 +60,13 @@ Python client for Consul
 %license LICENSE
 %{pgdg_python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/*
 %{pgdg_python3_sitelib}/consul/*.py*
-%{pgdg_python3_sitelib}/consul/__pycache__/*.py*
 %{pgdg_python3_sitelib}/consul/api/*.py*
-%{pgdg_python3_sitelib}/consul/api/__pycache__/*.py*
 %{pgdg_python3_sitelib}/consul/api/acl/*.py*
+%if 0%{?rhel} || 0%{?fedora}
+%{pgdg_python3_sitelib}/consul/__pycache__/*.py*
+%{pgdg_python3_sitelib}/consul/api/__pycache__/*.py*
 %{pgdg_python3_sitelib}/consul/api/acl/__pycache__/*.py*
+%endif
 
 %changelog
 * Thu Oct 16 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.0-45PGDG
