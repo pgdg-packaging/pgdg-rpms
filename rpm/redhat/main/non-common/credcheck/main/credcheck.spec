@@ -11,7 +11,7 @@ URL:		https://github.com/MigOpsRepos/%{sname}
 Source0:	https://github.com/MigOpsRepos//%{sname}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	krb5-devel openssl-devel cracklib-devel
+BuildRequires:	krb5-devel openssl-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
