@@ -1,20 +1,38 @@
 %global debug_package %{nil}
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
-%global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
+
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Summary:	Command line tool designed to interact with the PostgreSQL Extension Network
 Name:		pgxnclient
 Version:	1.3.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Source0:	https://pypi.python.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 License:	BSD
-Url:		https://github.com/pgxn/pgxnclient
-BuildRequires:	python3-devel python3-setuptools
+Url:		https://github.com/pgxn/%{name}
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+Requires:	python%{python3_pkgversion}
 
 %description
 The PGXN Client is a command line tool designed to interact with the
@@ -25,11 +43,11 @@ removing extensions in a PostgreSQL installation or database.
 %setup -q -n %{name}-%{version}
 
 %build
-%{__python3} setup.py build
+%pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%{__python3} setup.py install --root %{buildroot}
+%pyproject_install
+
 
 %files
 %defattr(-,root,root)
@@ -43,12 +61,16 @@ removing extensions in a PostgreSQL installation or database.
 %{python3_sitelib}/%{name}/utils/*.py*
 %{python3_sitelib}/%{name}/commands/*.py*
 %{python3_sitelib}/%{name}/libexec/*
-%{python3_sitelib}/%{name}-%{version}-py%{pyver}.egg-info/*
+%{python3_sitelib}/%{name}-%{version}.dist-info/
 %{python3_sitelib}/%{name}/__pycache__/*.p*
 %{python3_sitelib}/%{name}/commands/__pycache__/*.p*
 %{python3_sitelib}/%{name}/utils/__pycache__/*.p*
 
 %changelog
+* Thu Oct 16 2025 Devrim Gündüz <devrim@gunduz.org> 1.3.2-5PGDG
+- Switch to pyproject builds.
+- Add SLES 16 support
+
 * Wed May 28 2025 Devrim Gündüz <devrim@gunduz.org> 1.3.2-4PGDG
 - Add RHEL 10 support
 
