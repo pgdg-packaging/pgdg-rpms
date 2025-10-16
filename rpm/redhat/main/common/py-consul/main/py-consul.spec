@@ -62,6 +62,9 @@ Python client for Consul
 %{pgdg_python3_sitelib}/consul/*.py*
 %{pgdg_python3_sitelib}/consul/api/*.py*
 %{pgdg_python3_sitelib}/consul/api/acl/*.py*
+%if 0%{?suse_version} == 1500
+%{pgdg_python3_sitelib}/docs/*.py
+%endif
 %if 0%{?rhel} || 0%{?fedora}
 %{pgdg_python3_sitelib}/consul/__pycache__/*.py*
 %{pgdg_python3_sitelib}/consul/api/__pycache__/*.py*
