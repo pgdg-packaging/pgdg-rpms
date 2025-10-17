@@ -1,17 +1,34 @@
 %global sname mailchimp_fdw
 %global packagesoversion 0.3.0
 
-%if 0%{?fedora} >= 35
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
-%global python_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
+
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
@@ -25,11 +42,11 @@ This is a PostgreSQL FDW for Mailchimp
 %setup -q -n %{sname}-%{version}
 
 %build
-%{__python3} setup.py build
+%{__ospython} setup.py build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -43,6 +60,9 @@ This is a PostgreSQL FDW for Mailchimp
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Fri Oct 17 2025 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-4PGDG
+- Fix builds with Python 3.1x
+
 * Mon Oct 15 2018 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-3PGDG
 - Enable builds on Python 3.10+
 - Add PGDG branding
