@@ -1,5 +1,5 @@
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10 || 0%{?suse_version} >= 1600
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -7,7 +7,7 @@
 
 Name:		PyGreSQL
 Version:	6.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	A Python client library for PostgreSQL
 
 URL:		http://www.PyGreSQL.org/
@@ -25,7 +25,12 @@ Provides:	python3-%{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python2-%{name}}
 
 BuildRequires:	postgresql%{pgmajorversion}-devel python3-devel
-BuildRequires:	pgdg-srpm-macros libpq5-devel
+BuildRequires:	libpq5-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Requires:	libpq5
 
@@ -41,20 +46,23 @@ Python code for accessing a PostgreSQL database.
 find -type f -exec chmod 644 {} +
 
 %build
-%{__python3} setup.py build
+%pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+%pyproject_install
 
 %files
 %license docs/copyright.rst
 %doc docs/*.rst
-%{python3_sitearch}/%{name}-%{version}-py%{py3ver}*.egg-info/
+%{python3_sitearch}/%{name}-%{version}.dist-info/
 %{python3_sitearch}/pg/*py*
 %{python3_sitearch}/pgdb/*py*
 
 %changelog
+* Fri Oct 17 2025 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-3PGDG
+- Add SLES 16 support
+- Switch to pyproject builds
+
 * Mon Apr 14 2025 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-2PGDG
 - Add RHEL 10 support
 
