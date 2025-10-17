@@ -1,10 +1,13 @@
 Summary:	A fast PostgreSQL log analyzer
 Name:		pgbadger
 Version:	13.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
-Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{name}
+Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
+# Should be removed in next release.
+# Needed for perl 5.42:
+Patch0:		%{name}-13.1-precedence.patch
 BuildArch:	noarch
 BuildRequires:	perl make
 Requires:	perl-Text-CSV_XS perl
@@ -26,6 +29,7 @@ compressed file.
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 %build
 %{__perl} Makefile.PL INSTALLDIRS=vendor
@@ -44,6 +48,9 @@ compressed file.
 %{_mandir}/man1/%{name}.1p.gz
 
 %changelog
+* Fri Oct 17 2025 - Devrim Gündüz <devrim@gunduz.org> 13.1-2PGDG
+- Add a patch from upstream to fix Perl 5.42 builds
+
 * Tue Mar 18 2025 - Devrim Gündüz <devrim@gunduz.org> 13.1-1PGDG
 - Update to 13.1, per changes described at:
   https://github.com/darold/pgbadger/releases/tag/v13.1
