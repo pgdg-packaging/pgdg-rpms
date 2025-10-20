@@ -15,7 +15,19 @@ Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
 
 BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel libyaml-devel
-BuildRequires:	libzstd-devel meson openssl-devel zlib-devel
+BuildRequires:	libzstd-devel meson zlib-devel
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	lz4-libs libzstd libssh2
