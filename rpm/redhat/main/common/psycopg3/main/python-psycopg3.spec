@@ -22,8 +22,8 @@
 
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
-Version:	3.2.10
-Release:	2PGDG%{?dist}
+Version:	3.2.11
+Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -31,6 +31,11 @@ Source0:	https://github.com/psycopg/psycopg/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	python3-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Requires:	libpq5 >= 10.0
 Requires:	python3-typing-extensions
@@ -43,7 +48,7 @@ programming language. At its core it fully implements the Python DB
 API 2.0 specifications. Several extensions allow access to many of the
 features offered by PostgreSQL.
 
-# Enable this package only on Fedora, which has PY 3.9:
+# Enable this package only on Fedora:
 %if 0%{?fedora} >= 40
 %package -n python3-%{sname}-tests
 Summary:	A testsuite for Python 3
@@ -74,7 +79,7 @@ find . -iname "*.py" -exec sed -i "s/\/usr\/bin\/env python/\/usr\/bin\/python3/
 
 export PATH=%{pginstdir}/bin:$PATH
 pushd psycopg
-%{__ospython} setup.py build
+%pyproject_wheel
 popd
 
 %if %with_docs
@@ -89,7 +94,7 @@ for i in `find doc -iname "*.css"`; do sed -i 's/\r//' $i; done
 %install
 export PATH=%{pginstdir}/bin:$PATH
 pushd psycopg
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 popd
 
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{sname}/
@@ -113,7 +118,7 @@ fi
 %doc README.rst
 %dir %{python3_sitearch}/%{sname}
 
-%{python3_sitelib}/psycopg-%{version}-py%{py3ver}.egg-info/*
+%{python3_sitelib}/psycopg-%{version}.dist-info/
 %{python3_sitelib}/psycopg/*.py
 %{python3_sitelib}/psycopg/crdb/*.py*
 %{python3_sitelib}/psycopg/pq/*.py*
@@ -140,6 +145,11 @@ fi
 %endif
 
 %changelog
+* Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.11-1PGDG
+- Update to 3.2.11 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.11
+- Switch to pyproject builds
+
 * Sat Oct 4 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.10-2PGDG
 - Add SLES 16 support
 
