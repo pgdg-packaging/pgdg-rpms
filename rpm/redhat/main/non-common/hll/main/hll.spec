@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL extension adding HyperLogLog data structures as a native data type
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.18
-Release:	5PGDG%{dist}
+Version:	2.19
+Release:	1PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
@@ -70,6 +70,10 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Mon Oct 20 2025 - Devrim Gündüz <devrim@gunduz.org> - 2.19-1PGDG
+- Update to 2.19 per changes described at:
+  https://github.com/citusdata/postgresql-hll/releases/tag/v2.19
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 2.18-5PGDG
 - Add SLES 16 support
 
