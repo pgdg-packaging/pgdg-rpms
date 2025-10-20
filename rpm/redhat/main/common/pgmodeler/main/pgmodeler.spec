@@ -3,7 +3,7 @@
 %global __requires_exclude (%{_privatelibs})
 
 Name:		pgmodeler
-Version:	1.2.1
+Version:	1.2.2
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Database Modeler
 License:	GPLv3
@@ -15,7 +15,7 @@ Source3:	%{name}-mime-dbm.xml
 Requires:	hicolor-icon-theme shared-mime-info libpq5
 BuildRequires:	desktop-file-utils gettext libxml2-devel libpq5-devel
 
-%if 0%{?suse_version} && 0%{?suse_version} >= 1400
+%if 0%{?suse_version} >= 1500
 BuildRequires:	libappstream-glib8 qt6-base-devel qt6-svg-devel qt6-macros appstream-glib
 %else
 BuildRequires:	qt6-qtbase-devel qt6-qtsvg-devel qt6-rpm-macros libappstream-glib
@@ -92,6 +92,10 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/%{name}.a
 %{_datadir}/appdata/%{name}.appdata.xml
 
 %changelog
+* Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> 1.2.2-1PGDG
+- Update to 1.2.2 per changes described at:
+  https://github.com/pgmodeler/pgmodeler/releases/tag/v1.2.2
+
 * Sat Aug 30 2025 Devrim Gündüz <devrim@gunduz.org> 1.2.1-1PGDG
 - Update to 1.2.1 per changes described at:
   https://github.com/pgmodeler/pgmodeler/releases/tag/v1.2.1
