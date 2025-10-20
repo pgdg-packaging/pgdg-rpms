@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-DIST=.f99
+DIST=".sles16"
 SPECFILE="pg_dbms_errlog.spec"
 
 # Now, include global Makefile
