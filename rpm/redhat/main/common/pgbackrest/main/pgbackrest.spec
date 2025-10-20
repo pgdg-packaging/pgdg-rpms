@@ -3,15 +3,16 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.56.0
-Release:	2PGDG%{?dist}
+Version:	2.57.0
+Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/pgbackrest/pgbackrest/archive/release/%{version}.tar.gz
 Source1:	%{name}-conf.patch
-Source2:	%{name}-tmpfiles.d
 Source3:	%{name}.logrotate
 Source4:	%{name}.service
+Source6:	%{name}-sysusers.conf
+Source7:	%{name}-tmpfiles.d
 
 BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel libyaml-devel
 BuildRequires:	libzstd-devel meson openssl-devel zlib-devel
@@ -26,21 +27,13 @@ BuildRequires:	liblz4-devel libbz2-devel ninja
 %endif
 
 Requires:	postgresql-libs
-Requires(pre):	/usr/sbin/useradd /usr/sbin/groupadd
 
 BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%endif
-%else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 %description
 pgBackRest aims to be a simple, reliable backup and restore system that can
@@ -73,27 +66,26 @@ are required to perform a backup which increases security.
 %{__install} -p -d %{buildroot}%{_sysconfdir}/logrotate.d
 %{__install} -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
-# ... and make a tmpfiles script to recreate it at reboot.
-%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
-%{__install} -m 0644 %{SOURCE2} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
-
 # Install unit file:
 %{__install} -d %{buildroot}%{_unitdir}
 %{__install} -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/%{name}.service
 
+%{__install} -m 0644 -D %{SOURCE6} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
+
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
+
 %pre
-# PGDATA needs removal of group and world permissions due to pg_pwd hole.
-%{__install} -d -m 700 /var/lib/pgsql/
-groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
-useradd -M -g postgres -o -r -d /var/lib/pgsql -s /usr/bin/bash \
-	-c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
+%sysusers_create_package %{name} %SOURCE6
 %{__chown} postgres: /var/lib/pgsql
 
 %post
 if [ $1 -eq 1 ] ; then
    /usr/bin/systemctl daemon-reload >/dev/null 2>&1 || :
    %if 0%{?suse_version} >= 1500
-   %systemd_post %{name}.service
+   %service_add_pre postgresql-%{pgpackageversion}.service
+   %else
+   %systemd_post %{sname}-%{pgpackageversion}.service
    %endif
 fi
 
@@ -119,12 +111,18 @@ fi
 %config(noreplace) %attr (644,root,root) %{_sysconfdir}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %{_tmpfilesdir}/%{name}.conf
+%{_sysusersdir}/%{name}-pgdg.conf
 %{_unitdir}/%{name}.service
 %attr(-,postgres,postgres) /var/log/%{name}
 %attr(-,postgres,postgres) %{_sharedstatedir}/%{name}
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Tue Jul 22 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-1PGDG
+- Update to 2.57.0, per changes described at:
+  https://pgbackrest.org/release.html#2.57.0
+- Utilise systemd-sysusers feature that comes with systemd 215.
+
 * Mon Aug 11 2025 Devrim Gündüz <devrim@gunduz.org> - 2.56.0-2PGDG
 - Add missing libpq5-devel. Per report from Christoph.
 
