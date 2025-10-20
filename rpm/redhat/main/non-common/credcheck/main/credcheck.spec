@@ -10,8 +10,20 @@ License:	PostgreSQL
 URL:		https://github.com/MigOpsRepos/%{sname}
 Source0:	https://github.com/MigOpsRepos//%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	krb5-devel openssl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel krb5-devel
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -69,6 +81,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 * Mon Oct 20 2025 Devrim Gunduz <devrim@gunduz.org> - 4.1-1PGDG
 - Update to 4.1 per changes described at
   https://github.com/MigOpsRepos/credcheck/releases/tag/v4.1
+- Update OpenSSL dependencies
 
 * Thu Oct 16 2025 Devrim Gunduz <devrim@gunduz.org> - 4.0-1PGDG
 - Update to 4.0 per changes described at
