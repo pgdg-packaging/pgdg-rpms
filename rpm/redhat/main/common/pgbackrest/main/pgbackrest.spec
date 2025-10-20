@@ -118,7 +118,7 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
-* Tue Jul 22 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-1PGDG
+* Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-1PGDG
 - Update to 2.57.0, per changes described at:
   https://pgbackrest.org/release.html#2.57.0
 - Utilise systemd-sysusers feature that comes with systemd 215.
