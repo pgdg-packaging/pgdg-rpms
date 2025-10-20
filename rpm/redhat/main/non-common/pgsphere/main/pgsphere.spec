@@ -5,8 +5,8 @@
 
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5.1
-Release:	6PGDG%{?dist}
+Version:	1.5.2
+Release:	1PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -76,6 +76,10 @@ This package provides JIT support for pgsphere
 %endif
 
 %changelog
+* Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-1PGDG
+- Update to 1.5.2 per changes described at:
+  https://github.com/postgrespro/pgsphere/releases/tag/1.5.2
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-6PGDG
 - Add SLES 16 support
 
