@@ -32,6 +32,8 @@ export extrasrepoenabled=1	# 1 or 0. Currently for RHEL 9, 8 and SLES 15
 export GPG_TTY=$(tty)
 export GPG_PASSWORD=foobar
 
+export AWS_PAGER=""
+
 export CF_DEBUG_DISTRO_ID=XXXXXXXXXXXXXXXXXX
 export CF_SRPM_DISTRO_ID=XXXXXXXXXXXXXXXXXX
 
