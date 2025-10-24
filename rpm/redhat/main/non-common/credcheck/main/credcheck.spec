@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.1
+Version:	4.2
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
@@ -78,6 +78,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Fri Oct 24 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2-1PGDG
+- Update to 4.2 per changes described at
+  https://github.com/MigOpsRepos/credcheck/releases/tag/v4.2
+
 * Mon Oct 20 2025 Devrim Gunduz <devrim@gunduz.org> - 4.1-1PGDG
 - Update to 4.1 per changes described at
   https://github.com/MigOpsRepos/credcheck/releases/tag/v4.1
