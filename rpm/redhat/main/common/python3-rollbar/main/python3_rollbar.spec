@@ -1,24 +1,43 @@
 %global sname	rollbar
-%global __ospython %{_bindir}/python3
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
+
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
 Name:		python3-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	0.16.2
-Release:	2PGDG%{?dist}
+Release:	42PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
 BuildArch:	noarch
 
-BuildRequires:	python3-setuptools
-
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+Requires:	python%{python3_pkgversion}-%{name}
 Requires:	python3-requests
+
+Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
+Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 
 %description
 The rollbar module makes it easy to write user friendly command line interfaces.
@@ -42,9 +61,6 @@ Python versions.
 
 %install
 %{__ospython} setup.py install --prefix=%{_prefix} --root=%{buildroot} -O2
-
-%clean
-%{__rm} -rf %{buildroot}
 
 %files
 %{_bindir}/%{sname}
@@ -84,6 +100,9 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Sat Oct 25 2025 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-42PGDG
+- Add SLES 16 support
+
 * Tue Dec 17 2024 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-2PGDG
 - Add RHEL 10 support
 - Add PGDG branding
