@@ -51,6 +51,11 @@ documentation and it doesn't say things like that!
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
 
+# Create __pycache__ directories and their contents in SLES *too*:
+%if 0%{?suse_version}
+%py3_compile %{buildroot}%{python3_sitelib}
+%endif
+
 %files
 %doc README.rst
 %license LICENSE
