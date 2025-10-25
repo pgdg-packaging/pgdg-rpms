@@ -1,16 +1,32 @@
-%global sname plac
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
-%global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 
 Name:		python3-plac
 Version:	1.3.5
-Release:	2PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	The smartest command line arguments parser in the world
 License:	BSD-2-Clause
 URL:		https://github.com/ialbert/plac
@@ -20,7 +36,11 @@ Source1:	plac_runner.py.1
 
 BuildArch:	noarch
 
-BuildRequires:	python3-devel
+BuildRequires:	python%{python3_pkgversion}-devel
+Requires:	python%{python3_pkgversion}-%{name}
+
+Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
+Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 
 %description
 plac is a Python package that can generate command line parameters from
@@ -38,10 +58,10 @@ in your source code.}
 %setup -q -n plac-%{version}
 
 %build
-%{__python3} setup.py build
+%{__ospython} setup.py build
 
 %install
-%{__python3} setup.py install --no-compile --root %{buildroot}
+%{__ospython} setup.py install --no-compile --root %{buildroot}
 
 # Install man file
 %{__install} -t '%{buildroot}%{_mandir}/man1' -m 0644 -p -D '%{SOURCE1}'
@@ -61,6 +81,9 @@ in your source code.}
 %{python3_sitelib}/__pycache__/%{sname}*pyc
 
 %changelog
+* Sat Oct 25 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-42PGDG
+- Add SLES 16 support
+
 * Wed Dec 18 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-2PGDG
 - Add RHEL 10 support
 
