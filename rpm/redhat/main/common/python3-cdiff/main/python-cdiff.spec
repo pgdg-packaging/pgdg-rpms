@@ -1,3 +1,18 @@
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	python3_pkgversion 313
+%endif
 %global sname cdiff
 
 Name:		python3-%{sname}
