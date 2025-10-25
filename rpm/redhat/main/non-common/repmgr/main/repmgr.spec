@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -48,29 +48,27 @@ Requires:	libzstd >= 1.4.0
 %endif
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%endif
-%else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
 
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 BuildRequires:	libxslt-devel pam-devel readline-devel
 BuildRequires:	libmemcached-devel libicu-devel
 Requires:	postgresql%{pgmajorversion}-server
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl1_1
-%else
-Requires:	openssl-libs >= 1.0.2k
+BuildRequires:	libopenssl-1_1-devel
 %endif
-
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
+%endif
 
 %description
 repmgr is an open-source tool suite for managing replication and failover in
@@ -91,13 +89,17 @@ applications which will directly interact with repmgr.
 %package llvmjit
 Summary:	Just-in-time compilation support for repmgr
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -184,6 +186,9 @@ fi
 %endif
 
 %changelog
+* Sat Oct 25 2025 - Devrim Gündüz <devrim@gunduz.org> - 5.5.0-5PGDG
+- Add SLES 16 support and remove some obsoleted dependencies.
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 5.5.0-4PGDG
 - Bump release number (missed in previous commit)
 
