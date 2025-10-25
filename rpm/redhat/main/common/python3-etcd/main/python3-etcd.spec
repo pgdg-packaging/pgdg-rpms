@@ -10,9 +10,13 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
 %global modname etcd
@@ -23,7 +27,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.5
-Release:	49PGDG%{?dist}.1
+Release:	50PGDG%{?dist}
 Summary:	A python client library for etcd
 
 License:	MIT
@@ -54,7 +58,7 @@ Requires:	python%{python3_pkgversion}-dns >= 1.13.0
 %endif
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 Requires:	python%{python3_pkgversion}-urllib3 >= 1.7.1
 Requires:	python%{python3_pkgversion}-dnspython >= 1.13.0
 %endif
@@ -82,6 +86,9 @@ election.
 %{python3_sitelib}/*
 
 %changelog
+* Sat Oct 25 2025 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-50PGDG
+- Add SLES 16 support
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-49PGDG.1
 - Add Fedora 43 support
 
