@@ -1,3 +1,5 @@
+%global sname plac
+
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -81,7 +83,7 @@ in your source code.}
 %{python3_sitelib}/__pycache__/%{sname}*pyc
 
 %changelog
-* Sat Oct 25 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-42PGDG
+* Sat Oct 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-42PGDG
 - Add SLES 16 support
 
 * Wed Dec 18 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-2PGDG
