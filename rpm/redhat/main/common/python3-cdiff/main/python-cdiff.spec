@@ -1,13 +1,8 @@
 %global sname cdiff
 
-%global __ospython %{_bindir}/python3
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-%global python3_sitelib64 %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")
-
 Name:		python3-%{sname}
 Version:	1.0
-Release:	1%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	View colored, incremental diff in a workspace or from stdin, with side by side and auto pager support
 
 License:	BSD
@@ -17,7 +12,15 @@ Source0:	https://files.pythonhosted.org/packages/69/6c/301876940e760a8b46c1caacf
 BuildArch:	noarch
 
 Requires:	less python3
-BuildRequires:	python3-devel python3-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
+
+Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
+Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 
 %description
 Term based tool to view colored, incremental diff in a
@@ -28,10 +31,10 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %setup -q -n %{sname}-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
+%pyproject_install
 
 %files
 %license LICENSE
@@ -41,5 +44,8 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %{python3_sitelib}/cdiff*
 
 %changelog
+* Sat Oct 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0-42PGDG
+- Switch to pyproject build
+
 * Wed Aug 5 2020 Devrim Gündüz <devrim@gunduz.org> - 1.0-1
 - Initial packaging for PostgreSQL RPM repository, to satisfy patroni dependency.
