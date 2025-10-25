@@ -33,6 +33,8 @@ Source:		https://github.com/python-%{sname}/%{sname}/archive/refs/tags/v%{versio
 BuildRequires:	python3-devel python3-setuptools
 BuildArch:	noarch
 
+Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
+
 %description
 Parsy is an easy and elegant way to parse text in Python by combining small
 parsers into complex, larger parsers. If it means anything to you, it's a
