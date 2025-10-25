@@ -1,14 +1,31 @@
 %global sname parsy
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
-Name:		python3-%{sname}
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+
+Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.1
-Release:	1PGDG%{dist}
+Release:	42PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -27,10 +44,10 @@ documentation and it doesn't say things like that!
 %setup -q -n %{sname}-%{version}
 
 %build
-%{__python3} setup.py build
+%{__ospython} setup.py build
 
 %install
-%{__python3} setup.py install --no-compile --root %{buildroot}
+%{__ospython} setup.py install --no-compile --root %{buildroot}
 
 %files
 %doc README.rst
@@ -41,6 +58,10 @@ documentation and it doesn't say things like that!
 %{python3_sitelib}/%{sname}/__pycache__/__init__*
 
 %changelog
+* Sat Oct 25 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1-42PGDG
+- Add SLES 16 support and improve support for other supported OSes.
+
 * Wed Jan 1 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support
   pg_chameleon.
+
