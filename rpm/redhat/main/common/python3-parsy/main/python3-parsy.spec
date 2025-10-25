@@ -30,10 +30,12 @@ Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
 Source:		https://github.com/python-%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
-BuildRequires:	python3-devel python3-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel
+Requires:	python%{python3_pkgversion}-%{name}
 BuildArch:	noarch
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
+Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 
 %description
 Parsy is an easy and elegant way to parse text in Python by combining small
