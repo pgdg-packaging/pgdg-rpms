@@ -4,8 +4,8 @@
 
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5.2
-Release:	7PGDG%{?dist}
+Version:	1.5.3
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
@@ -101,6 +101,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.3-1PGDG
+- Update to 1.5.3 per changes described at:
+  https://github.com/reorg/pg_repack/releases/tag/ver_1.5.3
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-7PGDG
 - Add SLES 16 support
 
