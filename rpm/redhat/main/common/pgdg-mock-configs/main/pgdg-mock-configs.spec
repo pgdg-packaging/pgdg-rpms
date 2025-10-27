@@ -4,7 +4,7 @@ Release:	1PGDG%{?dist}
 Summary:	PGDG RPM mock core config files basic chroots
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
-Source0:	https://github.com/pgdg-packaging/%{name}/archive/refs/tags/%{name}-v1.0.tar.gz
+Source0:	https://github.com/pgdg-packaging/%{name}/archive/refs/tags/%{name}-v%{version}.tar.gz
 BuildArch:	noarch
 
 # distribution-gpg-keys contains GPG keys used by mock configs
