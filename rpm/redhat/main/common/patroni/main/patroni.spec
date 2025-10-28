@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
@@ -14,13 +18,12 @@
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
-
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -36,7 +39,7 @@ Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-dateutil
 Requires:	python3-ydiff < 1.5
 Requires:	python3-ydiff >= 1.4.2
 
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} <= 43
 Requires:	python3-click python3-cryptography >= 1.4 python3-psutil
 Requires:	python3-prettytable python%{python3_pkgversion}-pyyaml
 Requires:	python3-urllib3 >= 1.19.1 python3-psycopg2 python3-wcwidth
@@ -85,7 +88,7 @@ Summary:	Related components to use patroni with Consul
 Requires:	%{name} = %{version}-%{release}
 Requires:	consul py-consul >= 1.6.0
 
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} <= 43
 Requires:	python3-requests
 %endif
 %if 0%{?rhel} && 0%{?rhel} < 10
@@ -107,7 +110,7 @@ Requires:	%{name} = %{version}-%{release}
 # This package comes from PGDG repository:
 Requires:	python%{python3_pkgversion}-etcd >= 0.4.3
 
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} <= 43
 Requires:	python3-dns
 %endif
 %if 0%{?rhel} && 0%{?rhel} < 10
@@ -127,7 +130,7 @@ Meta package to pull etcd related dependencies for patroni
 Summary:	Related components to use patroni on AWS
 Requires:	%{name} = %{version}-%{release}
 
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} <= 43
 Requires:	python3-boto3
 %endif
 %if 0%{?rhel} && 0%{?rhel} < 10
@@ -147,7 +150,7 @@ Meta package to pull AWS related dependencies for patroni
 Summary:	Related components to use patroni with Zookeeper
 Requires:	%{name} = %{version}-%{release}
 
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} <= 43
 Requires:	python3-kazoo >= 1.3.1
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
@@ -235,6 +238,9 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue Oct 28 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-3PGDG
+- Add Fedora 43 support
+
 * Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-2PGDG
 - Add SLES 16 support
 
