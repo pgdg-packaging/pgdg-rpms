@@ -5,7 +5,7 @@
 
 Name:		powa-collector
 Version:	1.3.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -38,7 +38,7 @@ database (in the powa_servers table).
 %prep
 %setup -q -n %{name}-%{version}
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} <= 42 || 0%{?rhel} >= 8
 %generate_buildrequires
 %pyproject_buildrequires -t
 %endif
@@ -84,6 +84,9 @@ database (in the powa_servers table).
 %{python3_sitelib}/%{pname}-%{version}.dist-info/*
 
 %changelog
+* Tue Oct 28 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-3PGDG
+- Fix builds on Fedora 43.
+
 * Mon Mar 24 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-2PGDG
 - Add missing BRs
 
