@@ -140,7 +140,7 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
-* Tue Oct 29 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2.3-4PGDG
+* Tue Oct 28 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2.3-4PGDG
 - Fix tmpfiles.d file
 
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2.3-3PGDG
