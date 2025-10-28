@@ -11,24 +11,36 @@
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	LGPLv3
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{relver}.tar.gz
 Source1:	%{sname}-config.h
+Patch0:		%{sname}-makefile-rpm.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
 %if 0%{?suse_version} >= 1499
-Requires:		libsnappy1 libbson-1_0-0 libmongoc-1_0-0
+Requires:		libsnappy1 libbson-1_0-0 libmongoc-1_0-0 libjson-c5
 BuildRequires:		snappy-devel libbson-1_0-0-devel libmongoc-1_0-0-devel
-BuildRequires:		libopenssl-devel
 %else
 Requires:	snappy
 Requires:	mongo-c-driver-libs libbson
-BuildRequires:	mongo-c-driver-devel snappy-devel
-BuildRequires:	openssl-devel cyrus-sasl-devel krb5-devel
+BuildRequires:	mongo-c-driver-devel snappy-devel json-c-devel
+BuildRequires:	cyrus-sasl-devel krb5-devel
 BuildRequires:	libbson-devel
+%endif
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
 %endif
 
 Requires:	postgresql%{pgmajorversion}-server cyrus-sasl-lib
@@ -60,9 +72,9 @@ This package provides JIT support for mongo_fdw
 
 %prep
 %setup -q -n %{sname}-REL-%{relver}
+%patch -P0 -p0
 
 %build
-sh autogen.sh
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1499
@@ -79,6 +91,8 @@ sed -i "s:\(^#include \"bson.h\"\):#include <bson.h>:g" mongo_fdw.c
 sed -i "s:\(^#include \"bson.h\"\):#include <bson.h>:g" mongo_fdw.h
 sed -i "s:\(^#include \"bson.h\"\)://\1:g" mongo_wrapper.h
 %endif
+
+export LIBJSON=%{_includedir}/json-c
 
 PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags}
 
@@ -107,10 +121,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %files llvmjit
    %{pginstdir}/lib/bitcode/%{sname}*.bc
    %{pginstdir}/lib/bitcode/%{sname}/*.bc
-   %{pginstdir}/lib/bitcode/%{sname}/json-c/*.bc
 %endif
 
 %changelog
+* Tue Oct 28 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-2PGDG
+- Do not run autogen.sh, so that we depend on the libraries in the
+  operating system.
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-1PGDG
 - Update to 5.5.3 per changes described at:
   https://github.com/EnterpriseDB/mongo_fdw/releases/tag/REL-5_5_3

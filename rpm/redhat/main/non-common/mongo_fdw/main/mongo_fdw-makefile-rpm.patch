@@ -1,0 +1,17 @@
+--- Makefile.old	2025-10-28 11:14:11.952389716 +0300
++++ Makefile	2025-10-28 11:14:26.381469823 +0300
+@@ -11,10 +11,10 @@
+ # on another platform, change env_posix.os in MONGO_OBJS with the appropriate
+ # environment object file.
+ #
+-LIBJSON = json-c
+-LIBJSON_OBJS =  $(LIBJSON)/json_util.o $(LIBJSON)/json_object.o $(LIBJSON)/json_tokener.o \
+-                                $(LIBJSON)/json_object_iterator.o $(LIBJSON)/printbuf.o $(LIBJSON)/linkhash.o \
+-                                $(LIBJSON)/arraylist.o $(LIBJSON)/random_seed.o $(LIBJSON)/debug.o $(LIBJSON)/strerror_override.o
++#LIBJSON = json-c
++#LIBJSON_OBJS =  $(LIBJSON)/json_util.o $(LIBJSON)/json_object.o $(LIBJSON)/json_tokener.o \
++#                                $(LIBJSON)/json_object_iterator.o $(LIBJSON)/printbuf.o $(LIBJSON)/linkhash.o \
++#                                $(LIBJSON)/arraylist.o $(LIBJSON)/random_seed.o $(LIBJSON)/debug.o $(LIBJSON)/strerror_override.o
+ 
+ MONGO_INCLUDE = $(shell pkg-config --cflags libmongoc-1.0)
+ PG_CPPFLAGS = --std=c99 $(MONGO_INCLUDE) -I$(LIBJSON)
