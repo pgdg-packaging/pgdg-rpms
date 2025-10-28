@@ -1,1 +1,1 @@
-d /var/lib/consul 0700 consul consul -
+d /home/pgagent 0700 pgagent pgagent -

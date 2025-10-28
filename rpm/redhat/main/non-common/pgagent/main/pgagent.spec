@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	2PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
@@ -140,6 +140,9 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Oct 29 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2.3-4PGDG
+- Fix tmpfiles.d file
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2.3-3PGDG
 - Add SLES 16 support
 - Add sysusers.d and tmpfiles.d config file to allow rpm to create
