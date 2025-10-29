@@ -4,8 +4,8 @@
 
 Summary:	uri type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.20151224
-Release:	9PGDG%{?dist}
+Version:	1.20251029
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/petere/%{sname}/archive/%{version}.tar.gz
 Patch0:		%{sname}-fix-pg_cppflags.patch
@@ -82,6 +82,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Oct 29 2025 Devrim Gündüz <devrim@gunduz.org> - 1.20251029-9PGDG
+- Update to 1.20251029 per changes described at:
+  https://github.com/petere/pguri/releases/tag/1.20251029
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.20151224-9PGDG
 - Add SLES 16 support
 
