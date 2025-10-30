@@ -25,17 +25,17 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.1
-Release:	42PGDG%{dist}
+Release:	43PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
 Source:		https://github.com/python-%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	python%{python3_pkgversion}-devel
-Requires:	python%{python3_pkgversion}-%{name}
 BuildArch:	noarch
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
+Provides:	python%{python3_pkgversion}-%{name}
 
 %description
 Parsy is an easy and elegant way to parse text in Python by combining small
@@ -67,6 +67,9 @@ documentation and it doesn't say things like that!
 %{python3_sitelib}/%{sname}/__pycache__/__init__*
 
 %changelog
+* Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1-43PGDG
+- Fix a Provides: issue
+
 * Sat Oct 25 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1-42PGDG
 - Add SLES 16 support and improve support for other supported OSes.
 
