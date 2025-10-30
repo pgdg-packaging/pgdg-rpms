@@ -1,1 +1,0 @@
-../main/python3.12-six.spec

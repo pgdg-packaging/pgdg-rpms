@@ -11,7 +11,7 @@
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
 DIST=.f99
-SPECFILE="python3.12-six.spec"
+SPECFILE="pgdg-python3-six.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
