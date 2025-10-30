@@ -3,7 +3,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.7.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{pname}/
@@ -37,6 +37,9 @@ in time.
 %{pginstdir}/share/extension/%{pname}*.sql
 
 %changelog
+* Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-2PGDG
+- Rebuild because of a package signing issue on Fedora 43
+
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-1PGDG
 - Update to 4.7.1
 
