@@ -7,7 +7,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.61.7
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -127,6 +127,9 @@ popd
 %endif
 
 %changelog
+* Thu Oct 30 2025 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-4PGDG
+- Rebuild because of a package signing issue on Fedora 43
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-3PGDG
 - Add SLES 16 support
 
