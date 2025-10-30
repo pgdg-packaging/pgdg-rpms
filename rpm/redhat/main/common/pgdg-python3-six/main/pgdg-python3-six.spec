@@ -66,4 +66,4 @@ of writing Python code that is compatible on both Python versions.}
 
 * Mon May 19 2025 Devrim Gunduz <devrim@gunduz.org> - 1.16.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support
-  Barman on RHEL 9.
+  Barman (via dateutil) on RHEL 9.
