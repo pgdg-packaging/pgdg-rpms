@@ -5,7 +5,7 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -100,6 +100,9 @@ popd
 %license license.txt
 
 %changelog
+* Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0006-3PGDG
+- Rebuild because of a package signing issue on Fedora 43
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0006-2PGDG
 - Add/improve SLES 16 support
 
