@@ -1,3 +1,4 @@
+%global lcname	pygresql
 
 %if 0%{?fedora} >= 41 || 0%{?rhel} >= 10 || 0%{?suse_version} >= 1600
 %{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -7,7 +8,7 @@
 
 Name:		PyGreSQL
 Version:	6.1.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	A Python client library for PostgreSQL
 
 URL:		http://www.PyGreSQL.org/
@@ -54,11 +55,18 @@ find -type f -exec chmod 644 {} +
 %files
 %license docs/copyright.rst
 %doc docs/*.rst
+%if 0%{?fedora} >= 43
+%{python3_sitearch}/%{lcname}-%{version}.dist-info/
+%else
 %{python3_sitearch}/%{name}-%{version}.dist-info/
+%endif
 %{python3_sitearch}/pg/*py*
 %{python3_sitearch}/pgdb/*py*
 
 %changelog
+* Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-4PGDG
+- Fix builds against Python 3.14 on Fedora 43
+
 * Fri Oct 17 2025 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-3PGDG
 - Add SLES 16 support
 - Switch to pyproject builds
