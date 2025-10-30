@@ -1,27 +1,20 @@
 %global sname	rollbar
 
 %if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
-
-%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
 Name:		python3-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
@@ -32,7 +25,13 @@ Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
+
 Requires:	python%{python3_pkgversion}-%{name}
 Requires:	python3-requests
 
@@ -58,14 +57,14 @@ Python versions.
 %setup -q -n pyrollbar-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install --prefix=%{_prefix} --root=%{buildroot} -O2
+%pyproject_install
 
 %files
 %{_bindir}/%{sname}
-%{python3_sitelib}/%{sname}-%{version}-py%{py3ver}.egg-info/*
+%{python3_sitelib}/%{sname}-%{version}.dist-info/*
 %{python3_sitelib}/%{sname}/__pycache__/*.py*
 %{python3_sitelib}/%{sname}/*.py*
 %{python3_sitelib}/%{sname}/contrib/*.py*
@@ -103,6 +102,7 @@ Python versions.
 %changelog
 * Thu Oct 30 2025 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-43PGDG
 - Add new Provides: for a smoother upgrade.
+- Switch to pyproject build
 
 * Sat Oct 25 2025 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-42PGDG
 - Add SLES 16 support
