@@ -18,7 +18,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}%{pgauditversion}_%{pgmajorversion}
 Version:	%{pversion}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -89,6 +89,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - %{pversion}-4PGDG
+- Rebuild because of a package signing issue on Fedora 43
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - %{pversion}-3PGDG
 - Add SLES 16 support
 
