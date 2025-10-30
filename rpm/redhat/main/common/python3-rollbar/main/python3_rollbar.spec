@@ -26,7 +26,7 @@
 Name:		python3-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	0.16.2
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -38,6 +38,7 @@ Requires:	python3-requests
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
+Provides:	python%{python3_pkgversion}-python3-%{sname}
 
 %description
 The rollbar module makes it easy to write user friendly command line interfaces.
@@ -100,6 +101,9 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Thu Oct 30 2025 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-43PGDG
+- Add new Provides: for a smoother upgrade.
+
 * Sat Oct 25 2025 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-42PGDG
 - Add SLES 16 support
 
