@@ -3,7 +3,7 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.6.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
@@ -91,6 +91,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-3PGDG
+- Rebuild because of a package signing issue on Fedora 43
+
 * Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-2PGDG
 - Add a patch to fix compilation against GCC 15, per:
   https://github.com/pgpool/pgpool2/issues/124
