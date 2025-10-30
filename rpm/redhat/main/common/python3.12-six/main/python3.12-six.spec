@@ -15,11 +15,9 @@
 %global	python3_pkgversion 311
 %endif
 
-%global python_wheelname six-%{version}-py2.py3-none-any.whl
-
 Name:		python%{python3_pkgversion}-six
-Version:	1.16.0
-Release:	1PGDG%{?dist}.1
+Version:	1.17.0
+Release:	1PGDG%{?dist}
 Summary:	Python 2 and 3 compatibility utilities
 
 License:	MIT
@@ -29,10 +27,11 @@ Source0:	https://files.pythonhosted.org/packages/source/s/six/six-%{version}.tar
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-rpm-macros
-BuildRequires:	python%{python3_pkgversion}-setuptools
-BuildRequires:	python%{python3_pkgversion}-pip
-BuildRequires:	python%{python3_pkgversion}-wheel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Obsoletes:	python%{python3_pkgversion}-six <= 1.16.0
 
@@ -42,13 +41,13 @@ for smoothing over the differences between the Python versions with the goal
 of writing Python code that is compatible on both Python versions.}
 
 %prep
-%autosetup -p1 -n six-%{version}
+%autosetup -n six-%{version}
 
 %build
-%py3_build_wheel
+%pyproject_wheel
 
 %install
-%py3_install_wheel %{python_wheelname}
+%pyproject_install
 
 %files
 %license LICENSE
@@ -57,6 +56,11 @@ of writing Python code that is compatible on both Python versions.}
 %pycached %{python3_sitelib}/six.py
 
 %changelog
+* Thu Oct 30 2025 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-1PGDG
+- Update to 1.17.0. This indirectly fixes a longstanding self-obsolete problem.
+  Thanks Lukas Schürmann for the report.
+- Switch to pyproject build
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.16.0-1PGDG.1
 - Add Fedora 43 support
 
