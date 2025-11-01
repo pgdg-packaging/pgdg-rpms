@@ -5,30 +5,40 @@
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.6.3
-Release:		2PGDG%{?dist}
+Release:		3GDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
 Source1:		%{sname}.service
 Source2:		%{sname}.sysconfig
+Source6:		%{sname}-sysusers.conf
+Source7:		%{sname}-tmpfiles.d
 Patch1:			%{sname}-conf.sample.patch
 Patch2:			%{sname}-gcc-15-c23.patch
 
 BuildRequires:		postgresql%{pgmajorversion}-devel pam-devel
-BuildRequires:		libmemcached-devel openssl-devel pgdg-srpm-macros
-
+BuildRequires:		libmemcached-devel
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 Requires:		libmemcached
-Requires(pre):		/usr/sbin/useradd /usr/sbin/groupadd
 
 BuildRequires:		systemd
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 %if 0%{?suse_version} && 0%{?suse_version} >= 1500
 BuildRequires:		openldap2-devel
-Requires(post):		systemd-sysvinit
 %else
 BuildRequires:		openldap-devel
-Requires(post):		systemd-sysv
 %endif
 Requires(post):		systemd
 Requires(preun):	systemd
@@ -68,7 +78,7 @@ multiple Pgpool installations.
 # We need this flag on SLES so that pgpool can find libmemched.
 # Otherwise, we get "libmemcached.so: undefined reference to `pthread_once'" error.
 %if 0%{?suse_version}
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1500
 	export LDFLAGS='-lpthread'
 %endif
 %endif
@@ -107,31 +117,25 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{__install} -d %{buildroot}%{_unitdir}
 %{__install} -m 755 %{SOURCE1} %{buildroot}%{_unitdir}/%{sname}.service
 
-# ... and make a tmpfiles script to recreate it at reboot.
-%{__mkdir} -p %{buildroot}%{_tmpfilesdir}
-cat > %{buildroot}%{_tmpfilesdir}/%{name}.conf <<EOF
-d %{_rundir}/%{name} 0755 postgres postgres -
-EOF
-
-# Create the directory for the pid files (defined in pgpool.conf.sample)
-%{__install} -d -m 755 %{buildroot}/run/%{name}
-
 %{__install} -d %{buildroot}%{_sysconfdir}/sysconfig
 %{__install} -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
+
+%{__install} -m 0644 -D %{SOURCE6} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
+
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{sname}.conf
 
 # nuke libtool archive and static lib
 %{__rm} -f %{buildroot}%{_libdir}/libpcp.{a,la}
 # Remove bitcode files
 %{__rm} -rf %{buildroot}%{pginstdir}/lib/bitcode/
 # Remove extension subpackage files from main package.
-# It is distributed as a separate one.
+# They are distributed as a separate rpm.
 %{__rm} -f %{buildroot}%{pginstdir}/lib/pgpool*
 %{__rm} -f %{buildroot}%{pginstdir}/share/extension/pgpool*
 
 %pre
-groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
-useradd -M -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
-	-c "PostgreSQL Server" -u 26 postgres >/dev/null 2>&1 || :
+%sysusers_create_package %{name} %SOURCE6
 
 %post
 /sbin/ldconfig
@@ -166,12 +170,10 @@ fi
 %{_datadir}/pgpool-II/insert_lock.sql
 %{_datadir}/pgpool-II/pgpool.pam
 %{_sysconfdir}/%{name}/*.sample*
-
+%{_sysusersdir}/%{name}-pgdg.conf
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/%{sname}.service
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-
-%attr(755,postgres,postgres) %dir /run/%{name}
 
 %files devel
 %{_includedir}/libpcp_ext.h
@@ -199,6 +201,11 @@ fi
 %{_libdir}/libpcp.so*
 
 %changelog
+* Sat Nov 1 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-3PGDG
+- Add sysusers.d and tmpfiles.d config file to allow rpm to create
+  users/groups automatically.
+- Modernise openssl related dependencies
+
 * Tue Sep 2 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-2PGDG
 - Add a patch to fix compilation against GCC 15, per:
   https://github.com/pgpool/pgpool2/issues/124
