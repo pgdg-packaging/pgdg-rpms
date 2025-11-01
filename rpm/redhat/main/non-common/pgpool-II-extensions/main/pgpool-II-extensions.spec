@@ -3,7 +3,7 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.6.3
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
@@ -11,13 +11,24 @@ Patch1:		%{sname}-gcc-15-c23.patch
 Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
-BuildRequires:	libmemcached-devel openssl-devel
+BuildRequires:	libmemcached-devel
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+
 %if 0%{?suse_version} >= 1500
 BuildRequires:	openldap2-devel
-Requires(post):	systemd-sysvinit
 %else
 BuildRequires:	openldap-devel
-Requires(post):	systemd-sysv
 Requires(post):	systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
@@ -91,6 +102,10 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Sat Nov 1 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-4PGDG
+- Modernise openssl related dependencies.
+- Remove obsoleted dependencies
+
 * Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-3PGDG
 - Rebuild because of a package signing issue on Fedora 43
 
