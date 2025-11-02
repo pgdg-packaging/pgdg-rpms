@@ -6,11 +6,11 @@
 
 Summary:	PostgreSQL DB2 Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
-Version:	7.0.0
-Release:	2PGDG%{?dist}
+Version:	18.0.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
-Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
-URL:		https://github.com/wolfgangbrandl/%{sname}
+Source0:	https://github.com/Living-Mainframe/%{sname}/archive/refs/tags/%{version}.tar.gz
+URL:		https://github.com/Living-Mainframe/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 BuildRequires:	libstdc++ pam
@@ -26,13 +26,17 @@ conditions and required columns as well as comprehensive EXPLAIN support.
 %package llvmjit
 Summary:	Just-in-time compilation support for db2_fdw
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -67,6 +71,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %endif
 
 %changelog
+* Sun Nov 2 2025 - Devrim Gündüz <devrim@gunduz.org> 18.0.1-1PGDG
+- Update to 18.0.1 per changes described at:
+  https://github.com/Living-Mainframe/db2_fdw/releases/tag/18.0.1
+  https://github.com/Living-Mainframe/db2_fdw/releases/tag/18.0.0
+  https://github.com/Living-Mainframe/db2_fdw/releases/tag/17.0.0
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 7.0.0-2PGDG
 - Bump release number (missed in previous commit)
 
