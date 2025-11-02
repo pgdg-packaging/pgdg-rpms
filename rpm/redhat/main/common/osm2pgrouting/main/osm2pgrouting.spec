@@ -2,28 +2,31 @@
 
 Summary:	Import tool for OpenStreetMap data to pgRouting database
 Name:		%{sname}
-Version:	2.3.8
-Release:	6PGDG%{dist}
+Version:	3.0.0
+Release:	1PGDG%{dist}
 License:	GPLv2
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgRouting/%{sname}/
 BuildRequires:	gcc-c++ libpqxx-devel libpq5-devel
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} == 1500
 BuildRequires:	libexpat-devel libboost_program_options1_66_0-devel
 Requires:	libboost_program_options1_66_0 libpqxx-6_4
-%else
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	libexpat-devel libboost_program_options1_86_0-devel
+Requires:	libboost_program_options1_86_0 libpqxx-6_4
+%endif
+%if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:	expat-devel
 Requires:	boost-program-options libpqxx
 %endif
-BuildRequires:	cmake >= 2.8.8
-BuildRequires:	boost-devel >= 1.53 pgdg-srpm-macros >= 1.0.37
+
+BuildRequires:	cmake >= 3.12 boost-devel >= 1.53
 Requires:	libpq5
 
 Obsoletes:	%{sname}_15 <= 2.3.8
 Obsoletes:	%{sname}_14 <= 2.3.8
 Obsoletes:	%{sname}_13 <= 2.3.8
-Obsoletes:	%{sname}_12 <= 2.3.8
-Obsoletes:	%{sname}_11 <= 2.3.8
 
 %description
 Import tool for OpenStreetMap data to pgRouting database.
@@ -66,6 +69,11 @@ cd build/
 %{_datadir}/%{sname}/mapconfig_for_pedestrian.xml
 
 %changelog
+* Sun Nov 2 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-1PGDG
+- Update to 3.0.0 per changes described at:
+  https://github.com/pgRouting/osm2pgrouting/releases/tag/v3.0.0
+- Add SLES-16 support
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.3.8-6PGDG
 - Bump release number (missed in previous commit)
 
