@@ -68,6 +68,7 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %files llvmjit
    %{pginstdir}/lib/bitcode/%{sname}*.bc
    %{pginstdir}/lib/bitcode/%{sname}/*.bc
+   %{pginstdir}/lib/bitcode/%{sname}/source/*.bc
 %endif
 
 %changelog
