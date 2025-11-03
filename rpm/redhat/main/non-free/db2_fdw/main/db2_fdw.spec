@@ -2,12 +2,15 @@
 %global sname db2_fdw
 %global db2_home "/opt/ibm/db2/V11.5/"
 
+%global __requires_exclude libdb2.so.1
+
+
 %{!?llvm:%global llvm 1}
 
 Summary:	PostgreSQL DB2 Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
 Version:	18.0.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/Living-Mainframe/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/Living-Mainframe/%{sname}
@@ -72,6 +75,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %endif
 
 %changelog
+* Mon Nov 3 2025 - Devrim Gündüz <devrim@gunduz.org> 18.0.1-2PGDG
+- Exclude libdb2.so.1 dependency. It is not installed via RPMs anyway.
+
 * Sun Nov 2 2025 - Devrim Gündüz <devrim@gunduz.org> 18.0.1-1PGDG
 - Update to 18.0.1 per changes described at:
   https://github.com/Living-Mainframe/db2_fdw/releases/tag/18.0.1
