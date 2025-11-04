@@ -4,7 +4,7 @@
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.57.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/pgbackrest/pgbackrest/archive/release/%{version}.tar.gz
@@ -130,6 +130,12 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Tue Nov 4 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-2PGDG
+- Add su directive to logrotate file. Even though this is not required for
+  regular installs, some automation systems may break the permissions and
+  prevent logrotate from working. Report and patch from Aleš Zelený.
+  Fixes: https://github.com/pgdg-packaging/pgdg-rpms/issues/107
+
 * Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-1PGDG
 - Update to 2.57.0, per changes described at:
   https://pgbackrest.org/release.html#2.57.0

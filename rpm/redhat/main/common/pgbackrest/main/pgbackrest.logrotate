@@ -8,4 +8,5 @@
 	nodateext
 	weekly
 	rotate 5
+	su postgres postgres
 }
