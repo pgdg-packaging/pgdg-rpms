@@ -4,7 +4,7 @@
 
 %pgdg_set_gis_variables
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -42,7 +42,7 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}311
-Version:	3.11.4
+Version:	3.11.5
 Release:	5PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
@@ -487,6 +487,10 @@ done
 %endif
 
 %changelog
+* Tue Nov 4 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.5-1PGDG
+- Update to 3.11.5, per changes described at:
+  https://github.com/OSGeo/gdal/releases/tag/v3.11.5
+
 * Mon Oct 13 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.4-5PGDG
 - Remove dependency to libgeotiff-devel and libspatialite-devel
   in the -libs subpackage. They are a part of BR. Per report from
