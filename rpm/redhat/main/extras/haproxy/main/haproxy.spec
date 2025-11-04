@@ -24,7 +24,19 @@ Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
 
 BuildRequires:	gcc lua-devel pcre2-devel make
-BuildRequires:	openssl-devel systemd-devel systemd
+BuildRequires:	systemd-devel systemd
+%if 0%{?suse_version} == 1500
+Requires:	libopenssl1_1
+BuildRequires:	libopenssl-1_1-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 
 %{?systemd_requires}
 
@@ -144,6 +156,7 @@ done
 * Tue Nov 4 2025 Devrim Gündüz <devrim@gunduz.org> 3.2.7-1PGDG
 - Update to 3.2.7 per changes described at:
   https://www.mail-archive.com/haproxy@formilux.org/msg46228.html
+- Modernise SSL dependencies
 
 * Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> 3.2.6-1PGDG
 - Update to 3.2.6 per changes described at:
