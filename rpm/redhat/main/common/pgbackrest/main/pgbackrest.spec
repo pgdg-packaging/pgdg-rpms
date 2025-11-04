@@ -89,7 +89,6 @@ are required to perform a backup which increases security.
 
 %pre
 %sysusers_create_package %{name} %SOURCE6
-%{__chown} postgres: /var/lib/pgsql
 
 %post
 if [ $1 -eq 1 ] ; then
@@ -135,6 +134,9 @@ fi
   regular installs, some automation systems may break the permissions and
   prevent logrotate from working. Report and patch from Aleš Zelený.
   Fixes: https://github.com/pgdg-packaging/pgdg-rpms/issues/107
+- Do not chown postgres' home directory, and leave it to tmpfiles.d fragment.
+  Per report from arnobnq.
+  Fixes: https://github.com/pgdg-packaging/pgdg-rpms/issues/108
 
 * Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-1PGDG
 - Update to 2.57.0, per changes described at:
