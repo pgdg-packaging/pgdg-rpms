@@ -81,9 +81,9 @@ Version:	13.22
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420003PGDG%{?dist}
+Release:	420006PGDG%{?dist}
 %else
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -449,7 +449,7 @@ Requires:	llvm5.0 >= 5.0
 %if 0%{?suse_version} == 1315
 Requires:	llvm
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libLLVM17
 %endif
 %if 0%{?suse_version} == 1600
@@ -1380,6 +1380,9 @@ fi
 %endif
 
 %changelog
+* Tue Nov 4 2025 Devrim Gunduz <devrim@gunduz.org> - 13.22-6PGDG
+- Fix typo in conditional. Per Christoph.
+
 * Tue Oct 14 2025 Devrim Gunduz <devrim@gunduz.org> - 13.22-5PGDG
 - Add SLES 15 support
 
