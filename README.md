@@ -1,9 +1,8 @@
 PostgreSQL YUM repository
 =========================
 
-This directory contains the spec files, patches, etc. of the PostgreSQL
-(also known as Postgres) related RPMs for Fedora, Fedora / Red Hat Enterprise
-Linux / Rocky Linux / AlmaLinux (and other clones) and as well as SuSE
-Enterprise Linux, like PostGIS, Patroni, extensions, drivers, various FDWs, etc.
-
-
+This directory contains spec files, patches, and related resources for building
+PostgreSQL (Postgres)–related RPM packages for Fedora, Red Hat Enterprise Linux,
+Rocky Linux, AlmaLinux, and compatible derivatives, as well as SUSE Linux
+Enterprise. Packages include components such as PostGIS, Patroni, PostgreSQL
+extensions, drivers, and various foreign data wrappers (FDWs).
