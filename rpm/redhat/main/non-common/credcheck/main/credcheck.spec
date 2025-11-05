@@ -4,18 +4,14 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/MigOpsRepos/%{sname}
 Source0:	https://github.com/MigOpsRepos//%{sname}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel krb5-devel
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -78,6 +74,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Wed Nov 5 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2-2PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Fri Oct 24 2025 Devrim Gunduz <devrim@gunduz.org> - 4.2-1PGDG
 - Update to 4.2 per changes described at
   https://github.com/MigOpsRepos/credcheck/releases/tag/v4.2

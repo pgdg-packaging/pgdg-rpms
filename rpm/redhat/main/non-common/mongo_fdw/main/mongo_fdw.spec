@@ -11,7 +11,7 @@
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	LGPLv3
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{relver}.tar.gz
@@ -30,11 +30,7 @@ BuildRequires:	mongo-c-driver-devel snappy-devel json-c-devel
 BuildRequires:	cyrus-sasl-devel krb5-devel
 BuildRequires:	libbson-devel
 %endif
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -124,6 +120,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
+* Wed Nov 5 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-3PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Tue Oct 28 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-2PGDG
 - Do not run autogen.sh, so that we depend on the libraries in the
   operating system.

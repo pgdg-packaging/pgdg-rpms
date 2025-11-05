@@ -5,7 +5,7 @@
 Summary:	Makes PostgreSQL logical replication slots practically usable across physical failover.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -13,11 +13,7 @@ Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	krb5-devel
 
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -25,7 +21,6 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -93,6 +88,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-4PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-3PGDG
 - Add SLES 16 support
 

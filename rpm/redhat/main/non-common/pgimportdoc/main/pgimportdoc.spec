@@ -3,7 +3,7 @@
 Summary:	command line tool for import XML, TEXT and BYTEA documents to PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
@@ -34,11 +34,7 @@ BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
 
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -46,7 +42,6 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-
 
 BuildRequires:	libxml2-devel libxslt-devel pam-devel
 BuildRequires:	krb5-devel readline-devel zlib-devel
@@ -77,6 +72,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-5PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-4PGDG
 - Add SLES 16 support
 

@@ -5,17 +5,13 @@
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.6
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	krb5-devel
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -23,6 +19,7 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
+
 Requires:	postgresql%{pgmajorversion}-server pgaudit_%{pgmajorversion}
 
 %description
@@ -84,6 +81,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Wed Nov 5 2025 Devrim Gunduz <devrim@gunduz.org> - 1.7.6-3PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Sun Nov 2 2025 Devrim Gunduz <devrim@gunduz.org> - 1.7.6-2PGDG
 - Rebuild because of package signing issue
 

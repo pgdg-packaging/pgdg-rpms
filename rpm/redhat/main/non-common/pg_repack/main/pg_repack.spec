@@ -5,7 +5,7 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
@@ -101,6 +101,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.3-2PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.3-1PGDG
 - Update to 1.5.3 per changes described at:
   https://github.com/reorg/pg_repack/releases/tag/ver_1.5.3

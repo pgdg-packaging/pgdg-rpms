@@ -5,18 +5,14 @@
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel flex krb5-devel
 Requires:	postgresql%{pgmajorversion}-server
 
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -82,6 +78,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-3PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-2PGDG
 - Add SLES 16 support
 
