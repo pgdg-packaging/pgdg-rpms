@@ -5,7 +5,7 @@
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.6.3
-Release:		3GDG%{?dist}
+Release:		4PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
@@ -18,11 +18,9 @@ Patch2:			%{sname}-gcc-15-c23.patch
 
 BuildRequires:		postgresql%{pgmajorversion}-devel pam-devel
 BuildRequires:		libmemcached-devel
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+Requires:		libmemcached
+
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -30,7 +28,6 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-Requires:		libmemcached
 
 BuildRequires:		systemd
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
@@ -201,6 +198,9 @@ fi
 %{_libdir}/libpcp.so*
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-4PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Sat Nov 1 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-3PGDG
 - Add sysusers.d and tmpfiles.d config file to allow rpm to create
   users/groups automatically.

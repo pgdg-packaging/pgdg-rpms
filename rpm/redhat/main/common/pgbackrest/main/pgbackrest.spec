@@ -4,7 +4,7 @@
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.57.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/pgbackrest/pgbackrest/archive/release/%{version}.tar.gz
@@ -16,11 +16,8 @@ Source7:	%{name}-tmpfiles.d
 
 BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel libyaml-devel
 BuildRequires:	libzstd-devel meson zlib-devel
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -129,6 +126,9 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-3PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Tue Nov 4 2025 Devrim Gündüz <devrim@gunduz.org> - 2.57.0-2PGDG
 - Add su directive to logrotate file. Even though this is not required for
   regular installs, some automation systems may break the permissions and
