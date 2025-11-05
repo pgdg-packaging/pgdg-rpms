@@ -5,7 +5,7 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -35,11 +35,7 @@ Requires:	zlib
 BuildRequires:	zlib-devel
 Requires:	libz1
 %endif
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -100,6 +96,9 @@ popd
 %license license.txt
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0006-4PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 17.00.0006-3PGDG
 - Rebuild because of a package signing issue on Fedora 43
 
