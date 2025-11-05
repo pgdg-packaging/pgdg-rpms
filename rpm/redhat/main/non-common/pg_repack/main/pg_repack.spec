@@ -5,7 +5,7 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
@@ -30,11 +30,7 @@ Requires:	libzstd1 >= 1.4.0
 BuildRequires:	libzstd-devel >= 1.4.0
 Requires:	libzstd >= 1.4.0
 %endif
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif

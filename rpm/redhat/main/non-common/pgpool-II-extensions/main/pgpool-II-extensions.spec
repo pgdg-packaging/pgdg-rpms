@@ -3,7 +3,7 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.6.3
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
@@ -12,11 +12,7 @@ Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
 BuildRequires:	libmemcached-devel
-%if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
-BuildRequires:	libopenssl-1_1-devel
-%endif
-%if 0%{?suse_version} == 1600
+%if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
@@ -102,6 +98,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-5PGDG
+- Rebuild against OpenSSL 3 on SLES 15
+
 * Sat Nov 1 2025 Devrim Gündüz <devrim@gunduz.org> - 4.6.3-4PGDG
 - Modernise openssl related dependencies.
 - Remove obsoleted dependencies
