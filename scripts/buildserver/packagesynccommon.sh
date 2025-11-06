@@ -47,12 +47,12 @@ echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --b
 
 # Sync SRPMs to S3 bucket:
 aws s3 sync $COMMON_SRPM_DIR s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
-aws s3 sync --delete $COMMON_SRPM_DIR/repodata/ s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/$packageSyncVersion/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/common/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
+aws s3 sync --delete $COMMON_SRPM_DIR/repodata/ s3://dnf-srpms.postgresql.org20250313103537584600000001/srpms/common/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/common/$osdistro/$os-$osarch/repodata/*
 
 # Sync debug* RPMs to S3 bucket:
 aws s3 sync $COMMON_DEBUG_RPM_DIR s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/common/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
-aws s3 sync --delete $COMMON_DEBUG_RPM_DIR/repodata/ s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/common/$packageSyncVersion/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/common/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
+aws s3 sync --delete $COMMON_DEBUG_RPM_DIR/repodata/ s3://dnf-debuginfo.postgresql.org20250312201116649700000001/debug/common/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/common/$osdistro/$os-$osarch/repodata/*
 
 exit 0
