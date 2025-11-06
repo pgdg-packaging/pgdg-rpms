@@ -5,7 +5,7 @@
 
 Name:		%{sname}97
 Version:	9.7.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -14,7 +14,7 @@ URL:		https://proj.org
 Source0:	https://download.osgeo.org/%{sname}/%{sname}-%{version}.tar.gz
 Source2:	%{name}-pgdg-libs.conf
 
-BuildRequires:	sqlite-devel >= 3.7 libcurl-devel cmake
+BuildRequires:	sqlite-devel >= 3.7 libcurl-devel cmake sqlite
 BuildRequires:	libtiff-devel pgdg-srpm-macros >= 1.0.51
 
 # Default GCC version on SLES 15 is not sufficient to build PROJ 9.7,
@@ -114,6 +114,9 @@ popd
 %{proj97instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Fri Nov 7 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.7.0-4PGDG
+- Add missing Requires
+
 * Thu Oct 2 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.7.0-3PGDG
 - Use correct paths for the files. Broken since 9.7.0-1
 - Add SLES 16 support
