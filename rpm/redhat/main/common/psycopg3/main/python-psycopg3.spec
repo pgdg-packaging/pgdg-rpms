@@ -23,18 +23,18 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	3.2.12
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
 Source0:	https://github.com/psycopg/psycopg/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	python3-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel python3-wheel
+BuildRequires:	python3-devel python3-pip python3-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
-BuildRequires:	pyproject-rpm-macros
+BuildRequires:	pyproject-rpm-macros pyproject-srpm-macros
 %endif
 
 Requires:	libpq5 >= 10.0
@@ -145,6 +145,9 @@ fi
 %endif
 
 %changelog
+* Fri Nov 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.12-2PGDG
+- Add missing BRs. Spotted during mock builds.
+
 * Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.12-1PGDG
 - Update to 3.2.12 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.2.12
