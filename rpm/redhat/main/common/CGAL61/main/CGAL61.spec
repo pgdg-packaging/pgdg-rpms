@@ -1,6 +1,6 @@
 %global		 _sourcename CGAL
 
-Name:		cgal
+Name:		CGAL
 Version:	6.1
 Release:	420001PGDG%{?dist}
 Summary:	Computational Geometry Algorithms Library
@@ -8,7 +8,6 @@ License:	GPL-3.0-or-later AND LGPL-3.0-or-later
 URL:		https://www.cgal.org/
 Source0:	https://github.com/CGAL/cgal/releases/download/v%{version}/CGAL-%{version}.tar.xz
 Source1:	https://github.com/CGAL/cgal/releases/download/v%{version}/CGAL-%{version}-doc_html.tar.xz
-Source2:	cgal-rpmlintrc
 BuildRequires:	blas-devel cmake >= 3.14 fdupes glu-devel gmp-devel
 BuildRequires:	lapack-devel libboost_atomic-devel >= 1.74
 BuildRequires:	libboost_thread-devel >= 1.74 mpfr-devel xz zlib-devel
