@@ -9,7 +9,7 @@ BuildRequires:	cgal-devel
 
 %if 0%{?suse_version} && 0%{?suse_version} == 1600
 Version:	2.2.0
-BuildRequires:	cgal-devel
+BuildRequires:	CGAL-devel >= 6.1
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} == 8
@@ -28,7 +28,7 @@ Version:	2.2.0
 BuildRequires:	CGAL-devel >= 5.6
 %endif
 
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
@@ -131,6 +131,9 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Fri Nov 7 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-4PGDG
+- Update dependency name on SLES 16
+
 * Sat Oct 4 2025 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-3PGDG
 - Add SLES 16 support
 - Modernise spec file, use cmake macros.
