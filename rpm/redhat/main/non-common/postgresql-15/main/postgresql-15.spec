@@ -85,9 +85,9 @@ Version:	15.14
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420006PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -246,15 +246,18 @@ BuildRequires:	selinux-policy >= 3.9.13
 %endif
 
 %if %ssl
-%if 0%{?suse_version} >= 1315
+%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 BuildRequires:	libopenssl-devel
-%else
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 BuildRequires:	openssl-devel
 %endif
-%endif
-
 %if 0%{?fedora} >= 41
 BuildRequires:	openssl-devel-engine
+%endif
 %endif
 
 %if %uuid
@@ -314,7 +317,7 @@ Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 Requires:	libopenssl1_0_0
 %endif
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
@@ -1427,6 +1430,9 @@ fi
 %endif
 
 %changelog
+* Fri Nov 7 2025 Devrim Gunduz <devrim@gunduz.org> - 15.14-6PGDG
+- Build against OpenSSL 3 on SLES 15.
+
 * Tue Oct 14 2025 Devrim Gunduz <devrim@gunduz.org> - 15.14-5PGDG
 - Add SLES 16 support
 
