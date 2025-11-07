@@ -192,7 +192,12 @@ BuildRequires:	selinux-policy >= 3.4.3
 %endif
 
 %if %ssl
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 BuildRequires:	openssl-devel
+%endif
 %if 0%{?fedora} >= 41
 BuildRequires:	openssl-devel-engine
 %endif
@@ -306,7 +311,7 @@ package also includes HTML version of the documentation.
 Summary:	Run-time libraries for ECPG programs
 
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
@@ -324,7 +329,7 @@ Summary:	Development files for ECPG (Embedded PostgreSQL for C)
 Requires:	%{name}-ecpg-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
@@ -343,7 +348,7 @@ Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
