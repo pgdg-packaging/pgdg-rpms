@@ -45,9 +45,9 @@ Version:	18.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200003PGDG%{?dist}
+Release:	4200004PGDG%{?dist}
 %else
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -191,7 +191,14 @@ BuildRequires:	selinux-policy >= 3.4.3
 %endif
 
 %if %ssl
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
+%endif
 %if 0%{?fedora} >= 41
 BuildRequires:	openssl-devel-engine
 %endif
@@ -305,7 +312,7 @@ package also includes HTML version of the documentation.
 Summary:	Run-time libraries for ECPG programs
 
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
@@ -323,7 +330,7 @@ Summary:	Development files for ECPG (Embedded PostgreSQL for C)
 Requires:	%{name}-ecpg-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
@@ -342,7 +349,7 @@ Summary:	The shared libraries required for any PostgreSQL clients
 Provides:	postgresql-libs = %{pgmajorversion} libpq5 >= 10.0
 
 %if 0%{?suse_version} == 1500
-Requires:	libopenssl1_1
+Requires:	libopenssl3
 %endif
 %if 0%{?suse_version} == 1600
 Requires:       libopenssl3
@@ -1324,6 +1331,9 @@ fi
 %endif
 
 %changelog
+* Fri Nov 7 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0-4PGDG
+- Build against OpenSSL 3 on SLES 15.
+
 * Sat Oct 4 2025 Devrim Gunduz <devrim@gunduz.org> - 18.0-3PGDG
 - Add SLES 16 support
 
