@@ -125,7 +125,7 @@ fi
 %{python3_sitelib}/psycopg/types/*.py*
 %{python3_sitelib}/psycopg/py.typed
 
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 7
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600
 %{python3_sitelib}/psycopg/__pycache__/*.pyc
 %{python3_sitelib}/psycopg/crdb/__pycache__/*.py*
 %{python3_sitelib}/psycopg/pq/__pycache__/*.py*
@@ -147,6 +147,7 @@ fi
 %changelog
 * Fri Nov 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.12-2PGDG
 - Add missing BRs. Spotted during mock builds.
+- Install __pycache__ also on SLES 16.
 
 * Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.12-1PGDG
 - Update to 3.2.12 per changes described at:
