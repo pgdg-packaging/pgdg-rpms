@@ -65,7 +65,7 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
-* Sat Nov 6 2025 - Devrim Gündüz <devrim@gunduz.org> 1.0.9-1PGDG
+* Sat Nov 8 2025 - Devrim Gündüz <devrim@gunduz.org> 1.0.9-1PGDG
 - Update to 1.0.9
 - Add SLES 16 support
 
