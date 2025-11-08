@@ -1,22 +1,35 @@
 %global sname	mysql-replication
-%global __ospython3 %{_bindir}/python3
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	python3_pkgversion 313
 %endif
 
 Name:		python3-%{sname}
-Version:	1.0.2
-Release:	2PGDG%{?dist}
+Version:	1.0.9
+Release:	1PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
 Source0:	https://github.com/noplay/python-%{sname}/archive/%{version}.tar.gz
 BuildArch:	noarch
 
-BuildRequires:	python3-setuptools
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Requires:	python3-PyMySQL
 
@@ -35,13 +48,13 @@ their datas and raw SQL queries.
 %setup -q -n python-%{sname}-%{version}
 
 %build
-%{__ospython3} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython3} setup.py install --prefix=%{_prefix} --root=%{buildroot} -O2
+%pyproject_install
 
 %files
-%{python3_sitelib}/mysql_replication-%{version}-py%{py3ver}.egg-info/*
+%{python3_sitelib}/mysql_replication-%{version}.dist-info/*
 %{python3_sitelib}/pymysqlreplication/*.py*
 %{python3_sitelib}/pymysqlreplication/__pycache__/*.py*
 %{python3_sitelib}/pymysqlreplication/constants/*.py*
@@ -52,6 +65,10 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Sat Nov 6 2025 - Devrim Gündüz <devrim@gunduz.org> 1.0.9-1PGDG
+- Update to 1.0.9
+- Add SLES 16 support
+
 * Sun Dec 29 2024 - Devrim Gündüz <devrim@gunduz.org> 1.0.2-2PGDG
 - Add RHEL 10 support
 
