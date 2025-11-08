@@ -1,7 +1,8 @@
 %global pypi_name	typing_extensions
+
 Name:		python3-typing-extensions
 Version:	4.7.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Python Typing Extensions
 
 License:	PSF-2.0
@@ -11,6 +12,12 @@ Source0:	https://files.pythonhosted.org/packages/source/t/%{pypi_name}/%{pypi_na
 BuildArch:	noarch
 
 BuildRequires:	python3-devel python3-flit-core
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 %description
 The `typing_extensions` module serves two related purposes:
@@ -37,9 +44,6 @@ where `x.y` is the first version that includes all features you need.
 %prep
 %autosetup -n %{pypi_name}-%{version}
 
-%generate_buildrequires
-%pyproject_buildrequires
-
 %build
 %pyproject_wheel
 
@@ -59,6 +63,10 @@ cd src
 %doc README.md
 
 %changelog
+* Sat Nov 8 2023 Devrim Gündüz <devrim@gunduz.org> - 4.7.0-2PGDG
+- Fix builds on SLES
+- Add missing BRs
+
 * Fri Jun 30 2023 Devrim Gündüz <devrim@gunduz.org> - 3.9.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support psycopg3
   RPM on RHEL 8 and SLES 15. RHEL 9 and Fedora already has this package.
