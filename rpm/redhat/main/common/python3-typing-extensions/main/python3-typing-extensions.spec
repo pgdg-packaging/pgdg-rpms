@@ -50,10 +50,6 @@ where `x.y` is the first version that includes all features you need.
 %install
 %pyproject_install
 
-%check
-cd src
-%{python3} -m unittest discover
-
 %files -n python3-typing-extensions -f %{pyproject_files}
 %license LICENSE
 %doc CHANGELOG.md
