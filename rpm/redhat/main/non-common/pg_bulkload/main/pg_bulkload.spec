@@ -10,12 +10,23 @@
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
 BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel pam-devel
-BuildRequires:	libsepol-devel readline-devel krb5-devel lz4-devel zlib-devel
+BuildRequires:	libsepol-devel readline-devel krb5-devel zlib-devel
+
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
+
 # zstd dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libzstd-devel >= 1.4.0
@@ -104,6 +115,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Sat Nov 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.22-4PGDG
+- Fix SLES support
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.22-3PGDG
 - Add SLES 16 support
 
