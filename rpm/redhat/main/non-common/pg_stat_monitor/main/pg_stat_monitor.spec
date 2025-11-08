@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -36,13 +36,17 @@ makes query timing information such as max/min/mean time more accurate.
 %package llvmjit
 Summary:	Just-in-time compilation support for pg_stat_monitor
 Requires:	%{name}%{?_isa} = %{version}-%{release}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 Requires:	llvm17
 %endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:	llvm-devel >= 17.0 clang-devel >= 17.0
-Requires:	llvm >= 17.0
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
 %endif
 
 %description llvmjit
@@ -82,6 +86,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Sat Nov 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-4PGDG
+- Update SLES 16 support
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
 - Add SLES 16 support
 
