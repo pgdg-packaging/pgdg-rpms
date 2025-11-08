@@ -1,5 +1,5 @@
 %global _vpath_builddir .
-%global pgroutingmajorversion 3.8
+%global pgroutingmajorversion 4.0
 %global sname	pgrouting
 
 Summary:	Routing functionality for PostGIS
@@ -42,9 +42,8 @@ cmake .. \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DPOSTGRESQL_BIN=%{pginstdir}/bin \
 	-DCMAKE_BUILD_TYPE=Release \
-%if "%{_lib}" == "lib64"
+	-DBUILD_HTML=OFF -DBUILD_DOXY=OFF \
 	-DLIB_SUFFIX=64
-%endif
 
 popd
 
@@ -68,6 +67,10 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Sat Nov 8 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0.0-1PGDG
+- Update to 4.0.0 per changes described at:
+  https://github.com/pgRouting/pgrouting/releases/tag/v4.0.0
+
 * Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.8.0-1PGDG
 - Update to 3.8.0 per changes described at:
   https://github.com/pgRouting/pgrouting/releases/tag/v3.8.0
