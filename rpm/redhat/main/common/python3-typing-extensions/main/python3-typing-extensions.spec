@@ -50,9 +50,6 @@ where `x.y` is the first version that includes all features you need.
 %install
 %pyproject_install
 
-%pyproject_save_files %{pypi_name}
-
-
 %check
 cd src
 %{python3} -m unittest discover
@@ -63,7 +60,7 @@ cd src
 %doc README.md
 
 %changelog
-* Sat Nov 8 2023 Devrim Gündüz <devrim@gunduz.org> - 4.7.0-2PGDG
+* Sat Nov 8 2025 Devrim Gündüz <devrim@gunduz.org> - 4.7.0-2PGDG
 - Fix builds on SLES
 - Add missing BRs
 
