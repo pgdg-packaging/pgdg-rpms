@@ -63,7 +63,6 @@ Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
 %endif
-%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
