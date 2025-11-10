@@ -107,11 +107,17 @@ Requires:	postgresql%{pgmajorversion}-contrib proj%{projmajorversion} >= %{projf
 Requires:	libgeotiff%{libgeotiffmajorversion}
 Requires:	hdf5
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libjson-c5
 Requires:	libxerces-c-3_2
 BuildRequires:	libxerces-c-devel
-%else
+%endif
+%if 0%{?suse_version} == 1500
+Requires:	libjson-c5
+Requires:	libxerces-c-3_3
+BuildRequires:	libxerces-c-devel
+%endif
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	json-c xerces-c
 BuildRequires:	xerces-c-devel
 %endif
@@ -379,7 +385,7 @@ fi
 
 %changelog
 * Mon Nov 10 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-5PGDG
-- Update pcre2 dependency on SLES.
+- Update pcre2 and libxerces dependencies on SLES.
 
 * Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-4PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8
