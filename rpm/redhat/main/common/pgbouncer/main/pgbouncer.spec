@@ -112,7 +112,7 @@ fi
 %{__chown} -R pgbouncer:pgbouncer %{_rundir}/%{name} >/dev/null 2>&1 || :
 
 %pre
-%sysusers_create_package %{name} %SOURCE6
+%sysusers_create_package %{name} %SOURCE5
 
 %preun
 %systemd_preun %{name}.service
