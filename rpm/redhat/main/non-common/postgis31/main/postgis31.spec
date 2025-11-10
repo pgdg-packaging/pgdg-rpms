@@ -63,7 +63,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel pcre2
+BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel pcre2-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 Requires:	pcre2
 %else
