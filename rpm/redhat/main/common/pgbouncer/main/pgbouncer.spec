@@ -1,6 +1,6 @@
 Name:		pgbouncer
 Version:	1.25.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -11,6 +11,7 @@ Source4:	%{name}.service
 Source5:	%{name}-sysusers.conf
 Source6:	%{name}-tmpfiles.d
 Patch0:		%{name}-ini.patch
+Patch1:		%{name}-1.25.0-addmissingtypedefs.patch
 
 Requires:	python3 python3-psycopg2
 
@@ -18,10 +19,6 @@ BuildRequires:	libevent-devel >= 2.0
 Requires:	libevent >= 2.0
 
 BuildRequires:	pam-devel pandoc
-%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
-Requires:	libopenssl1_0_0
-BuildRequires:	libopenssl-devel
-%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
@@ -62,6 +59,7 @@ pgbouncer uses libevent for low-level socket handling.
 %prep
 %setup -q
 %patch -P 0 -p0
+%patch -P 1 -p1
 
 %build
 sed -i.fedora \
@@ -153,6 +151,10 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> - 1.25.0-43PGDG
+- Add a patch from upstream to fix ppc64le builds, per:
+  https://github.com/pgbouncer/pgbouncer/issues/1413
+
 * Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> - 1.25.0-42PGDG
 - Update to 1.25.0, per changes described at:
   http://www.pgbouncer.org/changelog.html#pgbouncer-125x

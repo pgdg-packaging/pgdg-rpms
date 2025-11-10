@@ -1,0 +1,28 @@
+From 6d96cbe22a52f6f0add982db562126c12a81ca06 Mon Sep 17 00:00:00 2001
+From: Jelte Fennema-Nio <postgres@jeltef.nl>
+Date: Mon, 10 Nov 2025 13:20:22 +0100
+Subject: [PATCH] Add missing typedefs for architectures with SIMD support
+
+For architectures without SIMD support some additional typedefs from
+Postgres are needed. Since our CI only runs ARM and AMD64 these
+codepaths were not compiled in CI.
+
+Fixes #1413
+---
+ include/common/postgres_compat.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/common/postgres_compat.h b/include/common/postgres_compat.h
+index 771e103618f2..0467b1d64a82 100644
+--- a/include/common/postgres_compat.h
++++ b/include/common/postgres_compat.h
+@@ -17,6 +17,9 @@
+ #endif
+ 
+ #define int8 int8_t
++#define int16 int16_t
++#define int32 int32_t
++#define int64 int64_t
+ #define uint8 uint8_t
+ #define uint16 uint16_t
+ #define uint32 uint32_t
