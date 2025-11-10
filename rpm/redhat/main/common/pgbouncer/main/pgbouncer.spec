@@ -1,6 +1,6 @@
 Name:		pgbouncer
-Version:	1.24.1
-Release:	43PGDG%{?dist}
+Version:	1.25.0
+Release:	42PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -9,6 +9,7 @@ Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
 Source4:	%{name}.service
 Source5:	%{name}-sysusers.conf
+Source6:	%{name}-tmpfiles.d
 Patch0:		%{name}-ini.patch
 
 Requires:	python3 python3-psycopg2
@@ -16,7 +17,7 @@ Requires:	python3 python3-psycopg2
 BuildRequires:	libevent-devel >= 2.0
 Requires:	libevent >= 2.0
 
-BuildRequires:	openssl-devel pam-devel
+BuildRequires:	openssl-devel pam-devel pandoc
 
 %if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
 BuildRequires:	c-ares-devel >= 1.13
@@ -27,19 +28,20 @@ BuildRequires:	c-ares-devel >= 1.13
 Requires:	libcares2 >= 1.19
 %endif
 
+%if 0%{?suse_version} >= 1500
+BuildRequires:	openldap2-devel
+%else
+BuildRequires:	openldap-devel
+%endif
+
 BuildRequires:		systemd
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version}
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%endif
-%else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
+
+Provides:	group(pgbouncer) user(pgbouncer)
 
 %description
 pgbouncer is a lightweight connection pooler for PostgreSQL.
@@ -81,13 +83,8 @@ sed -i.fedora \
 %{__install} -d %{buildroot}%{_unitdir}
 %{__install} -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/%{name}.service
 
-# ... and make a tmpfiles script to recreate it at reboot.
-%{__mkdir} -p %{buildroot}%{_tmpfilesdir}
-cat > %{buildroot}%{_tmpfilesdir}/%{name}.conf <<EOF
-d %{_rundir}/%{name} 0700 pgbouncer pgbouncer -
-d /home/%{name} 0700 pgbouncer pgbouncer -
-
-EOF
+%{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
+%{__install} -m 0644 %{SOURCE6} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
 
 # Install sysusers.d config file to allow rpm to create users/groups automatically.
 %{__install} -m 0644 -D %{SOURCE5} %{buildroot}%{_sysusersdir}/%{name}-pgdg.conf
@@ -115,9 +112,7 @@ fi
 %{__chown} -R pgbouncer:pgbouncer %{_rundir}/%{name} >/dev/null 2>&1 || :
 
 %pre
-groupadd -r pgbouncer >/dev/null 2>&1 || :
-useradd -m -g pgbouncer -r -s /bin/bash \
-	-c "PgBouncer Server" pgbouncer >/dev/null 2>&1 || :
+%sysusers_create_package %{name} %SOURCE6
 
 %preun
 %systemd_preun %{name}.service
@@ -146,6 +141,10 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> - 1.25.0-42PGDG
+- Update to 1.25.0, per changes described at:
+  http://www.pgbouncer.org/changelog.html#pgbouncer-125x
+
 * Mon Sep 22 2025 Devrim Gündüz <devrim@gunduz.org> - 1.24.1-43PGDG
 - Add sysusers.d config file to allow rpm to create users/groups automatically.
 - Add c-ares support to SLES 15 as well.
