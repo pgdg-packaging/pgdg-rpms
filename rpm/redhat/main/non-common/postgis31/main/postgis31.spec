@@ -384,7 +384,7 @@ fi
 * Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-13PGDG
 - Update pcre2 and libxerces dependencies on SLES.
 
-* Wed Aug 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-12PGDG
+* Wed Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-12PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8
 - Add SLES 16 support
 
