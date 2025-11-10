@@ -60,7 +60,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.8
-Release:	12PGDG%{?dist}
+Release:	13PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -71,13 +71,11 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
-BuildRequires:	pcre2-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel pcre2-devel
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
 Requires:	pcre2
 %else
-BuildRequires:	pcre-devel
-Requires:	pcre
+Requires:	libpcre2-8-0
 %endif
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
@@ -125,11 +123,19 @@ Requires:	hdf5
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %endif
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libjson-c5
 Requires:	libxerces-c-3_2
-%else
+BuildRequires:	libxerces-c-devel
+%endif
+%if 0%{?suse_version} == 1600
+Requires:	libjson-c5
+Requires:	libxerces-c-3_3
+BuildRequires:	libxerces-c-devel
+%endif
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	json-c xerces-c
+BuildRequires:	xerces-c-devel
 %endif
 Requires(post):	%{_sbindir}/update-alternatives
 
@@ -392,6 +398,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 10 2025 Devrim Gunduz <devrim@gunduz.org> - 3.2.8-13PGDG
+- Update pcre2 and libxerces dependencies on SLES.
+
 * Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.2.8-12PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8
 - Add SLES 16 support
