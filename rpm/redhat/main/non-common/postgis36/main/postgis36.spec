@@ -112,7 +112,7 @@ Requires:	libjson-c5
 Requires:	libxerces-c-3_2
 BuildRequires:	libxerces-c-devel
 %endif
-%if 0%{?suse_version} == 1500
+%if 0%{?suse_version} == 1600
 Requires:	libjson-c5
 Requires:	libxerces-c-3_3
 BuildRequires:	libxerces-c-devel
