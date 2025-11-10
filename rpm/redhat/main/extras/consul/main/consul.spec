@@ -15,7 +15,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul
 Version:	1.22.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
 License:	MPLv2.0
@@ -29,6 +29,8 @@ Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
 
 Requires:	systemd
+
+Provides:	user(consul) group(consul)
 
 %description
 Consul is a tool for service discovery and configuration. Consul is
@@ -95,6 +97,9 @@ any number of regions without complex configuration.
 %doc
 
 %changelog
+* Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> 1.22.0-2PGDG
+- Provide user and group consul to fix SLES-16 installations
+
 * Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> 1.22.0-1PGDG
 - Update to 1.22.0 per changes described at:
   https://github.com/hashicorp/consul/releases/tag/v1.22.0
