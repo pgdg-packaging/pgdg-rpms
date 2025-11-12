@@ -261,10 +261,10 @@ Requires:	libicu-devel
 %if %llvm
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} == 1500
-BuildRequires:	llvm17-devel clang17-devel
+Requires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?suse_version} == 1600
-BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19-devel clang19-devel
 %endif
 %if 0%{?fedora} || 0%{?rhel}
 Requires:	llvm-devel >= 17.0 clang-devel >= 17.0
