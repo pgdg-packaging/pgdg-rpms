@@ -13,8 +13,8 @@
 %endif
 
 Name:		etcd
-Version:	3.6.5
-Release:	2PGDG%{?dist}
+Version:	3.6.6
+Release:	1PGDG%{?dist}
 Summary:	Distributed reliable key-value store
 License:	ASL 2.0
 URL:		https://github.com/%{name}-io/%{name}
@@ -86,9 +86,17 @@ of a distributed system, with a focus on being:
 %{_unitdir}/%{name}.service
 
 %changelog
+* Wed Nov 12 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.6-1PGDG
+- Update to 3.6.6, per changes described at:
+  https://github.com/etcd-io/etcd/releases/tag/v3.6.6
+
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> 3.6.5-2PGDG
 - Add sysusers.d and tmpfiles.d config file to allow rpm to create
   users/groups automatically.
+
+* Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.5-1PGDG
+- Update to 3.6.5, per changes described at:
+  https://github.com/etcd-io/etcd/releases/tag/v3.6.5
 
 * Sun Sep 21 2025 Devrim Gündüz <devrim@gunduz.org> - 3.6.5-1PGDG
 - Update to 3.6.5, per changes described at:
