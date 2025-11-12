@@ -57,7 +57,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.9
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/%{sname}/docs/%{sname}-%{version}.pdf
@@ -68,11 +68,11 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
-BuildRequires:	pcre2-devel
+BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel pcre2-devel
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+BuildRequires:	pcre2
 %else
-BuildRequires:	pcre-devel
+BuildRequires:	libpcre2-8-0
 %endif
 
 %if 0%{?suse_version} >= 1500
@@ -378,6 +378,10 @@ fi
 %endif
 
 %changelog
+* Wed Nov 12 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0.9-10PGDG
+- Fix pcre2 dependency on RHEL 8 and 9. Per report from Christopher Lorenz:
+  https://www.postgresql.org/message-id/fc8e323142484d98b5d1720e0811ce9c%40ZIT-BB.Brandenburg.de
+
 * Tue Oct 7 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0.9-9PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8
 - Add SLES 16 support

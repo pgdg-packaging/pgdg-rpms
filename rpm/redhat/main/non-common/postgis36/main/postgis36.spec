@@ -47,7 +47,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -58,7 +58,7 @@ URL:		https://www.postgis.net/
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
 BuildRequires:	pgdg-srpm-macros >= 1.0.50 gmp-devel pcre2-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
@@ -384,6 +384,10 @@ fi
 %endif
 
 %changelog
+* Wed Nov 12 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-6PGDG
+- Fix pcre2 dependency on RHEL 8 and 9. Per report from Christopher Lorenz:
+  https://www.postgresql.org/message-id/fc8e323142484d98b5d1720e0811ce9c%40ZIT-BB.Brandenburg.de
+
 * Mon Nov 10 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.0-5PGDG
 - Update pcre2 and libxerces dependencies on SLES.
 
