@@ -1,6 +1,6 @@
 Name:		pgbouncer
 Version:	1.25.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -77,6 +77,8 @@ sed -i.fedora \
 %else
 	--with-cares --disable-evdns \
 %endif
+	--with-systemd \
+	--with-pam
 
 %{__make} %{?_smp_mflags} V=1
 
@@ -151,6 +153,10 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Wed Nov 12 2025 Devrim Gündüz <devrim@gunduz.org> - 1.25.0-44PGDG
+- Re-add systemd and pam support that I broke in ec52b384. Fixes
+  https://github.com/pgbouncer/pgbouncer/issues/1416
+
 * Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> - 1.25.0-43PGDG
 - Add a patch from upstream to fix ppc64le builds, per:
   https://github.com/pgbouncer/pgbouncer/issues/1413
