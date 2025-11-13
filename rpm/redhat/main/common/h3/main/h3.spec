@@ -76,7 +76,7 @@ popd
 %{_libdir}/cmake/%{sname}/*.cmake
 
 %changelog
-* Tjhu Nov 13 2025 Devrim Gündüz <devrim@gunduz.org> - 4.4.1-1PGDG
+* Thu Nov 13 2025 Devrim Gündüz <devrim@gunduz.org> - 4.4.1-1PGDG
 - Update to 4.4.1 per changes described at:
   https://github.com/uber/h3/releases/tag/v4.4.1
 
