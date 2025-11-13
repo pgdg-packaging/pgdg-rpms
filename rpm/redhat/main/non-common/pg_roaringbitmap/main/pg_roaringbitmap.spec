@@ -4,7 +4,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.0
+Version:	1.1.0
 Release:	1PGDG%{?dist}
 Summary:	RoaringBitmap extension for PostgreSQL
 License:	Apache 2.0
@@ -67,6 +67,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Thu Nov 13 2025 Devrim Gündüz <devrim@gunduz.org> 1.1.0-1PGDG
+- Update to 1.1.0 per changes described at:
+  https://github.com/ChenHuajun/pg_roaringbitmap/releases/tag/v1.1.0
+
 * Mon Nov 10 2025 Devrim Gündüz <devrim@gunduz.org> 1.0.0-1PGDG
 - Update to 1.0.0 per changes described at:
   https://github.com/ChenHuajun/pg_roaringbitmap/releases/tag/v1.0.0
