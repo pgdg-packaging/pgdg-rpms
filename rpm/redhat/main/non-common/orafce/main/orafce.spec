@@ -11,13 +11,25 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
 
-BuildRequires:	postgresql%{pgmajorversion}-devel openssl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	krb5-devel meson
+%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
+Requires:	libopenssl1_0_0
+BuildRequires:	libopenssl-devel
+%endif
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 Requires:	postgresql%{pgmajorversion}
 
 # llvmjit package is not built with meson:
@@ -60,6 +72,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Thu Nov 13 2025 Devrim Gündüz <devrim@gunduz.org> 4.16.2-2PGDG
+- Modernise openssl dependencies
+
 * Sat Nov 8 2025 Devrim Gündüz <devrim@gunduz.org> 4.16.2-1PGDG
 - Update to 4.16.2 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_16_2
