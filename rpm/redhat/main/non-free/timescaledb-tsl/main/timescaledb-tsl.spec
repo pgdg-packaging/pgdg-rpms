@@ -2,14 +2,25 @@
 
 Summary:	PostgreSQL based time-series database
 Name:		%{sname}-tsl_%{pgmajorversion}
-Version:	2.23.0
+Version:	2.23.1
 Release:	1PGDG%{?dist}
 License:	Timescale
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
-URL:		https://github.com/timescale/timescaledb
-BuildRequires:	postgresql%{pgmajorversion}-devel
+URL:		https://github.com/timescale/%{sname}
+BuildRequires:	postgresql%{pgmajorversion}-devel cmake >= 3.4
+%if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
+Requires:	libopenssl1_0_0
+BuildRequires:	libopenssl-devel
+%endif
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
-BuildRequires:	cmake >= 3.4
+%endif
+
 Requires:	postgresql%{pgmajorversion}-server
 
 Conflicts:	%{sname}_%{pgmajorversion}
@@ -59,6 +70,11 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/pgxs/src/test/perl/TimescaleNode.pm
 
 %changelog
+* Thu Nov 13 2025 Devrim Gündüz <devrim@gunduz.org> - 2.23.1-1PGDG
+- Update to 2.23.1, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.23.1
+- Modernise openssl dependencies
+
 * Wed Oct 29 2025 Devrim Gündüz <devrim@gunduz.org> - 2.23.0-1PGDG
 - Update to 2.23.0, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.23.0
