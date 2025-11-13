@@ -1,15 +1,15 @@
 %global sname pgreplay
-%global vname PGREPLAY_1_3_0
+%global vname PGREPLAY_1_5_0
 
 Summary:	PostgreSQL log file re-player
 Name:		%{sname}
-Version:	1.3.0
-Release:	5PGDG%{?dist}
+Version:	1.5.0
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/laurenz/%{sname}/archive/%{vname}.tar.gz
 URL:		https://github.com/laurenz/%{sname}
 Requires:	postgresql-server >= 10.0
-BuildRequires:	libpq5-devel pgdg-srpm-macros
+BuildRequires:	libpq5-devel
 
 %description
 pgreplay reads a PostgreSQL log file (not a WAL file), extracts the SQL
@@ -43,11 +43,14 @@ affect you.
 
 %files
 %defattr(-,root,root,-)
-%doc %{sname}.html README CHANGELOG
+%doc %{sname}.html README.md CHANGELOG
 %{_bindir}/%{sname}
 %{_mandir}/man1/%{sname}*
 
 %changelog
+* Thu Nov 13 2025 - Devrim Gündüz <devrim@gunduz.org> 1.5.0-1PGDG
+- Update to 1.5.0
+
 * Tue Feb 20 2024 Devrim Gündüz <devrim@gunduz.org> - 1.3.0-5PGDG
 - Add PGDG branding
 
