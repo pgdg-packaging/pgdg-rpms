@@ -62,9 +62,9 @@ Version:	16.11
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420001PGDG%{?dist}
+Release:	420002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1265,6 +1265,9 @@ fi
 %endif
 
 %changelog
+* Sat Nov 15 2025 Devrim Gunduz <devrim@gunduz.org> - 16.11-2PGDG
+- Rebuild on RHEL 9 - aarch64 to fix package signing issue
+
 * Tue Nov 11 2025 Devrim Gunduz <devrim@gunduz.org> - 16.11-1PGDG
 - Update to 16.11, per changes described at:
   https://www.postgresql.org/docs/release/16.11/
