@@ -85,7 +85,7 @@ Rocky Linux, AlmaLinux and also the GPG key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
-* Sat 15 Nov 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-60PGDG
+* Sat Nov 15 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-60PGDG
 - Fix/update sysupdates URLs in RHEL 9 and 10 repo files.
 
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-59PGDG
