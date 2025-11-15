@@ -86,7 +86,7 @@ Rocky Linux, AlmaLinux and also the GPG key for PGDG RPMs.
 
 %changelog
 * Sat 15 Nov 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-60PGDG
-- Fix/update sysupdates URLs in RHEL 10 repo files.
+- Fix/update sysupdates URLs in RHEL 9 and 10 repo files.
 
 * Sat Sep 27 2025 Devrim Gündüz <devrim@gunduz.org> - 42.0-59PGDG
 - Add missing debuginfo/source repos.
