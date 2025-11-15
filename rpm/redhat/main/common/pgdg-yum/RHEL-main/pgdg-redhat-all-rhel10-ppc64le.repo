@@ -2,7 +2,7 @@
 # PGDG Red Hat Enterprise Linux / Rocky repositories  #
 #######################################################
 
-# PGDG Red Hat Enterprise Linux / Rocky stable common repository for all PostgreSQL versions
+# PGDG Red Hat Enterprise Linux / Rocky / AlmaLinux stable common repository for all PostgreSQL versions
 
 [pgdg-common]
 name=PostgreSQL common RPMs for RHEL / Rocky / AlmaLinux $releasever - $basearch
@@ -12,13 +12,14 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
 
-# Red Hat recently breaks compatibility between 10.n and 10.n+1. PGDG repo is
-# affected with the LLVM packages. This is a band aid repo for the llvmjit users
-# whose installations cannot be updated.
+# Red Hat recently breaks compatibility between 10.n and 10.n+1.
+# PGDG repo is affected with LLVM, CLANG and some other packages.
+# This is a band aid repo for those non-RHEL users whose
+# installations cannot be updated on time.
 
 [pgdg-rhel10-sysupdates]
 name=PostgreSQL Supplementary ucommon RPMs for RHEL / Rocky / AlmaLinux $releasever - $basearch
-baseurl=https://download.postgresql.org/pub/repos/yum/common/pgdg-rhel$releasever-extras/redhat/rhel-$releasever-$basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/common/pgdg-rhel10-sysupdates/redhat/rhel-$releasever-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
