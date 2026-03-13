@@ -29,8 +29,8 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.17.0
-Release:	43PGDG%{?dist}
+Version:	3.18.0
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -145,17 +145,17 @@ touch %{buildroot}/var/log/barman/barman.log
 %files -n barman-cli
 %defattr(-,root,root)
 %doc RELNOTES.md README.rst
-%{_bindir}/barman-wal-archive
-%{_bindir}/barman-wal-restore
 %{_bindir}/barman-cloud-backup
 %{_bindir}/barman-cloud-backup-delete
 %{_bindir}/barman-cloud-backup-keep
+%{_bindir}/barman-cloud-backup-list
 %{_bindir}/barman-cloud-backup-show
 %{_bindir}/barman-cloud-check-wal-archive
-%{_bindir}/barman-cloud-wal-archive
-%{_bindir}/barman-cloud-backup-list
 %{_bindir}/barman-cloud-restore
+%{_bindir}/barman-cloud-wal-archive
 %{_bindir}/barman-cloud-wal-restore
+%{_bindir}/barman-wal-archive
+%{_bindir}/barman-wal-restore
 %doc %{_mandir}/man1/barman*
 
 %files -n python3-barman
@@ -165,6 +165,10 @@ touch %{buildroot}/var/log/barman/barman.log
 %{python_sitelib}/%{name}/
 
 %changelog
+* Fri Mar 13 2026 Devrim Gündüz <devrim@gunduz.org> - 3.18.0-42PGDG
+- Update to 3.18.0, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.18.0
+
 * Tue Feb 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.17.0-43PGDG
 - Add Fedora 44 support
 
