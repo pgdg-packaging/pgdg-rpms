@@ -12,7 +12,7 @@ BuildRequires:	blas-devel cmake >= 3.14 fdupes glu-devel gmp-devel
 BuildRequires:	lapack-devel libboost_atomic-devel >= 1.74
 BuildRequires:	libboost_thread-devel >= 1.74 mpfr-devel xz zlib-devel
 Requires:	libcgal-devel = %{version}
-%if 0%{?sle_version} >= 150400 && 0%{?sle_version} < 160000 && 0%{?is_opensuse}
+%if 0%{?suse_version} >= 150400 && 0%{?suse_version} < 160000 && 0%{?is_opensuse}
 BuildRequires:	gcc13-c++
 %else
 BuildRequires:	gcc-c++
@@ -63,7 +63,7 @@ This package provides the documentation for CGAL algorithms.
 %setup -q -n CGAL-%{version} -a1
 
 %build
-%if 0%{?sle_version} >= 150400 && 0%{?sle_version} < 160000 && 0%{?is_opensuse}
+%if 0%{?suse_version} >= 150400 && 0%{?suse_version} < 160000 && 0%{?is_opensuse}
 export CXX="g++-13"
 %endif
 
