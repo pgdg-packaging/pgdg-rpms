@@ -759,6 +759,7 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 	strip *.so
 	%{__rm} -f GNUmakefile Makefile *.o
 	chmod 0755 pg_regress regress.so
+	cp regress.so  %{buildroot}%{pgbaseinstdir}/lib/regress.so
 	popd
 	%{__cp} %{SOURCE4} %{buildroot}%{pgbaseinstdir}/lib/test/regress/Makefile
 	chmod 0644 %{buildroot}%{pgbaseinstdir}/lib/test/regress/Makefile
@@ -1052,6 +1053,7 @@ fi
 %{pgbaseinstdir}/lib/pg_freespacemap.so
 %{pgbaseinstdir}/lib/pg_logicalinspect.so
 %{pgbaseinstdir}/lib/pg_overexplain.so
+%{pgbaseinstdir}/lib/pg_plan_advice.so
 %{pgbaseinstdir}/lib/pg_prewarm.so
 %{pgbaseinstdir}/lib/pg_stat_statements.so
 %{pgbaseinstdir}/lib/pg_surgery.so
@@ -1313,6 +1315,7 @@ fi
 %defattr(-,postgres,postgres)
 %attr(-,postgres,postgres) %{pgbaseinstdir}/lib/test/*
 %attr(-,postgres,postgres) %dir %{pgbaseinstdir}/lib/test
+%{pgbaseinstdir}/lib/regress.so
 %endif
 
 %changelog
