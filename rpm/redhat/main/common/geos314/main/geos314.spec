@@ -54,11 +54,10 @@ use GEOS
 	-DCMAKE_INSTALL_PREFIX:PATH=%{geosinstdir} -DCMAKE_BUILD_TYPE=Release .. \
 	-D LIB_INSTALL_DIR=%{_lib} .
 
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags}
+%cmake_build
 
 %install
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install/fast \
-	DESTDIR=%{buildroot}
+%cmake_install
 
 # Remove files we don't ship:
 %{__rm} -f %{buildroot}%{geosinstdir}/lib64/cmake/GEOS/geos-config*cmake
@@ -93,6 +92,9 @@ echo "%{geosinstdir}/%{_geoslibdir}/" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{geosinstdir}/%{_geoslibdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Fri Mar 13 2026 Devrim Gunduz <devrim@gunduz.org> - 3.14.1-4PGDG
+- Fix builds with CMake 4.
+
 * Mon Dec 15 2025 Devrim Gunduz <devrim@gunduz.org> - 3.14.1-3PGDG
 - Simplify %%build section
 
