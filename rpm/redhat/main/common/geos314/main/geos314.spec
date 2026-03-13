@@ -7,7 +7,7 @@
 
 Name:		%{sname}%{_geosversion}
 Version:	3.14.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	GEOS is a C++ port of the Java Topology Suite
 
 License:	LGPLv2
@@ -93,6 +93,9 @@ echo "%{geosinstdir}/%{_geoslibdir}/" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{geosinstdir}/%{_geoslibdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Fri Mar 13 2026 Devrim Gunduz <devrim@gunduz.org> - 3.14.1-4PGDG
+- Fix builds with CMake 4.
+
 * Mon Dec 15 2025 Devrim Gunduz <devrim@gunduz.org> - 3.14.1-3PGDG
 - Simplify %%build section
 
