@@ -43,12 +43,12 @@ BuildRequires:	cmake pgdg-srpm-macros
 
 %if 0%{?suse_version} == 1500
 BuildRequires:	libboost_date_time1_66_0 libboost_thread1_66_0
-BuildRequires:	libboost_serialization1_66_0
+BuildRequires:	libboost_system1_66_0 libboost_serialization1_66_0
 BuildRequires:	libboost_serialization1_66_0-devel libboost_atomic1_66_0-devel
 %endif
 %if 0%{?suse_version} == 1600
 BuildRequires:	libboost_date_time1_86_0 libboost_thread1_86_0
-BuildRequires:	libboost_serialization1_86_0
+BuildRequires:	libboost_system1_86_0 libboost_serialization1_86_0
 BuildRequires:	libboost_serialization1_86_0-devel libboost_atomic1_86_0-devel
 %endif
 %if 0%{?rhel} || 0%{?fedora}
