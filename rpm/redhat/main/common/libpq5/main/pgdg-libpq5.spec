@@ -5,7 +5,7 @@
 
 Summary:	PostgreSQL Client Library
 Name:		libpq5
-Version:	%{pgmajorversion}.1
+Version:	%{pgmajorversion}.3
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
@@ -252,6 +252,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Fri Mar 13 2026 Devrim Gündüz <devrim@gunduz.org> - 18.3-1PGDG
+- Update to 18.3
+
 * Tue Nov 18 2025 Devrim Gündüz <devrim@gunduz.org> - 18.1-1PGDG
 - Update to 18.1
 - Modernise OpenSSL dependencies
