@@ -4,8 +4,8 @@
 %global __ospython %{_bindir}/python3
 
 Name:		powa-collector
-Version:	1.3.1
-Release:	3PGDG%{?dist}
+Version:	1.3.2
+Release:	1PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -14,21 +14,17 @@ Source1:	%{name}.service
 Source2:	%{sname}-tmpfiles.d
 
 BuildRequires:	python3-devel python3-wheel
-BuildRequires:	systemd-rpm-macros
-Requires:	python3-psycopg2 systemd
+BuildRequires:		systemd systemd-devel systemd-rpm-macros
 
-BuildArch:	noarch
-
+Requires:	python3-psycopg2
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
-%if 0%{?suse_version} >= 1500
-Requires(post):		systemd-sysvinit
-%else
-Requires(post):		systemd-sysv
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
-%endif
+
+BuildArch:	noarch
+
 
 %description
 This is a simple multi-threaded python program that performs the
@@ -84,6 +80,10 @@ database (in the powa_servers table).
 %{python3_sitelib}/%{pname}-%{version}.dist-info/*
 
 %changelog
+* Sun Mar 15 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-1PGDG
+- Update to 1.3.2 per changes described at:
+  https://github.com/powa-team/powa-collector/releases/tag/1.3.2
+
 * Tue Oct 28 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-3PGDG
 - Fix builds on Fedora 43.
 
