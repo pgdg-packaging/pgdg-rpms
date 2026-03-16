@@ -167,6 +167,7 @@ BuildRequires:	python3-numpy-devel
 BuildRequires:	python311-devel
 BuildRequires:	libshp-devel libcurl-devel >= 7.68
 BuildRequires:	java-11-openjdk-devel
+BuildRequires:	gcc13 gcc13-c++
 %endif
 %if 0%{?suse_version} == 1600
 BuildRequires:	hdf5 hdf5-devel
@@ -206,8 +207,8 @@ BuildRequires:	SFCGAL-devel
 %endif
 
 BuildRequires:	shapelib-devel curl-devel >= 7.68
-BuildRequires:	python3-devel >= 3.8
-BuildRequires:	openjpeg2-devel >= 2.3.1
+BuildRequires:	python3-devel >= 3.6
+BuildRequires:	openjpeg2-devel >= 2.3.0
 
 # Run time dependencies
 Requires:	gpsbabel
