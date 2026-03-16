@@ -34,11 +34,6 @@ database (in the powa_servers table).
 %prep
 %setup -q -n %{name}-%{version}
 
-%if 0%{?fedora} <= 42 || 0%{?rhel} >= 8
-%generate_buildrequires
-%pyproject_buildrequires -t
-%endif
-
 %build
 %pyproject_wheel
 
