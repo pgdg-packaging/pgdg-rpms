@@ -1,6 +1,6 @@
 %global		name perl-DBD-Oracle
 %global		pkgname %(echo %{name}| sed 's/perl-//')
-%{!?version:%global version 1.91_4}
+%{!?version:%global version 1.91_5}
 %{!?oi_release:%global oi_release 23.26.1.0.0}
 %global		release %{oi_release}PGDG%{dist}
 %global		perl_vendorarch %(eval "$(%{__perl} -V:installvendorarch)"; echo $installvendorarch)
@@ -69,6 +69,9 @@ chmod 755 %{custom_find_req}
 %{_mandir}/man3/*
 
 %changelog
+* Wed Mar 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.91_5-23.26.1.0.0PGDG
+- Update to 1.91_5
+
 * Wed Feb 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.91_4-23.26.1.0.0PGDG
 - Update to 1.91_4
 
