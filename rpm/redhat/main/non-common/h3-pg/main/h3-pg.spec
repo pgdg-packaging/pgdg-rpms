@@ -4,7 +4,7 @@
 Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	Apache
 URL:		https://github.com/postgis/%{sname}
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -36,13 +36,12 @@ cmake -DCMAKE_BUILD_TYPE=Release .. \
 	-DPostgreSQL_CONFIG=%{pginstdir}/bin/pg_config
 popd
 
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} build
+%cmake_build
 
 %install
 %{__rm} -rf %{buildroot}
 pushd build
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install \
-	DESTDIR=%{buildroot}
+%cmake_install
 popd
 
 %post	-p /sbin/ldconfig
@@ -59,6 +58,9 @@ popd
 %{pginstdir}/share/extension/h3_postgis.control
 
 %changelog
+* Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-4PGDG
+- Fix builds against CMake 4
+
 * Wed Feb 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-3PGDG
 - Switch to using %%cmake macro instead of %%cmake3. This fixes
   Fedora 44 build and also works on other RHEL/Fedora distros.
