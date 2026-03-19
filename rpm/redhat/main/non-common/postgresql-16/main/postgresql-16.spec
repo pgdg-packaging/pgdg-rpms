@@ -62,9 +62,9 @@ Version:	16.13
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -93,6 +93,11 @@ Patch1:		%{sname}-%{pgmajorversion}-rpm-pgsql.patch
 Patch3:		%{sname}-%{pgmajorversion}-conf.patch
 Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
+%if 0%{?fedora} == 44
+Patch7:		%{sname}-%{pgmajorversion}-llvm22-0001-jit-Skip-local-SectionMemoryManager-for-LLVM-22.patch
+Patch8:		%{sname}-%{pgmajorversion}-llvm22-0002-jit-Stop-using-lifetime.end-intrinsic-for-LLVM-22.patch
+Patch9:		%{sname}-%{pgmajorversion}-llvm22-0003--jit-Fix-integer-constants-for-LLVM-22.patch
+%endif
 
 BuildRequires:	perl glibc-devel bison flex >= 2.5.31
 BuildRequires:	gcc-c++
@@ -470,6 +475,11 @@ benchmarks.
 %patch -P 3 -p0
 %patch -P 5 -p0
 %patch -P 6 -p0
+%if 0%{?fedora} == 44
+%patch -P 7 -p1
+%patch -P 8 -p1
+%patch -P 9 -p1
+%endif
 
 %{__cp} -p %{SOURCE12} .
 
@@ -1269,6 +1279,9 @@ fi
 %endif
 
 %changelog
+* Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 16.13-3PGDG
+- Add patches from -hackers to support LLVM 22.
+
 * Thu Mar 5 2026 Devrim Gündüz <devrim@gunduz.org> - 16.13-2PGDG
 - Fix builds when ssl macro is disabled.
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/164
