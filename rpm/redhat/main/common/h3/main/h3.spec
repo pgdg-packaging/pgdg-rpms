@@ -4,7 +4,7 @@
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
 Version:	4.4.1
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -34,20 +34,18 @@ for h3.
 pushd build
 %if 0%{?suse_version} >= 1315
 cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE=Release \
-	-DBUILD_SHARED_LIBS:BOOL=ON ..
+	-DBUILD_SHARED_LIBS:BOOL=ON -DENABLE_LINTING=OFF ..
 %else
-%cmake3 -DCMAKE_BUILD_TYPE=Release ..
+%cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_LINTING=OFF ..
 %endif
-
+%cmake_build
 popd
 
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} build
 
 %install
 %{__rm} -rf %{buildroot}
 pushd build
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install \
-	DESTDIR=%{buildroot}
+%cmake_install
 popd
 %{__mv} %{buildroot}/%{_includedir}/h3/h3api.h %{buildroot}/%{_includedir}/
 
@@ -76,6 +74,11 @@ popd
 %{_libdir}/cmake/%{sname}/*.cmake
 
 %changelog
+* Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 4.4.1-2PGDG
+- Fix builds with CMake 4. This also removed %%cmake3 macro which
+  was a RHEL 7-era one.
+- Disable linting (at least for now, which fails to run on Fedora 44).
+
 * Thu Nov 13 2025 Devrim Gündüz <devrim@gunduz.org> - 4.4.1-1PGDG
 - Update to 4.4.1 per changes described at:
   https://github.com/uber/h3/releases/tag/v4.4.1
