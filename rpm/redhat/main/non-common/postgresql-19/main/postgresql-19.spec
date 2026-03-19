@@ -1,4 +1,3 @@
-%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
@@ -1216,7 +1215,7 @@ fi
 
 %files libs-oauth
 %defattr(-,root,root)
-%{pgbaseinstdir}/lib/libpq-oauth-%{pgmajorversion}.so
+%{pgbaseinstdir}/lib/libpq-oauth.so
 
 %if %llvm
 %files llvmjit
