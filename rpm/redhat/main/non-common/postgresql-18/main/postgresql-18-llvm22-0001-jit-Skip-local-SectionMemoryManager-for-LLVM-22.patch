@@ -1,0 +1,115 @@
+From 8f799057689934dd6099ba911a1450499a61f7b6 Mon Sep 17 00:00:00 2001
+From: Thomas Munro <thomas.munro@gmail.com>
+Date: Wed, 31 Dec 2025 17:35:04 +1300
+Subject: [PATCH v2 1/3] jit: Skip local SectionMemoryManager for LLVM 22.
+
+LLVM 22 has the fix that we copied into our tree in commit 9044fc1d and
+a new function to reach it[1][2], so we only need to use our local copy
+for LLVM < 22.
+
+The only change that we don't have from the version that was committed
+is the addition of the LLVM_ABI macro to control shared library exports,
+but that isn't defined before LLVM 20 (our copy has to work with earlier
+versions), and isn't appropriate here as our copy is private and in our
+own library.
+
+[1] https://github.com/llvm/llvm-project/pull/71968
+[2] https://github.com/llvm/llvm-project/pull/174307
+
+Backpatch-through: 14
+Discussion: https://postgr.es/m/CA%2BhUKGJTumad75o8Zao-LFseEbt%3DenbUFCM7LZVV%3Dc8yg2i7dg%40mail.gmail.com
+---
+ src/backend/jit/llvm/SectionMemoryManager.cpp | 22 ++++++-------------
+ src/backend/jit/llvm/llvmjit.c                |  5 ++++-
+ src/include/jit/SectionMemoryManager.h        |  2 +-
+ src/include/jit/llvmjit_backport.h            |  4 ++--
+ 4 files changed, 14 insertions(+), 19 deletions(-)
+
+diff --git a/src/backend/jit/llvm/SectionMemoryManager.cpp b/src/backend/jit/llvm/SectionMemoryManager.cpp
+index 2171db5f382..e113ce81a3d 100644
+--- a/src/backend/jit/llvm/SectionMemoryManager.cpp
++++ b/src/backend/jit/llvm/SectionMemoryManager.cpp
+@@ -1,25 +1,17 @@
+ /*
+- * This file is from https://github.com/llvm/llvm-project/pull/71968
+- * with minor modifications to avoid name clash and work with older
+- * LLVM versions.  The llvm::backport::SectionMemoryManager class is a
+- * drop-in replacement for llvm::SectionMemoryManager, for use with
+- * llvm::RuntimeDyld.  It fixes a memory layout bug on large memory
+- * ARM systems (see pull request for details).  If the LLVM project
+- * eventually commits the change, we may need to resynchronize our
+- * copy with any further modifications, but they would be unlikely to
+- * backport it into the LLVM versions that we target so we would still
+- * need this copy.
++ * This file is from LLVM 22 (originally pull request #71968), with minor
++ * modifications to avoid name clash and work with older LLVM versions.  It
++ * replaces llvm::SectionMemoryManager, and is injected into llvm::RuntimeDyld
++ * to fix a memory layout bug on large memory ARM systems on LLVM < 22.
+  *
+- * In the future we will switch to using JITLink instead of
+- * RuntimeDyld where possible, and later remove this code (.cpp, .h,
+- * .LICENSE) after all LLVM versions that we target allow it.
++ * We can remove this code (.cpp, .h, .LICENSE) once LLVM 22 is our minimum
++ * supported version or we've switched to JITLink for at least Aarch64.
+  *
+  * This file is a modified copy of a part of the LLVM source code that
+  * we would normally access from the LLVM library.  It is therefore
+  * covered by the license at https://llvm.org/LICENSE.txt, reproduced
+  * verbatim in SectionMemoryManager.LICENSE in fulfillment of clause
+- * 4a.  The bugfix changes from the pull request are also covered, per
+- * clause 5.
++ * 4a.
+  */
+ 
+ //===- SectionMemoryManager.cpp - Memory manager for MCJIT/RtDyld *- C++ -*-==//
+diff --git a/src/backend/jit/llvm/llvmjit.c b/src/backend/jit/llvm/llvmjit.c
+index 8d009dd5cf7..8fb282f6cce 100644
+--- a/src/backend/jit/llvm/llvmjit.c
++++ b/src/backend/jit/llvm/llvmjit.c
+@@ -1172,7 +1172,10 @@ llvm_log_jit_error(void *ctx, LLVMErrorRef error)
+ static LLVMOrcObjectLayerRef
+ llvm_create_object_layer(void *Ctx, LLVMOrcExecutionSessionRef ES, const char *Triple)
+ {
+-#ifdef USE_LLVM_BACKPORT_SECTION_MEMORY_MANAGER
++#if LLVM_VERSION_MAJOR >= 22
++	LLVMOrcObjectLayerRef objlayer =
++		LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManagerReserveAlloc(ES, true);
++#elif defined(USE_LLVM_BACKPORT_SECTION_MEMORY_MANAGER)
+ 	LLVMOrcObjectLayerRef objlayer =
+ 		LLVMOrcCreateRTDyldObjectLinkingLayerWithSafeSectionMemoryManager(ES);
+ #else
+diff --git a/src/include/jit/SectionMemoryManager.h b/src/include/jit/SectionMemoryManager.h
+index 924a99b0d33..4c9bd1c7f01 100644
+--- a/src/include/jit/SectionMemoryManager.h
++++ b/src/include/jit/SectionMemoryManager.h
+@@ -1,5 +1,5 @@
+ /*
+- * This is a copy LLVM source code modified by the PostgreSQL project.
++ * This is a copy of LLVM source code modified by the PostgreSQL project.
+  * See SectionMemoryManager.cpp for notes on provenance and license.
+  */
+ 
+diff --git a/src/include/jit/llvmjit_backport.h b/src/include/jit/llvmjit_backport.h
+index cba8eafc4f3..71cfdfc832f 100644
+--- a/src/include/jit/llvmjit_backport.h
++++ b/src/include/jit/llvmjit_backport.h
+@@ -8,14 +8,14 @@
+ #include <llvm/Config/llvm-config.h>
+ 
+ /*
+- * LLVM's RuntimeDyld can produce code that crashes on larger memory ARM
++ * Pre-LLVM 22 RuntimeDyld can produce code that crashes on large memory ARM
+  * systems, because llvm::SectionMemoryManager allocates multiple pieces of
+  * memory that can be placed too far apart for the generated code.  See
+  * src/backend/jit/llvm/SectionMemoryManager.cpp for the patched replacement
+  * class llvm::backport::SectionMemoryManager that we use as a workaround.
+  * This header controls whether we use it.
+  */
+-#if defined(__aarch64__)
++#if defined(__aarch64__) && LLVM_VERSION_MAJOR < 22
+ #define USE_LLVM_BACKPORT_SECTION_MEMORY_MANAGER
+ #endif
+ 
+-- 
+2.52.0
+
