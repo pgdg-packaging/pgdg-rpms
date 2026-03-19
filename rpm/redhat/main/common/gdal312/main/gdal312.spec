@@ -43,7 +43,7 @@
 
 Name:		%{sname}312
 Version:	3.12.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -344,7 +344,7 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib
  cmake .. -DCMAKE_INSTALL_PREFIX:PATH=%{gdalinstdir} \
 %endif
 %else
- %cmake3 -DCMAKE_INSTALL_PREFIX:PATH=%{gdalinstdir} \
+ %cmake -DCMAKE_INSTALL_PREFIX:PATH=%{gdalinstdir} \
 %endif
  -DCMAKE_INSTALL_INCLUDEDIR=include \
  -DCMAKE_INSTALL_LIBDIR=lib \
@@ -487,7 +487,10 @@ done
 %endif
 
 %changelog
-* Tue Feb 17 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.2-1PGDG
+* Thu Mar 19 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.2-3PGDG
+- Fix builds against CMake 4.
+
+* Tue Feb 17 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.2-2PGDG
 - Fix dependency of python-tools subpackage. Per report from Peter Svensson:
   https://www.postgresql.org/message-id/a085d1dd8ee548d2a1dd2a20216a563e%40smhi.se
 
