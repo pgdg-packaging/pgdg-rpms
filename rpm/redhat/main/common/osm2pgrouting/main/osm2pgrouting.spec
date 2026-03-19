@@ -3,7 +3,7 @@
 Summary:	Import tool for OpenStreetMap data to pgRouting database
 Name:		%{sname}
 Version:	3.0.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	GPLv2
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgRouting/%{sname}/
@@ -47,12 +47,11 @@ cmake .. \
 	-H. -Bbuild
 
 cd build/
-%{__make}
+%cmake_build
 
 %install
 %{__rm} -rf %{buildroot}
-
-%{__make} -C build install DESTDIR=%{buildroot}
+%cmake_install
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -69,6 +68,9 @@ cd build/
 %{_datadir}/%{sname}/mapconfig_for_pedestrian.xml
 
 %changelog
+* Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-2PGDG
+- Fix builds against CMake 4
+
 * Sun Nov 2 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-1PGDG
 - Update to 3.0.0 per changes described at:
   https://github.com/pgRouting/osm2pgrouting/releases/tag/v3.0.0
