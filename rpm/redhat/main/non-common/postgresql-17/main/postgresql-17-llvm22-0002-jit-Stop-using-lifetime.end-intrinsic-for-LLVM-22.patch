@@ -1,0 +1,105 @@
+From 9db2fb14b57863fb1b5ab8e211e38c4ed1628c77 Mon Sep 17 00:00:00 2001
+From: Thomas Munro <thomas.munro@gmail.com>
+Date: Wed, 19 Nov 2025 00:00:13 +1300
+Subject: [PATCH v2 2/3] jit: Stop using lifetime.end intrinsic for LLVM 22.
+
+The lifetime.end intrinsic can now only be used for stack memory
+allocated with alloca.  We were using it to tell the optimizer that we
+are no longer interested in the arguments and null flag in a
+FunctionCallInfo struct, so it could avoid actually storing them if it
+managed to inline the function and keep everything in registers.  It
+can't figure that out by itself because it's part of the ExecEvalStep
+struct and we scribble on it directly rather than building a new one on
+the stack.
+
+Instead, store the special poison value (undef would work too).  This
+generates no actual code, but tells the optimizer that we are not
+interested in the values.
+
+Deform functions use LLVMBuildAlloca() for a stack variable, but that
+memory is reclaimed implicitly by the ret instruction.  This code should
+probably do the same, but the change is non-trivial and not studied yet.
+
+https://github.com/llvm/llvm-project/pull/149310
+https://llvm.org/docs/LangRef.html#llvm-lifetime-end-intrinsic
+https://llvm.org/docs/LangRef.html#i-alloca
+
+Backpatch-through: 14
+Reviewed-by: Matheus Alcantara <matheusssilv97@gmail.com>
+Discussion: https://postgr.es/m/CA%2BhUKGJTumad75o8Zao-LFseEbt%3DenbUFCM7LZVV%3Dc8yg2i7dg%40mail.gmail.com
+---
+ src/backend/jit/llvm/llvmjit_expr.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/src/backend/jit/llvm/llvmjit_expr.c b/src/backend/jit/llvm/llvmjit_expr.c
+index 650f1d42a93..b742cce38cf 100644
+--- a/src/backend/jit/llvm/llvmjit_expr.c
++++ b/src/backend/jit/llvm/llvmjit_expr.c
+@@ -62,7 +62,9 @@ static LLVMValueRef build_EvalXFuncInt(LLVMBuilderRef b, LLVMModuleRef mod,
+ 									   LLVMValueRef v_state,
+ 									   ExprEvalStep *op,
+ 									   int natts, LLVMValueRef *v_args);
++#if LLVM_VERSION_MAJOR < 22
+ static LLVMValueRef create_LifetimeEnd(LLVMModuleRef mod);
++#endif
+ 
+ /* macro making it easier to call ExecEval* functions */
+ #define build_EvalXFunc(b, mod, funcname, v_state, op, ...) \
+@@ -3007,14 +3009,11 @@ BuildV1Call(LLVMJitContext *context, LLVMBuilderRef b,
+ 			LLVMModuleRef mod, FunctionCallInfo fcinfo,
+ 			LLVMValueRef *v_fcinfo_isnull)
+ {
+-	LLVMContextRef lc;
+ 	LLVMValueRef v_fn;
+ 	LLVMValueRef v_fcinfo_isnullp;
+ 	LLVMValueRef v_retval;
+ 	LLVMValueRef v_fcinfo;
+ 
+-	lc = LLVMGetModuleContext(mod);
+-
+ 	v_fn = llvm_function_reference(context, b, mod, fcinfo);
+ 
+ 	v_fcinfo = l_ptr_const(fcinfo, l_ptr(StructFunctionCallInfoData));
+@@ -3031,10 +3030,16 @@ BuildV1Call(LLVMJitContext *context, LLVMBuilderRef b,
+ 		*v_fcinfo_isnull = l_load(b, TypeStorageBool, v_fcinfo_isnullp, "");
+ 
+ 	/*
+-	 * Add lifetime-end annotation, signaling that writes to memory don't have
+-	 * to be retained (important for inlining potential).
++	 * Signal that writes to FunctionCallInfoData don't have to be retained
++	 * (important for inlining potential).
+ 	 */
++#if LLVM_VERSION_MAJOR >= 22
++	for (int i = 0; i < fcinfo->nargs; ++i)
++		LLVMBuildStore(b, LLVMGetPoison(StructNullableDatum), l_funcvaluep(b, v_fcinfo, i));
++	LLVMBuildStore(b, LLVMGetPoison(TypeStorageBool), v_fcinfo_isnullp);
++#else
+ 	{
++		LLVMContextRef lc = LLVMGetModuleContext(mod);
+ 		LLVMValueRef v_lifetime = create_LifetimeEnd(mod);
+ 		LLVMValueRef params[2];
+ 
+@@ -3046,6 +3051,7 @@ BuildV1Call(LLVMJitContext *context, LLVMBuilderRef b,
+ 		params[1] = l_ptr_const(&fcinfo->isnull, l_ptr(LLVMInt8TypeInContext(lc)));
+ 		l_call(b, LLVMGetFunctionType(v_lifetime), v_lifetime, params, lengthof(params), "");
+ 	}
++#endif
+ 
+ 	return v_retval;
+ }
+@@ -3083,6 +3089,7 @@ build_EvalXFuncInt(LLVMBuilderRef b, LLVMModuleRef mod, const char *funcname,
+ 	return v_ret;
+ }
+ 
++#if LLVM_VERSION_MAJOR < 22
+ static LLVMValueRef
+ create_LifetimeEnd(LLVMModuleRef mod)
+ {
+@@ -3112,3 +3119,4 @@ create_LifetimeEnd(LLVMModuleRef mod)
+ 
+ 	return fn;
+ }
++#endif
+-- 
+2.52.0
+
