@@ -7,18 +7,14 @@
 
 Name:		%{sname}%{_geosversion}
 Version:	3.13.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GEOS is a C++ port of the Java Topology Suite
 
 License:	LGPLv2
 URL:		https://libgeos.org/
 Source0:	http://download.osgeo.org/geos/geos-%{version}.tar.bz2
 
-%if 0%{?suse_version}
 BuildRequires:	cmake >= 3.15
-%else
-BuildRequires:	cmake3 >= 3.15
-%endif
 BuildRequires:	libtool gcc-c++ pgdg-srpm-macros
 Provides:	geos%{_geosversion}-python >= %{version}
 
@@ -54,16 +50,15 @@ use GEOS
 cmake .. -DCMAKE_INSTALL_PREFIX:PATH=/usr \
 %endif
 %else
-%cmake3 .. \
+%cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX:PATH=%{geosinstdir} -DCMAKE_BUILD_TYPE=Release .. \
 	-D LIB_INSTALL_DIR=%{_lib} .
 
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags}
+%cmake_build
 
 %install
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install/fast \
-	DESTDIR=%{buildroot}
+%cmake_install
 
 # Remove files we don't ship:
 %{__rm} -f %{buildroot}%{geosinstdir}/lib64/cmake/GEOS/geos-config*cmake
@@ -101,6 +96,9 @@ echo "%{geosinstdir}/%{_geoslibdir}/" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{geosinstdir}/%{_geoslibdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Thu Mar 19 2026Devrim Gunduz <devrim@gunduz.org> - 3.13.1-3PGDG
+- Fix builds against CMake 4
+
 * Tue Mar 4 2025 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-1PGDG
 - Update to 3.13.1 per changes described at:
   https://github.com/libgeos/geos/releases/tag/3.13.1
