@@ -4,7 +4,7 @@
 
 %pgdg_set_gis_variables
 
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -42,8 +42,8 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}312
-Version:	3.12.2
-Release:	3PGDG%{?dist}
+Version:	3.12.3
+Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -85,7 +85,7 @@ BuildRequires:	g2clib-static
 BuildRequires:	geos%{geosmajorversion}-devel >= 3.13.3
 BuildRequires:	ghostscript
 BuildRequires:	jpackage-utils
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
 %ifnarch %{ppc64le}
@@ -177,7 +177,7 @@ BuildRequires:	python3-numpy-devel
 BuildRequires:	python3-devel
 BuildRequires:	java-21-openjdk-devel
 %endif
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 BuildRequires:	libdap-devel
 BuildRequires:	expat-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
@@ -197,7 +197,7 @@ BuildRequires:	python3-numpy
 BuildRequires:	python3-setuptools
 
 BuildRequires:	qhull-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %else
 BuildRequires:	SFCGAL-devel
@@ -211,7 +211,7 @@ BuildRequires:	openjpeg2-devel >= 2.3.1
 
 # Run time dependencies
 Requires:	gpsbabel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 Requires:	libarchive >= 3.5.0
 %endif
 %if 0%{?suse_version} >= 1499
@@ -253,7 +253,7 @@ Requires:	libspatialite%{libspatialitemajorversion}
 Requires:	libarmadillo10
 %endif
 %endif
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 Requires:	armadillo
 %endif
 
@@ -487,6 +487,10 @@ done
 %endif
 
 %changelog
+* Fri Mar 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-1PGDG
+- Update to 3.12.3 per changes described at:
+  https://github.com/OSGeo/gdal/releases/tag/v3.12.3
+
 * Thu Mar 19 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.2-3PGDG
 - Fix builds against CMake 4.
 
