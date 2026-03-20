@@ -11,7 +11,7 @@
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	4PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	LGPLv3
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{relver}.tar.gz
@@ -34,7 +34,7 @@ BuildRequires:	libbson-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -120,9 +120,6 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
-* Fri Mar 20 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-4PGDG
-- Rebuild against libbson 2 on RHEL 10.1 (EPEL)
-
 * Wed Nov 5 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-3PGDG
 - Rebuild against OpenSSL 3 on SLES 15
 
