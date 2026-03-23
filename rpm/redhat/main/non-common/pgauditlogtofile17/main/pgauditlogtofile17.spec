@@ -4,7 +4,7 @@
 
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8.0
+Version:	1.8.1
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
@@ -80,6 +80,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Sun Mar 22 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.1-1PGDG
+- Update to 1.8.1 per changes described at:
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.1
+
 * Mon Mar 2 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.0-1PGDG
 - Update to 1.8.0 per changes described at:
   https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.0
