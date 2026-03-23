@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
@@ -23,6 +23,7 @@ BuildRequires:	libboost_serialization1_66_0-devel libboost_atomic1_66_0-devel
 BuildRequires:	libboost_date_time1_86_0 libboost_thread1_86_0
 BuildRequires:	libboost_system1_86_0 libboost_serialization1_86_0
 BuildRequires:	libboost_serialization1_86_0-devel libboost_atomic1_86_0-devel
+BuildRequires:	libboost_filesystem1_86_0-devel libboost_regex1_86_0-devel
 %endif
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	boost-thread, boost-system, boost-date-time, boost-serialization
@@ -140,6 +141,9 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Feb 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-7PGDG
+- Add missing BR on SLES 16 (noted while building OpenSuSE 16.0 packages)
+
 * Wed Feb 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-6PGDG
 - Switch to using %%cmake macro instead of %%cmake3. This fixes
   Fedora 44 build and also works on other RHEL/Fedora distros.
