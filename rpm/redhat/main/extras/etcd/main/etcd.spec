@@ -13,8 +13,8 @@
 %endif
 
 Name:		etcd
-Version:	3.6.8
-Release:	2PGDG%{?dist}
+Version:	3.6.9
+Release:	1PGDG%{?dist}
 Summary:	Distributed reliable key-value store
 License:	ASL 2.0
 URL:		https://github.com/%{name}-io/%{name}
@@ -87,6 +87,10 @@ of a distributed system, with a focus on being:
 %{_unitdir}/%{name}.service
 
 %changelog
+* Sun Mar 22 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.9-1PGDG
+- Update to 3.6.9, per changes described at:
+  https://github.com/etcd-io/etcd/releases/tag/v3.6.9
+
 * Sat Feb 14 2026 Devrim Gündüz <devrim@gunduz.org> 3.6.8-2PGDG
 - Provide user and group etcd to fix SLES-16 installations
 
