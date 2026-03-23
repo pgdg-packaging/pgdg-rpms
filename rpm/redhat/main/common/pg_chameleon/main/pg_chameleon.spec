@@ -1,15 +1,38 @@
-%global __ospython3 %{_bindir}/python3
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
 %endif
 
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -18,7 +41,7 @@ BuildArch:	noarch
 Requires:	python3-PyMySQL python3-psycopg2 python3-parsy python3-rollbar
 Requires:	python3-mysql-replication >= 0.31 python3-tabulate python3-daemonize
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 Requires:	python3-pyyaml
 %endif
 %if 0%{?suse_version} >= 1500
@@ -57,6 +80,9 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.21-2PGDG
+- Add SLES 16 and Fedora 44 support
+
 * Wed Jan 22 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.21-1PGDG
 - Update to 2.0.21 per changes described at
   https://github.com/the4thdoctor/pg_chameleon/releases/tag/v2.0.21
