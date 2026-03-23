@@ -1,6 +1,6 @@
-%global pgodbcmajver 17
+%global pgodbcmajver 18
 %global pgodbcmidver 00
-%global pgodbcminver 0008
+%global pgodbcminver 0001
 
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
@@ -96,6 +96,12 @@ popd
 %license license.txt
 
 %changelog
+* Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0001-1PGDG
+- Update to 18.00.0001
+
+* Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0000-1PGDG
+- Update to 18.00.0000
+
 * Tue Mar 10 2026 Devrim Gündüz <devrim@gunduz.org> - 17.00.0008-1PGDG
 - Update to 17.00.0008
 
