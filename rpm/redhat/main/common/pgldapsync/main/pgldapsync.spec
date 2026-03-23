@@ -1,16 +1,40 @@
 %global sname pgldapsync
 
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 10
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
-%global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
+
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%else
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%endif
 
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -63,6 +87,9 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-7PGDG
+- Add SLES 16 and Fedora 44 support
+
 * Tue Dec 17 2024 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-6PGDG
 - Add RHEL 10 support and remove RHEL 7 support
 
