@@ -58,11 +58,11 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %setup -q -n %{name}-%{version}
 
 %build
-%{__ospython3} setup.py build
+%{__ospython} setup.py build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__ospython3} setup.py install --root %{buildroot}
+%{__ospython} setup.py install --root %{buildroot}
 
 %files
 %defattr(-,root,root,755)
