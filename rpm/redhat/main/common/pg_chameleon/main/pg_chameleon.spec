@@ -70,7 +70,7 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %license LICENSE.txt
 %{_bindir}/chameleon
 %{_bindir}/chameleon.py
-%{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info/*
+%{python3_sitelib}/%{name}-%{version}-py%{pyver}.egg-info/*
 %{python3_sitelib}/%{name}/*.py
 %{python3_sitelib}/%{name}/__pycache__/*.pyc
 %{python3_sitelib}/%{name}/configuration/config-example.yml
