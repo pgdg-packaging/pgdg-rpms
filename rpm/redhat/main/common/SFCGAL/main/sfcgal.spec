@@ -28,7 +28,7 @@ Version:	2.2.0
 BuildRequires:	CGAL-devel >= 5.6
 %endif
 
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
@@ -131,6 +131,9 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Mon Mar 23 2026 Christoph Berg <myon@debian.org> - 2.2.0-6PGDG
+- boost_system is still required on SLES
+
 * Mon Feb 9 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-5PGDG
 - Remove obsolete boost-system BR. Noted while working on Fedora
   44 packaging. Verified via mock build.
