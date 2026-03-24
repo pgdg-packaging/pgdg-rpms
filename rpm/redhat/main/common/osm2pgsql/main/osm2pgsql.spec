@@ -88,9 +88,13 @@ popd
 
 %install
 %{__rm} -rf %{buildroot}
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 pushd build
 %cmake_install
 popd
+%else
+%cmake_install
+%endif
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -104,7 +108,7 @@ popd
 
 %changelog
 * Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
-- Fix builds against CMake 4.
+- Fix builds against CMake 4. Also fix SLES builds.
 
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-2PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8.
