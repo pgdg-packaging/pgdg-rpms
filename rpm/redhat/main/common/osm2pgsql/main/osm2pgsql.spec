@@ -66,7 +66,7 @@ geocoding with Nominatim, or general analysis.
 %build
 %{__install} -d build
 pushd build
-%cmake .. \
+cmake .. \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DPROJ_LIBRARY=%{projinstdir}/lib64/libproj.so \
@@ -83,13 +83,14 @@ pushd build
 	-DLIB_SUFFIX=64
 %endif
 
-popd
-
 %cmake_build
+popd
 
 %install
 %{__rm} -rf %{buildroot}
+pushd build
 %cmake_install
+popd
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
