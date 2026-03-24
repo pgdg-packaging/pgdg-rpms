@@ -30,7 +30,7 @@
 %{!?runselftest:%global runselftest 0}
 %{!?sdt:%global sdt 1}
 %{!?selinux:%global selinux 1}
-%{!?ssl:%global ssl 0}
+%{!?ssl:%global ssl 1}
 %{!?test:%global test 1}
 %{!?uuid:%global uuid 1}
 %{!?xml:%global xml 1}
@@ -45,9 +45,9 @@ Version:	18.3
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200003PGDG%{?dist}
+Release:	4200004PGDG%{?dist}
 %else
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1345,6 +1345,9 @@ fi
 %endif
 
 %changelog
+* Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 18.3-4PGDG
+- Re-enable ssl macro. I broke it in 22f04c393
+
 * Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 18.3-3PGDG
 - Add patches from -hackers to support LLVM 22.
 
