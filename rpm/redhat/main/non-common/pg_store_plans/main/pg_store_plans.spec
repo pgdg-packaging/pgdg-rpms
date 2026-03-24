@@ -4,8 +4,8 @@
 
 Summary:	Store execution plans like pg_stat_statements does for queries
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8
-Release:	5PGDG%{?dist}
+Version:	1.10
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/ossc-db/%{sname}/archive/%{version}.tar.gz
 Source1:	README-%{sname}.txt
@@ -66,6 +66,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Mar 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.10-1PGDG
+- Update to 1.10
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.8-5PGDG
 - Add SLES 16 support
 
