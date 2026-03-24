@@ -1,0 +1,1 @@
+../LEAP-main/pgdg-opensuse.spec
