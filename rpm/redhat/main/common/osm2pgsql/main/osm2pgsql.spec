@@ -17,7 +17,7 @@
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
 Version:	2.2.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
@@ -30,7 +30,7 @@ BuildRequires:	zlib-devel
 # These packages are have been deprecated as of RHEL 8.7,
 # so enable these features on Fedora only:
 # https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/8.7_release_notes/deprecated_functionality#deprecated-packages
-%if 0%{?fedora} >= 41
+%if 0%{?fedora} >= 42
 BuildRequires:	protozero-devel libosmium-devel
 %endif
 
@@ -48,7 +48,7 @@ BuildRequires:	libexpat-devel nlohmann_json-devel
 BuildRequires:	lua54-devel
 %endif
 
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 BuildRequires:	boost-devel bzip2-devel catch2-devel
 BuildRequires:	clang-tools-extra expat-devel json-devel lua-devel
 %endif
@@ -85,12 +85,11 @@ pushd build
 
 popd
 
-%{__make} -C "build/%{_vpath_builddir}" %{?_smp_mflags}
+%cmake_build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__make} -C "build/%{_vpath_builddir}" %{?_smp_mflags} install \
-	DESTDIR=%{buildroot}
+%cmake_install
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -103,6 +102,9 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
+- Fix builds against CMake 4.
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-2PGDG
 - Rebuild against PROJ 9.7 on all platforms except RHEL 8.
 - Add SLES 16 support
