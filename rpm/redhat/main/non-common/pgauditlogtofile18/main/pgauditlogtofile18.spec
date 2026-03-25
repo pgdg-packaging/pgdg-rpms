@@ -4,13 +4,13 @@
 
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8.1
+Version:	1.8.2
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
-BuildRequires:	krb5-devel
+BuildRequires:	krb5-devel zlib-devel
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
@@ -18,6 +18,26 @@ BuildRequires:	libopenssl-3-devel
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
+%endif
+
+# lz4 dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	liblz4-devel
+Requires:	liblz4-1
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	lz4-devel
+Requires:	lz4-libs
+%endif
+
+# zstd dependency
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd1 >= 1.4.0
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	libzstd-devel >= 1.4.0
+Requires:	libzstd >= 1.4.0
 %endif
 
 Requires:	postgresql%{pgmajorversion}-server pgaudit_%{pgmajorversion}
@@ -81,6 +101,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Wed Mar 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.2-1PGDG
+- Update to 1.8.2 per changes described at:
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.2
+
 * Sun Mar 22 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.1-1PGDG
 - Update to 1.8.1 per changes described at:
   https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.1
