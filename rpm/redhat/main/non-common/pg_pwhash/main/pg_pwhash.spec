@@ -3,7 +3,7 @@
 Summary:	A PostgreSQL extension which provides advanced password hashing methods based on adaptive implementations.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -13,23 +13,19 @@ Requires:	postgresql%{pgmajorversion}-server libxcrypt
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} <= 9
+%if 0%{?fedora} >= 41 || 0%{?rhel} <= 9
 Requires:	libscrypt
 BuildRequires:	libscrypt-devel
 %endif
-%if 0%{?suse_version} == 1500
+%if 0%{?suse_version} >= 1500
 BuildRequires:	argon2-devel libscrypt-devel
 Requires:	libargon2-1 libscrypt0
 %endif
-%if 0%{?suse_version} == 1600
-BuildRequires:	argon2-devel libscrypt-devel
-Requires:	libargon2-1 libscrypt0
-%endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 BuildRequires:	libargon2-devel
 Requires:	libargon2
 %endif
@@ -69,9 +65,6 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/lib/%{sname}.so
 
 %changelog
-* Wed Mar 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-2PGDG
-- Add SLES 16 support
-
 * Thu Jan 22 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-1PGDG
 - Initial RPM packaging for PostgreSQL RPM Repository per:
   https://github.com/cybertec-postgresql/pg_pwhash/releases/tag/v1.0
