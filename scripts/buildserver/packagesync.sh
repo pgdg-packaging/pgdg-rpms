@@ -14,7 +14,7 @@ source ~/bin/global.sh
 
 # Set the remote base path on yum.postgresql.org based on the distro.
 # SLES uses the zypp/zypp tree; all others (RHEL, Fedora) use yum/yum.
-if [ "$osdistro" == "suse" ]; then
+if [ "$osdistro" == "suse" ] || [ "$osdistro" == "opensuse" ]; then
 	export sync_base="zypp/zypp"
 else
 	export sync_base="yum/yum"

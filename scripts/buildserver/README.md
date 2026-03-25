@@ -30,7 +30,7 @@ building proprietary software on shared instances.
 
 The S3 layout separates binary RPMs, debug packages, and SRPMs into distinct
 buckets (`dnf-debuginfo`, `dnf-srpms`), each fronted by a CloudFront
-distribution. SLES builds use a parallel `zypp`-prefixed bucket set instead
+distribution. SLES and openSUSE Leap builds use a parallel `zypp`-prefixed bucket set instead
 of `dnf`.
 
 ---
@@ -46,11 +46,11 @@ shared variables and the two reusable functions `sign_package` and
 | Variable | Example | Description |
 |---|---|---|
 | `osmajorversion` | `10` | OS major version (RHEL 10, SLES 15, Fedora 43) |
-| `os` | `rhel-10` | Full OS string used in directory and S3 paths |
+| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap |
 | `osminversion` | `1` | Minor version for RHEL/SLES (e.g. RHEL 10.1) |
 | `osislatest` | `0` or `1` | When `1`, packages are also synced to the major-version path (S3 has no symlinks) |
 | `osarch` | `x86_64` | Architecture; also `aarch64`, `ppc64le` |
-| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, or `suse` |
+| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, or `opensuse` |
 | `git_os` | `EL-10` | Git branch suffix used in clone paths |
 | `extrasrepoenabled` | `1` | Enables the extras repository for RHEL/SLES |
 
@@ -247,9 +247,10 @@ When `osislatest=1`, steps 6–7 are repeated for the major-version path
 (e.g. `rhel-10-x86_64`) in addition to the full minor-version path
 (`rhel-10.1-x86_64`), because S3 has no symlink support.
 
-SLES builds use the `zypp/zypp` sync base and `zypp-*` S3 buckets; all
+SLES and openSUSE Leap builds use the `zypp/zypp` sync base and `zypp-*` S3 buckets; all
 other distros use `yum/yum` and `dnf-*` buckets. This is determined
-automatically from `osdistro` in `global.sh`.
+automatically from `osdistro` in `global.sh` — both `suse` and `opensuse`
+map to the zypp path.
 
 Testing mode (`--testing`) routes syncs to `testing/` prefixed S3 paths
 and uses `pgTestBuilds` rather than `pgStableBuilds`. The `sync_extras`
