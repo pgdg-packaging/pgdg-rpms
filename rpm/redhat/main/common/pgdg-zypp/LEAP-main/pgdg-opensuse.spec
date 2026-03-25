@@ -1,4 +1,4 @@
-Name:		pgdg-suse-repo
+Name:		pgdg-opensuse-leap-repo
 Version:	42.0
 Release:	51PGDG
 Summary:	PostgreSQL PGDG RPMs - Zypper Repository Configuration for OpenSuSE Leap
