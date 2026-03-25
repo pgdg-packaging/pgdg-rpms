@@ -5,15 +5,20 @@
 Summary:	pdf type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GPLv2
 URL:		https://github.com/Florents-Tselai/%{sname}/
 Source0:	https://github.com/Florents-Tselai/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 BuildRequires:	libpoppler-glib-devel
 Requires:	libpoppler135 libpoppler-glib8
-%else
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	libpoppler-glib-devel
+Requires:	libpoppler148 libpoppler-glib8
+%endif
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 BuildRequires:	poppler-glib-devel
 Requires:	poppler
 %endif
@@ -67,6 +72,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Wed Mar 25 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.0-4PGDG
+- Fix SLES 16 support
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 0.1.0-3PGDG
 - Add SLES 16 support
 
