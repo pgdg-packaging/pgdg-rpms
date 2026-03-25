@@ -34,7 +34,7 @@ Required:
   --os           Operating system: ${VALID_OS[*]}
 
 Optional:
-  --ver          OS version: redhat (${VALID_VER_redhat[*]}), fedora (${VALID_VER_fedora[*]}), sles (${VALID_VER_sles[*]})
+  --ver          OS version: redhat (${VALID_VER_redhat[*]}), fedora (${VALID_VER_fedora[*]}), sles (${VALID_VER_sles[*]}), opensuse (${VALID_VER_opensuse[*]})
                  If not specified, syncs all versions for the OS
 
 Optional:
@@ -128,6 +128,15 @@ sles)
 	EXTRASREPOSENABLED=${EXTRASREPOSENABLED_sles}
 	SYNCTESTINGREPOS=${SYNCTESTINGREPOS_sles}
 	SYNCNONFREEREPOS=${SYNCNONFREEREPOS_sles}
+	;;
+opensuse)
+	VALID_ARCH=("${VALID_ARCH_opensuse[@]}")
+	VALID_VER=("${VALID_VER_opensuse[@]}")
+	osname="${OSNAME_opensuse}"
+	osdistro="${OSDISTRO_opensuse}"
+	EXTRASREPOSENABLED=${EXTRASREPOSENABLED_opensuse}
+	SYNCTESTINGREPOS=${SYNCTESTINGREPOS_opensuse}
+	SYNCNONFREEREPOS=${SYNCNONFREEREPOS_opensuse}
 	;;
 *)
 	echo "Unsupported OS: $OS"
@@ -271,6 +280,8 @@ for VER in "${VER_LIST[@]}"; do
 			SOURCE_HOST="pgrpms-fedora${VER}-${osarch}.postgresql.org"
 		elif [[ "$OS" == "sles" ]]; then
 			SOURCE_HOST="pgrpms-sles${VER}-${osarch}.postgresql.org"
+		elif [[ "$OS" == "opensuse" ]]; then
+			SOURCE_HOST="pgrpms-opensuse${VER}-${osarch}.postgresql.org"
 		else
 			echo "Unsupported OS: $OS"
 			exit 1
@@ -351,6 +362,8 @@ for VER in "${VER_LIST[@]}"; do
 				NONFREE_SOURCE_HOST="pgrpms-non-free-fedora${VER}-${osarch}.postgresql.org"
 			elif [[ "$OS" == "sles" ]]; then
 				NONFREE_SOURCE_HOST="pgrpms-non-free-sles${VER}-${osarch}.postgresql.org"
+			elif [[ "$OS" == "opensuse" ]]; then
+				NONFREE_SOURCE_HOST="pgrpms-non-free-opensuse${VER}-${osarch}.postgresql.org"
 			fi
 
 			for pgnonfreerelease in "${PG_ALL_VERSIONS[@]}"; do

@@ -21,6 +21,7 @@ declare -A OS_VERSIONS
 OS_VERSIONS[redhat]="${VALID_VER_redhat[*]}"
 OS_VERSIONS[fedora]="${VALID_VER_fedora[*]}"
 OS_VERSIONS[sles]="${VALID_VER_sles[*]}"
+OS_VERSIONS[opensuse]="${VALID_VER_opensuse[*]}"
 
 # Flags
 DRY_RUN=false
