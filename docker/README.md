@@ -35,7 +35,7 @@ on Fedora and RHEL-based systems. Every command works identically with
 
 | Dockerfile | Base OS | PostgreSQL |
 |---|---|---|
-| `Dockerfile-Fedora43-PG18` | Fedora 43 | PostgreSQL 18 |
+| `Dockerfile-Fedora-PG18` | Fedora latest stable | PostgreSQL 18 |
 | `Dockerfile-RHEL-UBI-PG18` | Red Hat UBI 8 minimal | PostgreSQL 18 |
 | `Dockerfile-RockyLinux10-PG18` | Rocky Linux 10 | PostgreSQL 18 |
 | `Dockerfile-AlmaLinux10-PG18` | AlmaLinux | PostgreSQL 18 |
