@@ -11,7 +11,8 @@
 3. [Building an image from the Dockerfile](#3-building-an-image-from-the-dockerfile)
 4. [Running the PostgreSQL server container](#4-running-the-postgresql-server-container)
 5. [Connecting to the PostgreSQL server container](#5-connecting-to-the-postgresql-server-container)
-6. [Further information resource](#6-further-information-resource)
+6. [SSH into the container](#6-ssh-into-the-container)
+7. [Further information resource](#7-further-information-resource)
 
 ---
 
@@ -130,7 +131,55 @@ If everything goes normally, you should see the psql prompt.
 
 ---
 
-## 6) Further information resource
+## 6) SSH into the container
+
+The recommended way to get a shell inside a running container is with
+`podman exec` / `docker exec`, which does not require an SSH server inside
+the container:
+
+```bash
+podman exec -it pg_yum_test bash
+
+# docker equivalent:
+docker exec -it pg_yum_test bash
+```
+
+If you specifically need SSH access, install and configure `openssh-server`
+inside the container. The easiest approach is to add the following to your
+`Dockerfile` before the `USER postgres` line:
+
+```dockerfile
+# Install and configure SSH server
+RUN dnf -q -y install openssh-server && \
+    ssh-keygen -A && \
+    echo "root:pgdg" | chpasswd && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+```
+
+Then start the container with port 22 mapped to a host port, for example 2222:
+
+```bash
+podman run -d -p 2222:22 -P --name pg_yum_test pgdg_postgresql /usr/sbin/sshd -D
+
+# docker equivalent:
+docker run -d -p 2222:22 -P --name pg_yum_test pgdg_postgresql /usr/sbin/sshd -D
+```
+
+Connect from your host:
+
+```bash
+ssh -p 2222 root@localhost
+```
+
+> **Security note:** Enabling SSH with password authentication is convenient
+> for local testing but is not recommended for production use. Prefer
+> key-based authentication and restrict `PermitRootLogin` accordingly.
+
+---
+
+## 7) Further information resource
 
 More information is available at <https://yum.postgresql.org>.
 
