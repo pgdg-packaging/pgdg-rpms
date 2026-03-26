@@ -5,7 +5,7 @@
 #											#
 #########################################################################################
 
-FROM registry.access.redhat.com/ubi8-minimal
+FROM registry.access.redhat.com/ubi10-minimal
 MAINTAINER devrim@gunduz.org
 
 # Add the PostgreSQL PGP key to verify the official yum repository packages
