@@ -26,7 +26,7 @@ usage() {
 Usage: $0 --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [options]
 
 Required:
-  --os         OS name (rhel, fedora, or sles)
+  --os         OS name (rhel, fedora, sles, or opensuse)
   --ver        OS version (e.g., 8, 9, 10, 41, 42, 43)
 
 Optional:
@@ -91,6 +91,7 @@ case "$os" in
   rhel) osdistro="redhat" ;;
   fedora) osdistro="fedora" ;;
   sles) osdistro="suse" ;;
+  opensuse) osdistro="opensuse" ;;
   *) echo "Unsupported OS: $os"; exit 1 ;;
 esac
 

@@ -24,12 +24,14 @@ VALID_ARCH=("aarch64" "ppc64le" "x86_64")
 VALID_PG_VERSIONS=(13 14 15 16 17 18)
 VALID_REDHAT_OS_VERSIONS=(7 8.10 9.6 9.7 10.0 10.1)
 VALID_FEDORA_OS_VERSIONS=(41 42 43)
-VALID_SLES_OS_VERSIONS=(15.5 15.6 15.7 15.8 16.0)
+VALID_SLES_OS_VERSIONS=(12.5 15.6 15.7 16.0)
+VALID_OPENSUSE_OS_VERSIONS=(16.0)
 
 # Base directories per OS distro
 BASE_DIR_redhat="/srv/yum/yum"
 BASE_DIR_fedora="/srv/yum/yum"
 BASE_DIR_suse="/srv/zypp/zypp"
+BASE_DIR_opensuse="/srv/zypp/zypp"
 
 # Non-free repo base directory (redhat only)
 BASE_DIR_non_free="/srv/yum/yum/non-free"
@@ -38,6 +40,7 @@ BASE_DIR_non_free="/srv/yum/yum/non-free"
 S3_BUCKET_redhat="s3://yum-archive.postgresql.org"
 S3_BUCKET_fedora="s3://yum-archive.postgresql.org"
 S3_BUCKET_suse="s3://zypp-archive.postgresql.org"
+S3_BUCKET_opensuse="s3://zypp-archive.postgresql.org"
 ```
 
 Also defines `is_valid()`, a helper used by other scripts for safe exact-match validation (avoids regex dot-wildcard issues with dotted version strings like `9.6`).
@@ -79,7 +82,7 @@ aws_sync.sh --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [optio
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--os` | Yes | OS type: `rhel`, `fedora`, or `sles` |
+| `--os` | Yes | OS type: `rhel`, `fedora`, `sles`, or `opensuse` |
 | `--ver` | Yes | OS version, e.g. `9.6`, `10.0`, `42` |
 | `--arch` | No | Architecture: `aarch64`, `ppc64le`, `x86_64`. If omitted, all three are synced. |
 | `--pg` | No | PostgreSQL major version, e.g. `16`. If omitted, the common repo is synced instead. |
@@ -124,6 +127,11 @@ Sync the common repo for SLES 15.7, x86_64 only, dry run:
 aws_sync.sh --os sles --ver 15.7 --arch x86_64 --dry-run
 ```
 
+Sync PG 16 for openSUSE Leap 16.0, all architectures:
+```bash
+aws_sync.sh --os opensuse --ver 16.0 --pg 16
+```
+
 ### What it does, step by step
 
 1. Validates `--os`, `--arch` (if given), and `--pg` (if given) against the config arrays.
@@ -153,7 +161,7 @@ aws_sync_archive.sh --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--os-name` | Yes | `redhat`, `fedora`, or `sles` |
+| `--os-name` | Yes | `redhat`, `fedora`, `sles`, or `opensuse` |
 | `--arch` | No | Pin to one architecture. If omitted, all architectures are synced (via `aws_sync.sh`). |
 | `--os-version` | No | Pin to one OS version. If omitted, all valid versions for the OS are used. |
 | `--pg-version` | No | Pin to one PG major version. If omitted, all versions in `VALID_PG_VERSIONS` are used. |
@@ -198,6 +206,11 @@ Sync PG 16 for SLES 15.6, x86_64 only:
 aws_sync_archive.sh --os-name sles --os-version 15.6 --pg-version 16 --arch x86_64
 ```
 
+Sync all PG versions for openSUSE Leap 16.0, all architectures:
+```bash
+aws_sync_archive.sh --os-name opensuse --os-version 16.0
+```
+
 Sync all PG versions for RHEL 9.6 including non-free repos:
 ```bash
 aws_sync_archive.sh --os-name redhat --os-version 9.6 --non-free
@@ -226,7 +239,7 @@ cp aws_sync_archive_completion.sh /etc/bash_completion.d/
 
 ### Behaviour
 
-- `--os-name` completes to `fedora` or `redhat`.
+- `--os-name` completes to `fedora`, `redhat`, `sles`, or `opensuse`.
 - `--arch` completes from `VALID_ARCH`.
 - `--os-version` completes from the appropriate version list based on whatever `--os-name` has already been typed; if `--os-name` hasn't been set yet, all OS versions are offered.
 - `--pg-version` completes from `VALID_PG_VERSIONS`.
@@ -240,10 +253,11 @@ cp aws_sync_archive_completion.sh /etc/bash_completion.d/
 Edit **only** `aws_sync_config.sh`. All scripts and tab-completion pick up the change automatically.
 
 ```bash
-# Example: add RHEL 10.2, PG 19, and SLES 15.8
+# Example: add RHEL 10.2, PG 19, SLES 15.8, and openSUSE Leap 16.1
 VALID_REDHAT_OS_VERSIONS=(7 8.10 9.6 9.7 10.0 10.1 10.2)
 VALID_PG_VERSIONS=(13 14 15 16 17 18 19)
-VALID_SLES_OS_VERSIONS=(15.6 15.7 15.8 16.0)
+VALID_SLES_OS_VERSIONS=(12.5 15.6 15.7 15.8 16.0)
+VALID_OPENSUSE_OS_VERSIONS=(16.0 16.1)
 ```
 
 > **Note on dotted version strings:** validation uses exact string matching (not regex), so versions like `9.6` or `10.0` are handled safely.

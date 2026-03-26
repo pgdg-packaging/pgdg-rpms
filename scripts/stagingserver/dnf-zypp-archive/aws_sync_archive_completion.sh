@@ -18,11 +18,12 @@ _aws_sync_archive_completions() {
     # Load shared config arrays
     _aws_sync_archive_load_config
 
-    local os_names="fedora redhat sles"
+    local os_names="fedora redhat sles opensuse"
     local archs="${VALID_ARCH[*]}"
     local redhat_os_versions="${VALID_REDHAT_OS_VERSIONS[*]}"
     local fedora_os_versions="${VALID_FEDORA_OS_VERSIONS[*]}"
     local sles_os_versions="${VALID_SLES_OS_VERSIONS[*]}"
+    local opensuse_os_versions="${VALID_OPENSUSE_OS_VERSIONS[*]}"
     local pg_versions="${VALID_PG_VERSIONS[*]}"
 
     opts="--os-name --arch --os-version --pg-version --extras --non-free --dry-run --debug --help"
@@ -51,9 +52,11 @@ _aws_sync_archive_completions() {
                 COMPREPLY=( $(compgen -W "${fedora_os_versions}" -- "$cur") )
             elif [[ "$os_name_val" == "sles" ]]; then
                 COMPREPLY=( $(compgen -W "${sles_os_versions}" -- "$cur") )
+            elif [[ "$os_name_val" == "opensuse" ]]; then
+                COMPREPLY=( $(compgen -W "${opensuse_os_versions}" -- "$cur") )
             else
                 # os-name not yet specified — offer all versions
-                COMPREPLY=( $(compgen -W "${redhat_os_versions} ${fedora_os_versions} ${sles_os_versions}" -- "$cur") )
+                COMPREPLY=( $(compgen -W "${redhat_os_versions} ${fedora_os_versions} ${sles_os_versions} ${opensuse_os_versions}" -- "$cur") )
             fi
             return 0
             ;;
