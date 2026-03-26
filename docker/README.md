@@ -22,7 +22,7 @@ This document explains the layout of the container images for PostgreSQL,
 based on PGDG RPMs, and documents the build and run procedures.
 
 PostgreSQL YUM Repository Project provides Dockerfiles for the latest
-Fedora, Red Hat UBI, and Rocky Linux distributions. More may/will come later.
+Fedora, Red Hat UBI, Rocky Linux and AlmaLinux distributions. More may/will come later.
 
 The examples below use `podman` as the primary command. `podman` is a
 daemonless, rootless-capable OCI container engine and the recommended tool
@@ -38,6 +38,7 @@ on Fedora and RHEL-based systems. Every command works identically with
 | `Dockerfile-Fedora43-PG18` | Fedora 43 | PostgreSQL 18 |
 | `Dockerfile-RHEL-UBI-PG18` | Red Hat UBI 8 minimal | PostgreSQL 18 |
 | `Dockerfile-RockyLinux10-PG18` | Rocky Linux 10 | PostgreSQL 18 |
+| `Dockerfile-AlmaLinux10-PG18` | AlmaLinux | PostgreSQL 18 |
 
 ---
 
