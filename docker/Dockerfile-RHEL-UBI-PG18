@@ -1,40 +1,40 @@
-#################################################################################
-#										#
-#  Dockerfile for UBI minimal image + PostgreSQL Spin, with PGDG RPM packages.	#
-#            Devrim Gündüz <devrim@gunduz.org>					#
-#										#
-################################################################################
+#########################################################################################
+#											#
+#	Dockerfile for UBI minimal image + PostgreSQL Spin, with PGDG RPM packages.	#
+#			Devrim Gündüz <devrim@gunduz.org>				#
+#											#
+#########################################################################################
 
-FROM  registry.access.redhat.com/ubi8-minimal
+FROM registry.access.redhat.com/ubi8-minimal
 MAINTAINER devrim@gunduz.org
 
 # Add the PostgreSQL PGP key to verify the official yum repository packages
-RUN rpm --import https://yum.postgresql.org/RPM-GPG-KEY-PGDG-13 && \
+RUN rpm --import https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-RHEL && \
 	# Install PostgreSQL repository RPM: 
-	rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-	# Install PostgreSQL 13
-	microdnf -y --disableplugin=subscription-manager install postgresql13-server && \
+	rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
+	# Install PostgreSQL 18
+	microdnf -y --disableplugin=subscription-manager install postgresql18-server && \
 	#microdnf -y --disableplugin=subscription-manager remove ethtool snappy && \
 	# Clean repository metadata to save disk space:
-	microdnf --disableplugin=subscription-manager  clean all && \
+	microdnf --disableplugin=subscription-manager clean all && \
 	rm -rf /var/cache/microdnf /var/cache/dnf /var/log/*
 
-# Run the rest of the commands as the postgres user created by the postgresql13-server
+# Run the rest of the commands as the postgres user created by the postgresql18-server
 # package when it was microdnf --disableplugin=subscription-manager installed:
 USER postgres
 
-# initdb PostgreSQL 13:
-RUN /usr/pgsql-13/bin/initdb -D /var/lib/pgsql/13/data -A trust 2>&1 < /dev/null && \
+# initdb PostgreSQL 18:
+RUN /usr/pgsql-18/bin/initdb -D /var/lib/pgsql/18/data -A trust 2>&1 < /dev/null && \
 	# Adjust PostgreSQL configuration so that remote connections to the
 	# database are possible.
-	echo "host all  all    0.0.0.0/0  md5" >> /var/lib/pgsql/13/data/pg_hba.conf && \
-	# And add listen_addresses to /var/lib/pgsql/13/data/postgresql.conf
-	echo "listen_addresses='*'" >> /var/lib/pgsql/13/data/postgresql.conf && \
+	echo "host all all 0.0.0.0/0 scram-sha-256" >> /var/lib/pgsql/18/data/pg_hba.conf && \
+	# And add listen_addresses to /var/lib/pgsql/18/data/postgresql.conf
+	echo "listen_addresses='*'" >> /var/lib/pgsql/18/data/postgresql.conf && \
 	# Create a PostgreSQL role named 'docker' with 'docker' as the password and
 	# then create a database 'docker' owned by the 'docker' role.
 	# After start, sleep for 5 secs to make sure that postmaster is started before
 	# creating the role and database:
-	/usr/pgsql-13/bin/pg_ctl -D /var/lib/pgsql/13/data start && \
+	/usr/pgsql-18/bin/pg_ctl -D /var/lib/pgsql/18/data start && \
 	sleep 5 && \
 	psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" && \
 	createdb -O docker docker
@@ -43,8 +43,8 @@ RUN /usr/pgsql-13/bin/initdb -D /var/lib/pgsql/13/data -A trust 2>&1 < /dev/null
 EXPOSE 5432
 
 # Add VOLUMEs to allow backup of config, logs and databases
-VOLUME  ["/var/lib/pgsql/13"]
+VOLUME ["/var/lib/pgsql/18"]
 
 # Set the default command to run when starting the container
-CMD ["/usr/pgsql-13/bin/postgres", "-D", "/var/lib/pgsql/13/data"]
+CMD ["/usr/pgsql-18/bin/postgres", "-D", "/var/lib/pgsql/18/data"]
 
