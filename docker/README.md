@@ -136,4 +136,5 @@ More information is available at <https://yum.postgresql.org>.
 
 Please help make these images better — let us know if you find problems,
 or better ways of doing things. You can reach us by e-mail at
-<pgsql-pkg-yum@postgresql.org>.
+<pgsql-pkg-yum@postgresql.org> or create an issue at the issue tracker at
+<https://github.com/pgdg-packaging/pgdg-rpms/issues/new>
