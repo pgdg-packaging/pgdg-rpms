@@ -1,0 +1,55 @@
+#########################################################################
+#									#
+#    Dockerfile for Fedora PostgreSQL Spin, with PGDG RPM packages.	#
+#            Devrim Gündüz <devrim@gunduz.org>				#
+#									#
+#########################################################################
+
+FROM fedora:latest
+MAINTAINER devrim@gunduz.org
+
+# Add the PostgreSQL PGP key to verify the official yum repository packages
+RUN rpm --import https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-Fedora
+
+# Add PostgreSQL's repository. It contains the most recent stable release
+# of PostgreSQL 18:
+RUN dnf -q -y install https://download.postgresql.org/pub/repos/yum/reporpms/F-43-x86_64/pgdg-fedora-repo-latest.noarch.rpm
+
+# Update the Fedora and PostgreSQL repository metadata
+RUN dnf -q -y install deltarpm
+RUN dnf -q -y update
+
+# Install PostgreSQL 18 and some useful packages:
+RUN dnf -q -y install postgresql18-server postgresql18-contrib procps-ng net-tools
+
+# Run the rest of the commands as the postgres user created by the postgresql18-server
+# package when it was dnf installed
+USER postgres
+
+# initdb PostgreSQL 18:
+RUN /usr/pgsql-18/bin/initdb -D /var/lib/pgsql/18/data -A trust 2>&1 < /dev/null
+
+# Adjust PostgreSQL configuration so that remote connections to the
+# database are possible. 
+RUN echo "host all  all    0.0.0.0/0  md5" >> /var/lib/pgsql/18/data/pg_hba.conf
+
+# And add listen_addresses to /var/lib/pgsql/18/data/postgresql.conf
+RUN echo "listen_addresses='*'" >> /var/lib/pgsql/18/data/postgresql.conf
+
+# Create a PostgreSQL role named 'docker' with 'docker' as the password and
+# then create a database 'docker' owned by the 'docker' role.
+# After start, sleep for 5 secs to make sure that postmaster is started before
+# creating the role and database:
+RUN  /usr/pgsql-18/bin/pg_ctl -D /var/lib/pgsql/18/data start &&\
+    sleep 5 &&\
+    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
+    createdb -O docker docker
+
+# Expose the PostgreSQL port
+EXPOSE 5432
+
+# Add VOLUMEs to allow backup of config, logs and databases
+VOLUME  ["/var/lib/pgsql/18"]
+
+# Set the default command to run when starting the container
+CMD ["/usr/pgsql-18/bin/postgres", "-D", "/var/lib/pgsql/18/data"]
