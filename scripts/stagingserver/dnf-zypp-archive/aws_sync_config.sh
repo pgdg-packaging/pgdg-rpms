@@ -3,6 +3,7 @@
 # Source this file from other scripts: source "$(dirname "$0")/aws_sync_config.sh"
 
 VALID_ARCH=("aarch64" "ppc64le" "x86_64")
+VALID_OS=("redhat" "fedora" "sles" "opensuse")
 
 # Usage: is_valid <value> <array_element>...
 # Example: is_valid "$arch" "${VALID_ARCH[@]}"
