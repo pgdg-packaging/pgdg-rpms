@@ -14,7 +14,7 @@ _aws_sync_archive_completions() {
     # shellcheck source=aws_sync_config.sh
     source "$script_dir/aws_sync_config.sh"
 
-    local os_names="${VALID_OS[*]}"
+    local os_names="fedora opensuse redhat sles"
     local archs="${VALID_ARCH[*]}"
     local redhat_os_versions="${VALID_REDHAT_OS_VERSIONS[*]}"
     local fedora_os_versions="${VALID_FEDORA_OS_VERSIONS[*]}"
