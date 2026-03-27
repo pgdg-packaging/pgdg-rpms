@@ -18,7 +18,7 @@ _aws_sync_archive_completions() {
     # Load shared config arrays
     _aws_sync_archive_load_config
 
-    local os_names="fedora redhat sles opensuse"
+    local os_names="${VALID_OS[*]}"
     local archs="${VALID_ARCH[*]}"
     local redhat_os_versions="${VALID_REDHAT_OS_VERSIONS[*]}"
     local fedora_os_versions="${VALID_FEDORA_OS_VERSIONS[*]}"

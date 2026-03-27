@@ -19,6 +19,7 @@ BASE_DIR=""
 S3_BUCKET=""
 
 osdistro=""
+osname=""
 any_sync_done=0
 
 usage() {
@@ -26,7 +27,7 @@ usage() {
 Usage: $0 --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [options]
 
 Required:
-  --os         OS name (rhel, fedora, sles, or opensuse)
+  --os         OS name (rhel, fedora, or sles)
   --ver        OS version (e.g., 8, 9, 10, 41, 42, 43)
 
 Optional:
@@ -86,12 +87,12 @@ if [[ -n "$pg" ]] && ! is_valid "$pg" "${VALID_PG_VERSIONS[@]}"; then
   exit 1
 fi
 
-# Map os to osdistro
+# Map os to osdistro and osname (the directory name used in repo paths)
 case "$os" in
-  rhel) osdistro="redhat" ;;
-  fedora) osdistro="fedora" ;;
-  sles) osdistro="suse" ;;
-  opensuse) osdistro="opensuse" ;;
+  rhel)     osdistro="redhat";  osname="rhel" ;;
+  fedora)   osdistro="fedora";  osname="fedora" ;;
+  sles)     osdistro="suse";    osname="sles" ;;
+  opensuse) osdistro="opensuse"; osname="leap" ;;
   *) echo "Unsupported OS: $os"; exit 1 ;;
 esac
 
@@ -115,6 +116,7 @@ if [[ $debug -eq 1 ]]; then
   echo "Debug Info:"
   echo "  OS: $os"
   echo "  OS Distro: $osdistro"
+  echo "  OS Name (path): $osname"
   echo "  Arch(es): ${archs[*]}"
   echo "  Version: $ver"
   echo "  PG Version: ${pg:-<not set>}"
@@ -139,10 +141,10 @@ run_sync_cmd() {
 
 sync_common_repo() {
   local a="$1"
-  local path="$BASE_DIR/common/$osdistro/$os-$ver-$a"
+  local path="$BASE_DIR/common/$osdistro/$osname-$ver-$a"
   if [[ -d "$path" ]]; then
     echo "Syncing common repo: $path"
-    run_sync_cmd "$path" "$S3_BUCKET/common/$osdistro/$os-$ver-$a"
+    run_sync_cmd "$path" "$S3_BUCKET/common/$osdistro/$osname-$ver-$a"
   else
     echo "[Skip] Missing common repo dir: $path"
   fi
@@ -151,10 +153,10 @@ sync_common_repo() {
 sync_pg_repo() {
   local pgver="$1"
   local a="$2"
-  local path="$BASE_DIR/$pgver/$osdistro/$os-$ver-$a"
+  local path="$BASE_DIR/$pgver/$osdistro/$osname-$ver-$a"
   if [[ -d "$path" ]]; then
     echo "Syncing PG $pgver repo: $path"
-    run_sync_cmd "$path" "$S3_BUCKET/$pgver/$osdistro/$os-$ver-$a/"
+    run_sync_cmd "$path" "$S3_BUCKET/$pgver/$osdistro/$osname-$ver-$a/"
   else
     echo "[Skip] Missing PG $pgver repo dir: $path"
   fi
@@ -170,10 +172,10 @@ sync_non_free_repos() {
   [[ -n "$pgver_filter" ]] && versions=("$pgver_filter")
   for pgver in "${versions[@]}"; do
     for a in "${archs[@]}"; do
-      local path="$BASE_DIR_non_free/$pgver/$osdistro/$os-$ver-$a"
+      local path="$BASE_DIR_non_free/$pgver/$osdistro/$osname-$ver-$a"
       if [[ -d "$path" ]]; then
         echo "Syncing non-free PG $pgver repo: $path"
-        run_sync_cmd "$path" "$S3_BUCKET/non-free/$pgver/$osdistro/$os-$ver-$a"
+        run_sync_cmd "$path" "$S3_BUCKET/non-free/$pgver/$osdistro/$osname-$ver-$a"
       else
         echo "[Skip] Missing non-free repo dir: $path"
       fi
@@ -186,7 +188,7 @@ cleanup_testing_repos() {
   echo "Cleaning testing repos for arch: $a"
   for pgv in "${VALID_PG_VERSIONS[@]}"; do
     for subdir in "" "common/" "debug/"; do
-      local path="$BASE_DIR/testing/${subdir}$pgv/$osdistro/$os-$ver-$a"
+      local path="$BASE_DIR/testing/${subdir}$pgv/$osdistro/$osname-$ver-$a"
       if [[ -d "$path" ]]; then
         if [[ $dry_run -eq 1 ]]; then
           echo "[Dry-run] /bin/rm -rvf $path"
