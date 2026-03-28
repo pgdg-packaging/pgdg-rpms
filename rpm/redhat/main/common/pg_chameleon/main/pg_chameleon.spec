@@ -39,14 +39,17 @@ Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
 BuildArch:	noarch
 
-Requires:	python3-PyMySQL python3-psycopg2 python3-parsy python3-rollbar
-Requires:	python3-mysql-replication >= 0.31 python3-tabulate python3-daemonize
-
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
-Requires:	python3-pyyaml python3-parsy
+Requires:	python3-pyyaml python3-parsy python3-daemonize
+Requires:	python3-tabulate python3-psycopg2 python3-rollbar
+Requires:	python3-PyMySQL python3-mysql-replication >= 0.31
 %endif
 %if 0%{?suse_version} >= 1500
 Requires:	python3-PyYAML python%{python3_pkgversion}-parsy
+Requires:	python%{python3_pkgversion}-daemonize python%{python3_pkgversion}-tabulate
+Requires:	python%{python3_pkgversion}-psycopg2 python%{python3_pkgversion}-rollbar
+Requires:	python%{python3_pkgversion}-PyMySQL python%{python3_pkgversion}-mysql-replication >= 0.31
+
 %endif
 
 %description
