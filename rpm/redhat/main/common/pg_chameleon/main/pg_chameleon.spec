@@ -32,7 +32,7 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -42,10 +42,10 @@ Requires:	python3-PyMySQL python3-psycopg2 python3-parsy python3-rollbar
 Requires:	python3-mysql-replication >= 0.31 python3-tabulate python3-daemonize
 
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
-Requires:	python3-pyyaml
+Requires:	python3-pyyaml python3-parsy
 %endif
 %if 0%{?suse_version} >= 1500
-Requires:	python3-PyYAML
+Requires:	python3-PyYAML python%{python3_pkgversion}-parsy
 %endif
 
 %description
@@ -80,6 +80,9 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Sat Mar 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.21-3PGDG
+- Fix SLES dependencies
+
 * Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.21-2PGDG
 - Add SLES 16 and Fedora 44 support
 
