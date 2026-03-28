@@ -41,7 +41,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-Requires:	python%{python3_pkgversion}-%{name}
+Requires:	python%{python3_pkgversion}-%{sname}
 Requires:	python3-requests
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
