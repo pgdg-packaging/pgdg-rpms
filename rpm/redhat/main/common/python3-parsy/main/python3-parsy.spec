@@ -1,5 +1,9 @@
 %global sname parsy
 
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -22,10 +26,11 @@
 %endif
 
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.1
-Release:	43PGDG%{dist}
+Release:	44PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -64,9 +69,14 @@ documentation and it doesn't say things like that!
 
 %{python3_sitelib}/%{sname}-%{version}-py%{py3ver}.egg-info/*
 %{python3_sitelib}/%{sname}/__init__.py
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
 %{python3_sitelib}/%{sname}/__pycache__/__init__*
+%endif
 
 %changelog
+* Sat Mar 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1-44PGDG
+- Fix SLES builds and add Fedora 44 support
+
 * Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1-43PGDG
 - Fix a Provides: issue
 
