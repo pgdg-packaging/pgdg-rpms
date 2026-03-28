@@ -1,17 +1,5 @@
 %global modname daemonize
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
@@ -41,12 +29,6 @@ BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
 
-%if 0%{?suse_version} >= 1500
-BuildRequires:	python-rpm-macros
-%else
-BuildRequires:	pyproject-rpm-macros
-%endif
-
 %description
 daemonize is a library for writing system daemons in Python.
 
@@ -54,21 +36,20 @@ daemonize is a library for writing system daemons in Python.
 %autosetup -n %{modname}-%{version}
 
 %build
-%pyproject_wheel
+%py3_build
 
 %install
-%pyproject_install
+%py3_install
 
 %files
 %license LICENSE
 %doc README.rst
-%{python3_sitelib}/%{modname}-%{version}.dist-info/
+%{python3_sitelib}/%{modname}-*.egg-info/
 %{python3_sitelib}/%{modname}.py
 %{python3_sitelib}/__pycache__/%{modname}.*
 
 %changelog
 * Sat Mar 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-42
-- Switch to pyproject builds
 - Add to SLES
 
 * Thu Dec 10 2020 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-8
