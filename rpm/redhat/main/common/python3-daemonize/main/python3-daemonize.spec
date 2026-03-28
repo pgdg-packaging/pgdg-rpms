@@ -46,7 +46,9 @@ daemonize is a library for writing system daemons in Python.
 %doc README.rst
 %{python3_sitelib}/%{modname}-*.egg-info/
 %{python3_sitelib}/%{modname}.py
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
 %{python3_sitelib}/__pycache__/%{modname}.*
+%endif
 
 %changelog
 * Sat Mar 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-42
