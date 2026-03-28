@@ -28,6 +28,7 @@
 %else
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
 %endif
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
