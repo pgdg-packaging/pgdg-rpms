@@ -69,7 +69,7 @@ documentation and it doesn't say things like that!
 
 %{python3_sitelib}/%{sname}-%{version}-py%{py3ver}.egg-info/*
 %{python3_sitelib}/%{sname}/__init__.py
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600
 %{python3_sitelib}/%{sname}/__pycache__/__init__*
 %endif
 
