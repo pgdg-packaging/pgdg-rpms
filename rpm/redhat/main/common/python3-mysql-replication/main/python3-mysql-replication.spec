@@ -26,8 +26,8 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	1.0.9
-Release:	2PGDG%{?dist}
+Version:	1.0.15
+Release:	1PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -76,7 +76,8 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
-* Sat Mar 28 2026 - Devrim Gündüz <devrim@gunduz.org> 1.0.9-2PGDG
+* Sat Mar 28 2026 - Devrim Gündüz <devrim@gunduz.org> 1.0.15-1PGDG
+- Update to 1.0.15
 - Add Fedora 44 support.
 - Change package name to match other "PGDG" branded Python packages
 
