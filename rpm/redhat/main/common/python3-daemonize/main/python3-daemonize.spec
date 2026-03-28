@@ -36,10 +36,10 @@ daemonize is a library for writing system daemons in Python.
 %autosetup -n %{modname}-%{version}
 
 %build
-%py3_build
+%{__ospython} setup.py build
 
 %install
-%py3_install
+%{__ospython} setup.py install --no-compile --root %{buildroot}
 
 %files
 %license LICENSE
