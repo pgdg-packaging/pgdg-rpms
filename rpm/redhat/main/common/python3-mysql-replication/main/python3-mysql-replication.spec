@@ -1,29 +1,40 @@
 %global sname	mysql-replication
 
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
 
-Name:		python3-%{sname}
+Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.0.9
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
 Source0:	https://github.com/noplay/python-%{sname}/archive/%{version}.tar.gz
 BuildArch:	noarch
+
+Provides:	python3-%{sname}
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -31,7 +42,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-Requires:	python3-PyMySQL
+Requires:	python%{python3_pkgversion}-PyMySQL
 
 %description
 Pure Python Implementation of MySQL replication protocol build on top of
@@ -65,6 +76,10 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Sat Mar 28 2026 - Devrim Gündüz <devrim@gunduz.org> 1.0.9-2PGDG
+- Add Fedora 44 support.
+- Change package name to match other "PGDG" branded Python packages
+
 * Sat Nov 8 2025 - Devrim Gündüz <devrim@gunduz.org> 1.0.9-1PGDG
 - Update to 1.0.9
 - Add SLES 16 support
