@@ -1,18 +1,51 @@
 %global modname daemonize
 
-Name:           python3-%{modname}
-Version:        2.5.0
-Release:        8%{?dist}
-Summary:        Library for writing system daemons in Python
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
+%endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
 
-License:        MIT
-URL:            https://github.com/thesharp/daemonize
-Source0:        %{url}/archive/v%{version}/%{modname}-%{version}.tar.gz
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-BuildArch:      noarch
+Name:		python%{python3_pkgversion}-%{modname}
+Version:	2.5.0
+Release:	42%{?dist}
+Summary:	Library for writing system daemons in Python
 
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+License:	MIT
+URL:		https://github.com/thesharp/%{modname}
+Source0:	%{url}/archive/v%{version}/%{modname}-%{version}.tar.gz
+
+BuildArch:	noarch
+
+BuildRequires:	python%{python3_pkgversion}-devel
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 %description
 daemonize is a library for writing system daemons in Python.
@@ -21,19 +54,23 @@ daemonize is a library for writing system daemons in Python.
 %autosetup -n %{modname}-%{version}
 
 %build
-%py3_build
+%pyproject_wheel
 
 %install
-%py3_install
+%pyproject_install
 
-%files -n python3-%{modname}
+%files
 %license LICENSE
 %doc README.rst
-%{python3_sitelib}/%{modname}-*.egg-info/
+%{python3_sitelib}/%{modname}-%{version}.dist-info/
 %{python3_sitelib}/%{modname}.py
 %{python3_sitelib}/__pycache__/%{modname}.*
 
 %changelog
+* Sat Mar 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-42
+- Switch to pyproject builds
+- Add to SLES
+
 * Thu Dec 10 2020 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-8
 - Initial packaging to satisfy pg_chameleon dependency on
   RHEL 7 and 8.
