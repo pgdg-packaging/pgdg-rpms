@@ -19,7 +19,8 @@ Summary:	Pure-Python MySQL client library
 
 License:	MIT
 URL:		https://github.com/%{sname}/%{sname}
-Source:		https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
+Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
+Patch0:		%{sname}-pyproject-license.patch
 
 Provides:	python3-%{sname}
 

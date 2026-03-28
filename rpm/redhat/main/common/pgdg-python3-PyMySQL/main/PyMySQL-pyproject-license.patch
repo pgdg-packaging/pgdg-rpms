@@ -1,0 +1,11 @@
+--- pyproject.toml.old	2026-03-28 17:12:58.260565881 +0000
++++ pyproject.toml	2026-03-28 17:13:17.272393566 +0000
+@@ -9,7 +9,7 @@
+ 
+ requires-python = ">=3.8"
+ readme = "README.md"
+-license = "MIT"
++license = {text = "MIT"}
+ keywords = ["MySQL"]
+ classifiers = [
+     "Development Status :: 5 - Production/Stable",
