@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
@@ -26,7 +26,10 @@ BuildRequires:	libboost_serialization1_86_0-devel libboost_atomic1_86_0-devel
 BuildRequires:	libboost_filesystem1_86_0-devel libboost_regex1_86_0-devel
 %endif
 %if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	boost-thread, boost-system, boost-date-time, boost-serialization
+BuildRequires:	boost-thread boost-date-time boost-serialization
+%endif
+%if 0%{?rhel}
+BuildRequires:	boost-system
 %endif
 
 BuildRequires:		systemd, systemd-devel
@@ -141,6 +144,9 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Apr 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-8PGDG
+- Fedora does not have boost-system package
+
 * Mon Feb 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-7PGDG
 - Add missing BR on SLES 16 (noted while building OpenSuSE 16.0 packages)
 
