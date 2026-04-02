@@ -86,9 +86,15 @@ sync_common() {
 		echo "${green}=== Syncing PostgreSQL common RPMs for $os - $osarch ===${reset}"
 	fi
 
-	export COMMON_RPM_DIR=/var/lib/pgsql/rpmcommon/ALLRPMS
-	export COMMON_SRPM_DIR=/var/lib/pgsql/rpmcommon/ALLSRPMS
-	export COMMON_DEBUG_RPM_DIR=/var/lib/pgsql/rpmcommon/ALLDEBUGRPMS
+	if [ $TESTING_MODE -eq 1 ]; then
+		export COMMON_RPM_DIR=/var/lib/pgsql/rpmcommontesting/ALLRPMS
+		export COMMON_SRPM_DIR=/var/lib/pgsql/rpmcommontesting/ALLSRPMS
+		export COMMON_DEBUG_RPM_DIR=/var/lib/pgsql/rpmcommontesting/ALLDEBUGRPMS
+	else
+		export COMMON_RPM_DIR=/var/lib/pgsql/rpmcommon/ALLRPMS
+		export COMMON_SRPM_DIR=/var/lib/pgsql/rpmcommon/ALLSRPMS
+		export COMMON_DEBUG_RPM_DIR=/var/lib/pgsql/rpmcommon/ALLDEBUGRPMS
+	fi
 
 	# Create directories for binary and source RPMs
 	mkdir -p $COMMON_RPM_DIR
