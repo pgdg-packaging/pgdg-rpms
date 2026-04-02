@@ -102,8 +102,13 @@ sync_common() {
 	mkdir -p $COMMON_DEBUG_RPM_DIR
 
 	# rsync binary and source RPMs to their own directories:
-	rsync --checksum -av --delete --stats /var/lib/pgsql/rpmcommon/RPMS/$osarch/ /var/lib/pgsql/rpmcommon/RPMS/noarch/ $COMMON_RPM_DIR
-	rsync --checksum -av --delete --stats /var/lib/pgsql/rpmcommon/SRPMS/ $COMMON_SRPM_DIR
+	if [ $TESTING_MODE -eq 1 ]; then
+		rsync --checksum -av --delete --stats /var/lib/pgsql/rpmcommontesting/RPMS/$osarch/ /var/lib/pgsql/rpmcommontesting/RPMS/noarch/ $COMMON_RPM_DIR
+		rsync --checksum -av --delete --stats /var/lib/pgsql/rpmcommontesting/SRPMS/ $COMMON_SRPM_DIR
+	else
+		rsync --checksum -av --delete --stats /var/lib/pgsql/rpmcommon/RPMS/$osarch/ /var/lib/pgsql/rpmcommon/RPMS/noarch/ $COMMON_RPM_DIR
+		rsync --checksum -av --delete --stats /var/lib/pgsql/rpmcommon/SRPMS/ $COMMON_SRPM_DIR
+	fi
 
 	# Move debuginfo and debugsource packages to a separate directory.
 	# First clean the old ones, and then copy existing ones:
