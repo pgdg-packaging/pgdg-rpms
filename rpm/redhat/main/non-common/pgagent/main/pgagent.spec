@@ -147,7 +147,7 @@ EOF
 * Thu Apr 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-8PGDG
 - Fedora does not have boost-system package
 
-* Mon Feb 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-7PGDG
+* Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-7PGDG
 - Add missing BR on SLES 16 (noted while building OpenSuSE 16.0 packages)
 
 * Wed Feb 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-6PGDG
