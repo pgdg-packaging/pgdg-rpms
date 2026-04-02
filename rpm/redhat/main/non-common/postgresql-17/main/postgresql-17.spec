@@ -80,8 +80,8 @@ Patch3:		%{sname}-%{pgmajorversion}-conf.patch
 Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
 %if 0%{?fedora} == 44
-# To be removed in 14.23:
-Patch7:		%{sname}-%{pgmajorversion}-14.22-llvm22.patch
+# To be removed in 17.10:
+Patch7:		%{sname}-%{pgmajorversion}-17.9-llvm22.patch
 %endif
 
 
