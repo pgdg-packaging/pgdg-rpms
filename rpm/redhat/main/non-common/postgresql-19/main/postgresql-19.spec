@@ -994,6 +994,7 @@ fi
 %{pgbaseinstdir}/bin/psql
 %{pgbaseinstdir}/bin/reindexdb
 %{pgbaseinstdir}/bin/vacuumdb
+%{pgbaseinstdir}/lib/pgrepack.so
 %{pgbaseinstdir}/share/errcodes.txt
 %{pgbaseinstdir}/share/man/man1/clusterdb.*
 %{pgbaseinstdir}/share/man/man1/createdb.*
@@ -1065,6 +1066,7 @@ fi
 %{pgbaseinstdir}/lib/pg_overexplain.so
 %{pgbaseinstdir}/lib/pg_plan_advice.so
 %{pgbaseinstdir}/lib/pg_prewarm.so
+%{pgbaseinstdir}/lib/pg_stash_advice.so
 %{pgbaseinstdir}/lib/pg_stat_statements.so
 %{pgbaseinstdir}/lib/pg_surgery.so
 %{pgbaseinstdir}/lib/pg_trgm.so
@@ -1124,6 +1126,7 @@ fi
 %{pgbaseinstdir}/share/extension/pg_logicalinspect*
 %{pgbaseinstdir}/share/extension/pg_prewarm*
 %{pgbaseinstdir}/share/extension/pg_stat_statements*
+%{pgbaseinstdir}/share/extension/pg_stash_advice*
 %{pgbaseinstdir}/share/extension/pg_surgery*
 %{pgbaseinstdir}/share/extension/pg_trgm*
 %{pgbaseinstdir}/share/extension/pg_visibility*
@@ -1298,6 +1301,7 @@ fi
 %{pgbaseinstdir}/share/tsearch_data/*.rules
 %{pgbaseinstdir}/share/tsearch_data/*.stop
 %{pgbaseinstdir}/share/tsearch_data/*.syn
+%{pgbaseinstdir}/lib/cyrillic.so
 %{pgbaseinstdir}/lib/dict_int.so
 %{pgbaseinstdir}/lib/dict_snowball.so
 %{pgbaseinstdir}/lib/dict_xsyn.so
