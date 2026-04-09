@@ -25,7 +25,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -38,7 +38,6 @@ Patch0:		pgdg-python3-dns-removehatchling.patch
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
-Requires:	python%{python3_pkgversion}-%{name}
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -74,6 +73,9 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Thu Apr 9 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-43PGDG
+- Fix a dependency issue
+
 * Thu Apr 9 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-42PGDG
 - Update to 2.8.0, per:
   https://github.com/pgdg-packaging/pgdg-rpms/issues/180
