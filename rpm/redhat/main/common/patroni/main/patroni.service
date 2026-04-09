@@ -7,16 +7,23 @@
 
 [Unit]
 Description=Runners to orchestrate a high-availability PostgreSQL
-cdAfter=syslog.target network.target
+After=syslog.target network.target
 
 [Service]
-Type=simple
+Type=notify
+NotifyAccess=all
 
 User=postgres
 Group=postgres
 
 # Read in configuration file if it exists, otherwise proceed
 EnvironmentFile=-/etc/patroni_env.conf
+
+# Limit glibc malloc arenas to reduce virtual memory.
+# This is essential when running with vm.overcommit_memory=2.
+Environment=MALLOC_ARENA_MAX=1
+# Reset or set another MALLOC_ARENA_MAX value when starting up postmaster.
+Environment=PG_MALLOC_ARENA_MAX=
 
 # WorkingDirectory=/var/lib/pgsql
 
