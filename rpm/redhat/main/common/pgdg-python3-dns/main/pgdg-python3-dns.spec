@@ -33,6 +33,7 @@ License:	MIT
 URL:		http://www.dnspython.org/
 
 Source0:	https://github.com/rthalley/dnspython/releases/download/v%{version}/dnspython-%{version}.tar.gz
+Patch0:		pgdg-python3-dns-removehatchling.patch
 
 BuildArch:	noarch
 
@@ -54,6 +55,7 @@ manipulation of DNS zones, messages, names, and records.
 
 %prep
 %setup -q -n dnspython-%{version}
+%patch -P 0 -p0
 
 # strip exec permissions so that we don't pick up dependencies from docs
 find examples -type f | xargs chmod a-x
@@ -68,7 +70,7 @@ find examples -type f | xargs chmod a-x
 %defattr(-,root,root,-)
 # Add README.* when it is included with the source (commit a906279)
 %doc {ChangeLog,LICENSE,examples}
-%{python3_sitelib}/dnspython-%{version}.dist-info/*
+%{python3_sitelib}/dnspython-*.dist-info/*
 %{python3_sitelib}/dns
 
 %changelog
