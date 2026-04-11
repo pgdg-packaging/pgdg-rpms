@@ -468,6 +468,16 @@ Requires(post):		glibc
 Requires(postun):	glibc
 # pre/post stuff needs systemd too
 
+%package static
+Summary:	Statically linked PostgreSQL libraries
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
+Provides:	%{name}-static = %{version}-%{release}
+Provides:	%{name}-static%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
+
 %if 0%{?suse_version} >= 1500
 Requires(post):		systemd
 %else
@@ -789,9 +799,6 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/man/
 %{__mv} doc/src/sgml/man1 doc/src/sgml/man3 doc/src/sgml/man7 %{buildroot}%{pgbaseinstdir}/share/man/
 %{__rm} -rf %{buildroot}%{_docdir}/pgsql
-
-# These file(s) should not be packaged:
-%{__rm} %{buildroot}%{pgbaseinstdir}/lib/libpgfeutils.a
 
 # Initialize file lists
 %{__cp} /dev/null main.lst
@@ -1172,12 +1179,6 @@ fi
 %{pgbaseinstdir}/include/server/*
 
 %{pgbaseinstdir}/lib/libpq.so
-%{pgbaseinstdir}/lib/libpq.a
-%{pgbaseinstdir}/lib/libpq-oauth.a
-%{pgbaseinstdir}/lib/libpgcommon.a
-%{pgbaseinstdir}/lib/libpgcommon_shlib.a
-%{pgbaseinstdir}/lib/libpgport.a
-%{pgbaseinstdir}/lib/libpgport_shlib.a
 %{pgbaseinstdir}/lib/pgxs/*
 %{pgbaseinstdir}/lib/pkgconfig/libpq.pc
 
@@ -1324,6 +1325,15 @@ fi
 %{pgbaseinstdir}/share/snowball_create.sql
 %{pgbaseinstdir}/share/sql_features.txt
 
+%files static
+%{pgbaseinstdir}/lib/libpq.a
+%{pgbaseinstdir}/lib/libpq-oauth.a
+%{pgbaseinstdir}/lib/libpgcommon.a
+%{pgbaseinstdir}/lib/libpgcommon_shlib.a
+%{pgbaseinstdir}/lib/libpgport.a
+%{pgbaseinstdir}/lib/libpgport_shlib.a
+%{pgbaseinstdir}/lib/libpgfeutils.a
+
 %if %test
 %files test -f pg_test.lst
 %defattr(-,postgres,postgres)
@@ -1333,6 +1343,10 @@ fi
 %endif
 
 %changelog
+* Sat Apr 11 2026 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 19-alpha_20260110_PGDG.1
+- Move static libs from libs rpm to static rpm
+- Add libpgfeutils.a to static rpm
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 19-alpha_20251001_PGDG.1
 - Bump release number (missed in previous commit)
 

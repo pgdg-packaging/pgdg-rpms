@@ -183,6 +183,7 @@ postgresql19-plpython:		The Python procedural language for PostgreSQL
 postgresql19-pltcl:		The Tcl procedural language for PostgreSQL
 postgresql19-test:		The test suite distributed with PostgreSQL
 postgresql19-server:		Server executables and data files
+postgresql19-static:		Client static libraries
 
 postgresql-jdbc (version independent) and postgresql19-odbc are separate (s)rpms.
 
@@ -193,6 +194,8 @@ with a remote PostgreSQL server. The others are optional.
 Pgtcl is distributed via postgresql19-tcl package.
 
 -devel subpackage requires additional repos on RHEL and its derivatives.
+
+-static subpackage provides static libraries, earlier these were bundled in -libs subpackage.
 
 On RHEL 9 and 8, enable codeready-builder repo:
 
