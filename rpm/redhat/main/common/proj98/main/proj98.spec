@@ -108,7 +108,7 @@ popd
 %{proj98instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
-* Sat 11 2026 Devrim Gündüz <devrim@gunduz.org> - 9.8.1-1PGDG
+* Sat Apr 11 2026 Devrim Gündüz <devrim@gunduz.org> - 9.8.1-1PGDG
 - Update to 9.8.1 per changes described at:
   https://github.com/OSGeo/PROJ/releases/tag/9.8.1
 
