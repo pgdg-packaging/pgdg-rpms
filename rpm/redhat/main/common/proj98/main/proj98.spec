@@ -4,7 +4,7 @@
 %pgdg_set_gis_variables
 
 Name:		%{sname}98
-Version:	9.8.0
+Version:	9.8.1
 Release:	1PGDG%{?dist}
 Summary:	Cartographic projection software (PROJ)
 
@@ -108,5 +108,9 @@ popd
 %{proj98instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sat 11 2026 Devrim Gündüz <devrim@gunduz.org> - 9.8.1-1PGDG
+- Update to 9.8.1 per changes described at:
+  https://github.com/OSGeo/PROJ/releases/tag/9.8.1
+
 * Tue Mar 10 2026 Devrim Gündüz <devrim@gunduz.org> - 9.8.0-1PGDG
 - Initial 9.8 packaging for the PostgreSQL RPM Repository.
