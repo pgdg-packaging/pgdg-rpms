@@ -3,7 +3,7 @@
 Summary:	An efficient nanosecond precision timestamp type for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/optiver/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 URL:		https://github.com/optiver/%{sname}
@@ -21,18 +21,15 @@ timestamp9 is an efficient nanosecond precision timestamp type for PostgreSQL.
 %{__mkdir} build
 pushd build
 export PATH=%{pginstdir}/bin/:$PATH
-%if 0%{?suse_version} >= 1500
-cmake ..
-%else
-cmake3 ..
-%endif
-
+%cmake ..
+%cmake_build
 popd
 
 %install
 %{__rm} -rf %{buildroot}
 pushd build
-PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
+export PATH=%{pginstdir}/bin/:$PATH
+%cmake_install
 popd
 
 %files
@@ -42,6 +39,9 @@ popd
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Apr 13 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-4PGDG
+- Fix builds against CMake 4
+
 * Tue Jan 28 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-3PGDG
 - Update project URL and remove reduntant BRs
 - Remove RHEL 7 and SLES 12 support
