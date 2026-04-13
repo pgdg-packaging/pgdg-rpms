@@ -5,41 +5,29 @@
 
 %pgdg_set_gis_variables
 
-%if 0%{?fedora} && 0%{?fedora} >= 41
-%global gdalfullversion %gdal311fullversion
-%global gdalmajorversion %gdal311majorversion
-%global gdalinstdir %gdal311instdir
-%endif
 %if 0%{?rhel} && 0%{?rhel} == 8
 %global gdalfullversion %gdal38fullversion
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
+%else
+%global gdalfullversion %gdal312fullversion
+%global gdalmajorversion %gdal312majorversion
+%global gdalinstdir %gdal312instdir
 %endif
-%if 0%{?rhel} && 0%{?rhel} >= 9
+%if 0%{?suse_version} == 1500
 %global gdalfullversion %gdal311fullversion
 %global gdalmajorversion %gdal311majorversion
 %global gdalinstdir %gdal311instdir
 %endif
-%if  0%{?suse_version} == 1500
-%global gdalfullversion %gdal310fullversion
-%global gdalmajorversion %gdal310majorversion
-%global gdalinstdir %gdal310instdir
-%endif
-%if  0%{?suse_version} == 1600
-%global gdalfullversion %gdal311fullversion
-%global gdalmajorversion %gdal311majorversion
-%global gdalinstdir %gdal311instdir
-%endif
-
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.7
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
 BuildRequires:	postgresql%{pgmajorversion}-devel gdal%{gdalmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.51
+BuildRequires:	pgdg-srpm-macros >= 1.0.53
 Requires:	postgresql%{pgmajorversion}-server gdal%{gdalmajorversion}-libs
 
 %description
@@ -103,6 +91,9 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Mon Apr 13 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.7-5PGDG
+- Update GDAL dependencies
+
 * Sat Oct 25 2025 Devrim Gunduz <devrim@gunduz.org> - 1.1.7-4PGDG
 - Fix SLES 16 support
 
