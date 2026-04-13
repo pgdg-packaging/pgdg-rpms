@@ -5,7 +5,7 @@
 Summary:	Routing functionality for PostGIS
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgroutingmajorversion}.1
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://pgrouting.org/
@@ -37,26 +37,20 @@ value can come from multiple fields or tables.
 %build
 %{__install} -d build
 pushd build
-%if 0%{?suse_version} >= 1500
-cmake .. \
-%else
 %cmake .. \
-%endif
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DPOSTGRESQL_BIN=%{pginstdir}/bin \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DBUILD_HTML=OFF -DBUILD_DOXY=OFF \
 	-DLIB_SUFFIX=64
 
+%cmake_build
 popd
-
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} build
 
 %install
 %{__rm} -rf %{buildroot}
 pushd build
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install \
-	DESTDIR=%{buildroot}
+%cmake_install
 popd
 
 %post	-p /sbin/ldconfig
@@ -70,6 +64,9 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Mon Apr 13 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.1-3PGDG
+- More CMake 4 fixes
+
 * Wed Feb 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.1-2PGDG
 - Switch to using %%cmake macro instead of %%cmake3. This fixes
   Fedora 44 build and also works on other RHEL/Fedora distros.
