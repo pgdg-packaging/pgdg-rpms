@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
@@ -62,6 +62,9 @@ CFLAGS="$RPM_OPT_FLAGS -fPIC -pie"
 CXXFLAGS="$RPM_OPT_FLAGS -fPIC -pie -pthread -std=c++11"
 export CFLAGS
 export CXXFLAGS
+
+%{__mkdir} build
+pushd build
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
 cmake \
@@ -69,13 +72,18 @@ cmake \
 %else
 %cmake \
 %endif
-	-D CMAKE_INSTALL_PREFIX:PATH=/usr \
-	-D PG_CONFIG_PATH:FILEPATH=%{pginstdir}/bin/pg_config \
-	-D STATIC_BUILD:BOOL=OFF .
+	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
+	-DPG_CONFIG_PATH:FILEPATH=%{pginstdir}/bin/pg_config \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+	-DSTATIC_BUILD:BOOL=OFF ..
+%cmake_build
+popd
 
 %install
 %{__rm} -rf %{buildroot}
-%{__make} -C "%{_vpath_builddir}" DESTDIR=%{buildroot} install
+pushd build
+%cmake_install
+popd
 
 # Rename pgagent binary, so that we can have parallel installations:
 %{__mv} -f %{buildroot}%{_bindir}/%{sname} %{buildroot}%{_bindir}/%{name}
@@ -144,6 +152,9 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Apr 13 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-9PGDG
+- Fix builds against CMake 4.
+
 * Thu Apr 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-8PGDG
 - Fedora does not have boost-system package
 
