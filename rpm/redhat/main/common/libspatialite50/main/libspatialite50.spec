@@ -18,14 +18,14 @@
 %global projfullversion %proj96fullversion
 %global projinstdir %proj96instdir
 %else
-%global projmajorversion %proj97majorversion
-%global projfullversion %proj97fullversion
-%global projinstdir %proj97instdir
+%global projmajorversion %proj98majorversion
+%global projfullversion %proj98fullversion
+%global projinstdir %proj98instdir
 %endif
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	13PGDG%{?dist}
+Release:	14PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -33,7 +33,7 @@ Source0:	http://www.gaia-gis.it/gaia-sins/%{sname}-sources/%{sname}-%{version}.t
 Source1:	%{name}-pgdg-libs.conf
 
 BuildRequires:	gcc librttopo-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.52
+BuildRequires:	pgdg-srpm-macros >= 1.0.53
 %if 0%{?rhel} && 0%{?rhel} <= 9
 BuildRequires:	minizip-devel
 %endif
@@ -132,6 +132,9 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-13PGDG
+- Rebuild against PROJ 9.8 on all platforms except RHEL 8.
+
 * Mon Dec 15 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-13PGDG
 - Use the latest pgdg-srpm-macros
 
