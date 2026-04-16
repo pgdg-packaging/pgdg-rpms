@@ -132,7 +132,7 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
-* Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-13PGDG
+* Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-14PGDG
 - Rebuild against PROJ 9.8 on all platforms except RHEL 8.
 
 * Mon Dec 15 2025 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-13PGDG
