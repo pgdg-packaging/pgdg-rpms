@@ -256,6 +256,11 @@ autoconf
 	--with-geosconfig=%{geosinstdir}/bin/geos-config \
 	--with-gdalconfig=%{gdalinstdir}/bin/gdal-config
 
+%if 0%{?rhel} && 0%{?rhel} == 8
+# Strip -flto from generated Makefiles (breaks RHEL 8 static archive linking)
+find . -name "Makefile" | xargs sed -i 's/-flto\b//g'
+%endif
+
 SHLIB_LINK="$SHLIB_LINK" %{__make} LPATH=`%{pginstdir}/bin/pg_config --pkglibdir` shlib="%{sname}-%{postgissomajorversion}.so"
 
 %{__make} %{?_smp_mflags} -C extensions
@@ -393,6 +398,8 @@ fi
 - Update to 3.6.3 per:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.6.3/NEWS
 - Build against PROJ 9.8 on all platforms except RHEL 8
+- Strip -flto from generated Makefiles (breaks RHEL 8 static archive
+  linking). Fixes https://github.com/pgdg-packaging/pgdg-rpms/issues/173
 
 * Tue Feb 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.2-1PGDG
 - Update to 3.6.2 per:
