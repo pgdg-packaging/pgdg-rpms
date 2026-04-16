@@ -25,9 +25,9 @@
 %global projfullversion %proj96fullversion
 %global projinstdir %proj96instdir
 %else
-%global projmajorversion %proj97majorversion
-%global projfullversion %proj97fullversion
-%global projinstdir %proj97instdir
+%global projmajorversion %proj98majorversion
+%global projfullversion %proj98fullversion
+%global projinstdir %proj98instdir
 %endif
 
 %if 0%{?suse_version} <= 1600
@@ -43,7 +43,7 @@
 
 Name:		%{sname}312
 Version:	3.12.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -487,6 +487,10 @@ done
 %endif
 
 %changelog
+* Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-2PGDG
+- Rebuild against PROJ 9.8 on all platforms except RHEL 8.
+
+
 * Fri Mar 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-1PGDG
 - Update to 3.12.3 per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.12.3
