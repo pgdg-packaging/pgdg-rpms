@@ -10,13 +10,13 @@
 %global projfullversion %proj96fullversion
 %global projinstdir %proj96instdir
 %else
-%global projmajorversion %proj97majorversion
-%global projfullversion %proj97fullversion
-%global projinstdir %proj97instdir
+%global projmajorversion %proj98majorversion
+%global projfullversion %proj98fullversion
+%global projinstdir %proj98instdir
 %endif
 Name:		%{sname}%{libgeotiffversion}
 Version:	1.7.4
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	GeoTIFF format library
 License:	MIT
 URL:		https://github.com/OSGeo/%{sname}
@@ -25,7 +25,7 @@ Source2:	%{name}-pgdg-libs.conf
 Patch0:		%{sname}_cmake.patch
 Patch1:		%{sname}-1.7.4-proj.patch
 BuildRequires:	libtiff-devel libjpeg-devel proj%{projmajorversion}-devel zlib-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.51 cmake gcc gcc-c++ ccache
+BuildRequires:	pgdg-srpm-macros >= 1.0.53 cmake gcc gcc-c++ ccache
 
 %description
 GeoTIFF represents an effort by over 160 different remote sensing,
@@ -139,6 +139,9 @@ EOF
 %{libgeotiff17instdir}/lib/pkgconfig/%{name}.pc
 
 %changelog
+* Thu Apr 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-5PGDG
+- Rebuild against PROJ 9.8 on all platforms except RHEL 8.
+
 * Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-4PGDG
 - Fix mock builds. Per report from Christoph Berg.
 
