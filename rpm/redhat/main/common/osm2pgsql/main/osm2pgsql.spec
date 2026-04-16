@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %global _vpath_builddir .
 %global sname osm2pgsql
 
