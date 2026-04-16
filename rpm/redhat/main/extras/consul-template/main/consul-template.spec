@@ -3,7 +3,7 @@
 %if 0%{?_version:1}
 %global		_verstr	%{_version}
 %else
-%global		_verstr	0.41.4
+%global		_verstr	0.42.0
 %endif
 
 # Consul does not provide tarballs for ppc64le:
@@ -84,6 +84,10 @@ unless the -once flag is specified.
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Thu Apr 16 2026 Devrim Gündüz <devrim@gunduz.org> 0.42.0-1PGDG
+- Update to 0.42.0 per changes described at
+  https://github.com/hashicorp/consul-template/releases/tag/v0.42.0
+
 * Mon Jan 26 2026 Devrim Gündüz <devrim@gunduz.org> 0.41.4-1PGDG
 - Update to 0.41.4 per changes described at
   https://github.com/hashicorp/consul-template/releases/tag/v0.41.4
