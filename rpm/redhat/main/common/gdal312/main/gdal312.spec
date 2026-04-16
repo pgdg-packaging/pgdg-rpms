@@ -187,6 +187,7 @@ BuildRequires:	json-c-devel
 BuildRequires:	libdap-devel libgta-devel
 BuildRequires:	perl-devel
 BuildRequires:	perl-generators
+BuildRequires:	python3-devel >= 3.8
 BuildRequires:	xerces-c-devel
 %endif
 BuildRequires:	xz-devel
@@ -206,8 +207,9 @@ BuildRequires:	SFCGAL-devel
 %endif
 
 BuildRequires:	shapelib-devel curl-devel >= 7.68
-BuildRequires:	python3-devel >= 3.8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1600
 BuildRequires:	openjpeg2-devel >= 2.3.1
+%endif
 
 # Run time dependencies
 Requires:	gpsbabel
@@ -489,7 +491,7 @@ done
 %changelog
 * Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-2PGDG
 - Rebuild against PROJ 9.8 on all platforms except RHEL 8.
-
+- Adjust dependencies to fix SLES 15 builds.
 
 * Fri Mar 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-1PGDG
 - Update to 3.12.3 per changes described at:
