@@ -9,15 +9,15 @@
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
 %else
-%global	projmajorversion %proj97majorversion
-%global	projfullversion %proj97fullversion
-%global	projinstdir %proj97instdir
+%global	projmajorversion %proj98majorversion
+%global	projfullversion %proj98fullversion
+%global	projinstdir %proj98instdir
 %endif
 
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
 Version:	2.2.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
@@ -107,6 +107,9 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Thu Apr 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-4PGDG
+- Rebuild against PROJ 9.8 on all platforms except RHEL 8.
+
 * Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
 - Fix builds against CMake 4. Also fix SLES builds.
 
