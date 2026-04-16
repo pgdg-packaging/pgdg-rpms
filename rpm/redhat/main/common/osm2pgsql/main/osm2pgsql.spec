@@ -107,7 +107,7 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
-* Thu Apr 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-4PGDG
+* Thu Apr 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-4PGDG
 - Rebuild against PROJ 9.8 on all platforms except RHEL 8.
 
 * Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
