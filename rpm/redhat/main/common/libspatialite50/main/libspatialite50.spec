@@ -25,7 +25,7 @@
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	14PGDG%{?dist}
+Release:	15PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -132,6 +132,9 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-15PGDG
+- Rebuild the package because of a signing issue
+
 * Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-14PGDG
 - Rebuild against PROJ 9.8 on all platforms except RHEL 8.
 
