@@ -1,13 +1,14 @@
-%global debug_package %{nil}
 %global sname	pg_dbms_job
+
+%{!?llvm:%global llvm 1}
 
 Summary:	PostgreSQL extension to schedules and manages jobs in a job queue similar to Oracle DBMS_JOB package
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5
-Release:	5PGDG%{?dist}
+Version:	2.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/MigOpsRepos/%{sname}/archive/refs/tags/v%{version}.tar.gz
-Patch0:		%{sname}-makefile.patch
+Patch0:		%{sname}-include.patch
 URL:		https://github.com/MigOpsRepos/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel make
 Requires:	postgresql%{pgmajorversion}-server
@@ -20,6 +21,27 @@ It allows to manage scheduled jobs from a job queue or to execute immediately
 jobs asynchronously. A job definition consist on a code to execute, the next
 date of execution and how often the job is to be run. A job runs a SQL
 command, plpgsql code or an existing stored procedure.
+
+%if %llvm
+%package llvmjit
+Summary:	Just-in-time compilation support for pg_dbms.job
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
+Requires:	llvm17
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19
+%endif
+%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm >= 19.0
+%endif
+
+%description llvmjit
+This package provides JIT support for pg_dbms.job
+%endif
 
 %prep
 %setup -q -n %{sname}-%{version}
@@ -39,12 +61,22 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
-%{_sysconfdir}/%{sname}/%{sname}.conf.dist
-%{pginstdir}/bin/%{sname}
+%license LICENSE
+%{pginstdir}/lib/%{sname}.so
 %{pginstdir}/share/extension/%{sname}*.sql
 %{pginstdir}/share/extension/%{sname}.control
 
+%if %llvm
+%files llvmjit
+    %{pginstdir}/lib/bitcode/%{sname}.index.bc
+    %{pginstdir}/lib/bitcode/%{sname}/%{sname}.bc
+%endif
+
 %changelog
+* Sun Apr 19 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-1PGDG
+- Update to 2.0 per changes described at:
+  https://github.com/HexaCluster/pg_dbms_job/releases/tag/v2.0
+
 * Tue Feb 25 2025 Devrim Gunduz <devrim@gunduz.org> - 1.5-5PGDG
 - Add missing BRs and Requires.
 
@@ -55,7 +87,7 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 - Add PGDG branding
 
 * Mon Apr 24 2023 Devrim Gunduz <devrim@gunduz.org> - 1.5-2.1
-- Modernise %patch usage, which has been deprecated in Fedora 38
+- Modernise %%patch usage, which has been deprecated in Fedora 38
 
 * Mon Dec 05 2022 Devrim Gündüz <devrim@gunduz.org> - 1.5-2
 - Get rid of AT and switch to GCC on RHEL 7 - ppc64le

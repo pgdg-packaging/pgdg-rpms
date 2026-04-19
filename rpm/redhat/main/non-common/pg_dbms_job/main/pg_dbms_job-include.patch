@@ -1,0 +1,11 @@
+--- pg_dbms_job.c.old	2026-04-19 11:47:37.575359479 +0100
++++ pg_dbms_job.c	2026-04-19 11:47:47.830744634 +0100
+@@ -46,7 +46,7 @@
+ #include "executor/spi.h"
+ #include "fmgr.h"
+ #include "lib/stringinfo.h"
+-#include "postgresql/libpq-fe.h"           /* PGconn, PQconnectdb, PQnotifies … */
++#include "libpq-fe.h"           /* PGconn, PQconnectdb, PQnotifies … */
+ #include "miscadmin.h"
+ #include "pgstat.h"
+ #include "postmaster/bgworker.h"
