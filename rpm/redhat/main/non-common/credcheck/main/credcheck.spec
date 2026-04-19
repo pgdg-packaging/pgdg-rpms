@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.6
+Version:	4.7
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
@@ -74,6 +74,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Sun Apr 19 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7-1PGDG
+- Update to 4.7 per changes described at
+  https://github.com/HexaCluster/credcheck/releases/tag/v4.7
+
 * Thu Feb 19 2026 Devrim Gunduz <devrim@gunduz.org> - 4.6-1PGDG
 - Update to 4.6 per changes described at
   https://github.com/HexaCluster/credcheck/releases/tag/v4.6
