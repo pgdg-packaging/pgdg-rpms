@@ -7,7 +7,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.61.7
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -67,10 +67,8 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{__install} -d build
 pushd build
 %cmake ..
-
+%cmake_build
 popd
-
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} build
 
 pushd storedproc/pgsql/c
 export PATH=%{pginstdir}/bin:$PATH
@@ -81,8 +79,7 @@ popd
 %{__rm} -rf %{buildroot}
 export PATH=%{pginstdir}/bin/:$PATH
 pushd build
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install \
-	DESTDIR=%{buildroot}
+%cmake_install
 popd
 
 pushd storedproc/pgsql/c
@@ -127,6 +124,9 @@ popd
 %endif
 
 %changelog
+* Mon Apr 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-5PGDG
+- Fix builds against CMake 4
+
 * Thu Oct 30 2025 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-4PGDG
 - Rebuild because of a package signing issue on Fedora 43
 
