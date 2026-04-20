@@ -34,9 +34,8 @@ cmake -DCMAKE_BUILD_TYPE=Release .. \
 %cmake .. -DCMAKE_BUILD_TYPE=Release .. \
 %endif
 	-DPostgreSQL_CONFIG=%{pginstdir}/bin/pg_config
-popd
-
 %cmake_build
+popd
 
 %install
 %{__rm} -rf %{buildroot}
