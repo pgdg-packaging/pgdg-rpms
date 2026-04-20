@@ -3,13 +3,13 @@
 
 Name:           %{sname}_%{pgmajorversion}
 Version:	0.2.4
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	PostgreSQL extension to provide additional Prometheus metrics for pgexporter.
 License:	BSD
 URL:		https://github.com/pgexporter/%{sname}
 Source0:	https://github.com/pgexporter/%{sname}/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	gcc cmake3 make
+BuildRequires:	gcc cmake make
 BuildRequires:	openssl openssl-devel postgresql%{pgmajorversion}-devel
 Requires:	openssl postgresql%{pgmajorversion}-server
 
@@ -22,16 +22,17 @@ Prometheus metrics for pgexporter.
 
 %build
 %{__mkdir} build
-cd build
+pushd build
 export PATH=%{pginstdir}/bin/:$PATH
 cmake -DCMAKE_BUILD_TYPE=Release ..
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags}
+%cmake_build
+popd
 
 %install
-cd build
+pushd build
 export PATH=%{pginstdir}/bin/:$PATH
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install \
-	DESTDIR=%{buildroot}
+%cmake_install
+popd
 
 %files
 %license LICENSE
@@ -40,6 +41,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Mon Apr 20 2026 - Devrim Gündüz <devrim@gunduz.org> 0.2.4-2PGDG
+- Fix builds against CMake 4.
+
 * Mon Sep 23 2024 - Devrim Gündüz <devrim@gunduz.org> 0.2.4-1PGDG
 - Update to 0.2.4 per changes described at:
   https://github.com/pgexporter/pgexporter_ext/releases/tag/0.2.4
