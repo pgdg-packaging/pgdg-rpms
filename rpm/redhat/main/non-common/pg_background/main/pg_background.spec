@@ -4,7 +4,7 @@
 
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.9.1
+Version:	1.9.2
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/vibhorkum/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -76,6 +76,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Fri Apr 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.9.2-1PGDG
+- Update to 1.9.2 per changes described at:
+  https://github.com/vibhorkum/pg_background/releases/tag/v1.9.2
+
 * Wed Apr 1 2026 Devrim Gündüz <devrim@gunduz.org> - 1.9.1-1PGDG
 - Update to 1.9.1 per changes described at:
   https://github.com/vibhorkum/pg_background/releases/tag/v1.9.1
