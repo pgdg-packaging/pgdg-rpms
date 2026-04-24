@@ -4,11 +4,11 @@
 
 Summary:	Prefix Range module for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.2.10
-Release:	5PGDG%{?dist}
+Version:	1.2.11
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/v%{version}.zip
-URL:		https://github.com/dimitri/prefix
+URL:		https://github.com/dimitri/%{name}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -69,6 +69,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Fri Apr 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.11-1PGDG
+- Update to 1.2.11
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.10-5PGDG
 - Add SLES 16 support
 
