@@ -311,8 +311,8 @@ This package contains the API documentation for %{name}.
 %{?py_provide:%py_provide python3-gdal}
 Summary:	Python modules for the GDAL file format library
 BuildRequires:	python%{python3_pkgversion}-numpy
-BuildRequires:	python3-devel
-Requires:	python3-numpy
+BuildRequires:	python%{python3_pkgversion}-devel
+Requires:	python%{python3_pkgversion}-numpy
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description python3
