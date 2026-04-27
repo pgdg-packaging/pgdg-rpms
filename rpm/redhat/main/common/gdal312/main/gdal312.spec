@@ -1,13 +1,36 @@
 %global sname gdal
 
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1600
+%global gdal_python_enabled 1
 %{!?gdaljava:%global gdaljava 1}
+%else
+%global gdal_python_enabled 0
+%{!?gdaljava:%global gdaljava 0}
+%endif
+
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __python3 %{_bindir}/python3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __python3 %{_bindir}/python3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 42
+%global	__python3 %{_bindir}/python3.13
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	__python3 %{_bindir}/python3.12
+%endif
+%if 0%{?suse_version} == 1500
+%global	__python3 %{_bindir}/python3.11
+%endif
+%if 0%{?suse_version} == 1600
+%global	__python3 %{_bindir}/python3.13
+%endif
 
 %pgdg_set_gis_variables
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if %gdal_python_enabled
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
 %endif
 
 %global bashcompletiondir %(pkg-config --variable=compatdir bash-completion)
@@ -42,8 +65,8 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}312
-Version:	3.12.3
-Release:	2PGDG%{?dist}
+Version:	3.12.4
+Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -163,7 +186,6 @@ BuildRequires:	hdf5 hdf5-devel hdf5-devel-static
 BuildRequires:	libexpat-devel libjson-c-devel
 BuildRequires:	libjasper-devel
 BuildRequires:	libxerces-c-devel
-BuildRequires:	python3-numpy-devel
 BuildRequires:	python311-devel
 BuildRequires:	libshp-devel libcurl-devel >= 7.68
 BuildRequires:	java-11-openjdk-devel
@@ -173,8 +195,6 @@ BuildRequires:	hdf5 hdf5-devel
 BuildRequires:	libexpat-devel libjson-c-devel
 BuildRequires:	libjasper-devel
 BuildRequires:	libxerces-c-devel
-BuildRequires:	python3-numpy-devel
-BuildRequires:	python3-devel
 BuildRequires:	java-21-openjdk-devel
 %endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
@@ -187,13 +207,13 @@ BuildRequires:	json-c-devel
 BuildRequires:	libdap-devel libgta-devel
 BuildRequires:	perl-devel
 BuildRequires:	perl-generators
+BuildRequires:	python3-devel >= 3.8
 BuildRequires:	xerces-c-devel
 %endif
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 BuildRequires:	libtirpc-devel
 
-BuildRequires:	python3-numpy
 BuildRequires:	python3-setuptools
 
 BuildRequires:	qhull-devel
@@ -206,8 +226,9 @@ BuildRequires:	SFCGAL-devel
 %endif
 
 BuildRequires:	shapelib-devel curl-devel >= 7.68
-BuildRequires:	python3-devel >= 3.8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1600
 BuildRequires:	openjpeg2-devel >= 2.3.1
+%endif
 
 # Run time dependencies
 Requires:	gpsbabel
@@ -279,11 +300,14 @@ BuildArch:	noarch
 This package contains the API documentation for %{name}.
 %endif
 
+%if %gdal_python_enabled
 %package python3
 %{?py_provide:%py_provide python3-gdal}
 Summary:	Python modules for the GDAL file format library
 Requires:	python3-numpy
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
+#BuildRequires:	python3-numpy-devel
+BuildRequires:	python3-devel
 
 %description python3
 The GDAL Python 3 modules provide support to handle multiple GIS file formats.
@@ -296,6 +320,7 @@ Requires:	%{name}-python3
 %description python-tools
 The GDAL Python package provides number of tools for programming and
 manipulating GDAL file format library
+%endif
 
 # We don't want to provide private Python extension libs
 %global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\.so$
@@ -348,18 +373,22 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib
 %endif
  -DCMAKE_INSTALL_INCLUDEDIR=include \
  -DCMAKE_INSTALL_LIBDIR=lib \
- -DBUILD_PYTHON_BINDINGS=ON \
  -DHAVE_SPATIALITE=ON \
- -DPython_ROOT=/usr \
- -DPython_LOOKUP_VERSION=%{pyver} \
  -DSPATIALITE_INCLUDE_DIR=%{libspatialiteinstdir}/include \
  -DSPATIALITE_LIBRARY=%{libspatialiteinstdir}/lib/libspatialite.so \
- -DGDAL_JAVA_INSTALL_DIR=%{_jnidir}/%{name} \
  -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}" \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
+%if %gdal_python_enabled
+  -DBUILD_PYTHON_BINDINGS:BOOL=ON \
+  -DPython_ROOT=/usr \
+  -DPython_LOOKUP_VERSION=%{pyver} \
+%else
+ -DBUILD_PYTHON_BINDINGS:BOOL=OFF \
+%endif
  -DGDAL_USE_SHAPELIB=OFF \
 %if %gdaljava
  -DBUILD_JAVA_BINDINGS=ON \
+ -DGDAL_JAVA_INSTALL_DIR=%{_jnidir}/%{name} \
 %else
  -DBUILD_JAVA_BINDINGS=OFF \
 %endif
@@ -374,8 +403,10 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib
 export CC=/usr/bin/gcc-13
 export CXX=/usr/bin/g++-13
 %endif
+
 %cmake_install
 
+touch gdal_python_manpages.txt gdal_python_manpages_excludes.txt
 # List of manpages for python scripts
 for file in %{buildroot}%{gdalinstdir}/bin/*.py; do
   if [ -f %{buildroot}%{gdalinstdir}/share/man/man1/`basename ${file/.py/.1*}` ]; then
@@ -384,10 +415,12 @@ for file in %{buildroot}%{gdalinstdir}/bin/*.py; do
   fi
 done
 
+%if %gdal_python_enabled
 %{__mkdir} -p %{buildroot}/%{python3_sitearch}/
 %{__mv} %{buildroot}/%{gdalinstdir}/lib64/python%{pyver}/site-packages/GDAL-%{version}-py*.egg-info/ %{buildroot}/%{python3_sitearch}/GDAL-%{version}-py*.egg-info/
 %{__mv} %{buildroot}/%{gdalinstdir}/lib64/python%{pyver}/site-packages/osgeo %{buildroot}/%{python3_sitearch}/osgeo/
 %{__mv} %{buildroot}/%{gdalinstdir}/lib64/python%{pyver}/site-packages/osgeo_utils %{buildroot}/%{python3_sitearch}/osgeo_utils
+%endif
 
 # Install linker config file:
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/ld.so.conf.d/
@@ -397,6 +430,7 @@ done
 %{gdalinstdir}/bin/gdal
 %{gdalinstdir}/bin/gdal_contour
 %{gdalinstdir}/bin/gdal_create
+%{gdalinstdir}/bin/gdal_footprint
 %{gdalinstdir}/bin/gdal_grid
 %{gdalinstdir}/bin/gdal_rasterize
 %{gdalinstdir}/bin/gdal_translate
@@ -418,7 +452,9 @@ done
 %{gdalinstdir}/bin/gnmmanage
 %{gdalinstdir}/bin/nearblack
 %{gdalinstdir}/bin/sozip
+%if %gdal_python_enabled
 %{gdalinstdir}/bin/ogr_layer_algebra*
+%endif
 %{gdalinstdir}/bin/ogr2ogr
 %{gdalinstdir}/bin/ogrinfo
 %{gdalinstdir}/bin/ogrlineref
@@ -447,6 +483,7 @@ done
 %{gdalinstdir}/lib/*.so
 %{gdalinstdir}/lib/pkgconfig/%{sname}.pc
 
+%if %gdal_python_enabled
 %files python3
 %doc swig/python/README.rst
 %{python3_sitearch}/GDAL-%{version}-py*.egg-info/
@@ -457,7 +494,6 @@ done
 %{gdalinstdir}/bin/gdal_calc*
 %{gdalinstdir}/bin/gdal_edit*
 %{gdalinstdir}/bin/gdal_fillnodata*
-%{gdalinstdir}/bin/gdal_footprint
 %{gdalinstdir}/bin/gdal_merge*
 %{gdalinstdir}/bin/gdal_pansharpen*
 %{gdalinstdir}/bin/gdal_polygonize*
@@ -473,6 +509,7 @@ done
 %{gdalinstdir}/bin/pct2rgb*
 %{gdalinstdir}/bin/rgb2pct*
 %{gdalinstdir}/share/bash-completion/completions/*.py
+%endif
 
 %if %gdaljava
 %files java
@@ -487,9 +524,14 @@ done
 %endif
 
 %changelog
+* Mon Apr 27 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-1PGDG
+- Update to 3.12.4 per changes described at:
+  https://github.com/OSGeo/gdal/blob/v3.12.4/NEWS.md
+- Adjust dependencies to fix SLES 15 builds. This also disables JPEG
+  and Java support on that platform.
+
 * Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-2PGDG
 - Rebuild against PROJ 9.8 on all platforms except RHEL 8.
-
 
 * Fri Mar 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.3-1PGDG
 - Update to 3.12.3 per changes described at:
