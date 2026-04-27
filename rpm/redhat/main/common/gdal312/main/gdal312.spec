@@ -9,28 +9,34 @@
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __python3 %{_bindir}/python3.15
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
-%global __python3 %{_bindir}/python3.14
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__python3 %{_bindir}/python3.13
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__python3 %{_bindir}/python3.12
+%global	__ospython %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} == 1500
-%global	__python3 %{_bindir}/python3.11
+%global	__ospython %{_bindir}/python3.11
+%global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
-%global	__python3 %{_bindir}/python3.13
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
 %endif
 
 %pgdg_set_gis_variables
 
 %if %gdal_python_enabled
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %endif
 
 %global bashcompletiondir %(pkg-config --variable=compatdir bash-completion)
@@ -304,10 +310,10 @@ This package contains the API documentation for %{name}.
 %package python3
 %{?py_provide:%py_provide python3-gdal}
 Summary:	Python modules for the GDAL file format library
+BuildRequires:	python%{python3_pkgversion}-numpy
+BuildRequires:	python3-devel
 Requires:	python3-numpy
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
-#BuildRequires:	python3-numpy-devel
-BuildRequires:	python3-devel
 
 %description python3
 The GDAL Python 3 modules provide support to handle multiple GIS file formats.
