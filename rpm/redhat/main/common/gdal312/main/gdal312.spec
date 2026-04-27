@@ -147,7 +147,7 @@ Requires:	muParser
 BuildRequires:	muparser-devel
 Requires:	libmuparser2_3_3
 %endif
-%if 0%{?suse_version} == 1500
+%if 0%{?suse_version} == 1600
 BuildRequires:	muparser-devel
 Requires:	libmuparser2_3_4
 %endif
