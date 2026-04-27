@@ -26,11 +26,6 @@
 %global	projfullversion %proj98fullversion
 %global	projinstdir %proj98instdir
 %endif
-%if 0%{?suse_version} == 1500
-%global	gdalfullversion %gdal311fullversion
-%global	gdalmajorversion %gdal311majorversion
-%global	gdalinstdir %gdal311instdir
-%endif
 
 %global libgeotiffmajorversion 17
 %global libgeotiffinstdir %libgeotiff17instdir
@@ -65,7 +60,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -403,6 +398,9 @@ fi
 %endif
 
 %changelog
+* Mon Apr 27 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.10-2PGDG
+- Update GDAL dependency for SLES 15.
+
 * Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.10-1PGDG
 - Update to 3.2.10, per changes described at:
   https://git.osgeo.org/gitea/postgis/postgis/raw/tag/3.2.10/NEWS
