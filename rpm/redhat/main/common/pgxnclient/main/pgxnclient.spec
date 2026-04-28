@@ -1,5 +1,9 @@
 %global debug_package %{nil}
 
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -27,7 +31,7 @@
 Summary:	Command line tool designed to interact with the PostgreSQL Extension Network
 Name:		pgxnclient
 Version:	1.3.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Source0:	https://pypi.python.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 License:	BSD
 Url:		https://github.com/pgxn/%{name}
@@ -67,6 +71,9 @@ removing extensions in a PostgreSQL installation or database.
 %{python3_sitelib}/%{name}/utils/__pycache__/*.p*
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> 1.3.2-6PGDG
+- Add Fedora 44 support per #167.
+
 * Thu Oct 16 2025 Devrim Gündüz <devrim@gunduz.org> 1.3.2-5PGDG
 - Switch to pyproject builds.
 - Add SLES 16 support
