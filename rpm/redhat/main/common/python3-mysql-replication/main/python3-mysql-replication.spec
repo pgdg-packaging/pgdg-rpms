@@ -1,8 +1,8 @@
 %global sname	mysql-replication
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -27,7 +27,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.0.15
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -76,6 +76,10 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.15-2PGDG
+- Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
+  for 3.15.
+
 * Sat Mar 28 2026 - Devrim Gündüz <devrim@gunduz.org> 1.0.15-1PGDG
 - Update to 1.0.15
 - Add Fedora 44 support.

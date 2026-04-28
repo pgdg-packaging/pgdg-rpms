@@ -3,8 +3,8 @@
 %{?python_disable_dependency_generator}
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -38,7 +38,7 @@
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
@@ -87,6 +87,10 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-6PGDG
+- Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
+  for 3.15.
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-5PGDG
 - Switch to pyproject builds
 - Add Fedora 44 support

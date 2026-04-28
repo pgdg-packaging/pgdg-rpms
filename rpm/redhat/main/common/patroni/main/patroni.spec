@@ -1,6 +1,6 @@
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -28,7 +28,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -244,6 +244,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-3PGDG
+- Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
+  for 3.15.
+
 * Thu Apr 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-2PGDG
 - Add python3-systemd dependency. Per:
   https://github.com/patroni/patroni/issues/3591

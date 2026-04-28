@@ -1,8 +1,8 @@
 %global sname pgldapsync
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -34,7 +34,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -87,6 +87,10 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-8PGDG
+- Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
+  for 3.15.
+
 * Mon Mar 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-7PGDG
 - Add SLES 16 and Fedora 44 support
 
