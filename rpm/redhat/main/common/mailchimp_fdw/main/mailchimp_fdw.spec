@@ -1,6 +1,10 @@
 %global sname mailchimp_fdw
 %global packagesoversion 0.3.0
 
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -28,12 +32,18 @@
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
 
 BuildArch:	noarch
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 %description
 This is a PostgreSQL FDW for Mailchimp
@@ -42,11 +52,10 @@ This is a PostgreSQL FDW for Mailchimp
 %setup -q -n %{sname}-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
+%pyproject_install
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -55,11 +64,15 @@ This is a PostgreSQL FDW for Mailchimp
 %defattr(644,root,root,755)
 %doc README.md
 %dir %{python_sitelib}/mailchimpfdw/
-%{python_sitelib}/mailchimpfdw-%{packagesoversion}-py%{py3ver}.egg-info
+%{python_sitelib}/mailchimpfdw-%{packagesoversion}.dist-info
 %{python_sitelib}/mailchimpfdw/*.py*
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-5PGDG
+- Switch to pyproject builds.
+- Add Fedora 44 support, per #167.
+
 * Fri Oct 17 2025 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-4PGDG
 - Fix builds with Python 3.1x
 
