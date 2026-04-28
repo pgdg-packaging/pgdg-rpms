@@ -1,9 +1,0 @@
---- makefile.old	2019-09-16 22:59:07.626515838 +0300
-+++ makefile	2019-09-16 22:59:16.879560038 +0300
-@@ -58,5 +58,5 @@
- 
- 
- mk_nonlocal_install_dirs:
--	$(MKINSTALLDIR) $(prefix) $(exec_prefix) $(INST_LIB) $(INST_BIN) $(INST_INCLUDE)
-+	$(MKINSTALLDIR) $(INST_LIB) $(INST_BIN) $(INST_INCLUDE)
- 
