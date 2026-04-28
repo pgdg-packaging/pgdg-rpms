@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -24,7 +28,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	47PGDG%{?dist}
+Release:	48PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -72,6 +76,9 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
 
 %changelog
+* Tue Apr 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-48PGDG
+- Add Fedora 44 support
+
 * Wed Oct 15 2025 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-47PGDG
 - Add SLES 16 support
 
