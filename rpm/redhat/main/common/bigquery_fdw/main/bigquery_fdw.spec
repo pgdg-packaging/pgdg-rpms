@@ -2,6 +2,10 @@
 # We will specify dependencies in the spec file.
 %{?python_disable_dependency_generator}
 
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -25,7 +29,7 @@
 
 %global debug_package %{nil}
 
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -34,14 +38,19 @@
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
 Source0:	https://github.com/gabfl/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	python3-devel
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Requires:	multicorn2
 Requires:	python3-google-auth = 1.14.3
@@ -49,17 +58,22 @@ Requires:	python3-google-oauthlib = 0.4.1
 Requires:	python3-google-cloud-bigquery = 1.24
 
 %description
+bigquery_fdw is a BigQuery foreign data wrapper for PostgreSQL using
+Multicorn2.
+
+It allows to write queries in PostgreSQL SQL syntax using a foreign table. It
+supports most of BigQuery's data types and operators.
+
 %prep
 %setup -q -n %{name}-%{version}
 
 %build
 # Change /usr/bin/python to /usr/bin/python2 in the scripts:
 for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\/env python3/g" $i; done
-
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 
 %files
 %defattr(-,root,root)
@@ -70,10 +84,13 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %if 0%{?rhel} || 0%{?fedora}
 %{python3_sitelib}/%{name}/__pycache__/*.pyc
 %endif
-%dir %{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
-%{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info/*
+%{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-5PGDG
+- Switch to pyproject builds
+- Add Fedora 44 support
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0-4PGDG
 - Use multicorn2 instead of deprecated multicorn package.
 - Add SLES 16 support
