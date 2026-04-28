@@ -4,11 +4,11 @@
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
 Version:	4.1.2
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	BSD
 URL:		https://gitlab.com/%{sname}/%{sname}
 Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
-BuildRequires:	libpq5-devel ncurses-devel
+BuildRequires:	libpq5-devel ncurses-devel cmake
 BuildRequires:	libbsd-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libelf-devel
@@ -34,16 +34,16 @@ pg_top allows you to monitor PostgreSQL processes. It also allows you to:
 %prep
 %setup -q -n %{sname}-v%{version}
 
-%cmake
-
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags}
+mkdir build
+pushd build
+%cmake ..
+%cmake_build
+popd
 
 %install
-%if 0%{?suse_version} >= 1500
 pushd build
-%endif
-%{__make} -C "%{_vpath_builddir}" %{?_smp_mflags} install/fast \
-	DESTDIR=%{buildroot}
+%cmake_install
+popd
 
 %files
 %defattr(-,root,root,-)
@@ -53,6 +53,10 @@ pushd build
 %{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-43PGDG
+- Fix builds against CMake 4, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/167
+
 * Fri Jun 6 2025 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-42PGDG
 - Update to 4.1.2 per changes described at:
   https://gitlab.com/pg_top/pg_top/-/releases#2025-06-04-v412
