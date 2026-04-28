@@ -19,15 +19,10 @@
 %global gdalmajorversion %gdal312majorversion
 %global gdalinstdir %gdal312instdir
 %endif
-%if 0%{?suse_version} == 1500
-%global gdalfullversion %gdal311fullversion
-%global gdalmajorversion %gdal311majorversion
-%global gdalinstdir %gdal311instdir
-%endif
 
 Name:		libosmium
 Version:	2.23.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Fast and flexible C++ library for working with OpenStreetMap data
 
 License:	BSL-1.0
@@ -72,7 +67,7 @@ Requires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
 This package contains libraries and header files for developing
 applications that use %{name}.
 
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 %package	doc
 Summary:	Documentation for %{name}
 BuildArch:	noarch
@@ -111,13 +106,16 @@ cd libosmium
 %license %{name}/LICENSE
 %{_includedir}/osmium
 
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 %files doc
 %doc libosmium/%{__cmake_builddir}/doc/html/*
 %license libosmium/LICENSE
 %endif
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.23.0-44PGDG
+- Update GDAL dependency for SLES 15.
+
 * Wed Feb 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.23.0-43PGDG
 - Rebuild because of a signing issue
 
