@@ -9,8 +9,8 @@
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -72,7 +72,7 @@
 
 Name:		%{sname}312
 Version:	3.12.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -530,6 +530,10 @@ done
 %endif
 
 %changelog
+* Tue Apr 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-2PGDG
+- Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
+  for 3.15. Per #167
+
 * Mon Apr 27 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-1PGDG
 - Update to 3.12.4 per changes described at:
   https://github.com/OSGeo/gdal/blob/v3.12.4/NEWS.md
