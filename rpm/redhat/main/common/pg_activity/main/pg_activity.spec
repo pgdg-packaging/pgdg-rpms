@@ -1,3 +1,7 @@
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -27,7 +31,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.1
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -103,6 +107,9 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-46PGDG
+- Add Fedora 44 support, per #167.
+
 * Thu Mar 5 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-45PGDG
 - Fix RHEL 8 dependency. Per report from Mensah David Assigbi:
   https://github.com/pgdg-packaging/pgdg-rpms/issues/163
