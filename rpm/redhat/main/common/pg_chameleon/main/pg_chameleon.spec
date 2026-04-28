@@ -1,6 +1,6 @@
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -33,7 +33,7 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -62,11 +62,10 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %setup -q -n %{name}-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%{__ospython} setup.py install --root %{buildroot}
+%pyproject_install
 
 %files
 %defattr(-,root,root,755)
@@ -74,7 +73,7 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %license LICENSE.txt
 %{_bindir}/chameleon
 %{_bindir}/chameleon.py
-%{python3_sitelib}/%{name}-%{version}-py%{pyver}.egg-info/*
+%{python3_sitelib}/%{name}-%{version}.dist-info/*
 %{python3_sitelib}/%{name}/*.py
 %{python3_sitelib}/%{name}/__pycache__/*.pyc
 %{python3_sitelib}/%{name}/configuration/config-example.yml
@@ -84,6 +83,10 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.21-4PGDG
+- Switch to pyproject build.
+- Use Python 3.14 on Fedora 44.
+
 * Sat Mar 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.21-3PGDG
 - Fix SLES dependencies
 
