@@ -38,10 +38,10 @@ BuildRequires:	java-11-openjdk-devel javapackages-local
 %if 0%{?suse_version} == 1600
 BuildRequires:	java-21-openjdk-devel javapackages-local
 %endif
-%if 0%{?fedora} <= 43
+%if 0%{?fedora} && 0%{?fedora} <= 43
 BuildRequires:  java-latest-openjdk-devel javapackages-local-openjdk21
 %endif
-%if 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} >= 44
 BuildRequires:  java-latest-openjdk-devel javapackages-local-openjdk25
 %endif
 
