@@ -23,25 +23,26 @@ Requires:	java-headless >= 8
 Requires:	java-headless
 %endif
 BuildRequires:	maven
-%if 0%{?rhel} == 8 || 0%{?fedora}
-BuildRequires:	java-latest-openjdk-devel
+%if 0%{?rhel} == 8
+BuildRequires:  java-latest-openjdk-devel javapackages-local
 %endif
 %if 0%{?rhel} == 9
-BuildRequires:	java-17-openjdk-devel
+BuildRequires:	java-17-openjdk-devel javapackages-local-openjdk11
 %endif
 %if 0%{?rhel} == 10
-BuildRequires:	java-21-openjdk-devel
+BuildRequires:	java-21-openjdk-devel javapackages-local-openjdk21
 %endif
 %if 0%{?suse_version} == 1500
-BuildRequires:	java-11-openjdk-devel
+BuildRequires:	java-11-openjdk-devel javapackages-local
 %endif
 %if 0%{?suse_version} == 1600
-BuildRequires:	java-21-openjdk-devel
+BuildRequires:	java-21-openjdk-devel javapackages-local
+%endif
+%if 0%{?fedora} <= 43
+BuildRequires:  java-latest-openjdk-devel javapackages-local-openjdk21
 %endif
 %if 0%{?fedora} == 44
-BuildRequires:	javapackages-local-openjdk25
-%else
-BuildRequires:	javapackages-local
+BuildRequires:  java-latest-openjdk-devel javapackages-local-openjdk25
 %endif
 
 %description
@@ -159,7 +160,7 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 * Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.11-1PGDG
 - Update to 42.7.11 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.11
-- Adjust a BR to fix builds on Fedora 44.
+- Make changes around javapackages-local BR to fix builds on Fedora 44.
 
 * Thu Feb 12 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.10-1PGDG
 - Update to 42.7.10 per changes described at:
