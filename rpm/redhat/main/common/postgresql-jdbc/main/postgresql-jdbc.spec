@@ -1,7 +1,7 @@
 
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
-Version:	42.7.10
+Version:	42.7.11
 Release:	1PGDG%{?dist}
 # ASL 2.0 applies only to postgresql-jdbc.pom file, the rest is BSD
 License:	BSD and ASL 2.0
@@ -22,7 +22,7 @@ Requires:	java-headless >= 8
 # On RHEL java-headless Provides 'java-headless = 1:1.8.0'
 Requires:	java-headless
 %endif
-
+BuildRequires:	maven
 %if 0%{?rhel} == 8 || 0%{?fedora}
 BuildRequires:	java-latest-openjdk-devel
 %endif
@@ -38,7 +38,11 @@ BuildRequires:	java-11-openjdk-devel
 %if 0%{?suse_version} == 1600
 BuildRequires:	java-21-openjdk-devel
 %endif
-BuildRequires:	maven javapackages-local
+%if 0%{?fedora} == 44
+BuildRequires:	javapackages-local-openjdk25
+%else
+BuildRequires:	javapackages-local
+%endif
 
 %description
 PostgreSQL is an advanced Object-Relational database management
@@ -152,6 +156,11 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
+* Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.11-1PGDG
+- Update to 42.7.11 per changes described at:
+  https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.11
+- Adjust a BR to fix builds on Fedora 44.
+
 * Thu Feb 12 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.10-1PGDG
 - Update to 42.7.10 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.10
