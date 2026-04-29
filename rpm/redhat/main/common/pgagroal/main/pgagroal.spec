@@ -1,5 +1,5 @@
 Name:		pgagroal
-Version:	2.0.2
+Version:	2.1.0
 Release:	1PGDG%{dist}
 Summary:	High-performance connection pool for PostgreSQL
 License:	BSD
@@ -157,6 +157,10 @@ fi
 %{_unitdir}/%{name}.socket
 
 %changelog
+* Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
+- Update to 2.1.0 per changes described at:
+  https://github.com/agroal/pgagroal/releases/tag/2.1.0
+
 * Wed Feb 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.2-1PGDG
 - Update to 2.0.2 per changes described at:
   https://github.com/agroal/pgagroal/releases/tag/2.0.2
