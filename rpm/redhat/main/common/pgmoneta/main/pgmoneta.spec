@@ -1,5 +1,5 @@
 Name:		pgmoneta
-Version:	0.20.0
+Version:	0.21.0
 Release:	1PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
@@ -9,15 +9,13 @@ Source1:	%{name}.service
 Source2:	%{name}-tmpfiles.d
 
 Patch0:		%{name}-conf-rpm.patch
-# To be removed in next version:
-Patch1:		%{name}-%{version}-cmake.patch
 
 BuildRequires:	gcc cmake make python3-docutils zlib-devel ncurses-devel
-BuildRequires:	libzstd-devel lz4-devel bzip2-devel
+BuildRequires:	libzstd-devel lz4-devel bzip2-devel liburing-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
 BuildRequires:	libssh-devel libarchive-devel cjson-devel libatomic
 Requires:	libev openssl systemd zlib libzstd lz4 bzip2 libssh
-Requires:	libarchive cjson
+Requires:	libarchive cjson liburing
 
 %if 0%{?suse_version} >= 1500
 Requires:	libncurses6
@@ -25,8 +23,6 @@ Requires:	libncurses6
 Requires:	ncurses-libs
 %endif
 
-# Systemd stuff
-BuildRequires:		systemd, systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 Requires(post):		systemd
@@ -39,26 +35,41 @@ pgmoneta is a backup / restore solution for PostgreSQL.
 %prep
 %setup -q -n %{name}-%{version}
 %patch -P 0 -p0
-%patch -P 1 -p1
 
 %build
 
 %{__mkdir} build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_INSTALL_PREFIX=/usr -DDOCS=OFF
-%{__make}
-
+pushd build
+%cmake -DCMAKE_BUILD_TYPE=Release .. -DCMAKE_INSTALL_PREFIX=/usr -DDOCS=OFF
+%cmake_build
+popd
 %install
-cd build
-%{__make} install DESTDIR=%{buildroot}
+pushd build
+%cmake_install
+popd
 
 # Install some files manually
 %{__mkdir} -p %{buildroot}%{_docdir}/%{name}/shell_comp
 %{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/shell_comp/pgmoneta_comp.* %{buildroot}%{_docdir}/%{name}/shell_comp/
 
+%{__mkdir} -p %{buildroot}%{_docdir}/%{name}/grafana/provisioning/dashboards
+%{__mkdir} -p %{buildroot}%{_docdir}/%{name}/grafana/provisioning/datasources
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/grafana/*.json %{buildroot}%{_docdir}/%{name}/grafana/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/grafana/*.yml %{buildroot}%{_docdir}/%{name}/grafana/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/grafana/provisioning/dashboards/*.yaml %{buildroot}%{_docdir}/%{name}/grafana/provisioning/dashboards/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/grafana/provisioning/datasources/*.yaml %{buildroot}%{_docdir}/%{name}/grafana/provisioning/datasources/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/grafana/README.md %{buildroot}%{_docdir}/%{name}/grafana/README.md
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/contrib/grafana/TESTING.md %{buildroot}%{_docdir}/%{name}/grafana/TESTING.md
+
+%{__mkdir} -p %{buildroot}%{_docdir}/%{name}/images
+%{__mkdir} -p %{buildroot}%{_docdir}/%{name}/manual/en
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/manual/en/*.md %{buildroot}%{_docdir}/%{name}/manual/en/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/images/*.jpg %{buildroot}%{_docdir}/%{name}/images/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/images/*.png %{buildroot}%{_docdir}/%{name}/images/
+%{__install} -m 644 %{_builddir}/%{name}-%{version}/doc/images/*.svg %{buildroot}%{_docdir}/%{name}/images/
+
 # Install config file
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/%{name}
-pushd ..
 %{__mv} doc/etc/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}
 %{__mv} doc/etc/%{name}_walinfo.conf %{buildroot}%{_sysconfdir}/%{name}
 
@@ -103,6 +114,7 @@ fi
 %{_bindir}/%{name}
 %{_bindir}/%{name}-admin
 %{_bindir}/%{name}-cli
+%{_bindir}/%{name}-config
 %{_bindir}/%{name}-walfilter
 %{_bindir}/%{name}-walinfo
 %config %{_sysconfdir}/%{name}/%{name}.conf
@@ -110,10 +122,16 @@ fi
 %{_libdir}/libpgmoneta.so*
 %dir %{_docdir}/%{name}
 %{_docdir}/%{name}/*
+%{_mandir}/man1/%{name}*
+%{_mandir}/man5/%{name}*
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/%{name}.service
 
 %changelog
+* Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-1PGDG
+- Update to 0.21.0 per changes described at:
+  https://github.com/pgmoneta/pgmoneta/releases/tag/0.21.0
+
 * Mon Jan 19 2026 Devrim Gündüz <devrim@gunduz.org> 0.20.0-1PGDG
 - Update to 0.20.0 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.20.0
