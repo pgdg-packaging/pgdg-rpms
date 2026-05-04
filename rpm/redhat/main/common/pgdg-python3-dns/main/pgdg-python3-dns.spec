@@ -1,6 +1,6 @@
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
@@ -25,7 +25,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -73,6 +73,11 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Mon May 4 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-44PGDG
+- Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready for 3.15.
+  Per #167.
+- Fix https://github.com/pgdg-packaging/pgdg-rpms/issues/180
+
 * Thu Apr 9 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-43PGDG
 - Fix a dependency issue
 
