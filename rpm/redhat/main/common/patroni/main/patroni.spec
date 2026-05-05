@@ -27,8 +27,8 @@
 
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
-Version:	4.1.2
-Release:	3PGDG%{?dist}
+Version:	4.1.3
+Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -244,6 +244,10 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue May 5 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-1PGDG
+- Update to 4.1.3, per changes described at:
+  https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-413
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-3PGDG
 - Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
   for 3.15.
