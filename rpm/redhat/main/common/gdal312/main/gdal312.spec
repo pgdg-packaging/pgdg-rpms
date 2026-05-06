@@ -72,7 +72,7 @@
 
 Name:		%{sname}312
 Version:	3.12.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -220,8 +220,6 @@ BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 BuildRequires:	libtirpc-devel
 
-BuildRequires:	python3-setuptools
-
 BuildRequires:	qhull-devel
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
@@ -311,7 +309,7 @@ This package contains the API documentation for %{name}.
 %{?py_provide:%py_provide python3-gdal}
 Summary:	Python modules for the GDAL file format library
 BuildRequires:	python%{python3_pkgversion}-numpy
-BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 Requires:	python%{python3_pkgversion}-numpy
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -530,6 +528,9 @@ done
 %endif
 
 %changelog
+* Wed May 6 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-3PGDG
+- Add proper setuptools BR.
+
 * Tue Apr 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-2PGDG
 - Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
   for 3.15. Per #167
