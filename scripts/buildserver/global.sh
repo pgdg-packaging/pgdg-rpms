@@ -26,6 +26,7 @@ export osmajorversion=10			# Major version: 10, 9, 15, 43
 export os="rhel-${osmajorversion}"		# rhel-9, sles-15, leap-16, fedora-43
 export osminversion=1				# Will be used to support multiple OS minor versions like SLES 15.7, RHEL 10.1
 export osislatest=0				# Is this the latest minor version of the OS or not? 1 or 0
+						# CAUTION: Set this to 1 *only if* the OS is the latest stable version.
 export osarch=x86_64				# x86_64, aarch64, ppc64le
 export osdistro=redhat				# fedora, redhat, suse, opensuse
 export git_os="EL-${osmajorversion}"		# EL-9, F-43, SLES-15
