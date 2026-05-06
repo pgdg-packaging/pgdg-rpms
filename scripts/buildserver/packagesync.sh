@@ -377,24 +377,17 @@ sync_pg_version() {
 	echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $SRPM_DIR/repodata/repomd.xml
 
 	if [ $TESTING_MODE -eq 1 ]; then
-		# Testing mode: Use legacy rsync to yum.postgresql.org and S3 sync with testing paths
-		# Sync binary RPMs to yum.postgresql.org
-		# rsync --checksum -ave ssh --delete $RPM_DIR/ yumupload@yum.postgresql.org:$sync_base/testing/$packageSyncVersion/$osdistro/$os-$osarch
-
-		# Sync SRPMs to yum.postgresql.org
-		# rsync --checksum -ave ssh --delete $SRPM_DIR/ yumupload@yum.postgresql.org:$sync_base/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch
-
 		# Sync SRPMs to S3 bucket:
-		aws s3 sync $SRPM_DIR $awssrpmurl/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch --exclude "*.html" --exclude "repodata"
-		aws s3 sync --delete $SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+		aws s3 sync $SRPM_DIR $awssrpmurl/srpms/testing/$packageSyncVersion/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
+		aws s3 sync --delete $SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
 		# Sync debug* RPMs to S3 bucket:
-		aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
-		aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+		aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
+		aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
 		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
+		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*
+		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*
 	else
 		# Production mode: Use standard S3 sync with CloudFront invalidation
 		# Sync SRPMs to S3 bucket:
