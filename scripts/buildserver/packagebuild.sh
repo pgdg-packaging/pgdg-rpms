@@ -155,7 +155,12 @@ then
 	# Get the package version after building the package so that we get the latest version:
 	packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
 	cd
-	sign_package rpmcommon
+	if [ $testing_mode -eq 1 ]
+	then
+		sign_package rpmcommontesting
+	else
+		sign_package rpmcommon
+	fi
 	exit 0
 fi
 
