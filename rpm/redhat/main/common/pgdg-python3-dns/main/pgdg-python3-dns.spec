@@ -25,7 +25,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -40,7 +40,7 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
-Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
+Provides:	python%{python3_pkgversion}dist(dnspython) = %{version}-%{release}
 
 %description
 dnspython is a DNS toolkit for Python. It supports almost all record
@@ -73,6 +73,10 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Wed May 6 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-45PGDG
+- Fix Provides so that it provides the correct package name. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/190
+
 * Mon May 4 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-44PGDG
 - Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready for 3.15.
   Per #167.
