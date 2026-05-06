@@ -474,7 +474,8 @@ declare -a versions_to_sync=()
 # Handle special case: "all"
 if [ "$SYNC_TARGETS" == "all" ]; then
 	if [ $TESTING_MODE -eq 1 ]; then
-		echo "${green}Starting sync: All PostgreSQL testing versions${reset}"
+		echo "${green}Starting sync: Common + All PostgreSQL testing versions${reset}"
+		sync_common
 		for version in ${VERSIONS_ARRAY[@]}
 		do
 			sync_pg_version $version
