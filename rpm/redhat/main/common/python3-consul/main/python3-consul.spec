@@ -25,7 +25,7 @@
 
 Name:		python3-%{sname}
 Version:	1.1.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	Python client for Consul
 
 License:	MIT
@@ -42,6 +42,9 @@ BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
+
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+
 
 %description
 Python client for Consul (http://www.consul.io/)
@@ -63,6 +66,9 @@ Python client for Consul (http://www.consul.io/)
 %{python3_sitelib}/python_%{sname}-%{version}.dist-info/*
 
 %changelog
+* Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-5PGDG
+- Add missing BRs
+
 * Sat Nov 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-4PGDG
 - Add SLES 16 support
 - Switch to pyproject build
