@@ -25,7 +25,7 @@ extrasbuildtesting: prep
 	--define "_rpmdir $(HOME)/pgdg.extrastesting/RPMS/" \
 	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
 	-bb $(SPECFILE)
-	make extrasbfsrpm
+	make extrasbfsrpmtesting
 
 extrasrpmtesting: prep
 	rpmbuild --define "_sourcedir $(PWD)" \
