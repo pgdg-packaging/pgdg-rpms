@@ -32,7 +32,7 @@
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
@@ -44,6 +44,8 @@ BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
+
+BuildRequires:	python%{python3_pkgversion}-wheel.noarch
 
 %description
 This is a PostgreSQL FDW for Mailchimp
@@ -69,6 +71,9 @@ This is a PostgreSQL FDW for Mailchimp
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-6PGDG
+- Add missing BR
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-5PGDG
 - Switch to pyproject builds.
 - Add Fedora 44 support, per #167.
