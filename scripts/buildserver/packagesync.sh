@@ -181,11 +181,6 @@ sync_common() {
 
 # Function to sync extras RPMs
 sync_extras() {
-	if [ $TESTING_MODE -eq 1 ]; then
-		echo "${yellow}WARNING:${reset} Testing mode is not applicable for extras RPMs. Skipping."
-		return 0
-	fi
-
 	# Check if extras repo is enabled
 	if [ "$extrasrepoenabled" != 1 ]
 	then
@@ -194,9 +189,13 @@ sync_extras() {
 		return 1
 	fi
 
-	echo "${green}=== Syncing PostgreSQL extras RPMs for $os - $osarch ===${reset}"
-
-	export BASE_DIR=/var/lib/pgsql/pgdg.extras
+	if [ $TESTING_MODE -eq 1 ]; then
+		echo "${green}=== Syncing PostgreSQL extras RPMs for $os - $osarch (TESTING MODE) ===${reset}"
+		export BASE_DIR=/var/lib/pgsql/pgdg.extrastesting
+	else
+		echo "${green}=== Syncing PostgreSQL extras RPMs for $os - $osarch ===${reset}"
+		export BASE_DIR=/var/lib/pgsql/pgdg.extras
+	fi
 
 	export EXTRAS_RPM_DIR=$BASE_DIR/ALLRPMS
 	export EXTRAS_SRPM_DIR=$BASE_DIR/ALLSRPMS
@@ -225,30 +224,57 @@ sync_extras() {
 	echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $EXTRAS_SRPM_DIR/repodata/repomd.xml
 	echo $GPG_PASSWORD | /usr/bin/gpg2 -a --pinentry-mode loopback --detach-sign --batch --yes --passphrase-fd 0 $EXTRAS_DEBUG_RPM_DIR/repodata/repomd.xml
 
-	# Sync SRPMs to S3 bucket:
-	aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/extras/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
-	aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
-	aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/extras/$osdistro/$osfullversion-$osarch/repodata/*
+	if [ $TESTING_MODE -eq 1 ]; then
+		# Sync SRPMs to S3 bucket:
+		aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/testing/extras/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
+		aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
+		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/extras/$osdistro/$osfullversion-$osarch/repodata/*
 
-	# Sync debug* RPMs to S3 bucket:
-	aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/debug/extras/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
-	aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
-	aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/extras/$osdistro/$osfullversion-$osarch/repodata/*
+		# Sync debug* RPMs to S3 bucket:
+		aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/extras/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
+		aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
+		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/extras/$osdistro/$osfullversion-$osarch/repodata/*
 
-	# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
-	if [ "$osislatest" == 1 ]
-	then
-		aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/extras/$osdistro/$os-$osarch --exclude "*.html" --exclude "repodata"
-		aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
+		if [ "$osislatest" == 1 ]
+		then
+			aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/testing/extras/$osdistro/$os-$osarch --exclude "*.html" --exclude "repodata"
+			aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+			aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/extras/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
+			aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+			# Invalidate the caches:
+			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/extras/$osdistro/$os-$osarch/repodata/*
+			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/extras/$osdistro/$os-$osarch/repodata/*
+		fi
+	else
+		# Sync SRPMs to S3 bucket:
+		aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/extras/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
+		aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
+		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/extras/$osdistro/$osfullversion-$osarch/repodata/*
 
-		aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/debug/extras/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
-		aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/extras/$osdistro/$os-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/extras/$osdistro/$os-$osarch/repodata/*
+		# Sync debug* RPMs to S3 bucket:
+		aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/debug/extras/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
+		aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
+		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/extras/$osdistro/$osfullversion-$osarch/repodata/*
+
+		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
+		if [ "$osislatest" == 1 ]
+		then
+			aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/extras/$osdistro/$os-$osarch --exclude "*.html" --exclude "repodata"
+			aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+			aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/debug/extras/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
+			aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
+			# Invalidate the caches:
+			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/extras/$osdistro/$os-$osarch/repodata/*
+			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/extras/$osdistro/$os-$osarch/repodata/*
+		fi
 	fi
 
-	echo "${green}=== Extras RPMs sync completed ===${reset}"
+	if [ $TESTING_MODE -eq 1 ]; then
+		echo "${green}=== Extras RPMs sync completed (TESTING MODE) ===${reset}"
+	else
+		echo "${green}=== Extras RPMs sync completed ===${reset}"
+	fi
 }
 
 # Function to sync alpha/beta RPMs
