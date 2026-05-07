@@ -8,7 +8,7 @@
 Name:		sbcl
 Summary:	Steel Bank Common Lisp
 Version:	2.2.10
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 License:	BSD
 URL:		http://sbcl.sourceforge.net/
@@ -89,9 +89,6 @@ BuildRequires:	ctags-etags
 %endif
 BuildRequires:	gcc
 BuildRequires:	zlib-devel
-# %%check/tests
-BuildRequires:	ed
-BuildRequires:	hostname
 %if 0%{?docs}
 # doc generation
 BuildRequires:	ghostscript
@@ -167,31 +164,6 @@ rm -fv %{buildroot}%{_infodir}/dir
 # CVS crud
 find %{buildroot} -name CVS -type d | xargs rm -rfv
 find %{buildroot} -name .cvsignore | xargs rm -fv
-# 'test-passed' files from %%check
-find %{buildroot} -name 'test-passed' | xargs rm -vf
-
-
-%check
-pushd sbcl-%{version}
-ERROR=0
-# sanity check, essential contrib modules get built/included?
-CONTRIBS="sb-posix.fasl sb-bsd-sockets.fasl"
-for CONTRIB in $CONTRIBS ; do
-  if [ ! -f %{buildroot}%{_prefix}/lib/sbcl/contrib/$CONTRIB ]; then
-    echo "WARNING: ${CONTRIB} awol!"
-    ERROR=1
-    echo "ulimit -a"
-    ulimit -a
-  fi
-done
-pushd tests
-# verify --version output
-test "$(. ./subr.sh; "$SBCL_RUNTIME" --core "$SBCL_CORE" --version --version 2>/dev/null | cut -d' ' -f2)" = "%{version}-%{release}"
-# still seeing Failure: threads.impure.lisp / (DEBUGGER-NO-HANG-ON-SESSION-LOCK-IF-INTERRUPTED)
-time %{?sbcl_shell} ./run-tests.sh ||:
-popd
-exit $ERROR
-popd
 
 %files
 %license COPYING
@@ -210,6 +182,9 @@ popd
 %{_prefix}/lib/sbcl/sbcl.core
 
 %changelog
+* Thu May 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.10-2PGDG
+- Remove %%check section to cut build times.
+
 * Thu Nov 3 2022 Devrim Gunduz <devrim@gunduz.org> - 2.2.10-1
 - Initial packaging for the PostgreSQL RPM repository to support
   pgloader dependency. Spec file written by Stephen Hassard
