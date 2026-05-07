@@ -17,7 +17,7 @@
 
 Name:		python3-%{sname}
 Version:	1.0
-Release:	2PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	View colored, incremental diff in a workspace or from stdin, with side by side and auto pager support
 
 License:	BSD
@@ -28,6 +28,8 @@ BuildArch:	noarch
 
 Requires:	less python3
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -59,6 +61,9 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %{python3_sitelib}/cdiff*
 
 %changelog
+* Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-43PGDG
+- Add missing BRs
+
 * Sat Oct 25 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0-42PGDG
 - Switch to pyproject build
 
