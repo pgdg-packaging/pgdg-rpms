@@ -23,7 +23,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.29.4
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -33,7 +33,7 @@ Source1:	https://www.gnu.org/licenses/lgpl-3.0.txt
 Source2:	https://www.gnu.org/licenses/gpl-3.0.txt
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-flit-core
 
 Provides:	python3-%{modname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -68,6 +68,9 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Fri May 8 2026 Devrim Gündüz <devrim@gunduz.org> - 0.29.4-43PGDG
+- Add missing BR
+
 * Fri Jan 16 2026 Devrim Gündüz <devrim@gunduz.org> - 0.29.4-42PGDG
 - Rename package to satisfy pg_statviz dependency on all distros.
 
