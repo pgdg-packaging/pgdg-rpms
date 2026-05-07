@@ -27,7 +27,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.0.15
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -41,6 +41,8 @@ BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
+
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
 
 Requires:	python%{python3_pkgversion}-PyMySQL
 
@@ -76,6 +78,9 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.15-3PGDG
+- Add missing BRs
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.15-2PGDG
 - Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
   for 3.15.
