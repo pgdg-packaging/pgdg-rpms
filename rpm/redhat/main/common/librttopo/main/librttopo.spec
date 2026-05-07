@@ -1,13 +1,13 @@
 %pgdg_set_gis_variables
 
 # Override GeOS version:
-%global geosfullversion %geos313fullversion
-%global geosmajorversion %geos313majorversion
-%global geosinstdir %geos313instdir
+%global geosfullversion %geos314fullversion
+%global geosmajorversion %geos314majorversion
+%global geosinstdir %geos314instdir
 
 Name:		librttopo
 Version:	1.1.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Create and manage SQL/MM topologies
 License:	GPLv2+
 URL:		https://git.osgeo.org/gitea/rttopo/%{name}
@@ -56,6 +56,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_libdir}/pkgconfig/rttopo.pc
 
 %changelog
+* Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-43PGDG
+- Rebuild against GeOS 3.14
+
 * Tue Dec 17 2024 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-42PGDG
 - Beat EPEL package per report from Sagar Yedida.
 
