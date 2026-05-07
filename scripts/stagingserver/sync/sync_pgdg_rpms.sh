@@ -340,6 +340,17 @@ for VER in "${VER_LIST[@]}"; do
 				sync_had_errors=1
 			fi
 
+			# Sync extras testing repo
+			if [[ "$EXTRASREPOSENABLED" -eq 1 ]]; then
+				echo "  Syncing : $osname-$distrover-extras testing repo"
+				EXTRASTESTING_RPM_DIR=/var/lib/pgsql/pgdg.extrastesting/ALLRPMS
+
+				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$EXTRASTESTING_RPM_DIR/ $BASE_DIR_OS/testing/extras/$osdistro/$osname-$distrover-$osarch; then
+					echo "  [ERROR] Rsync failed for extras testing repo ($osname-$distrover-$osarch)" >&2
+					sync_had_errors=1
+				fi
+			fi
+
 			# Sync testing repos for specific PG versions
 			for pgtestrelease in "${PG_TEST_VERSIONS[@]}"; do
 				echo "  Syncing : $osname-$distrover-PG$pgtestrelease testing repo"
