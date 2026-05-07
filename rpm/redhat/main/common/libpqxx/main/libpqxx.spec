@@ -5,7 +5,7 @@ Name:		libpqxx
 Summary:	C++ client API for PostgreSQL
 Epoch:		1
 Version:	%{libpqxxmajorver}.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 
 License:	BSD
 URL:		https://github.com/jtv/%{name}
@@ -18,6 +18,10 @@ BuildRequires:	pkgconfig
 BuildRequires:	libpq5-devel
 BuildRequires:	graphviz
 BuildRequires:	xmlto
+
+%if 0%{?rhel} == 9
+BuildRequires:	gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-plugin-annobin
+%endif
 
 %description
 C++ client API for PostgreSQL. The standard front-end (in the sense of
@@ -41,6 +45,9 @@ BuildArch:	noarch
 %forgeautosetup
 
 %build
+%if 0%{?rhel} == 9
+export PATH=/opt/rh/gcc-toolset-15/root/usr/bin/:$PATH
+%endif
 mkdir build
 pushd build
 %cmake -G Ninja	..
@@ -48,6 +55,9 @@ pushd build
 popd
 
 %install
+%if 0%{?rhel} == 9
+export PATH=/opt/rh/gcc-toolset-15/root/usr/bin/:$PATH
+%endif
 pushd build
 %ninja_install
 popd
@@ -72,6 +82,10 @@ popd
 %{_docdir}/%{name}/*.md
 
 %changelog
+* Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.1-43PGDG
+- libpqxx requires C++20, so add RHEL 9 support by using GCC 15 to
+  build the package.
+
 * Tue Apr 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.1-42PGDG
 - Update to 8.0.1 per changes described at
   https://github.com/jtv/libpqxx/releases/tag/8.0.1
