@@ -29,11 +29,7 @@
 
 %global debug_package %{nil}
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%endif
 
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
@@ -45,6 +41,7 @@ Url:		https://github.com/gabfl/%{name}/
 Source0:	https://github.com/gabfl/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
