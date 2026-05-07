@@ -45,7 +45,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-BuildRequires:	python%{python3_pkgversion}-wheel.noarch
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 %description
 This is a PostgreSQL FDW for Mailchimp
