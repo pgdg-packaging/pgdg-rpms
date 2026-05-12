@@ -41,13 +41,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	18.3
+Version:	18.4
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200005PGDG%{?dist}
+Release:	4200001PGDG%{?dist}
 %else
-Release:	5PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -73,10 +73,6 @@ Patch1:		%{sname}-%{pgmajorversion}-rpm-pgsql.patch
 Patch3:		%{sname}-%{pgmajorversion}-conf.patch
 Patch5:		%{sname}-%{pgmajorversion}-var-run-socket.patch
 Patch6:		%{sname}-%{pgmajorversion}-perl-rpath.patch
-%if 0%{?fedora} == 44
-# To be removed in 18.4:
-Patch7:		%{sname}-%{pgmajorversion}-18.3-llvm22.patch
-%endif
 
 BuildRequires:	perl glibc-devel bison >= 3.0.4 flex >= 2.6.1
 BuildRequires:	gcc-c++ libcurl-devel >= 7.61.0
@@ -511,9 +507,6 @@ and benchmarks.
 %patch -P 3 -p0
 %patch -P 5 -p0
 %patch -P 6 -p0
-%if 0%{?fedora} == 44
-%patch -P 7 -p1
-%endif
 
 %{__cp} -p %{SOURCE12} .
 
@@ -1342,6 +1335,10 @@ fi
 %endif
 
 %changelog
+* Tue May 12 2026 Devrim Gündüz <devrim@gunduz.org> - 18.4-1PGDG
+- Update to 18.4 per changes described at:
+  https://www.postgresql.org/docs/release/18.4/
+
 * Thu Apr 2 2026 Devrim Gündüz <devrim@gunduz.org> - 18.3-5PGDG
 - Add a temp patch to fix builds against LLVM 22 on Fedora 44.
 
