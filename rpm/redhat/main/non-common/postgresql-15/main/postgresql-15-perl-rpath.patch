@@ -1,5 +1,5 @@
---- src/pl/plperl/GNUmakefile.old	2024-11-12 21:38:30.980616999 +0300
-+++ src/pl/plperl/GNUmakefile	2024-11-12 21:38:40.496773145 +0300
+--- src/pl/plperl/GNUmakefile.old	2026-05-12 13:25:12.868315511 +0300
++++ src/pl/plperl/GNUmakefile	2026-05-12 13:26:09.910483433 +0300
 @@ -55,6 +55,9 @@
  
  SHLIB_LINK = $(perl_embed_ldflags)
@@ -9,4 +9,4 @@
 +
  REGRESS_OPTS = --dbname=$(PL_TESTDB) --dlpath=$(top_builddir)/src/test/regress
  REGRESS = plperl_setup plperl plperl_lc plperl_trigger plperl_shared \
- 	plperl_elog plperl_util plperl_init plperlu plperl_array \
+ 	plperl_elog plperl_unicode plperl_util plperl_init plperlu plperl_array \
