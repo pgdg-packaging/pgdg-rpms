@@ -3,8 +3,8 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.9
-Release:	4PGDG%{?dist}
+Version:	1.10
+Release:	1PGDG%{?dist}
 Summary:	PL/pgSQL debugger server-side code
 License:	Artistic 2.0
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -78,6 +78,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue May 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.10-1PGDG
+- Update to 1.10 per changes described at:
+  https://github.com/EnterpriseDB/pldebugger/releases/tag/v1.10
+
 * Thu Nov 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9-4PGDG
 - Modernise OpenSSL dependencies.
 
