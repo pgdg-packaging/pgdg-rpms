@@ -30,8 +30,8 @@
 
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
-Version:	3.6.1
-Release:	47PGDG%{?dist}
+Version:	3.6.2
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -109,6 +109,10 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Tue May 12 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.2-42PGDG
+- Update to 3.6.2 per changes described at:
+  https://github.com/dalibo/pg_activity/releases/tag/v3.6.2
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-47PGDG
 - Add missing BRs
 
