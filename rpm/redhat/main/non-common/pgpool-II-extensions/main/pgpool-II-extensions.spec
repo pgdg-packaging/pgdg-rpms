@@ -4,10 +4,10 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
-Source0:	https://www.pgpool.net/mediawiki/images/%{sname}-%{version}.tar.gz
+Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
 Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
@@ -97,6 +97,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Wed May 13 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-2PGDG
+- Update download URL
+
 * Thu Feb 26 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-1PGDG
 - Update to 4.7.1 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-7-1.html
