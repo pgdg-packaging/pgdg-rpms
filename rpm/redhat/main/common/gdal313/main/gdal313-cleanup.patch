@@ -1,0 +1,13 @@
+--- ogr/CMakeLists.txt.old	2025-09-11 22:06:20.275284282 +0100
++++ ogr/CMakeLists.txt	2025-09-11 22:06:52.838287189 +0100
+@@ -76,10 +76,7 @@
+ 
+ set(GDAL_DATA_FILES
+     LICENSE.TXT
+-    ${CMAKE_CURRENT_SOURCE_DIR}/data/cubewerx_extra.wkt
+-    ${CMAKE_CURRENT_SOURCE_DIR}/data/ecw_cs.wkt
+     ${CMAKE_CURRENT_SOURCE_DIR}/data/epsg.wkt
+-    ${CMAKE_CURRENT_SOURCE_DIR}/data/esri_StatePlane_extra.wkt
+     ${CMAKE_CURRENT_SOURCE_DIR}/data/ozi_datum.csv
+     ${CMAKE_CURRENT_SOURCE_DIR}/data/ozi_ellips.csv
+     ${CMAKE_CURRENT_SOURCE_DIR}/data/pci_datum.txt
