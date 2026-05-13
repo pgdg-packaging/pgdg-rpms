@@ -7,7 +7,7 @@
 %global _hardened_build 1
 
 Name:		haproxy
-Version:	3.3.7
+Version:	3.3.10
 Release:	1PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
@@ -149,6 +149,12 @@ done
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Wed May 13 2026 Devrim Gündüz <devrim@gunduz.org> 3.3.10-1PGDG
+- Update to 3.3.10 per changes described at:
+  https://mail-archive.com/haproxy@formilux.org/msg47108.html
+  https://mail-archive.com/haproxy@formilux.org/msg47083.html
+  https://mail-archive.com/haproxy@formilux.org/msg47055.html
+
 * Mon Apr 27 2026 Devrim Gündüz <devrim@gunduz.org> 3.3.7-1PGDG
 - Update to 3.3.7 per changes described at:
   https://mail-archive.com/haproxy@formilux.org/msg47012.html
