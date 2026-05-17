@@ -45,9 +45,9 @@ Version:	18.4
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200001PGDG%{?dist}
+Release:	4200002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1335,6 +1335,9 @@ fi
 %endif
 
 %changelog
+* Sun May 17 2026 Devrim Gündüz <devrim@gunduz.org> - 18.4-2PGDG
+- Rebuild on RHEL 8 against new LLVM
+
 * Tue May 12 2026 Devrim Gündüz <devrim@gunduz.org> - 18.4-1PGDG
 - Update to 18.4 per changes described at:
   https://www.postgresql.org/docs/release/18.4/
