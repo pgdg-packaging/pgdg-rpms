@@ -33,7 +33,7 @@ check_pgactivity is part of Open PostgreSQL Monitoring.
 %license LICENSE
 
 %changelog
-* MOn May 18 2026 Devrim Gündüz <devrim@gunduz.org> 2.10-1PGDG
+* Mon May 18 2026 Devrim Gündüz <devrim@gunduz.org> 2.10-1PGDG
 - Update to 2.10 per changes described at:
   https://github.com/OPMDG/check_pgactivity/releases/tag/REL2_10
 
