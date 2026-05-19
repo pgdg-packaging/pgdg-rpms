@@ -1,1 +1,0 @@
-../main/pg_failover_slots.spec

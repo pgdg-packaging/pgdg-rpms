@@ -1,1 +1,0 @@
-../main/powa-collector.spec

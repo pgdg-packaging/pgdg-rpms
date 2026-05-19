@@ -1,1 +1,0 @@
-../main/../main/ora2pg.spec

@@ -1,1 +1,0 @@
-../main/pgmeminfo.spec

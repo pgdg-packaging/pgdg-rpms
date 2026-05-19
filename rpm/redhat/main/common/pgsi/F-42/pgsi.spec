@@ -1,1 +1,0 @@
-../main/../main/pgsi.spec

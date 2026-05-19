@@ -1,1 +1,0 @@
-../main/../main/postgresql-13-pg_config.h

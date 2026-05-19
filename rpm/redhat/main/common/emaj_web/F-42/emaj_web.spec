@@ -1,1 +1,0 @@
-../main/emaj_web.spec

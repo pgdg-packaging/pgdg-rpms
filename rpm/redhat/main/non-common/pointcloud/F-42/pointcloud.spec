@@ -1,1 +1,0 @@
-../main/pointcloud.spec

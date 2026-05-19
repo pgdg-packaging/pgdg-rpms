@@ -1,1 +1,0 @@
-../main/../main/check_pgbackrest.spec

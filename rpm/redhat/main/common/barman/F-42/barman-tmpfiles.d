@@ -1,1 +1,0 @@
-../main/barman-tmpfiles.d

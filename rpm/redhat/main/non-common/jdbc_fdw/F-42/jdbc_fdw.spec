@@ -1,1 +1,0 @@
-../main/jdbc_fdw.spec

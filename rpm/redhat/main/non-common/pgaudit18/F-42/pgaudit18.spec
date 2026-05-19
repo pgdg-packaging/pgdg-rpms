@@ -1,1 +1,0 @@
-../main/pgaudit18.spec

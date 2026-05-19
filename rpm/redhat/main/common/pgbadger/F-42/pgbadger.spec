@@ -1,1 +1,0 @@
-../main/../main/pgbadger.spec

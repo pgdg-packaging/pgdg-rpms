@@ -1,1 +1,0 @@
-../main/../main/python-google-oauthlib.spec

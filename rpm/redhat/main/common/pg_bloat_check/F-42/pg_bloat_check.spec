@@ -1,1 +1,0 @@
-../main/../main/pg_bloat_check.spec

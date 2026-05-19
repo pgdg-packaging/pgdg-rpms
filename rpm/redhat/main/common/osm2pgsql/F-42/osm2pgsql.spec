@@ -1,1 +1,0 @@
-../main/osm2pgsql.spec

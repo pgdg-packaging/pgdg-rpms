@@ -1,1 +1,0 @@
-../main/pg_net.spec

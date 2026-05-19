@@ -1,1 +1,0 @@
-../main/postgresql-jdbc.spec

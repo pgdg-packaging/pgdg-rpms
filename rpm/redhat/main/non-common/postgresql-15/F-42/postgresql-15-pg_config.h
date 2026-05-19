@@ -1,1 +1,0 @@
-../main/postgresql-15-pg_config.h

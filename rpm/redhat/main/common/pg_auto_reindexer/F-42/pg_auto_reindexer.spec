@@ -1,1 +1,0 @@
-../main/pg_auto_reindexer.spec

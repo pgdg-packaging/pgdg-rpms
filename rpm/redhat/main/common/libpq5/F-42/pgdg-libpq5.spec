@@ -1,1 +1,0 @@
-../main/../main/pgdg-libpq5.spec

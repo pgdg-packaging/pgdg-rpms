@@ -1,1 +1,0 @@
-../main/../main/postgis31.spec

@@ -1,1 +1,0 @@
-../main/proj98.spec

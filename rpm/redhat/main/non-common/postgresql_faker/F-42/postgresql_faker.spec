@@ -1,1 +1,0 @@
-../main/postgresql_faker.spec

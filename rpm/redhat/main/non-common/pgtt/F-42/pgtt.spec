@@ -1,1 +1,0 @@
-../main/pgtt.spec

@@ -1,1 +1,0 @@
-../main/../main/pgFormatter.spec
