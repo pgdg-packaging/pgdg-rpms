@@ -12,6 +12,15 @@ Source0:	https://github.com/hexacluster/%{sname}/archive/refs/tags/v%{version}.t
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+
 %description
 Write stored procedures with LANGUAGE plpgsql_wrap; source is validated, then
 AES-256-GCM encrypted directly into pg_proc.prosrc.
