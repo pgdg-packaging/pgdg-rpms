@@ -29,8 +29,8 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.18.0
-Release:	43PGDG%{?dist}
+Version:	3.19.0
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -165,6 +165,10 @@ touch %{buildroot}/var/log/barman/barman.log
 %{python_sitelib}/%{name}/
 
 %changelog
+* Wed May 20 2026 Devrim Gündüz <devrim@gunduz.org> - 3.19.0-42PGDG
+- Update to 3.19.0, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.19.0
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.18.0-43PGDG
 - Use Python 3.14 on Fedora 44. Many BRs and Requires are not ready
   for 3.15.
