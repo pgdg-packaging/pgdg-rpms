@@ -32,7 +32,6 @@ Source20:	http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-2.0.11-x86-64-l
 # Thanks David!
 %ifarch ppc
 %global		sbcl_arch ppc
-BuildRequires:	sbcl
 # or
 #Source30: sbcl-1.0.1-patched_el4-powerpc-linux.tar.bz2
 #Source30: sbcl-1.0.1-patched-powerpc-linux.tar.bz2
@@ -41,7 +40,6 @@ BuildRequires:	sbcl
 ## sparc section
 %ifarch sparcv9
 %global		sbcl_archsparc
-BuildRequires:	sbcl
 # or
 #Source40: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-0.9.17-sparc-linux-binary.tar.bz2
 %endif
@@ -49,7 +47,6 @@ BuildRequires:	sbcl
 ## arm section
 %ifarch armv5tel
 %global		sbcl_arch arm
-BuildRequires:	sbcl
 # or
 #Source50: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.2.0-armel-linux-binary.tar.bz2
 %endif
@@ -57,7 +54,6 @@ BuildRequires:	sbcl
 # generated on a fedora20 arm box, sf bootstrap missing sb-gmp
 %ifarch armv6hl armv7hl
 %global		sbcl_arch arm
-BuildRequires:	sbcl
 # or
 #Source60: sbcl-1.2.0-armhf-linux-binary-2.tar.bz2
 #Source60: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.2.0-armhf-linux-binary.tar.bz2
@@ -66,14 +62,13 @@ BuildRequires:	sbcl
 ## aarch64 section
 %ifarch aarch64
 %global		sbcl_arch arm64
-BuildRequires:	sbcl
 # or
 #Source70: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.3.16-arm64-linux-binary.tar.bz2
 %endif
 
 BuildRequires:	make
 BuildRequires:	libzstd-devel
-%if 0%{?fedora} >= 35
+%if 0%{?fedora} >= 42
 BuildRequires:	ctags
 %endif
 %if 0%{?el8}
