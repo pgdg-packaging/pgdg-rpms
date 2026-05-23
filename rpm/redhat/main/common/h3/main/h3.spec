@@ -3,8 +3,8 @@
 
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
-Version:	4.4.1
-Release:	2PGDG%{dist}
+Version:	4.5.0
+Release:	1PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -72,8 +72,13 @@ popd
 %files devel
 %{_includedir}/h3api.h
 %{_libdir}/cmake/%{sname}/*.cmake
+%{_libdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Sat May 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-1PGDG
+- Update to 4.5.0 per changes described at:
+  https://github.com/uber/h3/releases/tag/v4.5.0
+
 * Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 4.4.1-2PGDG
 - Fix builds with CMake 4. This also removed %%cmake3 macro which
   was a RHEL 7-era one.
