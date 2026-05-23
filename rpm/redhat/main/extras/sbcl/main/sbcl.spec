@@ -8,7 +8,7 @@
 Name:		sbcl
 Summary:	Steel Bank Common Lisp
 Version:	2.2.10
-Release:	2%{?dist}
+Release:	3%{?dist}
 
 License:	BSD
 URL:		http://sbcl.sourceforge.net/
@@ -18,14 +18,6 @@ ExclusiveArch:	%{arm} %{ix86} x86_64 ppc sparcv9 aarch64
 
 # Pre-generated html docs
 Source1:	http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-%{version}-documentation-html.tar.bz2
-
-## x86 section
-%ifarch %{ix86}
-%global sbcl_arch x86
-BuildRequires:	sbcl
-# or
-#Source10: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.0.15-x86-linux-binary.tar.bz2
-%endif
 
 ## x86_64 section
 Source20:	http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-2.0.11-x86-64-linux-binary.tar.bz2
@@ -182,6 +174,9 @@ find %{buildroot} -name .cvsignore | xargs rm -fv
 %{_prefix}/lib/sbcl/sbcl.core
 
 %changelog
+* Sat May 23 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.10-3PGDG
+- Remove self-BR dependency.
+
 * Thu May 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.10-2PGDG
 - Remove %%check section to cut build times.
 
