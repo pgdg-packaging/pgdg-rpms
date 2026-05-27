@@ -29,7 +29,7 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.19.0
+Version:	3.19.1
 Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
@@ -165,6 +165,10 @@ touch %{buildroot}/var/log/barman/barman.log
 %{python_sitelib}/%{name}/
 
 %changelog
+* Wed May 27 2026 Devrim Gündüz <devrim@gunduz.org> - 3.19.1-42PGDG
+- Update to 3.19.1, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.19.1
+
 * Wed May 20 2026 Devrim Gündüz <devrim@gunduz.org> - 3.19.0-42PGDG
 - Update to 3.19.0, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.19.0
