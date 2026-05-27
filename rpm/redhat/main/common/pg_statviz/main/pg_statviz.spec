@@ -1,5 +1,9 @@
 %global sname pg_statviz
 
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -23,12 +27,10 @@
 
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
-Version:	0.9
+Version:	1.1
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
-# To be removed in next release:
-Patch0:		%{sname}-%{version}-pyproject-license.patch
 URL:		https://github.com/vyruss/%{sname}
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-wheel python%{python3_pkgversion}-pip
@@ -65,7 +67,6 @@ Best served with pg_statviz extensions package, which includes the extension fil
 
 %prep
 %setup -q -n %{sname}-%{version}
-%patch -P 0 -p0
 
 %build
 %pyproject_wheel
@@ -81,6 +82,11 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Wed May 27 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1-1PGDG
+- Update to 1.1 per changes described at:
+  https://github.com/vyruss/pg_statviz/releases/tag/v1.0
+  https://github.com/vyruss/pg_statviz/releases/tag/v1.1
+
 * Thu Jan 15 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9-1PGDG
 - Update to 0.9 per changes described at:
   https://github.com/vyruss/pg_statviz/releases/tag/v0.9
