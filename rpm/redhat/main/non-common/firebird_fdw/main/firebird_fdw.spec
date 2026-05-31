@@ -4,13 +4,13 @@
 
 Summary:	A PostgreSQL foreign data wrapper (FDW) for Firebird
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.1
-Release:	3PGDG%{dist}
+Version:	1.4.2
+Release:	1PGDG%{dist}
 Source0:	https://github.com/ibarwick/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/ibarwick/%{sname}
 License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel firebird-devel
-BuildRequires:	libfq >= 0.6.1
+BuildRequires:	libfq >= 0.6.2
 Requires:	postgresql%{pgmajorversion}-server
 
 %if %llvm
@@ -66,6 +66,10 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sun May 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-1PGDG
+- Update to 1.4.2 per changes described at
+  https://github.com/ibarwick/firebird_fdw/releases/tag/1.4.2
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 1.4.1-3PGDG
 - Add SLES 16 support
 
