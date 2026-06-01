@@ -2,14 +2,14 @@
 
 %global pglogicalmajver 2
 %global pglogicalmidver 4
-%global pglogicalminver 6
+%global pglogicalminver 7
 
 %{!?llvm:%global llvm 1}
 
 Summary:	Logical Replication extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pglogicalmajver}.%{pglogicalmidver}.%{pglogicalminver}
-Release:	4PGDG%{dist}
+Release:	1PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
@@ -110,6 +110,10 @@ PATH=%{pginstdir}/bin:$PATH %make_install
 %endif
 
 %changelog
+* Mon Jun 1 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.7-1PGDG
+- Update to 2.4.7 per changes described at:
+  https://github.com/2ndQuadrant/pglogical/releases/tag/REL2_4_7
+
 * Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 2.4.6-4PGDG
 - Rebuild against OpenSSL 3 on SLES 15
 
