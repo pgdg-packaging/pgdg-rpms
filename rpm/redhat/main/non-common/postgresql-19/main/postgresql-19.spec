@@ -1,3 +1,4 @@
+%global debug_package %{nil}
 %undefine _package_note_file
 
 # These are macros to be used with find_lang and other stuff
@@ -7,7 +8,6 @@
 %global sname postgresql
 %global pgbaseinstdir	/usr/pgsql-%{pgmajorversion}
 
-%global	pgdg_build_timestamp %(date +"%Y%m%d")
 %global	beta 1
 %{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
@@ -41,13 +41,13 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
+Release:	beta1_1PGDG%{?dist}
 %else
-Release:	alpha_%{pgdg_build_timestamp}_PGDG%{?dist}
+Release:	beta1_1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/snapshot/dev/postgresql-snapshot.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}beta1/postgresql-%{version}beta1.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -190,10 +190,10 @@ BuildRequires:	selinux-policy >= 3.4.3
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} >= 42
+%if 0%{?fedora} >= 43
 BuildRequires:	openssl-devel-engine
 %endif
 %endif
@@ -248,18 +248,8 @@ Summary:	PostgreSQL development header files and libraries
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
-Provides:	postgresql-devel >= %{version}-%{release}
-Obsoletes:	libpq-devel <= 42.0
-
-%description devel
-The postgresql%{pgmajorversion}-devel package contains the header files and
-libraries needed to compile C or C++ applications which will directly interact
-with a PostgreSQL database management server. You need to install this package
-if you want to develop applications which will interact with a PostgreSQL
-server.
-
 %if %icu
-Requires:	libicu2-devel
+Requires:	libicu-devel
 %endif
 
 %if %llvm
@@ -284,6 +274,16 @@ Requires:	perl-IPC-Run
 BuildRequires:	perl-Time-HiRes
 %endif
 %endif
+
+Provides:	postgresql-devel >= %{version}-%{release}
+Obsoletes:	libpq-devel <= 42.0
+
+%description devel
+The postgresql%{pgmajorversion}-devel package contains the header files and
+libraries needed to compile C or C++ applications which will directly interact
+with a PostgreSQL database management server. You need to install this package
+if you want to develop applications which will interact with a PostgreSQL
+server.
 
 %package docs
 Summary:	Extra documentation for PostgreSQL
@@ -311,7 +311,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	openssl-libs >= 3.2.2
 %endif
 
@@ -329,7 +329,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	openssl-libs >= 3.2.2
 %endif
 
@@ -348,7 +348,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	openssl-libs >= 3.2.2
 %endif
 
@@ -504,7 +504,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}devel
+%setup -q -n %{sname}-%{pgpackageversion}beta1
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1333,6 +1333,9 @@ fi
 %endif
 
 %changelog
+* Mon Jun 1 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta1-1PGDG
+- Update to PostgreSQL 19 beta1!
+
 * Sat Apr 11 2026 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 19-alpha_20260110_PGDG.1
 - Move static libs from libs rpm to static rpm
 - Add libpgfeutils.a to static rpm
