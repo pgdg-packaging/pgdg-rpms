@@ -85,9 +85,9 @@ Version:	15.18
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -781,7 +781,7 @@ run_testsuite()
 
 %endif
 
-%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/extensions/
+%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/extension/
 %{__make} -C contrib DESTDIR=%{buildroot} install
 %if %uuid
 %{__make} -C contrib/uuid-ossp DESTDIR=%{buildroot} install
@@ -846,7 +846,7 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %{__install} -d -m 700 %{buildroot}/var/lib/pgsql/%{pgmajorversion}/backups
 
 # Create the multiple postmaster startup directory
-%{__install} -d -m 700 %{buildroot}/etc/sysconfig/pgsql/%{pgmajorversion}
+%{__install} -d -m 700 %{buildroot}/etc/sysconfig/pgsql/
 
 # Install linker conf file under postgresql installation directory.
 # We will install the latest version via alternatives.
@@ -971,13 +971,7 @@ useradd -M -g postgres -o -r -d /var/lib/pgsql -s /bin/bash \
 if [ $1 -eq 1 ] ; then
  %if %{systemd_enabled}
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-   %if 0%{?suse_version}
-   %if 0%{?suse_version} >= 1315
-   %service_add_pre postgresql-%{pgpackageversion}.service
-   %endif
-   %else
    %systemd_post %{sname}-%{pgpackageversion}.service
-   %endif
   %endif
 fi
 
@@ -1125,7 +1119,9 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_dump.*
 %{pgbaseinstdir}/share/man/man1/pg_dumpall.*
 %{pgbaseinstdir}/share/man/man1/pg_isready.*
+%{pgbaseinstdir}/share/man/man1/pg_receivewal.*
 %{pgbaseinstdir}/share/man/man1/pg_restore.*
+%{pgbaseinstdir}/share/man/man1/pg_waldump.*
 %{pgbaseinstdir}/share/man/man1/psql.*
 %{pgbaseinstdir}/share/man/man1/reindexdb.*
 %{pgbaseinstdir}/share/man/man1/vacuumdb.*
@@ -1327,13 +1323,11 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_controldata.*
 %{pgbaseinstdir}/share/man/man1/pg_ctl.*
 %{pgbaseinstdir}/share/man/man1/pg_resetwal.*
-%{pgbaseinstdir}/share/man/man1/pg_receivewal.*
 %{pgbaseinstdir}/share/man/man1/pg_rewind.1
 %{pgbaseinstdir}/share/man/man1/pg_test_fsync.1
 %{pgbaseinstdir}/share/man/man1/pg_test_timing.1
 %{pgbaseinstdir}/share/man/man1/pg_upgrade.1
 %{pgbaseinstdir}/share/man/man1/pg_verifybackup.*
-%{pgbaseinstdir}/share/man/man1/pg_waldump.1
 %{pgbaseinstdir}/share/man/man1/postgres.*
 %{pgbaseinstdir}/share/man/man1/postmaster.*
 %{pgbaseinstdir}/share/postgres.bki
@@ -1415,6 +1409,7 @@ fi
 
 %if %plpython3
 %files plpython3 -f pg_plpython3.lst
+%defattr(-,root,root)
 %{pgbaseinstdir}/share/extension/plpython3*
 %{pgbaseinstdir}/lib/plpython3.so
 %{pgbaseinstdir}/share/extension/*_plpython3u*
