@@ -857,11 +857,7 @@ cat postgresql-regress-%{pgmajorversion}.lang > pg_test.lst
 /sbin/ldconfig
 if [ $1 -eq 1 ] ; then
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-   %if 0%{?suse_version} >= 1500
-   %service_add_post postgresql-%{pgpackageversion}.service
-   %else
    %systemd_post %{sname}-%{pgpackageversion}.service
-   %endif
 fi
 
 %preun server
