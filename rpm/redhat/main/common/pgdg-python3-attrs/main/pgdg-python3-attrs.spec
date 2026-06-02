@@ -25,13 +25,13 @@
 
 Name:		python%{python3_pkgversion}-attrs
 Version:	22.1.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python attributes without boilerplate
 
 License:	MIT
 URL:		https://www.attrs.org/
 BuildArch:	noarch
-Source0:	https://github.com/hynek/%{pypi_name}/archive/%{version}/%{pypi_name}-%{version}.tar.gz
+Source0:	https://github.com/python-attrs/%{pypi_name}/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 Requires:	python%{python3_pkgversion}
@@ -63,6 +63,10 @@ object protocols.
 %{python3_sitelib}/%{pypi_name}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Tue Jun 2 2026 Devrim Gunduz <devrim@gunduz.org> - 22.1.0-43PGDG
+- Update URL in attempt to fix
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/202
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 22.1.0-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to satisfy
   pg_activity dependency. Package is for RHEL 8 only.
