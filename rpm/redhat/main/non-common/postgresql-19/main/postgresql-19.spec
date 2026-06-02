@@ -768,7 +768,7 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 	strip *.so
 	%{__rm} -f GNUmakefile Makefile *.o
 	chmod 0755 pg_regress regress.so
-	%{__ln} %{buildroot}%{pgbaseinstdir}/lib/test/regress/regress.so \
+	ln %{buildroot}%{pgbaseinstdir}/lib/test/regress/regress.so \
 		%{buildroot}%{pgbaseinstdir}/lib/regress.so
 	popd
 	%{__cp} %{SOURCE4} %{buildroot}%{pgbaseinstdir}/lib/test/regress/Makefile
