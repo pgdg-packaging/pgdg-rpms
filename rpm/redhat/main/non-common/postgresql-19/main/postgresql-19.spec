@@ -983,6 +983,7 @@ fi
 %{pgbaseinstdir}/bin/pg_isready
 %{pgbaseinstdir}/bin/pg_receivewal
 %{pgbaseinstdir}/bin/pg_restore
+%{pgbaseinstdir}/bin/pg_waldump
 %{pgbaseinstdir}/bin/pg_walsummary
 %{pgbaseinstdir}/bin/psql
 %{pgbaseinstdir}/bin/reindexdb
@@ -1004,6 +1005,7 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_isready.*
 %{pgbaseinstdir}/share/man/man1/pg_receivewal.*
 %{pgbaseinstdir}/share/man/man1/pg_restore.*
+%{pgbaseinstdir}/share/man/man1/pg_waldump.*
 %{pgbaseinstdir}/share/man/man1/pg_walsummary.*
 %{pgbaseinstdir}/share/man/man1/psql.*
 %{pgbaseinstdir}/share/man/man1/reindexdb.*
@@ -1263,7 +1265,6 @@ fi
 %{pgbaseinstdir}/bin/pg_test_timing
 %{pgbaseinstdir}/bin/pg_upgrade
 %{pgbaseinstdir}/bin/pg_verifybackup
-%{pgbaseinstdir}/bin/pg_waldump
 %{pgbaseinstdir}/bin/postgres
 %{pgbaseinstdir}/share/man/man1/initdb.*
 %{pgbaseinstdir}/share/man/man1/pg_archivecleanup.1
@@ -1276,7 +1277,6 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_test_timing.1
 %{pgbaseinstdir}/share/man/man1/pg_upgrade.1
 %{pgbaseinstdir}/share/man/man1/pg_verifybackup.*
-%{pgbaseinstdir}/share/man/man1/pg_waldump.1
 %{pgbaseinstdir}/share/man/man1/postgres.*
 %{pgbaseinstdir}/share/postgres.bki
 %{pgbaseinstdir}/share/system_constraints.sql
