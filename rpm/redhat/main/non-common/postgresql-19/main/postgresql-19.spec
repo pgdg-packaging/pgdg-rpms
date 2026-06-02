@@ -1338,7 +1338,7 @@ fi
 * Mon Jun 1 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta1-1PGDG
 - Update to PostgreSQL 19 beta1!
 - Spec cleanup ahead of beta1: hardlink regress.so to avoid duplicate
-  build-id warning, fix SUSE systemd scriptlet (%service_add_post),
+  build-id warning, fix SUSE systemd scriptlet (%%service_add_post),
   correct update-alternatives removal for pg_walsummary man page,
   fix share/extension typo, and tidy man-page subpackage placement
   (pg_waldump, pg_receivewal)
