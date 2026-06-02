@@ -40,7 +40,7 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta1_1PGDG%{?dist}
+Release:	beta1_420001PGDG%{?dist}
 %else
 Release:	beta1_1PGDG%{?dist}
 %endif
@@ -681,7 +681,7 @@ run_testsuite()
 	popd
 %endif
 
-%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/extensions/
+%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/extension/
 %{__make} -C contrib DESTDIR=%{buildroot} install
 %if %uuid
 %{__make} -C contrib/uuid-ossp DESTDIR=%{buildroot} install
@@ -740,9 +740,6 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 
 # backups of data go here...
 %{__install} -d -m 700 %{buildroot}/var/lib/pgsql/%{pgmajorversion}/backups
-
-# Create the multiple PostgreSQL version startup directory
-%{__install} -d -m 700 %{buildroot}/etc/sysconfig/pgsql/%{pgmajorversion}
 
 # Install linker conf file under postgresql installation directory.
 # We will install the latest version via alternatives.
@@ -858,7 +855,7 @@ cat postgresql-regress-%{pgmajorversion}.lang > pg_test.lst
 if [ $1 -eq 1 ] ; then
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
    %if 0%{?suse_version} >= 1500
-   %service_add_pre postgresql-%{pgpackageversion}.service
+   %service_add_post postgresql-%{pgpackageversion}.service
    %else
    %systemd_post %{sname}-%{pgpackageversion}.service
    %endif
@@ -945,6 +942,7 @@ if [ "$1" -eq 0 ]
 	%{_sbindir}/update-alternatives --remove pgsql-pg_restore	%{pgbaseinstdir}/bin/pg_restore
 	%{_sbindir}/update-alternatives --remove pgsql-pg_restoreman	%{pgbaseinstdir}/share/man/man1/pg_restore.1
 	%{_sbindir}/update-alternatives --remove pgsql-pg_walsummary	%{pgbaseinstdir}/bin/pg_walsummary
+	%{_sbindir}/update-alternatives --remove pgsql-pg_walsummaryman %{pgbaseinstdir}/share/man/man1/pg_walsummary.1
 	%{_sbindir}/update-alternatives --remove pgsql-psqlman		%{pgbaseinstdir}/share/man/man1/psql.1
 	%{_sbindir}/update-alternatives --remove pgsql-reindexdb	%{pgbaseinstdir}/bin/reindexdb
 	%{_sbindir}/update-alternatives --remove pgsql-reindexdbman	%{pgbaseinstdir}/share/man/man1/reindexdb.1
@@ -986,7 +984,6 @@ fi
 %{pgbaseinstdir}/bin/pg_isready
 %{pgbaseinstdir}/bin/pg_receivewal
 %{pgbaseinstdir}/bin/pg_restore
-%{pgbaseinstdir}/bin/pg_waldump
 %{pgbaseinstdir}/bin/pg_walsummary
 %{pgbaseinstdir}/bin/psql
 %{pgbaseinstdir}/bin/reindexdb
@@ -1006,6 +1003,7 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_dump.*
 %{pgbaseinstdir}/share/man/man1/pg_dumpall.*
 %{pgbaseinstdir}/share/man/man1/pg_isready.*
+%{pgbaseinstdir}/share/man/man1/pg_receivewal.*
 %{pgbaseinstdir}/share/man/man1/pg_restore.*
 %{pgbaseinstdir}/share/man/man1/pg_walsummary.*
 %{pgbaseinstdir}/share/man/man1/psql.*
@@ -1237,6 +1235,7 @@ fi
 
 %if %plpython3
 %files plpython3 -f pg_plpython3.lst
+%defattr(-,root,root)
 %{pgbaseinstdir}/share/extension/plpython3*
 %{pgbaseinstdir}/lib/plpython3.so
 %{pgbaseinstdir}/share/extension/*_plpython3u*
@@ -1265,6 +1264,7 @@ fi
 %{pgbaseinstdir}/bin/pg_test_timing
 %{pgbaseinstdir}/bin/pg_upgrade
 %{pgbaseinstdir}/bin/pg_verifybackup
+%{pgbaseinstdir}/bin/pg_waldump
 %{pgbaseinstdir}/bin/postgres
 %{pgbaseinstdir}/share/man/man1/initdb.*
 %{pgbaseinstdir}/share/man/man1/pg_archivecleanup.1
@@ -1272,7 +1272,6 @@ fi
 %{pgbaseinstdir}/share/man/man1/pg_controldata.*
 %{pgbaseinstdir}/share/man/man1/pg_ctl.*
 %{pgbaseinstdir}/share/man/man1/pg_resetwal.*
-%{pgbaseinstdir}/share/man/man1/pg_receivewal.*
 %{pgbaseinstdir}/share/man/man1/pg_rewind.1
 %{pgbaseinstdir}/share/man/man1/pg_test_fsync.1
 %{pgbaseinstdir}/share/man/man1/pg_test_timing.1
@@ -1335,6 +1334,11 @@ fi
 %changelog
 * Mon Jun 1 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta1-1PGDG
 - Update to PostgreSQL 19 beta1!
+- Spec cleanup ahead of beta1: hardlink regress.so to avoid duplicate
+  build-id warning, fix SUSE systemd scriptlet (%service_add_post),
+  correct update-alternatives removal for pg_walsummary man page,
+  fix share/extension typo, and tidy man-page subpackage placement
+  (pg_waldump, pg_receivewal)
 
 * Sat Apr 11 2026 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 19-alpha_20260110_PGDG.1
 - Move static libs from libs rpm to static rpm
