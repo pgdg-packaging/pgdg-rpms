@@ -741,6 +741,9 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 # backups of data go here...
 %{__install} -d -m 700 %{buildroot}/var/lib/pgsql/%{pgmajorversion}/backups
 
+# Create the multiple PostgreSQL version startup directory
+%{__install} -d -m 700 %{buildroot}/etc/sysconfig/pgsql/
+
 # Install linker conf file under postgresql installation directory.
 # We will install the latest version via alternatives.
 %{__install} -d -m 755 %{buildroot}%{pgbaseinstdir}/share/
