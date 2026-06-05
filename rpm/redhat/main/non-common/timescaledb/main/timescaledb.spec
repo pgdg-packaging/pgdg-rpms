@@ -55,7 +55,7 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
-* Tue Jul 2 2026 Devrim Gündüz <devrim@gunduz.org> - 2.27.2-1PGDG
+* Tue Jun 2 2026 Devrim Gündüz <devrim@gunduz.org> - 2.27.2-1PGDG
 - Update to 2.27.2, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.27.2
 
