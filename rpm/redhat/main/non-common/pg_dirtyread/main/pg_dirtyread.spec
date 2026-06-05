@@ -4,8 +4,8 @@
 
 Summary:	Read dead but unvacuumed rows from a PostgreSQL relation
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.7
-Release:	6PGDG%{?dist}
+Version:	2.8
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/df7cb/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/df7cb/%{sname}
@@ -65,6 +65,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 
 
 %changelog
+* Fri Jun 5 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8-1PGDG
+- Update to 2.8 per changes described at:
+  https://github.com/df7cb/pg_dirtyread/releases/tag/2.8
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.7.5-6PGDG
 - Add SLES 16 support
 
