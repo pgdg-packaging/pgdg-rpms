@@ -1264,6 +1264,14 @@ fi
 %endif
 
 %changelog
+* Mon Jun 2 2026 Devrim Gündüz <devrim@gunduz.org> - 16.14-3PGDG
+- Backport a few fixes from PostgreSQL 19:
+  Remove SUSE systemd scriptlet (%%service_add_post) as it can use
+  the RHEL one as well.
+  Correct update-alternatives removal for pg_walsummary man page
+  Fix share/extension typo
+  Tidy man-page subpackage placements (pg_waldump, pg_receivewal)
+
 * Sun May 17 2026 Devrim Gündüz <devrim@gunduz.org> - 16.14-2PGDG
 - Rebuild on RHEL 8 against new LLVM
 
