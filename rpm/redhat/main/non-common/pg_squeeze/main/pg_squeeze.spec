@@ -2,14 +2,14 @@
 
 %global squeezemajver 1
 %global squeezemidver 9
-%global squeezeminver 1
+%global squeezeminver 2
 
 %{!?llvm:%global llvm 1}
 
 Summary:	A PostgreSQL extension for automatic bloat cleanup
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{squeezemajver}.%{squeezemidver}.%{squeezeminver}
-Release:	3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/REL%{squeezemajver}_%{squeezemidver}_%{squeezeminver}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -71,6 +71,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Jun 5 2026 Devrim Gündüz <devrim@gunduz.org> - 1.9.2-1PGDG
+- Update to 1.9.2 per changes described at:
+  https://github.com/cybertec-postgresql/pg_squeeze/releases/tag/REL1_9_2
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.9.1-3PGDG
 - Add SLES 16 support
 
