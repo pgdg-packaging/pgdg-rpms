@@ -4,8 +4,8 @@
 
 Summary:	A PostgreSQL extension that shows query plans of all the currently running SQL statements.
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.6
-Release:	3PGDG%{?dist}
+Version:	2.1.8
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -70,6 +70,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Jun 5 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.8-1PGDG
+- Update to 2.1.8 per described at:
+  https://github.com/cybertec-postgresql/pg_show_plans/releases/tag/v2.1.8
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.6-3PGDG
 - Add SLES 16 support
 
@@ -79,9 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 * Tue Sep 30 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com>
 - Change => to >= in Requires and BuildRequires
 
-* Mon Jul 21 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.8-1PGDG
-- Update to 2.1.8 per described at:
-  https://github.com/cybertec-postgresql/pg_show_plans/releases/tag/v2.1.8
+* Mon Jul 21 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.6-1PGDG
+- Update to 2.1.6 per described at:
+  https://github.com/cybertec-postgresql/pg_show_plans/releases/tag/v2.1.6
 
 * Tue Apr 29 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.3-1PGDG
 - Update to 2.1.3 per described at:
