@@ -4,7 +4,7 @@
 
 Summary:	PostgreSQL extension exposes the internal storage structure of variable-length datatypes
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.6
+Version:	1.7
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/df7cb/%{sname}
@@ -70,5 +70,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Sun Jun 7 2026 - Devrim Gündüz <devrim@gunduz.org> - 1.7-1PGDG
+- Update to 1.7 per changes described at:
+  https://github.com/df7cb/toastinfo/releases/tag/v1.7
+
 * Sun Jun 7 2026 - Devrim Gündüz <devrim@gunduz.org> - 1.6-1PGDG
 - Initial RPM packaging for PostgreSQL RPM Repository
