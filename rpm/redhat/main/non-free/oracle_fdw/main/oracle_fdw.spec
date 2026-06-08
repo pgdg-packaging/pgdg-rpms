@@ -3,7 +3,7 @@
 %global ofdwmidver 9
 %global ofdwminver 0
 
-%{!?oi_release:%global oi_release 23.26.1.0.0}
+%{!?oi_release:%global oi_release 23.26.2.0.0}
 
 %global		__find_requires %{SOURCE1}
 
@@ -59,6 +59,7 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 * Mon Jun 78 2026Devrim Gündüz <devrim@gunduz.org> 2.9.0-1PGDG
 - Update to 2.9.0 per changes described at:
   https://github.com/laurenz/oracle_fdw/releases/tag/ORACLE_FDW_2_9_0
+- Update Oracle instant client version to 23.26.2.0.0
 
 * Tue Feb 17 2026 Devrim Gündüz <devrim@gunduz.org> 2.8.0-9PGDG
 - Update OIC dependency to 23.26.1.0.0
