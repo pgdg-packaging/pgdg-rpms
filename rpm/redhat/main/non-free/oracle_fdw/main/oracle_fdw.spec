@@ -1,6 +1,6 @@
 %global sname	oracle_fdw
 %global ofdwmajver 2
-%global ofdwmidver 8
+%global ofdwmidver 9
 %global ofdwminver 0
 
 %{!?oi_release:%global oi_release 23.26.1.0.0}
@@ -13,7 +13,7 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Oracle.
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ofdwmajver}.%{ofdwmidver}.%{ofdwminver}
-Release:	9PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://laurenz.github.io/%{sname}
 Source0:	https://github.com/laurenz/%{sname}/archive/ORACLE_FDW_%{ofdwmajver}_%{ofdwmidver}_%{ofdwminver}.tar.gz
@@ -56,6 +56,10 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 %{pginstdir}/doc/extension/README.%{sname}
 
 %changelog
+* Mon Jun 78 2026Devrim Gündüz <devrim@gunduz.org> 2.9.0-1PGDG
+- Update to 2.9.0 per changes described at:
+  https://github.com/laurenz/oracle_fdw/releases/tag/ORACLE_FDW_2_9_0
+
 * Tue Feb 17 2026 Devrim Gündüz <devrim@gunduz.org> 2.8.0-9PGDG
 - Update OIC dependency to 23.26.1.0.0
 
