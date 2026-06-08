@@ -4,7 +4,7 @@
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
 Version:	4.5.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -48,6 +48,9 @@ pushd build
 %cmake_install
 popd
 %{__mv} %{buildroot}/%{_includedir}/h3/h3api.h %{buildroot}/%{_includedir}/
+%{__cp} src/h3lib/include/linkedGeo.h %{buildroot}/%{_includedir}/
+%{__cp} src/h3lib/include/latLng.h %{buildroot}/%{_includedir}/
+%{__cp} src/h3lib/include/bbox.h %{buildroot}/%{_includedir}/
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -70,11 +73,17 @@ popd
 %{_libdir}/libh3.so*
 
 %files devel
+%{_includedir}/bbox.h
 %{_includedir}/h3api.h
+%{_includedir}/latLng.h
+%{_includedir}/linkedGeo.h
 %{_libdir}/cmake/%{sname}/*.cmake
 %{_libdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Sun Jun 7 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-2PGDG
+- Add a few more header files to support h3-pg 4.5.0
+
 * Sat May 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-1PGDG
 - Update to 4.5.0 per changes described at:
   https://github.com/uber/h3/releases/tag/v4.5.0
