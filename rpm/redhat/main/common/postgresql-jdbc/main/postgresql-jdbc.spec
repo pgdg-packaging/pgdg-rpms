@@ -161,7 +161,7 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
-* Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.11-2PGDG
+* Wed Jun 10 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.11-2PGDG
 - Fix builds on RHEL 8 until we build the driver with a newer JDK.
 
 * Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.11-1PGDG
