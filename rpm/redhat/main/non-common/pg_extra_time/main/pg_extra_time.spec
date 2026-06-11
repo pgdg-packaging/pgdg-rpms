@@ -2,7 +2,7 @@
 
 Summary:	Extra date time functions and operators for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.0
+Version:	2.1.0
 Release:	1PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
@@ -39,6 +39,11 @@ functions and operators.
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Thu Jun 11 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
+- Update to 2.1.0 per changes described at:
+  https://github.com/bigsmoke/pg_extra_time/releases/tag/v2.1.0
+  https://github.com/bigsmoke/pg_extra_time/blob/v2.1.0/CHANGELOG.md
+
 * Mon Jan 20 2025 - Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
 - Update to 2.0.0 per changes described at:
   https://github.com/bigsmoke/pg_extra_time/releases/tag/v2.0.0
