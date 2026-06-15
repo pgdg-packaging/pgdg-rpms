@@ -4,7 +4,7 @@
 
 Summary:	 High-Performance Pattern Matching Index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.2.2
+Version:	2.2.3
 Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/crystallinecore//%{sname}/
@@ -69,5 +69,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Mon Jun 15 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.3-1PGDG
+- Update to 2.2.3 per changes described at:
+  https://github.com/CrystallineCore/Biscuit/releases/tag/v2.2.3
+
 * Wed Jan 7 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.2-1PGDG
 - Initial RPM packaging for the PostgreSQL RPM Repository.
