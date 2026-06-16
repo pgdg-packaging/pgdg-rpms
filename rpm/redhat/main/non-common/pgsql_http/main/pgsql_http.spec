@@ -5,8 +5,8 @@
 
 Summary:	PostgreSQL HTTP client
 Name:		%{pname}_%{pgmajorversion}
-Version:	1.7.0
-Release:	3PGDG%{?dist}
+Version:	1.7.1
+Release:	1PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -66,6 +66,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Tue Jun 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.1-1PGDG
+- Update to 1.7.1 per changes described at:
+  https://github.com/pramsey/pgsql-http/releases/tag/v1.7.1
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-3PGDG
 - Add SLES 16 support
 
