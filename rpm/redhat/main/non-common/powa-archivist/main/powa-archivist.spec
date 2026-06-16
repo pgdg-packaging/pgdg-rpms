@@ -3,7 +3,7 @@
 # Powa archivist version
 %global powamajorversion 5
 %global powamidversion 1
-%global powaminorversion 1
+%global powaminorversion 2
 
 %{!?llvm:%global llvm 1}
 
@@ -79,6 +79,10 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Tue Jun 16 2026 Devrim Gündüz <devrim@gunduz.org> - 5.1.2-1PGDG
+- Update 5.1.2 per changes described at:
+  https://github.com/powa-team/powa-archivist/releases/tag/REL_5_1_2
+
 * Sun Dec 7 2025 Devrim Gündüz <devrim@gunduz.org> - 5.1.1-1PGDG
 - Update 5.1.1 per changes described at:
   https://github.com/powa-team/powa-archivist/releases/tag/REL_5_1_1
