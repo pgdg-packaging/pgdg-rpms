@@ -17,8 +17,8 @@
 
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.7
-Release:	6PGDG%{?dist}
+Version:	1.1.8
+Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
@@ -87,6 +87,10 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Tue Jun 16 2026 Devrim Gündüz <devrim@gunduz.org> 1.1.8-1PGDG
+- Update to 1.1.8 per changes described at:
+  https://github.com/pramsey/pgsql-ogr-fdw/releases/tag/v1.1.8
+
 * Mon Apr 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.7-6PGDG
 - Update GDAL dependency for SLES 15.
 
