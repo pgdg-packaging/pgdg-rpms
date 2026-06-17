@@ -3,8 +3,8 @@
 
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
-Version:	4.1.2
-Release:	43PGDG%{?dist}
+Version:	4.1.3
+Release:	42PGDG%{?dist}
 License:	BSD
 URL:		https://gitlab.com/%{sname}/%{sname}
 Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
@@ -53,6 +53,10 @@ popd
 %{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Mon Jun 8 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-42PGDG
+- Update to 4.1.3 per changes described at:
+  https://gitlab.com/pg_top/pg_top/-/releases/v4.1.3
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.2-43PGDG
 - Fix builds against CMake 4, per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/167
