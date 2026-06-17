@@ -5,12 +5,12 @@
 
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
-Version:	4.3.0
-Release:	2PGDG%{?dist}
+Version:	4.5.0
+Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/dbcli/%{name}
-Source0:	https://github.com/dbcli/%{name}/archive/refs/tags/v%{version}.tar.gz
+Source0:	https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 
 BuildRequires:	python3-devel
 
@@ -54,12 +54,12 @@ This is a build of the pgcli for the debug build of Python 3.
 %pyproject_install
 %files
 %defattr(-,root,root)
-%doc AUTHORS changelog.rst LICENSE.txt DEVELOP.rst TODO
+%doc AUTHORS changelog.rst LICENSE.txt TODO
 %{_bindir}/%{name}
 
 %files -n python3-%{name}
 %defattr(-,root,root)
-%doc AUTHORS changelog.rst LICENSE.txt DEVELOP.rst TODO
+%doc AUTHORS changelog.rst LICENSE.txt TODO
 %dir %{python3_sitelib}/%{name}
 %{python3_sitelib}/%{name}/*
 %{python3_sitelib}/%{name}-%{version}.dist-info/*
@@ -69,6 +69,9 @@ This is a build of the pgcli for the debug build of Python 3.
 %doc LICENSE.txt
 
 %changelog
+* Fri Jun 5 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-1PGDG
+- Update to 4.3.0
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 4.3.0-2PGDG
 - Bump release number (missed in previous commit)
 
