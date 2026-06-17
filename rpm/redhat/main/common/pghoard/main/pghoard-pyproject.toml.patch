@@ -1,0 +1,19 @@
+--- pyproject.toml.old	2026-06-17 11:00:46.614385250 +0300
++++ pyproject.toml	2026-06-17 11:01:11.412064909 +0300
+@@ -1,5 +1,5 @@
+ [build-system]
+-requires = ["hatchling", "hatch-vcs"]
++requires = ["hatchling"]
+ build-backend = "hatchling.build"
+ 
+ [project]
+@@ -165,7 +165,5 @@
+ pghoard_restore = "pghoard.restore:main"
+ 
+ [tool.hatch.version]
+-source = "vcs"
+-
+-[tool.hatch.build.hooks.vcs]
+-version-file = "pghoard/version.py"
++path = "pghoard/__init__.py"
++pattern = "version = '(?P<version>[^']+)'"

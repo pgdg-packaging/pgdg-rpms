@@ -1,14 +1,21 @@
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
-Version:	2.6.2
+Version:	2.7.0
 Release:	1PGDG%{?dist}
-License:	BSD
+License:	Apache License 2.0
 Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
+Patch0:		pghoard-pyproject.toml.patch
 URL:		https://github.com/Aiven-Open/%{name}
 BuildArch:	noarch
-BuildRequires:	python3-devel
 Requires:	python3-snappy python3-cryptography python3-boto
 Requires:	python3-rohmu
+BuildRequires:	python3-devel python3-build python3-hatchling
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 %description
 pghoard is a PostgreSQL backup daemon and restore tooling for cloud
@@ -30,14 +37,15 @@ Features:
 
 %prep
 %setup -q
+%patch -P 0 -p0
+echo "version = '%{version}'" >> pghoard/__init__.py
 
 %build
-%{__make}
+SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%__python3 setup.py install --prefix=%{_prefix} --root=%{buildroot}
-sed -e "s@#!/bin/python@#!%{_bindir}/python@" -i %{buildroot}%{_bindir}/*
+%pyproject_install
+
 %{__install} -Dm0644 pghoard.unit %{buildroot}%{_unitdir}/pghoard.service
 %{__mkdir_p} %{buildroot}%{_localstatedir}/lib/pghoard
 
@@ -51,6 +59,10 @@ sed -e "s@#!/bin/python@#!%{_bindir}/python@" -i %{buildroot}%{_bindir}/*
 %license LICENSE
 
 %changelog
+* Wed Jun 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.7.0-1PGDG
+- Update to 2.7.0
+- Switch to pyproject builds
+
 * Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 2.6.2-1PGDG
 - Update to 2.6.2
 
