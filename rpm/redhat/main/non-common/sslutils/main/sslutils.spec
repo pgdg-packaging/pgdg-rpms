@@ -4,8 +4,8 @@
 
 Summary:	SSL Utils for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4
-Release:	4PGDG%{?dist}
+Version:	1.4.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
@@ -76,6 +76,10 @@ strip %{buildroot}%{pginstdir}/lib/*.so
 %endif
 
 %changelog
+* Mon Jun 15 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-1PGDG
+- Update to 1.4.1 per changes described at:
+  https://github.com/EnterpriseDB/sslutils/releases/tag/v1.4.1
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4-4PGDG
 - Add SLES 16 support
 
