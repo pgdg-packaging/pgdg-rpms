@@ -2,8 +2,8 @@
 
 Summary:	PostgreSQL extension to manage advisory locks in a way compatible to Oracle DBMS_LOCK package.
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0
-Release:	3PGDG%{?dist}
+Version:	2.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/hexacluster/%{sname}/
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -38,6 +38,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Fri Jun 19 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-1PGDG
+- Update to 2.0 per changes described at:
+  https://github.com/HexaCluster/pg_dbms_lock/releases/tag/v2.0
+
 * Mon Jun 30 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0-3PGDG
 - Add missing pg_background dependency
 
