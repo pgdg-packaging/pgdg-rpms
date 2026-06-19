@@ -4,7 +4,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.8.2
+Version:	0.8.3
 Release:	1PGDG%{?dist}
 Summary:	Open-source vector similarity search for Postgres
 License:	PostgreSQL
@@ -61,7 +61,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
 
-#Remove header file, we don't need it right now:
+# Remove header file, we don't need it right now:
 %{__rm} %{buildroot}%{pginstdir}/include/server/extension/%{pname}/%{pname}.h
 
 %files
@@ -80,6 +80,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Fri Jun 19 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.3-1PGDG
+- Update to 0.8.3
+
 * Thu Feb 26 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.2-1PGDG
 - Update to 0.8.2
 
