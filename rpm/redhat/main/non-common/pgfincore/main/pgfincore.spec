@@ -4,8 +4,8 @@
 
 Summary:	PgFincore is a set of functions to manage blocks in memory
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.3.1
-Release:	6PGDG%{?dist}
+Version:	1.4.0
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/klando/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/klando/%{sname}
@@ -74,6 +74,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Jun 19 2026 Devrim Gündüz <devrim@gunduz.org> 1.4.0-1PGDG
+- Update to 1.4.0 per changes described at:
+  https://github.com/klando/pgfincore/releases/tag/1.4.0
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-6PGDG
 - Add SLES 16 support
 
