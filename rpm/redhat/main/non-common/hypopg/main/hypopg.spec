@@ -4,8 +4,8 @@
 
 Summary:	Hypothetical Indexes support for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.2
-Release:	3PGDG%{?dist}
+Version:	1.4.3
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/HypoPG/hypopg/archive/%{version}.tar.gz
 URL:		https://github.com/HypoPG/%{sname}
@@ -71,6 +71,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Sat Jun 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.3-1PGDG
+- Update to 1.4.3 per changes described at:
+  https://github.com/HypoPG/hypopg/releases/tag/1.4.3
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-3PGDG
 - Add SLES 16 support
 
