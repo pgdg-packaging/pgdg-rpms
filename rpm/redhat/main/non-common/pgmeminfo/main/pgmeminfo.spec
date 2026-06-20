@@ -2,13 +2,13 @@
 
 %global pmeminfomajver 1
 %global pmeminfomidver 0
-%global pmeminfominver 0
+%global pmeminfominver 1
 
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}
-Release:	5PGDG%{?dist}
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL extension to allow to access to memory usage diagnostics
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -65,6 +65,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/bitcode/%{sname}/src/*.bc
 
 %changelog
+* Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.1-1PGDG
+- Update to 1.0.1 per changes described at:
+  https://github.com/okbob/pgmeminfo/releases/tag/VERSION_1_0_1
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-5PGDG
 - Add SLES 16 support
 
