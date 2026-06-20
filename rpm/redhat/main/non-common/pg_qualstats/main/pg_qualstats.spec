@@ -4,7 +4,7 @@
 
 Summary:	A PostgreSQL extension collecting statistics about predicates
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.3
+Version:	2.1.4
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/%{sname}/archive/%{version}.tar.gz
@@ -79,6 +79,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.4-1PGDG
+- Update to 2.1.4 per changes described at:
+  https://github.com/powa-team/pg_qualstats/releases/tag/2.1.4
+
 * Wed Oct 15 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.3-1PGDG
 - Update to 2.1.3 per changes described at:
   https://github.com/powa-team/pg_qualstats/releases/tag/2.1.3
