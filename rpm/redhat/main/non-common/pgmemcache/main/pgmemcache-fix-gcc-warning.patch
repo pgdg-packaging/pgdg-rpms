@@ -1,0 +1,11 @@
+--- pgmemcache.c.old	2026-06-20 10:15:50.750148633 +0100
++++ pgmemcache.c	2026-06-20 10:16:21.249770057 +0100
+@@ -421,7 +421,7 @@
+        * since we have both increment and decrement operations let's just
+        * invert the operation if offset is negative.
+        */
+-      offset = abs(offset);
++      offset = -offset;
+       increment = !increment;
+     }
+ 

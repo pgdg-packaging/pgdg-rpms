@@ -5,9 +5,10 @@
 Summary:	A PostgreSQL API to interface with memcached
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.0
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ohmu/%{sname}/archive/%{version}.tar.gz
+Patch0:		%{sname}-fix-gcc-warning.patch
 URL:		https://github.com/Ohmu/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel libmemcached-devel
 BuildRequires:	cyrus-sasl-devel
@@ -42,6 +43,7 @@ This package provides JIT support for pgmemcache
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p0
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -68,7 +70,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
-* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-1PGDG
+* Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-12PGDG
+- Add a patch to surpress compiler warning
+
+* Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-11PGDG
 - Add SLES 16 support
 
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.3.0-10PGDG
