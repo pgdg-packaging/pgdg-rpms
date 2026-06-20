@@ -3,8 +3,8 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.10.0
-Release:	3PGDG%{?dist}
+Version:	1.11.0
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL extension to expose functionality from ICU to PostgreSQL applications
 License:	PostgreSQL
 URL:		https://github.com/dverite/%{sname}
@@ -63,6 +63,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> 1.11.0-1PGDG
+- Update to 1.11.0 per changes described at:
+  https://github.com/dverite/icu_ext/releases/tag/v1.11.0
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 1.10.0-3PGDG
 - Add SLES 16 support
 
