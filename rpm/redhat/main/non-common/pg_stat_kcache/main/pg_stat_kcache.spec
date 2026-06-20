@@ -2,7 +2,7 @@
 
 %global kcachemajver 2
 %global kcachemidver 3
-%global kcacheminver 1
+%global kcacheminver 2
 
 %{!?llvm:%global llvm 1}
 
@@ -73,6 +73,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-1PGDG
+- Update to 2.3.2 per changes described at:
+  https://github.com/powa-team/pg_stat_kcache/releases/tag/REL2_3_2
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.1-3PGDG
 - Add SLES 16 support
 
