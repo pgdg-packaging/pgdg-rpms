@@ -10,8 +10,8 @@
 
 Name:		keepalived
 Summary:	High Availability monitor built upon LVS, VRRP and service pollers
-Version:	2.3.4
-Release:	2PGDG%{?dist}
+Version:	2.4.0
+Release:	1PGDG%{?dist}
 License:	GPLv2+
 URL:		https://www.keepalived.org/
 Source0:	https://www.keepalived.org/software/keepalived-%{version}.tar.gz
@@ -115,6 +115,10 @@ touch aclocal.m4 Makefile.in lib/config.h.in configure
 %{_mandir}/man8/keepalived.8*
 
 %changelog
+* Mon Jun 22 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
+- Update to 2.4.0 per changes described at:
+  https://www.keepalived.org/release-notes/Release-2.4.0/
+
 * Wed Dec 24 2025 Devrim Gündüz <devrim@gunduz.org> - 2.3.4-2PGDG
 - Add Restart=on-failure to unit file. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/127
