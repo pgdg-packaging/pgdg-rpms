@@ -19,12 +19,13 @@ if [[ "$(id -u)" != "26" ]]; then
     echo
     exit 1
 fi
+
 # ─── Configuration ────────────────────────────────────────────────────────────
 
 TARGET_IP="192.168.122.160"
 TARGET_USER=""                          # empty = same as local user
 SSH_PORT=22
-ARCH="x86_64"
+ARCH="$(uname -m)"                      # auto-detected; override with --arch
 PG_VERSIONS=(18 17 16 15 14)
 LOCAL_BASE="${HOME}"
 REMOTE_BASE="~"
