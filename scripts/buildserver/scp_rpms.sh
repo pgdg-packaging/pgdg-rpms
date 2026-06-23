@@ -5,37 +5,34 @@
 
 set -euo pipefail
 
-# ─── Colors ───────────────────────────────────────────────────────────────────
+# ─── Load shared configuration ────────────────────────────────────────────────
+# Provides: red/green/blue/reset colors, UID guard, osarch, pgStableBuilds, …
 
-red=$(tput setaf 1 2>/dev/null || true)
-reset=$(tput sgr0   2>/dev/null || true)
-
-# ─── Guard: must run as postgres (UID 26) ─────────────────────────────────────
-
-if [[ "$(id -u)" != "26" ]]; then
-    clear
-    echo
-    echo "${red}ERROR:${reset} This script must be run as the postgres user." >&2
-    echo
-    exit 1
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=global.sh
+source "${SCRIPT_DIR}/global.sh"
 
 # ─── Configuration ────────────────────────────────────────────────────────────
 
 TARGET_IP="192.168.122.160"
-TARGET_USER=""                          # empty = same as local user
+TARGET_USER=""				# empty = same as local user
 SSH_PORT=22
-ARCH="$(uname -m)"                      # auto-detected; override with --arch
-PG_VERSIONS=(18 17 16 15 14)
+ARCH="${osarch}"			# from global.sh (osarch); override with --arch
+# pgStableBuilds in global.sh is a single-element array containing a
+# space-separated string. Unquoted expansion intentionally lets word splitting
+# flatten it into proper individual array elements here.
+PG_VERSIONS=(${pgStableBuilds[@]})	# from global.sh; override with --versions
 LOCAL_BASE="${HOME}"
 REMOTE_BASE="~"
 RPM_DIR_PREFIX="rpm"                    # directories are rpm18, rpm17, …
+COMMON_DIR="rpmcommon"			# common repo, synced outside version loop
+EXTRAS_DIR="pgdg.extras"		# extras repo, synced outside version loop
 
 SYNC_ARCH_RPMS=true
 SYNC_NOARCH_RPMS=true
 SYNC_SRPMS=true
 
-SCP_OPTS="-p"                           # -p preserves timestamps; add -q to silence
+SCP_OPTS="-p"				# -p preserves timestamps; add -q to silence
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -74,19 +71,19 @@ run() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -t|--target)    TARGET_IP="$2";   shift 2 ;;
-        -u|--user)      TARGET_USER="$2"; shift 2 ;;
-        -p|--port)      SSH_PORT="$2";    shift 2 ;;
-        -a|--arch)      ARCH="$2";        shift 2 ;;
-        -v|--versions)  IFS=',' read -ra PG_VERSIONS <<< "$2"; shift 2 ;;
-        -l|--local)     LOCAL_BASE="$2";  shift 2 ;;
-        -r|--remote)    REMOTE_BASE="$2"; shift 2 ;;
-        --no-arch)      SYNC_ARCH_RPMS=false;   shift ;;
-        --no-noarch)    SYNC_NOARCH_RPMS=false;  shift ;;
-        --no-srpms)     SYNC_SRPMS=false;        shift ;;
-        -n|--dry-run)   DRY_RUN=true;    shift ;;
-        -h|--help)      usage ;;
-        *) echo "Unknown option: $1" >&2; usage ;;
+	-t|--target)    TARGET_IP="$2";   shift 2 ;;
+	-u|--user)      TARGET_USER="$2"; shift 2 ;;
+	-p|--port)      SSH_PORT="$2";    shift 2 ;;
+	-a|--arch)      ARCH="$2";        shift 2 ;;
+	-v|--versions)  IFS=',' read -ra PG_VERSIONS <<< "$2"; shift 2 ;;
+	-l|--local)     LOCAL_BASE="$2";  shift 2 ;;
+	-r|--remote)    REMOTE_BASE="$2"; shift 2 ;;
+	--no-arch)      SYNC_ARCH_RPMS=false;   shift ;;
+	--no-noarch)    SYNC_NOARCH_RPMS=false;  shift ;;
+	--no-srpms)     SYNC_SRPMS=false;        shift ;;
+	-n|--dry-run)   DRY_RUN=true;    shift ;;
+	-h|--help)      usage ;;
+	*) echo "Unknown option: $1" >&2; usage ;;
     esac
 done
 
@@ -130,5 +127,59 @@ for ver in "${PG_VERSIONS[@]}"; do
 
     echo
 done
+
+# ─── Common repo (outside version loop) ───────────────────────────────────────
+
+common_local="${LOCAL_BASE}/${COMMON_DIR}"
+common_remote="${REMOTE_BASE}/${COMMON_DIR}"
+
+echo ">> ${COMMON_DIR}"
+
+if "${SYNC_ARCH_RPMS}"; then
+    echo ">> ${COMMON_DIR}  RPMS/${ARCH}"
+    run scp ${SCP_OPTS} "${common_local}/RPMS/${ARCH}/"* \
+        "${TARGET_HOST}:${common_remote}/RPMS/${ARCH}/"
+fi
+
+if "${SYNC_NOARCH_RPMS}"; then
+    echo ">> ${COMMON_DIR}  RPMS/noarch"
+    run scp ${SCP_OPTS} "${common_local}/RPMS/noarch/"* \
+        "${TARGET_HOST}:${common_remote}/RPMS/noarch/"
+fi
+
+if "${SYNC_SRPMS}"; then
+    echo ">> ${COMMON_DIR}  SRPMS"
+    run scp ${SCP_OPTS} "${common_local}/SRPMS/"* \
+        "${TARGET_HOST}:${common_remote}/SRPMS/"
+fi
+
+echo
+
+# ─── Extras repo (outside version loop) ───────────────────────────────────────
+
+extras_local="${LOCAL_BASE}/${EXTRAS_DIR}"
+extras_remote="${REMOTE_BASE}/${EXTRAS_DIR}"
+
+echo ">> ${EXTRAS_DIR}"
+
+if "${SYNC_ARCH_RPMS}"; then
+    echo ">> ${EXTRAS_DIR}  RPMS/${ARCH}"
+    run scp ${SCP_OPTS} "${extras_local}/RPMS/${ARCH}/"* \
+        "${TARGET_HOST}:${extras_remote}/RPMS/${ARCH}/"
+fi
+
+if "${SYNC_NOARCH_RPMS}"; then
+    echo ">> ${EXTRAS_DIR}  RPMS/noarch"
+    run scp ${SCP_OPTS} "${extras_local}/RPMS/noarch/"* \
+        "${TARGET_HOST}:${extras_remote}/RPMS/noarch/"
+fi
+
+if "${SYNC_SRPMS}"; then
+    echo ">> ${EXTRAS_DIR}  SRPMS"
+    run scp ${SCP_OPTS} "${extras_local}/SRPMS/"* \
+        "${TARGET_HOST}:${extras_remote}/SRPMS/"
+fi
+
+echo
 
 echo "Done."
