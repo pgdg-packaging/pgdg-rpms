@@ -3,8 +3,8 @@
 
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
-Version:	0.17
-Release:	4PGDG%{?dist}
+Version:	0.18
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
@@ -69,6 +69,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgcopydb
 
 %changelog
+* Sun Jun 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-1PGDG
+- Update to 0.18 per changes described at:
+  https://github.com/dimitri/pgcopydb/releases/tag/v0.18
+
 * Thu Nov 20 2025 Devrim Gündüz <devrim@gunduz.org> - 0.17-4PGDG
 - Modernise OpenSSL dependencies.
 
