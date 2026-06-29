@@ -3,7 +3,7 @@
 # Used to transfer RHEL n-2 and n-1 (S)RPMs to RHEL n host
 # Usage: scp-rpms.sh [OPTIONS]
 
-set -euo pipefail
+# set -euo pipefail
 
 # ─── Load shared configuration ────────────────────────────────────────────────
 # Provides: red/green/blue/reset colors, UID guard, osarch, pgStableBuilds, …
@@ -18,13 +18,13 @@ TARGET_IP="192.168.122.160"
 TARGET_USER=""				# empty = same as local user
 SSH_PORT=22
 ARCH="${osarch}"			# from global.sh (osarch); override with --arch
-# pgStableBuilds in global.sh is a single-element array containing a
-# space-separated string. Unquoted expansion intentionally lets word splitting
-# flatten it into proper individual array elements here.
+# pgStableBuilds in global.sh is ("18 17 16 15 14") — a single-element array
+# containing a space-separated string. Unquoted expansion intentionally lets
+# word splitting flatten it into proper individual array elements here.
 PG_VERSIONS=(${pgStableBuilds[@]})	# from global.sh; override with --versions
 LOCAL_BASE="${HOME}"
 REMOTE_BASE="~"
-RPM_DIR_PREFIX="rpm"                    # directories are rpm18, rpm17, …
+RPM_DIR_PREFIX="rpm"			# directories are rpm18, rpm17, …
 COMMON_DIR="rpmcommon"			# common repo, synced outside version loop
 EXTRAS_DIR="pgdg.extras"		# extras repo, synced outside version loop
 
@@ -32,12 +32,16 @@ SYNC_ARCH_RPMS=true
 SYNC_NOARCH_RPMS=true
 SYNC_SRPMS=true
 
-SCP_OPTS="-p"				# -p preserves timestamps; add -q to silence
+# -a  archive mode (preserves timestamps, permissions, symlinks, etc.)
+# -v  verbose
+# --progress  per-file transfer progress
+# Add --delete to make the destination an exact mirror of the source
+RSYNC_OPTS="-av --progress"
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 
 usage() {
-    cat <<EOF
+    cat << USAGE
 Usage: $(basename "$0") [OPTIONS]
 
 Options:
@@ -53,7 +57,7 @@ Options:
       --no-srpms         Skip SRPMs
   -n, --dry-run          Print commands without executing
   -h, --help             Show this help
-EOF
+USAGE
     exit 0
 }
 
@@ -71,19 +75,19 @@ run() {
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-	-t|--target)    TARGET_IP="$2";   shift 2 ;;
-	-u|--user)      TARGET_USER="$2"; shift 2 ;;
-	-p|--port)      SSH_PORT="$2";    shift 2 ;;
-	-a|--arch)      ARCH="$2";        shift 2 ;;
-	-v|--versions)  IFS=',' read -ra PG_VERSIONS <<< "$2"; shift 2 ;;
-	-l|--local)     LOCAL_BASE="$2";  shift 2 ;;
-	-r|--remote)    REMOTE_BASE="$2"; shift 2 ;;
-	--no-arch)      SYNC_ARCH_RPMS=false;   shift ;;
-	--no-noarch)    SYNC_NOARCH_RPMS=false;  shift ;;
-	--no-srpms)     SYNC_SRPMS=false;        shift ;;
-	-n|--dry-run)   DRY_RUN=true;    shift ;;
-	-h|--help)      usage ;;
-	*) echo "Unknown option: $1" >&2; usage ;;
+        -t|--target)    TARGET_IP="$2";   shift 2 ;;
+        -u|--user)      TARGET_USER="$2"; shift 2 ;;
+        -p|--port)      SSH_PORT="$2";    shift 2 ;;
+        -a|--arch)      ARCH="$2";        shift 2 ;;
+        -v|--versions)  IFS=',' read -ra PG_VERSIONS <<< "$2"; shift 2 ;;
+        -l|--local)     LOCAL_BASE="$2";  shift 2 ;;
+        -r|--remote)    REMOTE_BASE="$2"; shift 2 ;;
+        --no-arch)      SYNC_ARCH_RPMS=false;   shift ;;
+        --no-noarch)    SYNC_NOARCH_RPMS=false;  shift ;;
+        --no-srpms)     SYNC_SRPMS=false;        shift ;;
+        -n|--dry-run)   DRY_RUN=true;    shift ;;
+        -h|--help)      usage ;;
+        *) echo "Unknown option: $1" >&2; usage ;;
     esac
 done
 
@@ -92,7 +96,7 @@ done
 TARGET_HOST="${TARGET_IP}"
 [[ -n "${TARGET_USER}" ]] && TARGET_HOST="${TARGET_USER}@${TARGET_IP}"
 
-SCP_OPTS="${SCP_OPTS} -P ${SSH_PORT}"
+SSH_CMD="ssh -p ${SSH_PORT}"
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -109,19 +113,22 @@ for ver in "${PG_VERSIONS[@]}"; do
 
     if "${SYNC_ARCH_RPMS}"; then
         echo ">> PG${ver}  RPMS/${ARCH}"
-        run scp ${SCP_OPTS} "${local_dir}/RPMS/${ARCH}/"* \
+        run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+            "${local_dir}/RPMS/${ARCH}/" \
             "${TARGET_HOST}:${remote_dir}/RPMS/${ARCH}/"
     fi
 
     if "${SYNC_NOARCH_RPMS}"; then
         echo ">> PG${ver}  RPMS/noarch"
-        run scp ${SCP_OPTS} "${local_dir}/RPMS/noarch/"* \
+        run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+            "${local_dir}/RPMS/noarch/" \
             "${TARGET_HOST}:${remote_dir}/RPMS/noarch/"
     fi
 
     if "${SYNC_SRPMS}"; then
         echo ">> PG${ver}  SRPMS"
-        run scp ${SCP_OPTS} "${local_dir}/SRPMS/"* \
+        run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+            "${local_dir}/SRPMS/" \
             "${TARGET_HOST}:${remote_dir}/SRPMS/"
     fi
 
@@ -137,19 +144,22 @@ echo ">> ${COMMON_DIR}"
 
 if "${SYNC_ARCH_RPMS}"; then
     echo ">> ${COMMON_DIR}  RPMS/${ARCH}"
-    run scp ${SCP_OPTS} "${common_local}/RPMS/${ARCH}/"* \
+    run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+        "${common_local}/RPMS/${ARCH}/" \
         "${TARGET_HOST}:${common_remote}/RPMS/${ARCH}/"
 fi
 
 if "${SYNC_NOARCH_RPMS}"; then
     echo ">> ${COMMON_DIR}  RPMS/noarch"
-    run scp ${SCP_OPTS} "${common_local}/RPMS/noarch/"* \
+    run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+        "${common_local}/RPMS/noarch/" \
         "${TARGET_HOST}:${common_remote}/RPMS/noarch/"
 fi
 
 if "${SYNC_SRPMS}"; then
     echo ">> ${COMMON_DIR}  SRPMS"
-    run scp ${SCP_OPTS} "${common_local}/SRPMS/"* \
+    run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+        "${common_local}/SRPMS/" \
         "${TARGET_HOST}:${common_remote}/SRPMS/"
 fi
 
@@ -164,19 +174,22 @@ echo ">> ${EXTRAS_DIR}"
 
 if "${SYNC_ARCH_RPMS}"; then
     echo ">> ${EXTRAS_DIR}  RPMS/${ARCH}"
-    run scp ${SCP_OPTS} "${extras_local}/RPMS/${ARCH}/"* \
+    run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+        "${extras_local}/RPMS/${ARCH}/" \
         "${TARGET_HOST}:${extras_remote}/RPMS/${ARCH}/"
 fi
 
 if "${SYNC_NOARCH_RPMS}"; then
     echo ">> ${EXTRAS_DIR}  RPMS/noarch"
-    run scp ${SCP_OPTS} "${extras_local}/RPMS/noarch/"* \
+    run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+        "${extras_local}/RPMS/noarch/" \
         "${TARGET_HOST}:${extras_remote}/RPMS/noarch/"
 fi
 
 if "${SYNC_SRPMS}"; then
     echo ">> ${EXTRAS_DIR}  SRPMS"
-    run scp ${SCP_OPTS} "${extras_local}/SRPMS/"* \
+    run rsync ${RSYNC_OPTS} -e "${SSH_CMD}" \
+        "${extras_local}/SRPMS/" \
         "${TARGET_HOST}:${extras_remote}/SRPMS/"
 fi
 
