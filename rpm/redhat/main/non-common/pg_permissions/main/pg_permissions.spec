@@ -5,11 +5,11 @@
 
 Summary:	PostgreSQL permission reports and checks
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4
-Release:	2PGDG%{?dist}
+Version:	1.4.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/REL_%{permissionsmajver}_%{permissionsminver}.tar.gz
-URL:		https://github.com/cybertec-postgresql/pg_permissions/
+URL:		https://github.com/cybertec-postgresql/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
@@ -36,6 +36,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}*.*
 
 %changelog
+* Mon Jun 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-1PGDG
+- Update to 1.4.1 per changes described at:
+  https://github.com/cybertec-postgresql/pg_permissions/releases/tag/REL_1_4_1
+
 * Fri Sep 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4-2PGDG
 - Rebuild
 
