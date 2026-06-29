@@ -57,6 +57,12 @@ pg_restore jobs.
 %prep
 %setup -q -n %{sname}-%{version}
 
+%build
+%if 0%{?suse_version} >= 1500
+# Strip -Wl,-pie immediately before make, regardless of configure regeneration
+sed -i 's/ -Wl,-pie\b//g' src/bin/pgcopydb/Makefile
+%endif
+
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
 
 %install
