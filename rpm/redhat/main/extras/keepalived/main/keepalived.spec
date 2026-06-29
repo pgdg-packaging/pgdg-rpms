@@ -10,7 +10,7 @@
 
 Name:		keepalived
 Summary:	High Availability monitor built upon LVS, VRRP and service pollers
-Version:	2.4.0
+Version:	2.4.1
 Release:	1PGDG%{?dist}
 License:	GPLv2+
 URL:		https://www.keepalived.org/
@@ -115,6 +115,10 @@ touch aclocal.m4 Makefile.in lib/config.h.in configure
 %{_mandir}/man8/keepalived.8*
 
 %changelog
+* Tue Jun 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.1-1PGDG
+- Update to 2.4.1 per changes described at:
+  https://www.keepalived.org/release-notes/Release-2.4.1/
+
 * Mon Jun 22 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
 - Update to 2.4.0 per changes described at:
   https://www.keepalived.org/release-notes/Release-2.4.0/
