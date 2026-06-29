@@ -2,13 +2,14 @@
 
 %{!?llvm:%global llvm 1}
 
-Summary:	 High-Performance Pattern Matching Index for PostgreSQL
+Summary:	High-Performance Pattern Matching Index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.3.0
+Version:	2.4.0
 Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/crystallinecore/%{sname}/
 Source0:	https://github.com/crystallinecore/%{sname}/archive/refs/tags/v%{version}.tar.gz
+Patch0:		%{sname}-2.4.0-rpm-makefile.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -43,6 +44,8 @@ This package provides JIT support for biscuit
 
 %prep
 %setup -q -n Biscuit-%{version}
+# https://github.com/CrystallineCore/Biscuit/issues/14 :
+%patch -P 0 -p0
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
@@ -69,6 +72,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Mon Jun 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
+- Update to 2.4.0 per changes described at:
+  https://github.com/CrystallineCore/Biscuit/releases/tag/v2.4.0
+- Add a (temp) patch per https://github.com/CrystallineCore/Biscuit/issues/14
+
 * Fri Jun 19 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-1PGDG
 - Update to 2.3.0 per changes described at:
   https://github.com/CrystallineCore/Biscuit/releases/tag/v2.3.0
