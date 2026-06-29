@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# scp-rpms.sh — Transfer PostgreSQL RPMs to a target host
+# rsync_old_minor_to_new_minor — Transfer PostgreSQL RPMs to a target host
 # Used to transfer RHEL n-2 and n-1 (S)RPMs to RHEL n host
-# Usage: scp-rpms.sh [OPTIONS]
+# Usage: rsync_old_minor_to_new_minor.sh [OPTIONS]
 
 # set -euo pipefail
 
