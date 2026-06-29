@@ -33,7 +33,14 @@ BuildRequires:	iptables-devel
 %endif
 BuildRequires:	gcc
 BuildRequires:	systemd-devel
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
+%endif
 BuildRequires:	libnl3-devel
 BuildRequires:	libnfnetlink-devel
 BuildRequires:	file-devel
