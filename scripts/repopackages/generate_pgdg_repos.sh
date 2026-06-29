@@ -294,6 +294,11 @@ generate_redhat_repo() {
 			"Extra packages to support some RPMs in the PostgreSQL RPM repo for ${osdesc} - \$basearch" \
 			"${YUM_BASE}/extras/${OSURL}" \
 			0 "$gpgkey"
+		write_stanza "$outfile" \
+			"pgdg-rhel${osmajor}-extras-testing" \
+			"Extra packages to support some RPMs in the PostgreSQL RPM repo for ${osdesc} - \$basearch - Updates testing" \
+			"${YUM_BASE}/testing/extras/${OSURL}" \
+			0 "$gpgkey"
 	fi
 
 	# ── Stable per-version repos ──────────────────────────────────────
@@ -482,6 +487,11 @@ generate_fedora_repo() {
 			"pgdg-fedora-extras" \
 			"Extra packages to support some RPMs in the PostgreSQL RPM repo for ${osdesc} - \$basearch" \
 			"${YUM_BASE}/extras/${OSURL}" \
+			0 "$gpgkey" "fedora"
+		write_stanza "$outfile" \
+			"pgdg-fedora-extras-testing" \
+			"Extra packages to support some RPMs in the PostgreSQL RPM repo for ${osdesc} - \$basearch - Updates testing" \
+			"${YUM_BASE}/testing/extras/${OSURL}" \
 			0 "$gpgkey" "fedora"
 	fi
 
@@ -698,6 +708,11 @@ generate_suse_repo() {
 			"Extra packages to support some RPMs in the PostgreSQL RPM repo SLES \$releasever - \$basearch" \
 			"${YUM_BASE}/extras/${OSURL}" \
 			0 "$gpgkey" 1
+		write_suse_stanza "$outfile" \
+			"pgdg-sles${osmajor}-extras-testing" \
+			"Extra packages to support some RPMs in the PostgreSQL RPM repo SLES \$releasever - \$basearch - Updates testing" \
+			"${YUM_BASE}/testing/extras/${OSURL}" \
+			0 "$gpgkey" 0
 	fi
 
 	# ── Stable per-version repos (autorefresh=1) ──────────────────────
