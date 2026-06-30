@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.11
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -83,6 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Jun 30 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1.11-2PGDG
+- Rebuild because of package signing issue on some platforms
+
 * Mon Jun 29 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1.11-1PGDG
 - Update to 3.1.11 per changes described at:
   https://github.com/michelp/pgsodium/releases/tag/v3.1.11
