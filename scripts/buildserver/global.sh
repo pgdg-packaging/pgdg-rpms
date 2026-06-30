@@ -52,7 +52,7 @@ export CF_SRPM_DISTRO_ID=XXXXXXXXXXXXXXXXXX
 declare -a pgStableBuilds=("18 17 16 15 14")
 declare -a pgTestBuilds=("19 18 17 16 15 14")
 declare -a pgBetaVersion=(19)
-declare -a pgAlphaVersion=()
+declare -a pgAlphaVersion=(20)
 
 # Common function to sign packages using GPG agent
 sign_package() {
