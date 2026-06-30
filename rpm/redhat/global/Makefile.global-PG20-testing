@@ -1,0 +1,118 @@
+#################################
+# Makefile for PostgreSQL 20	#
+# testing packaging		#
+# https://yum.postgresql.org	#
+#				#
+# Devrim Gunduz			#
+# devrim@gunduz.org		#
+#################################
+#				#
+#				#
+# build target is for		#
+# RPM buildfarm			#
+#				#
+#				#
+#################################
+
+
+## PostgreSQL 20 Testing
+
+prep20:
+	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
+	# Update spec file, patches, etc, before running spectool:
+	git pull
+	# Use spectool to download source files, especially tarballs.
+	spectool -g -S --define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" $(SPECFILE)
+
+build20testing: prep20
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "_builddir $(HOME)/rpm20testing/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm20testing/RPMS/" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	-bb $(SPECFILE)
+	make bfsrpm20testing
+
+srpm20testing: prep20
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir ." \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfsrpm20testing: prep20
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfnoprepsrpm20testing:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfnosignsrpm20testing: prep20
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+rpm20testing: prep20
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	-bb $(SPECFILE)
+
+nosignbuild20testimg:
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(HOME)/rpm20testing/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm20testing/RPMS/" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	-bb $(SPECFILE)
+	make bfnosignsrpm20testing
+
+noprepbuild20testing:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(HOME)/rpm20testing/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm20testing/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm20testing/RPMS/" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	-bb $(SPECFILE)
+
+nopreprpm20testing:
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	-bb $(SPECFILE)
+
+noprepsrpm20testing:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir ." \
+	--define "_buildrootdir $(HOME)/rpm20testing/BUILDROOT" \
+	--define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
