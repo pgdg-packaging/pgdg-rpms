@@ -4,8 +4,8 @@
 
 Summary:	A simple extension to PostgreSQL that requires criteria for UPDATE and DELETE
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5
-Release:	4PGDG%{?dist}
+Version:	1.6
+Release:	1PGDG%{?dist}
 License:	ISC
 URL:		https://github.com/eradman/pg-safeupdate
 Source0:	https://github.com/eradman/pg-safeupdate/archive/refs/tags/%{version}.tar.gz
@@ -61,6 +61,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Jun 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6-1PGDG
+- Update to 1.6 per changes described at:
+  https://github.com/eradman/pg-safeupdate/releases/tag/1.6
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5-4PGDG
 - Add SLES 16 support
 
