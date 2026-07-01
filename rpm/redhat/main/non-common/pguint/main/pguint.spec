@@ -4,8 +4,8 @@
 
 Summary:	Unsigned and other extra integer types for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.20250815
-Release:	3PGDG%{?dist}
+Version:	1.20260630
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/petere/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/petere/%{sname}
@@ -72,6 +72,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Wed Jul 1 2026 Devrim Gunduz <devrim@gunduz.org> - 1.20260630-1PGDG
+- Update to 1.20260630
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.20250815-3PGDG
 - Add SLES 16 support
 
