@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="pgauditlogtofile18.spec"
+SPECFILE="pgauditlogtofile.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
