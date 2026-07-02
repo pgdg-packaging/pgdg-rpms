@@ -50,6 +50,10 @@ Rocky Linux, AlmaLinux and also the GPG key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Thu Jul 2 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-66PGDG
+- Introduce PostgreSQL 20 testing repos (except RHEL 8)
+- Introduce extras-testing repos
+
 * Sun Feb 22 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-65PGDG
 - Enable gpgheck on all repos (in this case it is 19 testing repos)
   Per https://redmine.postgresql.org/issues/7897 .

@@ -24,6 +24,14 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
 
+[pgdg-rhel10-extras-testing]
+name=Extra packages to support some RPMs in the PostgreSQL RPM repo for RHEL / Rocky Linux / AlmaLinux 10.1 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/extras/redhat/rhel-10.1-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
+repo_gpgcheck = 1
+
 # PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable repositories:
 
 [pgdg18]
