@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL extension to store authentication attempts
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.0
-Release:	6PGDG%{?dist}
+Version:	5.0
+Release:	1PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/RafiaSabih/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/RafiaSabih/%{sname}/
@@ -83,6 +83,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Jul 2 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0-1PGDG
+- Update to 5.0 per changes described at:
+  https://github.com/RafiaSabih/pg_auth_mon/releases/tag/v5.0
+
+* Thu Jun 25 2026 Devrim Gunduz <devrim@gunduz.org> - 4.0-1PGDG
+- Update to 4.0 per changes described at:
+  https://github.com/RafiaSabih/pg_auth_mon/releases/tag/v4.0
+
 * Thu Nov 20 2025 Devrim Gündüz <devrim@gunduz.org> - 3.0-6PGDG
 - Modernise OpenSSL dependencies.
 
