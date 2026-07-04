@@ -30,6 +30,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PG_ALL_VERSIONS=(18 17 16 15 14)		# Stable releases (all OS types)
 PG_TEST_VERSIONS=(19 18 17 16 15 14)		# Testing repos for RHEL/Fedora
 
+# Per-OS-version maximum supported PostgreSQL major version.
+# Stanzas for PG versions above this limit are omitted from that OS's repo file.
+# Variable naming: PG_MAX_VER_{osdistro}_{osmajor}  (leave unset = no restriction)
+# SLES equivalent would be e.g. PG_MAX_VER_sles_15=18
+PG_MAX_VER_redhat_8=18			# RHEL 8: PG19+ not supported
+
 # RHEL: valid OS versions and architectures
 VALID_VER_redhat=("10.2" "10.1" "10.0" "10" "9.8" "9.7" "9.6" "9" "8.10")
 VALID_ARCH_redhat=("x86_64" "aarch64" "ppc64le")
@@ -146,6 +152,16 @@ in_array() {
 	local v
 	for v in "$@"; do [[ "$v" == "$needle" ]] && return 0; done
 	return 1
+}
+
+# Returns 0 if pgver is supported for the given OS type + major version.
+# Reads PG_MAX_VER_{osdistro}_{osmajor}; if unset, all versions are supported.
+pg_supported() {
+	local osdistro="$1" osmajor="$2" pgver="$3"
+	local max_var="PG_MAX_VER_${osdistro}_${osmajor}"
+	local max_pg="${!max_var}"
+	[[ -n "$max_pg" && "$pgver" -gt "$max_pg" ]] && return 1
+	return 0
 }
 
 # Returns 0 if the given OS type should be generated.
@@ -306,6 +322,7 @@ generate_redhat_repo() {
 		"PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable repositories:"
 	local pgver
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
+		pg_supported "redhat" "$osmajor" "$pgver" || continue
 		write_stanza "$outfile" \
 			"pgdg${pgver}" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch" \
@@ -327,6 +344,7 @@ generate_redhat_repo() {
 			"PGDG RHEL / Rocky Linux / AlmaLinux Updates Testing repositories. (These packages should not be used in production)" \
 			"Available for PostgreSQL 14 and above."
 		for pgver in "${PG_TEST_VERSIONS[@]}"; do
+			pg_supported "redhat" "$osmajor" "$pgver" || continue
 			write_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Updates testing" \
@@ -379,6 +397,7 @@ generate_redhat_repo() {
 
 	if [[ "${SYNCTESTINGREPOS_redhat}" -eq 1 ]]; then
 		for pgver in "${PG_TEST_VERSIONS[@]}"; do
+			pg_supported "redhat" "$osmajor" "$pgver" || continue
 			if ! in_array "$pgver" "${PG_ALL_VERSIONS[@]}"; then
 				write_stanza "$outfile" \
 					"pgdg${pgver}-updates-testing-source" \
@@ -390,6 +409,7 @@ generate_redhat_repo() {
 	fi
 
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
+		pg_supported "redhat" "$osmajor" "$pgver" || continue
 		write_stanza "$outfile" \
 			"pgdg${pgver}-source" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Source" \
@@ -416,6 +436,7 @@ generate_redhat_repo() {
 	write_comment "$outfile" \
 		"Debuginfo / debugsource packages for stable repos"
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
+		pg_supported "redhat" "$osmajor" "$pgver" || continue
 		write_stanza "$outfile" \
 			"pgdg${pgver}-debuginfo" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Debuginfo" \
@@ -428,6 +449,7 @@ generate_redhat_repo() {
 			"Debuginfo / debugsource packages for testing repos" \
 			"Available for PostgreSQL 14 and above."
 		for pgver in "${PG_TEST_VERSIONS[@]}"; do
+			pg_supported "redhat" "$osmajor" "$pgver" || continue
 			write_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing-debuginfo" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Debuginfo" \
@@ -719,6 +741,7 @@ generate_suse_repo() {
 	write_comment "$outfile" "PGDG SuSE Enterprise Linux stable repositories:"
 	local pgver
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
+		pg_supported "$ostype" "$osmajor" "$pgver" || continue
 		write_suse_stanza "$outfile" \
 			"${vpfx}${pgver}" \
 			"PostgreSQL ${pgver} SLES \$releasever - \$basearch" \
@@ -740,6 +763,7 @@ generate_suse_repo() {
 			"PGDG SuSE Enterprise Linux Updates Testing repositories. (These packages should not be used in production)" \
 			"Available for v15 and above."
 		for pgver in "${SLES_TEST_VERSIONS[@]}"; do
+			pg_supported "$ostype" "$osmajor" "$pgver" || continue
 			write_suse_stanza "$outfile" \
 				"${vpfx}${pgver}-updates-testing" \
 				"PostgreSQL ${pgver} SLES \$releasever - \$basearch - Updates testing" \
@@ -774,6 +798,7 @@ generate_suse_repo() {
 	if [[ "${sync_testing}" -eq 1 ]]; then
 		# Testing-only versions: those in SLES_TEST_VERSIONS but not SLES_SOURCE_VERSIONS
 		for pgver in "${SLES_TEST_VERSIONS[@]}"; do
+			pg_supported "$ostype" "$osmajor" "$pgver" || continue
 			if ! in_array "$pgver" "${SLES_SOURCE_VERSIONS[@]}"; then
 				write_suse_stanza "$outfile" \
 					"${vpfx}${pgver}-source-updates-testing" \
@@ -787,6 +812,7 @@ generate_suse_repo() {
 	# Stable source versions interleaved with their testing counterparts
 	# Note: stable source stanzas always use "pgdg{VER}-source" (no vpfx dash)
 	for pgver in "${SLES_SOURCE_VERSIONS[@]}"; do
+		pg_supported "$ostype" "$osmajor" "$pgver" || continue
 		write_suse_stanza "$outfile" \
 			"pgdg${pgver}-source" \
 			"PostgreSQL ${pgver} for SuSE Enterprise Linux \$releasever - \$basearch - Source" \
@@ -806,6 +832,7 @@ generate_suse_repo() {
 	# Debuginfo stanza IDs always use no-dash style (even in SLES 15)
 	write_comment "$outfile" "Debuginfo/debugsource packages for stable repos"
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
+		pg_supported "$ostype" "$osmajor" "$pgver" || continue
 		write_suse_stanza "$outfile" \
 			"pgdg${pgver}-debuginfo" \
 			"PostgreSQL ${pgver} for SuSE Enterprise Linux \$releasever - \$basearch - Debuginfo" \
@@ -818,6 +845,7 @@ generate_suse_repo() {
 			"Debuginfo/debugsource packages for testing repos" \
 			"Available for v15 and above."
 		for pgver in "${SLES_TEST_VERSIONS[@]}"; do
+			pg_supported "$ostype" "$osmajor" "$pgver" || continue
 			write_suse_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing-debuginfo" \
 				"PostgreSQL ${pgver} for SuSE Enterprise Linux \$releasever - \$basearch - Debuginfo" \
