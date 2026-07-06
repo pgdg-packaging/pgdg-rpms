@@ -4,14 +4,11 @@
 
 Summary:	ODBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.5.1
-Release:	5PGDG%{?dist}
+Version:	0.6.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
-URL:		https://github.com/CartoDB/%{sname}
-Source0:	https://github.com/CartoDB/%{sname}/archive/refs/tags/%{version}.tar.gz
-%if %{pgmajorversion} == 17
-Patch0:		%{sname}-pg17.patch
-%endif
+URL:		https://github.com/devrimgunduz/%{sname}
+Source0:	https://github.com/devrimgunduz/%{sname}/archive/refs/tags/%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	postgresql%{pgmajorversion}-server unixODBC-devel
 Requires:	postgresql%{pgmajorversion}-server
@@ -43,9 +40,6 @@ This package provides JIT support for odbc_fdw
 
 %prep
 %setup -q -n %{sname}-%{version}
-%if %{pgmajorversion} == 17
-%patch -P 0 -p0
-%endif
 
 %build
 
@@ -61,10 +55,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 
 %files
 %defattr(-,root,root,-)
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
+%license LICENSE
 %{pginstdir}/lib/*.so
 %{pginstdir}/share/extension/*.sql
 %{pginstdir}/share/extension/*.control
-%{pginstdir}/doc/extension/README-%{sname}.md
 
 %if %llvm
 %files llvmjit
@@ -73,6 +68,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Jul 6 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.0-1PGDG
+- Update to 0.6.0 per changes described at:
+  https://github.com/devrimgunduz/odbc_fdw/releases/tag/0.6.0
+- Switch to new repo
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 0.5.1-5PGDG
 - Add SLES 16 support
 
