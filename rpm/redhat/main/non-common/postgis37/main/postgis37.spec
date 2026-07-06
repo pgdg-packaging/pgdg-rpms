@@ -363,4 +363,5 @@ fi
 
 %changelog
 * Mon Jul 6 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0alpha1-1PGDG
-- Initial cut for PostGIS 3.7.0 alpha1
+- Initial cut for PostGIS 3.7.0 alpha1 per:
+  https://postgis.net/2026/07/PostGIS-3.7.0alpha1/
