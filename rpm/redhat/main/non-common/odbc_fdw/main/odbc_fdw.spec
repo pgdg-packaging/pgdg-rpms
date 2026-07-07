@@ -4,7 +4,7 @@
 
 Summary:	ODBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.6.0
+Version:	0.6.1
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/devrimgunduz/%{sname}
@@ -68,6 +68,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Jul 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-1PGDG
+- Update to 0.6.1 per changes described at:
+  https://github.com/devrimgunduz/odbc_fdw/releases/tag/0.6.1
+
 * Mon Jul 6 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.0-1PGDG
 - Update to 0.6.0 per changes described at:
   https://github.com/devrimgunduz/odbc_fdw/releases/tag/0.6.0
