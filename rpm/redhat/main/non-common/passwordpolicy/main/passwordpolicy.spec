@@ -3,7 +3,7 @@
 
 Summary:	PostgreSQL Passwordcheck Policy
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.5
+Version:	2.0.6
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
@@ -67,7 +67,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
-* Sat Mar 21 2026 Francisco Miguel Biete Banon <fbiete@gmail.com> - 2.0.5PGDG
+* Wed Jul 8 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.6-1PGDG
+- Update to 2.0.6 per changes described at:
+  https://github.com/fmbiete/passwordpolicy/releases/tag/v2.0.6
+
+* Sat Mar 21 2026 Francisco Miguel Biete Banon <fbiete@gmail.com> - 2.0.5-1PGDG
 - New release
 
 * Tue Dec 2 2025 Francisco Miguel Biete Banon <fbiete@gmail.com> - 2.0.4
