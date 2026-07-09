@@ -3,7 +3,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.19
+Version:	1.20
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Extension Whitelist
 License:	PostgreSQL
@@ -77,6 +77,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.20-1PGDG
+- Update to 1.20 per changes described at:
+  https://github.com/dimitri/pgextwlist/releases/tag/v1.20
+
 * Mon Apr 6 2026 Devrim Gündüz <devrim@gunduz.org> - 1.19-1PGDG
 - Initial packaging for PostgreSQL YUM repository.
 
