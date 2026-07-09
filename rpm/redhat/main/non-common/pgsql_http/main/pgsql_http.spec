@@ -6,7 +6,7 @@
 Summary:	PostgreSQL HTTP client
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.7.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -66,6 +66,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.2-2PGDG
+- Rebuild because of a signature issue
+
 * Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.2-1PGDG
 - Update to 1.7.2 per changes described at:
   https://github.com/pramsey/pgsql-http/releases/tag/v1.7.2
