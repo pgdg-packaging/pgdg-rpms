@@ -5,8 +5,8 @@
 
 Summary:	PostgreSQL gzip/gunzip functions
 Name:		%{pname}_%{pgmajorversion}
-Version:	1.0.0
-Release:	8PGDG%{?dist}
+Version:	1.1.0
+Release:	1PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -87,6 +87,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.1-1PGDG
+- Update to 1.1.1 per changes described at:
+  https://github.com/pramsey/pgsql-gzip/releases/tag/v1.1.0
+  https://github.com/pramsey/pgsql-gzip/releases/tag/v1.1.1
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.0.0-7PGDG
 - Bump release number (missed in previous commit)
 
