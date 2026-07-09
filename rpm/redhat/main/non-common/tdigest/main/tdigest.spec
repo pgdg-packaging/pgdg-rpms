@@ -4,7 +4,7 @@
 
 Summary:	t-digest implementation for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.2
+Version:	1.4.4
 Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/tvondra/%{sname}/archive/v%{version}.tar.gz
@@ -70,6 +70,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Jul 8 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.4-1PGDG
+- Update to 1.4.4 per changes described at:
+  https://github.com/tvondra/tdigest/releases/tag/v1.4.4
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-4PGDG
 - Add SLES 16 support
 
