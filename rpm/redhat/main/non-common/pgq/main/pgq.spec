@@ -4,8 +4,8 @@
 
 Summary:	Generic Queue for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.5.1
-Release:	6PGDG%{?dist}
+Version:	3.5.2
+Release:	1PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}/
@@ -72,7 +72,11 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 %endif
 
 %changelog
-* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.1.5-6PGDG
+* Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-1PGDG
+- Update to 3.5.2 per changes described at:
+  https://github.com/pgq/pgq/releases/tag/v3.5.2
+
+* Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.5.1-6PGDG
 - Add SLES 16 support
 
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 3.5.1-5PGDG
