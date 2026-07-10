@@ -38,6 +38,7 @@ This package contains zypper configuration for OpenSuSE Leap
 %changelog
 * Fri Jul 10 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-52PGDG
 - Introduce PostgreSQL 20 testing repo
+- Add missing v14 repos
 
 * Tue Mar 24 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-51PGDG
 - Initial OpenSuSE Leap repo packaging for the PostgreSQL RPM repository.
