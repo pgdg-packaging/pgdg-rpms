@@ -29,6 +29,17 @@ gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
 keeppackages=0
 priority=1
 
+[pgdg-sles16-extras-testing]
+name=Extra packages to support some RPMs in the PostgreSQL RPM repo SLES $releasever - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/zypp/testing/extras/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
 # PGDG SuSE Enterprise Linux stable repositories:
 
 [pgdg18]
@@ -66,9 +77,9 @@ priority=1
 
 [pgdg15]
 name=PostgreSQL 15 SLES $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/zypp/15/suse/sles-$releasever-$basearch
 enabled=1
 autorefresh=1
-baseurl=https://download.postgresql.org/pub/repos/zypp/15/suse/sles-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -77,9 +88,9 @@ priority=1
 
 [pgdg14]
 name=PostgreSQL 14 SLES $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/zypp/14/suse/sles-$releasever-$basearch
 enabled=1
 autorefresh=1
-baseurl=https://download.postgresql.org/pub/repos/zypp/14/suse/sles-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -101,6 +112,17 @@ priority=1
 
 # PGDG SuSE Enterprise Linux Updates Testing repositories. (These packages should not be used in production)
 # Available for v15 and above.
+
+[pgdg20-updates-testing]
+name=PostgreSQL 20 SLES $releasever - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/zypp/testing/20/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
 
 [pgdg19-updates-testing]
 name=PostgreSQL 19 SLES $releasever - $basearch - Updates testing
@@ -157,6 +179,17 @@ gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
 keeppackages=0
 priority=1
 
+[pgdg14-updates-testing]
+name=PostgreSQL 14 SLES $releasever - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/zypp/testing/14/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
 # PGDG SuSE Enterprise Linux SRPM testing common repository
 
 [pgdg-source-common]
@@ -185,6 +218,28 @@ priority=1
 
 # PGDG Source RPMs (SRPMS), and their testing repositories:
 
+[pgdg20-source-updates-testing]
+name=PostgreSQL 20 SLES $releasever - $basearch - SRPM Updates testing
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/testing/20/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
+[pgdg19-source]
+name=PostgreSQL 19 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/19/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
 [pgdg19-source-updates-testing]
 name=PostgreSQL 19 SLES $releasever - $basearch - SRPM Updates testing
 baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/testing/19/suse/sles-$releasever-$basearch
@@ -198,9 +253,9 @@ priority=1
 
 [pgdg18-source]
 name=PostgreSQL 18 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/18/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/18/suse/sles-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -220,9 +275,9 @@ priority=1
 
 [pgdg17-source]
 name=PostgreSQL 17 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/17/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/17/suse/sles-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -242,9 +297,9 @@ priority=1
 
 [pgdg16-source]
 name=PostgreSQL 16 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/16/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/16/suse/sles-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -264,9 +319,9 @@ priority=1
 
 [pgdg15-source]
 name=PostgreSQL 15 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/15/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/15/suse/sles-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -276,6 +331,28 @@ priority=1
 [pgdg15-source-updates-testing]
 name=PostgreSQL 15 SLES $releasever - $basearch - SRPM Updates testing
 baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/testing/15/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
+[pgdg14-source]
+name=PostgreSQL 14 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/14/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
+[pgdg14-source-updates-testing]
+name=PostgreSQL 14 SLES $releasever - $basearch - SRPM Updates testing
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/testing/14/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
 type=rpm-md
@@ -344,6 +421,17 @@ priority=1
 # Debuginfo/debugsource packages for testing repos
 # Available for v15 and above.
 
+[pgdg20-updates-testing-debuginfo]
+name=PostgreSQL 20 for SuSE Enterprise Linux $releasever - $basearch - Debuginfo
+baseurl=https://zypp-debuginfo.postgresql.org/testing/debug/20/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
 [pgdg19-updates-testing-debuginfo]
 name=PostgreSQL 19 for SuSE Enterprise Linux $releasever - $basearch - Debuginfo
 baseurl=https://zypp-debuginfo.postgresql.org/testing/debug/19/suse/sles-$releasever-$basearch
@@ -391,6 +479,17 @@ priority=1
 [pgdg15-updates-testing-debuginfo]
 name=PostgreSQL 15 for SuSE Enterprise Linux $releasever - $basearch - Debuginfo
 baseurl=https://zypp-debuginfo.postgresql.org/testing/debug/15/suse/sles-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
+[pgdg14-updates-testing-debuginfo]
+name=PostgreSQL 14 for SuSE Enterprise Linux $releasever - $basearch - Debuginfo
+baseurl=https://zypp-debuginfo.postgresql.org/testing/debug/14/suse/sles-$releasever-$basearch
 enabled=0
 autorefresh=0
 type=rpm-md
