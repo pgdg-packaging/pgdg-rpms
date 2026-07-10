@@ -4,8 +4,8 @@
 
 Summary:	Server side rollback at statement level for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5
-Release:	3PGDG%{?dist}
+Version:	1.6
+Release:	1PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/lzlabs/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/lzlabs/%{sname}
@@ -63,6 +63,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6-1PGDG
+- Update to 1.6 per changes described at:
+  https://github.com/lzlabs/pg_statement_rollback/releases/tag/v1.6
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5-3PGDG
 - Add SLES 16 support
 
