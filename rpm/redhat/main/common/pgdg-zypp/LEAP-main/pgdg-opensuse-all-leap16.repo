@@ -29,6 +29,17 @@ gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
 keeppackages=0
 priority=1
 
+[pgdg-sles16-extras-testing]
+name=Extra packages to support some RPMs in the PostgreSQL RPM repo SLES $releasever - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/zypp/testing/extras/opensuse/leap-$releasever-$basearch
+enabled=0
+autorefresh=0
+type=rpm-md
+gpgcheck=1
+gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
+keeppackages=0
+priority=1
+
 # PGDG SuSE Enterprise Linux stable repositories:
 
 [pgdg18]
@@ -66,9 +77,9 @@ priority=1
 
 [pgdg15]
 name=PostgreSQL 15 SLES $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/zypp/15/opensuse/leap-$releasever-$basearch
 enabled=1
 autorefresh=1
-baseurl=https://download.postgresql.org/pub/repos/zypp/15/opensuse/leap-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -77,9 +88,9 @@ priority=1
 
 [pgdg14]
 name=PostgreSQL 14 SLES $releasever - $basearch
+baseurl=https://download.postgresql.org/pub/repos/zypp/14/opensuse/leap-$releasever-$basearch
 enabled=1
 autorefresh=1
-baseurl=https://download.postgresql.org/pub/repos/zypp/14/opensuse/leap-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -198,9 +209,9 @@ priority=1
 
 [pgdg18-source]
 name=PostgreSQL 18 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/18/opensuse/leap-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/18/opensuse/leap-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -220,9 +231,9 @@ priority=1
 
 [pgdg17-source]
 name=PostgreSQL 17 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/17/opensuse/leap-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/17/opensuse/leap-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -242,9 +253,9 @@ priority=1
 
 [pgdg16-source]
 name=PostgreSQL 16 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/16/opensuse/leap-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/16/opensuse/leap-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16
@@ -264,9 +275,9 @@ priority=1
 
 [pgdg15-source]
 name=PostgreSQL 15 for SuSE Enterprise Linux $releasever - $basearch - Source
+baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/15/opensuse/leap-$releasever-$basearch
 enabled=0
 autorefresh=0
-baseurl=https://download.postgresql.org/pub/repos/zypp/srpms/15/opensuse/leap-$releasever-$basearch
 type=rpm-md
 gpgcheck=1
 gpgkey=file:///etc/pki/PGDG-RPM-GPG-KEY-SLES16

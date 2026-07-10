@@ -1,6 +1,6 @@
 Name:		pgdg-opensuse-leap-repo
 Version:	42.0
-Release:	51PGDG
+Release:	52PGDG
 Summary:	PostgreSQL PGDG RPMs - Zypper Repository Configuration for OpenSuSE Leap
 License:	PostgreSQL
 URL:		https://zypp.postgresql.org
@@ -36,5 +36,8 @@ This package contains zypper configuration for OpenSuSE Leap
 %{_sysconfdir}/pki/PGDG-RPM-GPG-KEY-LEAP1*
 
 %changelog
+* Fri Jul 10 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-52PGDG
+- Introduce PostgreSQL 20 testing repo
+
 * Tue Mar 24 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-51PGDG
 - Initial OpenSuSE Leap repo packaging for the PostgreSQL RPM repository.
