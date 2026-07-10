@@ -28,7 +28,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # PostgreSQL versions
 PG_ALL_VERSIONS=(18 17 16 15 14)		# Stable releases (all OS types)
-PG_TEST_VERSIONS=(19 18 17 16 15 14)		# Testing repos for RHEL/Fedora
+PG_TEST_VERSIONS=(20 19 18 17 16 15 14)		# Testing repos for RHEL/Fedora
 
 # Per-OS-version maximum supported PostgreSQL major version.
 # Stanzas for PG versions above this limit are omitted from that OS's repo file.
@@ -57,8 +57,8 @@ SYNCTESTINGREPOS_sles=1
 #   - Stable binary + stable debuginfo: all PG_ALL_VERSIONS (incl. PG14)
 #   - Testing binary, source, and testing debuginfo: PG15 and above only
 #   - Stable source: PG15 and above only (no pgdg14-source on SLES)
-SLES_TEST_VERSIONS=(19 18 17 16 15)	# "Available for v15 and above"
-SLES_SOURCE_VERSIONS=(18 17 16 15)	# Stable source; PG14 excluded
+SLES_TEST_VERSIONS=(20 19 18 17 16 15 14)	# "Available for v15 and above"
+SLES_SOURCE_VERSIONS=(19 18 17 16 15 14)	# Stable source; PG14 excluded
 
 # openSUSE Leap: same constraints as SLES but different URL path
 VALID_LEAP_MAJOR_VERSIONS=(16)		# Generates pgdg-opensuse-all-leap{N}.repo
