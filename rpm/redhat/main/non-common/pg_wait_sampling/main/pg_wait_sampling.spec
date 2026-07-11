@@ -4,8 +4,8 @@
 
 Summary:	Sampling based statistics of wait events
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.1.9
-Release:	3PGDG%{?dist}
+Version:	1.1.10
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}
@@ -69,6 +69,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Sat Jul 11 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.10-1PGDG
+- Update to 1.1.10 per changes described at:
+  https://github.com/postgrespro/pg_wait_sampling/releases/tag/v1.1.10
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.1.9-3PGDG
 - Add SLES 16 support
 
