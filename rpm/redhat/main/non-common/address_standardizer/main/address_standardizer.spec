@@ -10,7 +10,7 @@ License:	MIT
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/postgis/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-Requires:	postgresql%{pgmajorversion}-server
+Requires:	postgresql%{pgmajorversion}-server postgis3_%{pgmajorversion} >= 3.7
 
 %description
 This is a fork of the PAGC standardizer (http://www.pagcgeo.org) and single line
