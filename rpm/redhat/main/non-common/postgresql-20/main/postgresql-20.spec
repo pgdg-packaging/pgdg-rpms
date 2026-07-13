@@ -760,7 +760,6 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 	# Makefiles, however.
 	%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/lib/test
 	%{__cp} -a src/test/regress %{buildroot}%{pgbaseinstdir}/lib/test
-	%{__rm} -f %{buildroot}%{pgbaseinstdir}/lib/test/regress/refint.so
 	%{__rm} -f %{buildroot}%{pgbaseinstdir}/lib/test/regress/autoinc.so
 	# pg_regress binary should be only in one subpackage,
 	# there will be a symlink from -test to -devel
@@ -1072,7 +1071,6 @@ fi
 %{pgbaseinstdir}/lib/pg_visibility.so
 %{pgbaseinstdir}/lib/pg_walinspect.so
 %{pgbaseinstdir}/lib/postgres_fdw.so
-%{pgbaseinstdir}/lib/refint.so
 %{pgbaseinstdir}/lib/seg.so
 %if %ssl
 %{pgbaseinstdir}/lib/sslinfo.so
@@ -1136,7 +1134,6 @@ fi
 %{pgbaseinstdir}/share/extension/pgrowlocks*
 %{pgbaseinstdir}/share/extension/pgstattuple*
 %{pgbaseinstdir}/share/extension/postgres_fdw*
-%{pgbaseinstdir}/share/extension/refint*
 %{pgbaseinstdir}/share/extension/seg*
 %if %ssl
 %{pgbaseinstdir}/share/extension/sslinfo*
