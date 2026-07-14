@@ -9,36 +9,6 @@
 # Include common values:
 source ~/bin/global.sh
 
-# Create logs directory if it doesn't exist
-mkdir -p ~/bin/logs
-
-# Function to log build failures
-log_build_failure() {
-	local package_name=$1
-	local pg_version=$2
-	local repo_type=$3
-	local timestamp=$(date '+%Y%m%d_%H%M%S')
-
-	log_file=~/bin/logs/${package_name}_pg${pg_version}_${repo_type}_${timestamp}.log
-
-	# Write failure information to log
-	{
-		echo "========================================="
-		echo "Build Failure Report"
-		echo "========================================="
-		echo "Timestamp: $(date '+%Y-%m-%d %H:%M:%S')"
-		echo "Package: $package_name"
-		echo "PostgreSQL Version: ${pg_version:-N/A}"
-		echo "Repository Type: $repo_type"
-		echo "OS: $git_os"
-		echo "Package Version: ${packageVersion:-Unable to determine}"
-		echo "========================================="
-		echo ""
-	} > "$log_file"
-
-	echo "${red}Build failed. Log written to: $log_file${reset}"
-}
-
 # Throw an error if less than two arguments are supplied:
 if [ $# -le 1 ]
 then
