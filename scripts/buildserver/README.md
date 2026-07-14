@@ -14,7 +14,7 @@ enforced in `global.sh`, which every other script sources first.
 
 ## Architecture Overview
 
-The scripts distinguish between three repository categories:
+The scripts distinguish between four repository categories:
 
 - **Common** — packages that are version-independent (e.g., shared
   utilities), stored in `rpmcommon/` and published under the `common/`
@@ -23,6 +23,10 @@ The scripts distinguish between three repository categories:
   PostGIS, pgpool-II), stored in `rpm<version>/` directories.
 - **Extras** — additional packages for RHEL/SLES platforms, stored in
   `pgdg.extras/`.
+- **Repo RPM** (`pgdg-yum`) — the repository-definition RPM itself
+  (`/etc/yum.repos.d/pgdg-*.repo`), built per OS release rather than per
+  PostgreSQL version. Lives on disk alongside the common packages but is
+  built with `reporpmbuild.sh`, not `packagebuild.sh` (see below).
 
 Separately, **non-free** packages are handled by dedicated scripts
 (`packagebuildnonfree.sh`, `packagesyncnonfree.sh`) to prevent accidentally
@@ -33,26 +37,30 @@ buckets (`dnf-debuginfo`, `dnf-srpms`), each fronted by a CloudFront
 distribution. SLES and openSUSE Leap builds use a parallel `zypp`-prefixed bucket set instead
 of `dnf`.
 
+Configuration is split across two files: `global.sh` holds logic and values
+that are identical across every build instance and gets redeployed/updated
+centrally, while `global-local.sh` holds the handful of values that differ
+per instance (OS version, architecture, signing key, CloudFront
+distribution) and is never overwritten by that redeployment. See both
+sections below.
+
 ---
 
 ## global.sh
 
-The central configuration file sourced by every other script. It defines all
-shared variables and the two reusable functions `sign_package` and
-`preset_gpg_passphrase`.
+The central configuration file sourced by every other script. It defines the
+shared, instance-independent variables and functions, and sources
+`~/bin/global-local.sh` for everything that differs per build instance (see
+the next section). It exits with a clear error if `global-local.sh` is
+missing, or if `global-local.sh` failed to set one of the variables
+`global.sh` depends on (`osmajorversion`, `osminversion`, `osislatest`,
+`osarch`, `osdistro`, `git_os`, `extrasrepoenabled`, `CF_DEBUG_DISTRO_ID`,
+`CF_SRPM_DISTRO_ID`).
 
-### OS Configuration
-
-| Variable | Example | Description |
-|---|---|---|
-| `osmajorversion` | `10` | OS major version (RHEL 10, SLES 15, Fedora 43) |
-| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap |
-| `osminversion` | `1` | Minor version for RHEL/SLES (e.g. RHEL 10.1) |
-| `osislatest` | `0` or `1` | When `1`, packages are also synced to the major-version path (S3 has no symlinks) |
-| `osarch` | `x86_64` | Architecture; also `aarch64`, `ppc64le` |
-| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, or `opensuse` |
-| `git_os` | `EL-10` | Git branch suffix used in clone paths |
-| `extrasrepoenabled` | `1` | Enables the extras repository for RHEL/SLES |
+Because `global.sh` no longer contains per-host values, it's safe to
+redeploy/update it across every build instance at once — instance-specific
+settings live only in `global-local.sh`, which that redeployment doesn't
+touch.
 
 ### PostgreSQL Build Versions
 
@@ -65,17 +73,20 @@ shared variables and the two reusable functions `sign_package` and
 
 ### GPG Configuration
 
-`GPG_KEY_ID` and `GPG_PASSWORD` must be set before use. The password is used
-for `repomd.xml` signing (via `gpg2 --passphrase-fd`) while package signing
-itself relies on `gpg-agent` with a pre-loaded passphrase (see
-`gpg-setup-secure.sh`).
+`GPG_PASSWORD` is defined here (used for `repomd.xml` signing via `gpg2
+--passphrase-fd`); package signing itself relies on `gpg-agent` with a
+pre-loaded passphrase (see `gpg-setup-secure.sh`). The per-host signing key,
+`GPG_KEY_ID`, comes from `global-local.sh` — `global.sh` defaults it to
+empty if a host hasn't set it yet.
 
 ### AWS Configuration
 
-`awssrpmurl` and `awsdebuginfourl` point to separate S3 buckets for SRPMs
-and debug packages. `CF_SRPM_DISTRO_ID` and `CF_DEBUG_DISTRO_ID` are the
-CloudFront distribution IDs that must be invalidated after every sync.
-Set `AWS_PAGER=""` to suppress interactive output in automated runs.
+`awssrpmurl` and `awsdebuginfourl` are derived automatically from
+`osdistro` (set in `global-local.sh`): SLES/openSUSE hosts get the
+`zypp-*` buckets, every other distro gets the `dnf-*` buckets. This isn't
+something you set per host — it's computed the same way
+`packagesync.sh` derives its `sync_base`. Set `AWS_PAGER=""` to suppress
+interactive output in automated runs.
 
 ### `sign_package <rpm_location>`
 
@@ -89,6 +100,13 @@ Requires `gpg-agent` to be running with the passphrase already preset.
 Feeds `GPG_PASSWORD` into `/usr/libexec/gpg-preset-passphrase` so the
 agent can sign without prompting. On SLES 15 the binary path is
 `/usr/lib/gpg-preset-passphrase`; SLES 16 uses the same path as RHEL.
+
+### `log_build_failure <package_name> <pg_version> <repo_type>`
+
+Writes a timestamped failure report to `~/bin/logs/`. Shared by
+`packagebuild.sh`, `packagebuildnonfree.sh`, and `reporpmbuild.sh` so the
+log format stays consistent across all three. `global.sh` also creates
+`~/bin/logs/` if it doesn't already exist.
 
 ### Crontab note
 
@@ -104,6 +122,55 @@ else
     green=""; red=""; blue=""; reset=""
 fi
 ```
+
+---
+
+## global-local.sh
+
+Per-host configuration, sourced by `global.sh`. **Not** part of whatever
+mechanism redeploys `global.sh` to build instances (git-ignore it, or
+exclude it from the deploy rsync) — that's the whole point: update
+`global.sh` centrally as often as needed without touching this file.
+
+Set it up on a new instance by copying the template and filling in that
+host's values:
+
+```bash
+cp ~/bin/global-local.sh.example ~/bin/global-local.sh
+$EDITOR ~/bin/global-local.sh
+```
+
+If this file is missing, `global.sh` refuses to load and tells you to
+create it.
+
+### OS Configuration
+
+| Variable | Example | Description |
+|---|---|---|
+| `osmajorversion` | `10` | OS major version (RHEL 10, SLES 15, Fedora 43) |
+| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap |
+| `osminversion` | `1` | Minor version for RHEL/SLES (e.g. RHEL 10.1) |
+| `osislatest` | `0` or `1` | When `1`, packages are also synced to the major-version path (S3 has no symlinks) |
+| `osarch` | `x86_64` | Architecture; also `aarch64`, `ppc64le` |
+| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, or `opensuse`. Also drives the automatic `dnf-*`/`zypp-*` S3 bucket selection in `global.sh` |
+| `git_os` | `EL-10` | Git branch/directory suffix used in clone paths |
+| `extrasrepoenabled` | `1` | Enables the extras repository for RHEL/SLES |
+
+### GPG Configuration
+
+| Variable | Example | Description |
+|---|---|---|
+| `GPG_KEY_ID` | `""` | This host's signing key ID, if it differs from the default |
+
+### CloudFront Configuration
+
+| Variable | Example | Description |
+|---|---|---|
+| `CF_SRPM_DISTRO_ID` | `E1234567890ABC` | CloudFront distribution ID fronting the SRPM bucket |
+| `CF_DEBUG_DISTRO_ID` | `E0987654321XYZ` | CloudFront distribution ID fronting the debuginfo bucket |
+
+Both must be invalidated after every sync; `packagesync.sh` and
+`awsupdateindex.sh` do this automatically.
 
 ---
 
@@ -136,8 +203,8 @@ Before deploying, replace the placeholder keygrip:
 export GPG_KEYGRIP="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
-Also ensure `GPG_KEY_ID` is set in `global.sh`, as it is referenced by the
-test signing call in this file.
+Also ensure `GPG_KEY_ID` is set in `global-local.sh`, as it is referenced by
+the test signing call in this file.
 
 ---
 
@@ -174,7 +241,10 @@ The script checks three locations in order and stops at the first match:
 
 1. **Common** (`~/git/pgrpms/rpm/redhat/main/common/<pkg>/<git_os>`) —
    builds once with `make commonbuild` (or `commonbuildtesting`), signs
-   against `rpmcommon`, and exits.
+   against `rpmcommon`, and exits. The `pgdg-yum` repo RPM lives in this
+   same directory on disk but is *not* buildable here: it builds against
+   an OS release, not a PostgreSQL version, so the script detects it and
+   exits with an error pointing to `reporpmbuild.sh` instead.
 2. **Non-common** (`~/git/pgrpms/rpm/redhat/main/non-common/<pkg>/<git_os>`) —
    iterates over every version in `pgStableBuilds` (or `pgTestBuilds`),
    runs `make build<version>` (or `build<version>testing`), and signs
@@ -183,8 +253,32 @@ The script checks three locations in order and stops at the first match:
    builds once with `make extrasbuild` (or `extrasbuildtesting`), signs
    against `pgdg`, and exits. Only available when `extrasrepoenabled=1`.
 
-On any build failure, a timestamped log is written to `~/bin/logs/` and
-the script exits immediately.
+On any build failure, `log_build_failure` (from `global.sh`) writes a
+timestamped log to `~/bin/logs/` and the script exits immediately.
+
+---
+
+## reporpmbuild.sh
+
+Builds and signs the `pgdg-yum` repo RPM — the package that installs
+`/etc/yum.repos.d/pgdg-*.repo` — from
+`~/git/pgrpms/rpm/redhat/main/common/pgdg-yum/<git_os>`. Unlike the packages
+`packagebuild.sh` handles, this one builds against the OS release
+(`osmajorversion.osminversion`) rather than a PostgreSQL major version.
+
+### Usage
+
+```
+reporpmbuild.sh [--testing]
+```
+
+- `--testing` — runs `make repobuild<osmajorversion>.<osminversion>testing`
+  and signs against `rpmcommontesting` instead of the production target.
+
+With no arguments it runs `make repobuild<osmajorversion>.<osminversion>`
+and signs the result against `rpmcommon`, using `sign_package` from
+`global.sh`. On failure, `log_build_failure` writes a timestamped log to
+`~/bin/logs/`, same as `packagebuild.sh`.
 
 ---
 
@@ -194,7 +288,8 @@ Identical in structure to `packagebuild.sh` but operates exclusively on
 the `non-free` directory in the git tree. Kept as a separate script
 deliberately, to prevent accidentally building proprietary packages on
 shared community build instances. It does not support `--beta` or
-`--testing` flags and has no extras/common handling.
+`--testing` flags and has no extras/common handling. Build failures are
+logged via the same shared `log_build_failure` function in `global.sh`.
 
 ---
 
@@ -374,7 +469,9 @@ should eventually be co-located with the scripts rather than kept in
 ### Initial instance setup
 
 ```bash
-# 1. Configure global.sh with correct OS, arch, AWS, and GPG values.
+# 1. Set up this host's per-instance configuration:
+cp ~/bin/global-local.sh.example ~/bin/global-local.sh
+$EDITOR ~/bin/global-local.sh   # OS, arch, GPG key, CloudFront IDs
 # 2. Set up GPG agent:
 bash ~/bin/gpg-setup-secure.sh
 gpg --with-keygrip -K         # Note the keygrip
@@ -399,6 +496,13 @@ gpg --with-keygrip -K         # Note the keygrip
 
 ```bash
 ~/bin/packagebuild.sh pg_activity pg_activity
+~/bin/packagesync.sh --sync=common
+```
+
+### Build and publish the pgdg-yum repo RPM
+
+```bash
+~/bin/reporpmbuild.sh
 ~/bin/packagesync.sh --sync=common
 ```
 
