@@ -9,41 +9,6 @@
 # Include common values:
 source ~/bin/global.sh
 
-# Create logs directory if it doesn't exist
-mkdir -p ~/bin/logs
-
-# Function to log build failures
-log_build_failure() {
-	local package_name=$1
-	local pg_version=$2
-	local repo_type=$3
-	local timestamp=$(date '+%Y%m%d_%H%M%S')
-
-	# Construct log filename
-	if [ -z "$pg_version" ] || [ "$pg_version" == "common" ] || [ "$pg_version" == "extras" ]; then
-		log_file=~/bin/logs/${package_name}_${repo_type}_${timestamp}.log
-	else
-		log_file=~/bin/logs/${package_name}_pg${pg_version}_${timestamp}.log
-	fi
-
-	# Write failure information to log
-	{
-		echo "========================================="
-		echo "Build Failure Report"
-		echo "========================================="
-		echo "Timestamp: $(date '+%Y-%m-%d %H:%M:%S')"
-		echo "Package: $package_name"
-		echo "PostgreSQL Version: ${pg_version:-N/A}"
-		echo "Repository Type: $repo_type"
-		echo "OS: $git_os"
-		echo "Package Version: ${packageVersion:-Unable to determine}"
-		echo "========================================="
-		echo ""
-	} > "$log_file"
-
-	echo "${red}Build failed. Log written to: $log_file${reset}"
-}
-
 # Parse command line arguments
 beta_mode=0
 testing_mode=0
@@ -130,6 +95,16 @@ fi
 # If the package is in common, then build it, sign it and exit safely:
 if [ -x ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os ]
 then
+	# pgdg-yum is a "common" package on disk, but it doesn't build against a PostgreSQL
+	# major version like other common packages do -- it builds against the OS release
+	# (repobuild<osmajorversion>.<osminversion>). Use reporpmbuild.sh for that instead:
+	if [ "$packagename" == "pgdg-yum" ]
+	then
+		echo "${red}ERROR:${reset} pgdg-yum is a repo RPM, not a common package build."
+		echo "       Use ~/bin/reporpmbuild.sh instead."
+		exit 1
+	fi
+
 	if [ $testing_mode -eq 1 ]
 	then
 		echo "${green}Ok, this is a common package, and I am building $packagename for $git_os for common testing repo.${reset}"

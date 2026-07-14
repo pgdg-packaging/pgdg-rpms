@@ -54,6 +54,41 @@ declare -a pgTestBuilds=("19 18 17 16 15 14")
 declare -a pgBetaVersion=(19)
 declare -a pgAlphaVersion=(20)
 
+# Make sure the shared logs directory exists (used by packagebuild.sh and reporpmbuild.sh):
+mkdir -p ~/bin/logs
+
+# Common function to log build failures. Shared by packagebuild.sh and reporpmbuild.sh.
+log_build_failure() {
+	local package_name=$1
+	local pg_version=$2
+	local repo_type=$3
+	local timestamp=$(date '+%Y%m%d_%H%M%S')
+
+	# Construct log filename
+	if [ -z "$pg_version" ] || [ "$pg_version" == "common" ] || [ "$pg_version" == "extras" ]; then
+		log_file=~/bin/logs/${package_name}_${repo_type}_${timestamp}.log
+	else
+		log_file=~/bin/logs/${package_name}_pg${pg_version}_${timestamp}.log
+	fi
+
+	# Write failure information to log
+	{
+		echo "========================================="
+		echo "Build Failure Report"
+		echo "========================================="
+		echo "Timestamp: $(date '+%Y-%m-%d %H:%M:%S')"
+		echo "Package: $package_name"
+		echo "PostgreSQL Version: ${pg_version:-N/A}"
+		echo "Repository Type: $repo_type"
+		echo "OS: $git_os"
+		echo "Package Version: ${packageVersion:-Unable to determine}"
+		echo "========================================="
+		echo ""
+	} > "$log_file"
+
+	echo "${red}Build failed. Log written to: $log_file${reset}"
+}
+
 # Common function to sign packages using GPG agent
 sign_package() {
 	# Remove all files with .sig suffix. They are leftovers which appear
