@@ -40,13 +40,13 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta1_420001PGDG%{?dist}
+Release:	beta2_420001PGDG%{?dist}
 %else
-Release:	beta1_1PGDG%{?dist}
+Release:	beta2_1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}beta1/postgresql-%{version}beta1.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}beta2/postgresql-%{version}beta2.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -503,7 +503,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}beta1
+%setup -q -n %{sname}-%{pgpackageversion}beta2
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1331,6 +1331,9 @@ fi
 %endif
 
 %changelog
+* Mon Jul 13 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta2-1PGDG
+- Update to PostgreSQL 19 beta2
+
 * Mon Jun 1 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta1-1PGDG
 - Update to PostgreSQL 19 beta1!
 - Spec cleanup ahead of beta1: hardlink regress.so to avoid duplicate
