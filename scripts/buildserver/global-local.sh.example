@@ -29,6 +29,7 @@ export git_os="EL-${osmajorversion}"		# EL-9, F-43, SLES-15
 export extrasrepoenabled=1			# 1 or 0. Currently for RHEL, SLES and OpenSuSE..
 
 # GPG Configuration
+export GPG_PASSWORD=foobar			# Passphrase used for repomd.xml signing (gpg2 --passphrase-fd)
 export GPG_KEY_ID=""				# Set this to this host's signing key ID, if it differs from the default
 
 # CloudFront Configuration

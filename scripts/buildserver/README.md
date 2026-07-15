@@ -55,7 +55,7 @@ the next section). It exits with a clear error if `global-local.sh` is
 missing, or if `global-local.sh` failed to set one of the variables
 `global.sh` depends on (`osmajorversion`, `osminversion`, `osislatest`,
 `osarch`, `osdistro`, `git_os`, `extrasrepoenabled`, `CF_DEBUG_DISTRO_ID`,
-`CF_SRPM_DISTRO_ID`).
+`CF_SRPM_DISTRO_ID`, `GPG_PASSWORD`).
 
 Because `global.sh` no longer contains per-host values, it's safe to
 redeploy/update it across every build instance at once — instance-specific
@@ -73,11 +73,12 @@ touch.
 
 ### GPG Configuration
 
-`GPG_PASSWORD` is defined here (used for `repomd.xml` signing via `gpg2
---passphrase-fd`); package signing itself relies on `gpg-agent` with a
-pre-loaded passphrase (see `gpg-setup-secure.sh`). The per-host signing key,
-`GPG_KEY_ID`, comes from `global-local.sh` — `global.sh` defaults it to
-empty if a host hasn't set it yet.
+Both `GPG_PASSWORD` and `GPG_KEY_ID` are host-specific and come from
+`global-local.sh` — `global.sh` requires `GPG_PASSWORD` to be set (refusing
+to load otherwise) but defaults `GPG_KEY_ID` to empty for hosts that
+haven't set it yet. `GPG_PASSWORD` is used for `repomd.xml` signing (via
+`gpg2 --passphrase-fd`); package signing itself relies on `gpg-agent` with
+a pre-loaded passphrase (see `gpg-setup-secure.sh`).
 
 ### AWS Configuration
 
@@ -160,6 +161,7 @@ create it.
 
 | Variable | Example | Description |
 |---|---|---|
+| `GPG_PASSWORD` | `foobar` | Passphrase used for `repomd.xml` signing (`gpg2 --passphrase-fd`). Required — `global.sh` refuses to load without it |
 | `GPG_KEY_ID` | `""` | This host's signing key ID, if it differs from the default |
 
 ### CloudFront Configuration
@@ -471,7 +473,7 @@ should eventually be co-located with the scripts rather than kept in
 ```bash
 # 1. Set up this host's per-instance configuration:
 cp ~/bin/global-local.sh.example ~/bin/global-local.sh
-$EDITOR ~/bin/global-local.sh   # OS, arch, GPG key, CloudFront IDs
+$EDITOR ~/bin/global-local.sh   # OS, arch, GPG key/password, CloudFront IDs
 # 2. Set up GPG agent:
 bash ~/bin/gpg-setup-secure.sh
 gpg --with-keygrip -K         # Note the keygrip

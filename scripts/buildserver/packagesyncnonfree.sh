@@ -39,7 +39,7 @@ fi
 
 # Validate required variables from global.sh
 : "${pgStableBuilds:?pgStableBuilds is not set in global.sh}"
-: "${GPG_PASSWORD:?GPG_PASSWORD is not set in global.sh}"
+: "${GPG_PASSWORD:?GPG_PASSWORD is not set in global-local.sh}"
 : "${awssrpmurl:?awssrpmurl is not set in global.sh}"
 : "${awsdebuginfourl:?awsdebuginfourl is not set in global.sh}"
 : "${CF_SRPM_DISTRO_ID:?CF_SRPM_DISTRO_ID is not set in global.sh}"

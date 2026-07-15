@@ -45,7 +45,7 @@ source ~/bin/global-local.sh
 # Make sure global-local.sh actually set everything global.sh depends on.
 # Uses ${!var+x} rather than -z so that legitimate falsy values like
 # osislatest=0 or extrasrepoenabled=0 don't trip this check.
-for _required_var in osmajorversion osminversion osislatest osarch osdistro git_os extrasrepoenabled CF_DEBUG_DISTRO_ID CF_SRPM_DISTRO_ID
+for _required_var in osmajorversion osminversion osislatest osarch osdistro git_os extrasrepoenabled CF_DEBUG_DISTRO_ID CF_SRPM_DISTRO_ID GPG_PASSWORD
 do
 	if [ -z "${!_required_var+x}" ]; then
 		echo "${red}ERROR:${reset} ${_required_var} is not set in ~/bin/global-local.sh" 1>&2
@@ -54,14 +54,14 @@ do
 done
 unset _required_var
 
-export osmajorversion osminversion osislatest osarch osdistro git_os extrasrepoenabled CF_DEBUG_DISTRO_ID CF_SRPM_DISTRO_ID
+export osmajorversion osminversion osislatest osarch osdistro git_os extrasrepoenabled CF_DEBUG_DISTRO_ID CF_SRPM_DISTRO_ID GPG_PASSWORD
 
 # GPG Configuration
 export GPG_TTY=$(tty)
-# Note: GPG_PASSWORD is kept for backward compatibility with repomd.xml signing
-# For package signing, we now use gpg-agent with preset passphrase
-export GPG_PASSWORD=foobar
-# GPG_KEY_ID is host-specific and comes from global-local.sh. Default to
+# GPG_PASSWORD is host-specific (comes from global-local.sh) and is kept
+# for backward compatibility with repomd.xml signing. For package signing,
+# we now use gpg-agent with preset passphrase.
+# GPG_KEY_ID is also host-specific and comes from global-local.sh. Default to
 # empty so hosts that don't set it (or haven't been updated yet) keep working.
 export GPG_KEY_ID="${GPG_KEY_ID:-}"
 
