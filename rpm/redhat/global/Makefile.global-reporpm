@@ -99,6 +99,24 @@ repobuild9.7: prep
 	-bb $(SPECFILE)
 	make repobfsrpm9.7
 
+repobfsrpm9.8: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommon/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommon/BUILDROOT" --load ~/.rpmmacros-9.8 \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild9.8: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommon/BUILDROOT" --load ~/.rpmmacros-9.8 \
+	--define "_builddir $(HOME)/rpmcommon/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommon/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommon/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm9.8
+
 repobfsrpm10.0: prep
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommon/SRPMS" \
@@ -134,6 +152,24 @@ repobuild10.1: prep
 	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	-bb $(SPECFILE)
 	make repobfsrpm10.1
+
+repobfsrpm10.2: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommon/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommon/BUILDROOT" --load ~/.rpmmacros-10.2 \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild10.2: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommon/BUILDROOT" --load ~/.rpmmacros-10.2 \
+	--define "_builddir $(HOME)/rpmcommon/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommon/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommon/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm10.2
 
 repobfsrpm10: prep
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
