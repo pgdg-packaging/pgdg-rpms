@@ -5,7 +5,7 @@
 
 # PostgreSQL versions
 PG_ALL_VERSIONS=(18 17 16 15 14)     # All supported stable versions
-PG_TEST_VERSIONS=(19 18 17 16 15 14)    # Versions available in testing repos
+PG_TEST_VERSIONS=(20 19 18 17 16 15 14)    # Versions available in testing repos
 
 # Valid operating systems
 VALID_OS=("redhat" "fedora" "sles" "opensuse")
@@ -18,7 +18,7 @@ VALID_ARCH_opensuse=("x86_64")
 
 # Valid versions per OS
 VALID_VER_redhat=("10.2" "10.1" "10.0" "9.8" "9.7" "9.6" "8.10")
-VALID_VER_fedora=("44" "43" "42")
+VALID_VER_fedora=("44" "43")
 VALID_VER_sles=("15.6" "15.7" "16.0")
 VALID_VER_opensuse=("16.0")
 
