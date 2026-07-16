@@ -1,0 +1,345 @@
+#########################################################################
+# PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux repositories	#
+#########################################################################
+
+# PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable common
+# repository for all PostgreSQL versions
+
+[pgdg-common]
+name=PostgreSQL common RPMs for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/common/redhat/rhel-8.10-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# We provide extra packages to support some of the RPMs in the PostgreSQL RPM
+# repo, like consul, etcd, haproxy, etc.
+
+[pgdg-rhel8-extras]
+name=Extra packages to support some RPMs in the PostgreSQL RPM repo for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/extras/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg-rhel8-extras-testing]
+name=Extra packages to support some RPMs in the PostgreSQL RPM repo for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/extras/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable repositories:
+
+[pgdg18]
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/18/redhat/rhel-8.10-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg17]
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/17/redhat/rhel-8.10-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg16]
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/16/redhat/rhel-8.10-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg15]
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/15/redhat/rhel-8.10-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg14]
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/14/redhat/rhel-8.10-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG RHEL / Rocky Linux / AlmaLinux Updates Testing common repositories.
+
+[pgdg-common-testing]
+name=PostgreSQL common testing RPMs for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/common/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG RHEL / Rocky Linux / AlmaLinux Updates Testing repositories. (These packages should not be used in production)
+# Available for PostgreSQL 14 and above.
+
+[pgdg18-updates-testing]
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/18/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg17-updates-testing]
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/17/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg16-updates-testing]
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/16/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg15-updates-testing]
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/15/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg14-updates-testing]
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/testing/14/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux SRPM testing common repository
+
+[pgdg-common-source]
+name=PostgreSQL common SRPMs for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/common/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG RHEL / Rocky Linux / AlmaLinux Extras SRPM repository
+
+[pgdg-rhel8-extras-source]
+name=SRPMs of the Extras packages to support some RPMs in the PostgreSQL RPM repo RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://dnf-srpms.postgresql.org/srpms/extras/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG RHEL / Rocky Linux / AlmaLinux testing common SRPM repository for all PostgreSQL versions
+
+[pgdg-common-testing-source]
+name=PostgreSQL common testing SRPMs for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/common/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG RHEL / Rocky Linux / AlmaLinux Extras Testing SRPM repository
+
+[pgdg-rhel8-extras-testing-source]
+name=SRPMs of the Extras packages to support some RPMs in the PostgreSQL RPM repo RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/extras/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# PGDG Source RPMs (SRPMS) and their testing repositories:
+
+[pgdg18-source]
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/18/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg18-updates-testing-source]
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source updates testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/18/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg17-source]
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/17/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg17-updates-testing-source]
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source updates testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/17/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg16-source]
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/16/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg16-updates-testing-source]
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source updates testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/16/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg15-source]
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/15/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg15-updates-testing-source]
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source updates testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/15/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg14-source]
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/14/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg14-updates-testing-source]
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Source updates testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/testing/14/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# Debuginfo / debugsource repositories for the common repo
+
+[pgdg-common-debuginfo]
+name=PostgreSQL common RPMs for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/common/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# Debuginfo / debugsource packages for stable repos
+
+[pgdg18-debuginfo]
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/18/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg17-debuginfo]
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/17/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg16-debuginfo]
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/16/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg15-debuginfo]
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/15/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg14-debuginfo]
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/14/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+# Debuginfo / debugsource packages for testing repos
+# Available for PostgreSQL 14 and above.
+
+[pgdg18-updates-testing-debuginfo]
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/18/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg17-updates-testing-debuginfo]
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/17/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg16-updates-testing-debuginfo]
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/16/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg15-updates-testing-debuginfo]
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/15/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
+[pgdg14-updates-testing-debuginfo]
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 8.10 - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/testing/debug/14/redhat/rhel-8.10-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
