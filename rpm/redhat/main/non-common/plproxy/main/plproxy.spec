@@ -4,8 +4,8 @@
 
 Summary:	PL/Proxy is database partitioning system implemented as PL language.
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.11.0
-Release:	6PGDG%{?dist}
+Version:	2.12.0
+Release:	1PGDG%{?dist}
 License:	ISC
 URL:		https://plproxy.github.io
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -64,6 +64,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Jul 16 2026 Devrim Gunduz <devrim@gunduz.org> - 2.12.0-1PGDG
+- Update to 2.12.0 per changes described at:
+  https://github.com/plproxy/plproxy/releases/tag/v2.12.0
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-6PGDG
 - Add SLES 16 support
 
