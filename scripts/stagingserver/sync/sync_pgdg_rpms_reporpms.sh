@@ -93,8 +93,10 @@ if [[ -n "$OS" ]] && ! contains "$OS" "redhat" "fedora"; then
 fi
 
 # Update one <os>/<ver>/<arch> combination.
-# Copies the newest repo RPM from src_dir into dest_dir, drops the RPM the
-# symlink used to point at, and re-links "*-repo-latest.noarch.rpm" at it.
+# Copies the newest repo RPM from src_dir into dest_dir, re-links
+# "*-repo-latest.noarch.rpm" at it, and sweeps dest_dir clean of every other
+# file/symlink starting with $reponame (old versioned RPMs, stray or
+# oddly-named symlinks left over from before this script existed, etc.).
 update_repo_rpm() {
 	local os="$1"
 	local ver="$2"
@@ -124,12 +126,27 @@ update_repo_rpm() {
 	fi
 
 	local symlink_name="${reponame}-latest.noarch.rpm"
+
+	local need_copy=false
+	[[ -f "$dest_dir/$latest" ]] || need_copy=true
+
 	local current_target=""
 	if [[ -L "$dest_dir/$symlink_name" ]]; then
 		current_target="$(readlink "$dest_dir/$symlink_name")"
 	fi
 
-	if [[ "$current_target" == "$latest" && -f "$dest_dir/$latest" ]]; then
+	# Anything under dest_dir named "$reponame-*" other than the current
+	# latest RPM and the correctly-named symlink is cruft to remove.
+	local -a cruft=()
+	local entry base
+	while IFS= read -r -d '' entry; do
+		base="$(basename "$entry")"
+		[[ "$base" == "$latest" ]] && continue
+		[[ "$base" == "$symlink_name" ]] && continue
+		cruft+=("$entry")
+	done < <(find "$dest_dir" -maxdepth 1 \( -type f -o -type l \) -name "${reponame}-*" -print0)
+
+	if ! $need_copy && [[ "$current_target" == "$latest" ]] && [[ ${#cruft[@]} -eq 0 ]]; then
 		$DEBUG && echo "  [DEBUG] $os $ver $arch already up to date ($latest)"
 		return 0
 	fi
@@ -137,26 +154,28 @@ update_repo_rpm() {
 	echo "  Updating $os $ver ($arch): ${current_target:-<none>} -> $latest"
 
 	if $DRY_RUN; then
-		echo "  [DRY-RUN] cp $src_dir/$latest $dest_dir/$latest"
-		[[ -n "$current_target" ]] && echo "  [DRY-RUN] unlink $dest_dir/$symlink_name"
-		[[ -n "$current_target" && "$current_target" != "$latest" ]] && echo "  [DRY-RUN] rm $dest_dir/$current_target"
-		echo "  [DRY-RUN] ln -s $latest $dest_dir/$symlink_name"
+		$need_copy && echo "  [DRY-RUN] cp $src_dir/$latest $dest_dir/$latest"
+		[[ "$current_target" != "$latest" ]] && echo "  [DRY-RUN] ln -sfn $latest $dest_dir/$symlink_name"
+		for entry in "${cruft[@]}"; do
+			echo "  [DRY-RUN] rm -f $entry"
+		done
 		return 0
 	fi
 
-	if ! cp -f "$src_dir/$latest" "$dest_dir/$latest"; then
+	if $need_copy && ! cp -f "$src_dir/$latest" "$dest_dir/$latest"; then
 		echo "  [ERROR] Failed to copy $latest into $dest_dir" >&2
 		had_errors=1
 		return 0
 	fi
 
-	[[ -L "$dest_dir/$symlink_name" ]] && unlink "$dest_dir/$symlink_name"
-
-	if [[ -n "$current_target" && "$current_target" != "$latest" && -f "$dest_dir/$current_target" ]]; then
-		rm -f "$dest_dir/$current_target"
+	if [[ "$current_target" != "$latest" ]]; then
+		[[ -L "$dest_dir/$symlink_name" ]] && unlink "$dest_dir/$symlink_name"
+		ln -s "$latest" "$dest_dir/$symlink_name"
 	fi
 
-	ln -s "$latest" "$dest_dir/$symlink_name"
+	for entry in "${cruft[@]}"; do
+		rm -f "$entry"
+	done
 }
 
 process_os() {
