@@ -3,11 +3,11 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.58.0
+Version:	2.59.0
 Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
-Source0:	https://github.com/pgbackrest/pgbackrest/archive/release/%{version}.tar.gz
+Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
 Source1:	%{name}-conf.patch
 Source3:	%{name}.logrotate
 Source4:	%{name}.service
@@ -18,11 +18,11 @@ BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel libyaml-devel
 BuildRequires:	libzstd-devel meson zlib-devel
 
 %if 0%{?suse_version} >= 1500
-Requires:	libopenssl3
+Requires:	libopenssl3 libsystemd0
 BuildRequires:	libopenssl-3-devel
 %endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
-Requires:	openssl-libs >= 1.1.1k
+Requires:	openssl-libs >= 1.1.1k systemd-libs
 BuildRequires:	openssl-devel
 %endif
 
@@ -31,7 +31,7 @@ Requires:	lz4-libs libzstd libssh2
 BuildRequires:	lz4-devel bzip2-devel ninja-build
 %endif
 %if 0%{?suse_version} && 0%{?suse_version} >= 1500
-Requires:	liblz4-1 libzstd1 libssh2-1
+Requires:	liblz4-1 libzstd1 libssh2-1 libsystemd0
 BuildRequires:	liblz4-devel libbz2-devel ninja
 %endif
 
@@ -56,7 +56,7 @@ protocol allows for more flexibility and limits the types of connections that
 are required to perform a backup which increases security.
 
 %prep
-%setup -q -n %{name}-release-%{version}
+%setup -q -n %{name}-%{version}
 
 %build
 %{__install} -d build
@@ -126,6 +126,10 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Mon Jul 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.0-1PGDG
+- Update to 2.59.0, per changes described at:
+  https://pgbackrest.org/release.html#2.59.0
+
 * Tue Jan 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.58.0-1PGDG
 - Update to 2.58.0, per changes described at:
   https://pgbackrest.org/release.html#2.58.0
