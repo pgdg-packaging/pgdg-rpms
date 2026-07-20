@@ -4,7 +4,7 @@
 Name:		libpqxx
 Summary:	C++ client API for PostgreSQL
 Epoch:		1
-Version:	%{libpqxxmajorver}.1
+Version:	%{libpqxxmajorver}.2
 Release:	43PGDG%{?dist}
 
 License:	BSD
@@ -82,6 +82,10 @@ popd
 %{_docdir}/%{name}/*.md
 
 %changelog
+* Mon Jul 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-42PGDG
+- Update to 8.0.2 per changes described at
+  https://github.com/jtv/libpqxx/releases/tag/8.0.2
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.1-43PGDG
 - libpqxx requires C++20, so add RHEL 9 support by using GCC 15 to
   build the package.
