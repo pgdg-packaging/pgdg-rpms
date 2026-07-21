@@ -72,7 +72,7 @@
 
 Name:		%{sname}312
 Version:	3.12.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -528,6 +528,9 @@ done
 %endif
 
 %changelog
+* Tue Jul 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-4PGDG
+- Rebuild against newer libarrow against RHEL 10.2 - arm64
+
 * Wed May 6 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-3PGDG
 - Add proper setuptools BR.
 
