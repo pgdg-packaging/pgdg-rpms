@@ -1,10 +1,5 @@
 %global		debug_package %{nil}
 %global		_missing_build_ids_terminate_build 0
-%if 0%{?_version:1}
-%global		_verstr	%{_version}
-%else
-%global		_verstr	0.42.0
-%endif
 
 # Consul does not provide tarballs for ppc64le:
 ExcludeArch:	ppc64le
@@ -17,8 +12,8 @@ ExcludeArch:	ppc64le
 %endif
 
 Name:		consul-template
-Version:	%{_verstr}
-Release:	3PGDG%{?dist}
+Version:	0.4.2
+Release:	1PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
 License:	MPLv2.0
@@ -84,6 +79,10 @@ unless the -once flag is specified.
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Tue Jul 21 2026 Devrim Gündüz <devrim@gunduz.org> 0.42.1-1PGDG
+- Update to 0.42.1 per changes described at
+  https://github.com/hashicorp/consul-template/releases/tag/v0.42.1
+
 * Thu Apr 16 2026 Devrim Gündüz <devrim@gunduz.org> 0.42.0-1PGDG
 - Update to 0.42.0 per changes described at
   https://github.com/hashicorp/consul-template/releases/tag/v0.42.0
