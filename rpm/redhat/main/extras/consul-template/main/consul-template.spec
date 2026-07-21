@@ -12,7 +12,7 @@ ExcludeArch:	ppc64le
 %endif
 
 Name:		consul-template
-Version:	0.4.2
+Version:	0.42.1
 Release:	1PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
