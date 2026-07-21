@@ -31,10 +31,10 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	alpha1_1PGDG%{?dist}
+Release:	beta1_1PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}alpha1.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}alpha1-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta1.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta1-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
@@ -197,7 +197,7 @@ This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}alpha1
+%setup -q -n %{sname}-%{version}beta1
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -270,7 +270,7 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc COPYING CREDITS NEWS TODO README.%{sname} doc/html loader/README.* doc/%{sname}.xml doc/ZMSgeoms.txt
+%doc COPYING CREDITS NEWS README.%{sname} doc/html loader/README.* doc/%{sname}.xml doc/ZMSgeoms.txt
 %license LICENSE.TXT
 %{pginstdir}/bin/postgis
 %{pginstdir}/bin/postgis_restore
@@ -362,6 +362,10 @@ fi
 %endif
 
 %changelog
+* Tue Jul 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0beta1-1PGDG
+- Update to 3.7.0 beta1 per:
+  https://postgis.net/2026/07/PostGIS-3.7.0beta1/
+
 * Mon Jul 6 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0alpha1-1PGDG
 - Initial cut for PostGIS 3.7.0 alpha1 per:
   https://postgis.net/2026/07/PostGIS-3.7.0alpha1/
