@@ -71,7 +71,7 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}313
-Version:	3.13.1
+Version:	3.13.2
 Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
@@ -528,6 +528,10 @@ done
 %endif
 
 %changelog
+* Wed Jul 22 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.2-1PGDG
+- Update to 3.13.2 per changes described at:
+  https://github.com/OSGeo/gdal/releases/tag/v3.13.2
+
 * Sat Jun 6 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-1PGDG
 - Update to 3.13.1 per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.13.1
