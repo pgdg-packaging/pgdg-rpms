@@ -8,9 +8,10 @@
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pg_fdmajorver}.%{pg_fdminorver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
+Patch0:		%{sname}-makefile-rpm-gcc.patch
 License:	GPLv2+
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # lz4 dependency
@@ -31,6 +32,7 @@ Display formatted contents of a PostgreSQL heap/index/control file.
 
 %prep
 %setup -q -n %{sname}-%{sversion}
+%patch -P0 -p0
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS"
@@ -49,6 +51,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Thu Jul 23 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-2PGDG
+- Add a patch to fix(?) intermittent build issues on Fedora.
+
 * Thu Jul 23 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-1PGDG
 - Update to 19.0 per changes described at:
   https://github.com/df7cb/pg_filedump/releases/tag/REL_19_0
