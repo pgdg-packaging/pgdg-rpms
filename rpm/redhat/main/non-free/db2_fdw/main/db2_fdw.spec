@@ -9,7 +9,7 @@
 
 Summary:	PostgreSQL DB2 Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
-Version:	18.1.2
+Version:	18.2.0
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/Living-Mainframe/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -74,6 +74,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} USE_PGXS=1 %{?_smp_mf
 %endif
 
 %changelog
+* Sun Jul 26 2026 - Devrim Gündüz <devrim@gunduz.org> 18.2.0-1PGDG
+- Update to 18.2.0 per changes described at:
+  https://github.com/Living-Mainframe/db2_fdw/releases/tag/18.2.0
+
 * Wed May 6 2026 - Devrim Gündüz <devrim@gunduz.org> 18.1.2-1PGDG
 - Update to 18.1.2 per changes described at:
   https://github.com/Living-Mainframe/db2_fdw/releases/tag/18.1.2
