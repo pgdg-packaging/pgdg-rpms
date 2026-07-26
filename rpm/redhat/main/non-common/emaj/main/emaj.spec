@@ -2,8 +2,8 @@
 %global pname emaj
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	4.7.1
-Release:	2PGDG%{?dist}
+Version:	5.0.0
+Release:	1PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{pname}/
@@ -37,6 +37,9 @@ in time.
 %{pginstdir}/share/extension/%{pname}*.sql
 
 %changelog
+* Sun Jul 26 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0.0-1PGDG
+- Update to 5.0.0
+
 * Thu Oct 30 2025 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-2PGDG
 - Rebuild because of a package signing issue on Fedora 43
 
