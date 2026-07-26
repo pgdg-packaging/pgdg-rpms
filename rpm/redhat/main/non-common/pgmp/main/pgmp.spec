@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Multiple Precision Arithmetic Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.5
-Release:	6PGDG%{?dist}
+Version:	1.0.6
+Release:	1PGDG%{?dist}
 License:	LGPL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 # Make sure that we use Python 3.
@@ -72,6 +72,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Sun Jul 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-1PGDG
+- Update to 1.0.6 per changes described at:
+  https://github.com/dvarrazzo/pgmp/releases/tag/rel-1.0.6
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-5PGDG
 - Add SLES 16 support
 
