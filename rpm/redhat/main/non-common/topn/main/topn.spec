@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL extension that returns the top values in a database
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.7.0
-Release:	4PGDG%{dist}
+Version:	2.7.1
+Release:	1PGDG%{dist}
 License:	AGPLv3
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
@@ -72,6 +72,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Sun Jul 26 2026 Devrim Gündüz <devrim@gunduz.org> - 2.7.1-1PGDG
+- Update to 2.7.1 per changes described at:
+  https://github.com/citusdata/postgresql-topn/releases/tag/v2.7.1
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.7.0-4PGDG
 - Add SLES 16 support
 
