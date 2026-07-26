@@ -1,6 +1,6 @@
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
-Version:	2.7.0
+Version:	2.7.1
 Release:	1PGDG%{?dist}
 License:	Apache License 2.0
 Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
@@ -59,6 +59,12 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %license LICENSE
 
 %changelog
+* Wed Jun 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.7.0-1PGDG
+- Update to 2.7.2 per changes described at:
+  https://github.com/Aiven-Open/pghoard/releases/tag/2.7.2
+  https://github.com/Aiven-Open/pghoard/releases/tag/2.7.1
+  Fixes CVE-2026-54711 and CVE-2026-63120
+
 * Wed Jun 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.7.0-1PGDG
 - Update to 2.7.0
 - Switch to pyproject builds
