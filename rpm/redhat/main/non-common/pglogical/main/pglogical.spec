@@ -2,7 +2,7 @@
 
 %global pglogicalmajver 2
 %global pglogicalmidver 4
-%global pglogicalminver 7
+%global pglogicalminver 8
 
 %{!?llvm:%global llvm 1}
 
@@ -110,6 +110,11 @@ PATH=%{pginstdir}/bin:$PATH %make_install
 %endif
 
 %changelog
+* Tue Jul 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.8-1PGDG
+- Update to 2.4.8 per changes described at:
+  https://github.com/2ndQuadrant/pglogical/releases/tag/REL2_4_8
+  Fixes CVE-2026-50735, CVE-2026-50736, CVE-2026-50737 and  CVE-2026-50738
+
 * Mon Jun 1 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.7-1PGDG
 - Update to 2.4.7 per changes described at:
   https://github.com/2ndQuadrant/pglogical/releases/tag/REL2_4_7
