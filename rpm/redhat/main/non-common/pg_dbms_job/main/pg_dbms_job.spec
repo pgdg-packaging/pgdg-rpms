@@ -5,11 +5,11 @@
 Summary:	PostgreSQL extension to schedules and manages jobs in a job queue similar to Oracle DBMS_JOB package
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
-Source0:	https://github.com/MigOpsRepos/%{sname}/archive/refs/tags/v%{version}.tar.gz
+Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-include.patch
-URL:		https://github.com/MigOpsRepos/%{sname}/
+URL:		https://github.com/HexaCluster/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel make
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -73,6 +73,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %endif
 
 %changelog
+* Tue Jul 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-2PGDG
+- Update URLs
+
 * Sun Apr 19 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-1PGDG
 - Update to 2.0 per changes described at:
   https://github.com/HexaCluster/pg_dbms_job/releases/tag/v2.0
