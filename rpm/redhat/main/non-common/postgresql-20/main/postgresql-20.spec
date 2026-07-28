@@ -195,8 +195,8 @@ BuildRequires:	libopenssl-3-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} >= 43
-BuildRequires:	openssl-devel-engine
+%if 0%{?fedora} <= 44
+BuildRequires:  openssl-devel-engine
 %endif
 %endif
 
