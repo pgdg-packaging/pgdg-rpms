@@ -1,12 +1,12 @@
 Summary:	A sample database for PostgreSQL
 Name:		pagila
-Version:	3.1.0
-Release:	2PGDG%{?dist}
+Version:	4.0.0
+Release:	1PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/devrimgunduz/%{name}
 Source0:	https://github.com/devrimgunduz/%{name}/archive/%{name}-v%{version}.tar.gz
 
-Requires:	postgresql-server >= 12.0
+Requires:	postgresql-server >= 18.0
 
 BuildArch:	noarch
 
@@ -26,15 +26,31 @@ books, tutorials, articles, samples, etc.
 %install
 %{__rm} -rf %{buildroot}
 %{__install} -d %{buildroot}%{_pagiladir}
-%{__install} -m 644 -p *.sql %{buildroot}%{_pagiladir}
+%{__install} -m 644 -p *.sql *.backup *.png %{buildroot}%{_pagiladir}
+%{__install} -m 644 docker-compose.yml %{buildroot}%{_pagiladir}
+%{__install} -m 644 Dockerfile %{buildroot}%{_pagiladir}
+%{__install} -m 755 restore-pagila-data-jsonb.sh %{buildroot}%{_pagiladir}
+%{__cp} -r pgadmin/ scripts/ %{buildroot}%{_pagiladir}
 
 %files
 %defattr(0644,root,root,0755)
 %doc README.md
+%license LICENSE.txt
 %dir %{_pagiladir}
+%attr(644,root,root) %{_pagiladir}/*.backup
+%attr(644,root,root) %{_pagiladir}/*.png
 %attr(644,root,root) %{_pagiladir}/*.sql
+%attr(644,root,root) %{_pagiladir}/Dockerfile
+%attr(644,root,root) %{_pagiladir}/docker-compose.yml
+%attr(644,root,root) %{_pagiladir}/pgadmin/*
+%attr(755,root,root) %{_pagiladir}/restore-pagila-data-jsonb.sh
+%attr(644,root,root) %{_pagiladir}/scripts/*
 
 %changelog
+* Tue Jul 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.0-1PGDG
+- Update to 4.0.0 per changes described at:
+  https://github.com/devrimgunduz/pagila/releases/tag/pagila-v4.0.0
+
 * Thu Feb 22 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.0-2PGDG
 - Add PGDG branding
 
