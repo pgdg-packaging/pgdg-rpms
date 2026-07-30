@@ -4,7 +4,7 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.8.5
+Version:	0.8.6
 Release:	1PGDG%{?dist}
 Summary:	Open-source vector similarity search for Postgres
 License:	PostgreSQL
@@ -80,6 +80,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Thu Jul 30 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.6-1PGDG
+- Update to 0.8.6
+
 * Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.5-1PGDG
 - Update to 0.8.5
 
