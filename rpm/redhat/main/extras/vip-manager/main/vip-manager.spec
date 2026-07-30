@@ -13,7 +13,7 @@
 
 Summary:	Manages a virtual IP for Patroni based on state kept in etcd or Consul
 Name:		vip-manager
-Version:	4.2.0
+Version:	5.0.0
 Release:	1PGDG%{?dist}
 License:	BSD2
 URL:		https://github.com/cybertec-postgresql/%{name}
@@ -62,6 +62,10 @@ Manages a virtual IP for Patroni based on state kept in etcd or Consul
 %doc
 
 %changelog
+* Thu Jul  30 2026 Devrim Gündüz <devrim@gunduz.org> 5.0.0-1PGDG
+- Update to 5.0.0 per changes described at:
+  https://github.com/cybertec-postgresql/vip-manager/releases/tag/v5.0.0
+
 * Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> 4.2.0-1PGDG
 - Update to 4.2.0 per changes described at:
   https://github.com/cybertec-postgresql/vip-manager/releases/tag/v4.1.0
