@@ -149,7 +149,7 @@ done
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
-* hu Jul 307 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.3-1PGDG
+* Thu Jul 30 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.3-1PGDG
 - Update to 3.4.3 per changes described at:
   https://mail-archive.com/haproxy@formilux.org/msg47348.html
 
