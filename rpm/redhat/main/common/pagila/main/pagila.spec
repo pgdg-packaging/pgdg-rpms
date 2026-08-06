@@ -1,6 +1,6 @@
 Summary:	A sample database for PostgreSQL
 Name:		pagila
-Version:	4.0.0
+Version:	4.1.0
 Release:	1PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/devrimgunduz/%{name}
@@ -47,6 +47,10 @@ books, tutorials, articles, samples, etc.
 %attr(644,root,root) %{_pagiladir}/scripts/*
 
 %changelog
+* Thu Aug 6 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.0-1PGDG
+- Update to 4.1.0 per changes described at:
+  https://github.com/devrimgunduz/pagila/releases/tag/pagila-v4.1.0
+
 * Tue Jul 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.0-1PGDG
 - Update to 4.0.0 per changes described at:
   https://github.com/devrimgunduz/pagila/releases/tag/pagila-v4.0.0
