@@ -40,9 +40,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta2_420001PGDG%{?dist}
+Release:	beta2_420002PGDG%{?dist}
 %else
-Release:	beta2_1PGDG%{?dist}
+Release:	beta2_2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -141,11 +141,15 @@ BuildRequires:	llvm17-devel clang17-devel
 %if 0%{?suse_version} == 1600
 BuildRequires:	llvm19-devel clang19-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel}
-BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
 %endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+
 %endif
 
+%endif
 %if %nls
 BuildRequires:	gettext >= 0.19.8
 %endif
@@ -252,18 +256,20 @@ Requires:	libicu-devel
 %endif
 
 %if %llvm
-Requires:	%{name}%{?_isa} = %{version}-%{release}
 %if 0%{?suse_version} == 1500
 BuildRequires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?suse_version} == 1600
 BuildRequires:	llvm19-devel clang19-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel >= 17.0 clang-devel >= 17.0
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
 %endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 
+%endif
 %if %enabletaptests
 BuildRequires:	perl-IPC-Run perl-Test-Simple
 Requires:	perl-IPC-Run
@@ -387,7 +393,10 @@ Requires:	libLLVM17
 %if 0%{?suse_version} == 1600
 Requires:	libLLVM19
 %endif
-%if 0%{?fedora} || 0%{?rhel}
+%if 0%{?amzn}
+Requires:	llvm >= 15
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
 Requires:	llvm >= 19
 %endif
 
@@ -1331,6 +1340,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 6 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta2-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Jul 13 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta2-1PGDG
 - Update to PostgreSQL 19 beta2
 
