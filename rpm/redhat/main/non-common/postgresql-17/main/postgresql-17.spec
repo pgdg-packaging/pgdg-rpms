@@ -48,9 +48,9 @@ Version:	17.10
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420003PGDG%{?dist}
+Release:	420004PGDG%{?dist}
 %else
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -125,7 +125,10 @@ BuildRequires:	llvm17-devel clang17-devel
 %if 0%{?suse_version} == 1600
 BuildRequires:	llvm19-devel clang19-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel}
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
@@ -323,8 +326,11 @@ Requires:	llvm17-devel clang17-devel
 %if 0%{?suse_version} == 1600
 Requires:	llvm19-devel clang19-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel}
-Requires:	llvm-devel >= 19.0 clang-devel >= 19.0
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -367,7 +373,10 @@ Requires:	libLLVM17
 %if 0%{?suse_version} == 1600
 Requires:	libLLVM19
 %endif
-%if 0%{?fedora} || 0%{?rhel}
+%if 0%{?amzn}
+Requires:	llvm >= 15
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
 Requires:	llvm >= 19
 %endif
 
@@ -1254,6 +1263,9 @@ fi
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 17.10-4PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Jun 2 2026 Devrim Gündüz <devrim@gunduz.org> - 17.10-3PGDG
 - Backport a few fixes from PostgreSQL 19:
   Remove SUSE systemd scriptlet (%%service_add_post) as it can use

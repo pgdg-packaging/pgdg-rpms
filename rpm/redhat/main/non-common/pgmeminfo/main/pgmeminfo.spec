@@ -8,7 +8,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL extension to allow to access to memory usage diagnostics
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -33,7 +33,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -65,6 +69,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/bitcode/%{sname}/src/*.bc
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.1-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.1-1PGDG
 - Update to 1.0.1 per changes described at:
   https://github.com/okbob/pgmeminfo/releases/tag/VERSION_1_0_1

@@ -5,7 +5,7 @@
 Summary:	Generic Queue for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.5.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}/
@@ -33,7 +33,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -72,6 +76,9 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.5.2-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-1PGDG
 - Update to 3.5.2 per changes described at:
   https://github.com/pgq/pgq/releases/tag/v3.5.2

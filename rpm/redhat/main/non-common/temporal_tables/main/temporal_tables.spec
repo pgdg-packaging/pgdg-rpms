@@ -5,7 +5,7 @@
 Summary:	Temporal tables extension for PostgreQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.2
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 Source0:	https://github.com/arkhipov/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/arkhipov/%{sname}
 License:	BSD
@@ -24,7 +24,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -68,6 +72,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} inst
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-8PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.2.2-7PGDG
 - Add SLES 16 support
 

@@ -5,7 +5,7 @@
 Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	PostgreSQL
@@ -35,7 +35,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -69,5 +73,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.1-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Thu Jul 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.1-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository

@@ -7,7 +7,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.61.7
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -47,7 +47,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -124,6 +128,9 @@ popd
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-6PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Apr 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-5PGDG
 - Fix builds against CMake 4
 

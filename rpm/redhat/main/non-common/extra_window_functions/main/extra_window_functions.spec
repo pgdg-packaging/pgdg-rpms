@@ -5,7 +5,7 @@
 Summary:	Extra Window Functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	8PGDG%{dist}
+Release:	9PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.tar.gz
@@ -30,7 +30,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -66,6 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-9PGDG
+- Add Amazon Linux 2023 support.
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 1.0-8PGDG
 - Add SLES 16 support
 

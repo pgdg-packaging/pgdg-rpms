@@ -31,7 +31,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	beta1_1PGDG%{?dist}
+Release:	beta1_2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta1.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta1-en.pdf
@@ -187,7 +187,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 9
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 9 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -362,6 +366,9 @@ fi
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0beta1-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Tue Jul 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0beta1-1PGDG
 - Update to 3.7.0 beta1 per:
   https://postgis.net/2026/07/PostGIS-3.7.0beta1/

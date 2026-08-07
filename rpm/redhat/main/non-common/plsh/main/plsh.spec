@@ -5,7 +5,7 @@
 Summary:	Sh shell procedural language handler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.20220917
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/petere/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/petere/%{sname}
@@ -30,7 +30,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -71,6 +75,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.20220917-10PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.20220917-9PGDG
 - Add SLES 16 support
 

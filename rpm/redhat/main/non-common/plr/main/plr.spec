@@ -10,7 +10,7 @@
 Summary:	Procedural language interface between PostgreSQL and R
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plrmajver}.%{plrmidver}.%{plrminver}.%{plrfinver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/postgres-%{sname}/%{sname}/archive/REL%{plrmajver}_%{plrmidver}_%{plrminver}_%{plrfinver}.tar.gz
 URL:		https://github.com/postgres-%{sname}/%{sname}
@@ -33,7 +33,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -73,6 +77,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot}/ install
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 8.4.8.6-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Apr 27 2026 Devrim Gündüz <devrim@gunduz.org> - 8.4.8.6-1PGDG
 - Update to 8.4.8.4 per changes described at:
   https://github.com/postgres-plr/plr/releases/tag/REL8_4_8_6

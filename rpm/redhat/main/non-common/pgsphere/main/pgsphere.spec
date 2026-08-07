@@ -6,7 +6,7 @@
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -38,7 +38,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -76,6 +80,9 @@ This package provides JIT support for pgsphere
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.2-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-1PGDG
 - Update to 1.5.2 per changes described at:
   https://github.com/postgrespro/pgsphere/releases/tag/1.5.2

@@ -6,7 +6,7 @@
 Summary:	A PostgreSQL extension for storing point cloud (LIDAR) data
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pointcloudmajorversion}.5
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 URL:		https://github.com/pgpointcloud/%{sname}
 Source0:	https://github.com/pgpointcloud/%{sname}/archive/v%{version}.tar.gz
 License:	BSD
@@ -41,7 +41,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -82,6 +86,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.5-5PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 1.2.5-4PGDG
 - Bump release number (missed in previous commit)
 

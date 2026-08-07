@@ -5,7 +5,7 @@
 Summary:	SQLite Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.5.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
@@ -35,7 +35,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -73,6 +77,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.5.0-5PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-4PGDG
 - Add SLES 16 support
 

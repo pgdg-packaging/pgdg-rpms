@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -44,7 +44,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -86,6 +90,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.2-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Feb 18 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.3.2-1PGDG
 - Update to 2.3.2 per changes described at:
   https://github.com/percona/pg_stat_monitor/releases/tag/2.3.2

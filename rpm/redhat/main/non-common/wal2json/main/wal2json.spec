@@ -6,7 +6,7 @@
 Summary:	JSON output plugin for changeset extraction
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.6
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{wal2json_rel}.tar.gz
 URL:		https://github.com/eulerto/wal2json
@@ -37,7 +37,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -72,6 +76,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install DESTDIR=%{buildroot}
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6-5PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Oct 01 2025 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 2.6-4PGDG
 - Bump release number (missed in previous commit)
 

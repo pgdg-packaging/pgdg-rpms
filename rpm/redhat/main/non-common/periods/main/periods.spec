@@ -6,7 +6,7 @@ Summary:	PERIODs and SYSTEM VERSIONING for PostgreSQL
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.2
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.zip
@@ -32,7 +32,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -66,6 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-7PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-6PGDG
 - Add SLES 16 support
 

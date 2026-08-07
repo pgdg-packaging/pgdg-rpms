@@ -5,7 +5,7 @@
 Summary:	Postgres extension and service for automated failover and high-availability
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}/
@@ -61,7 +61,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -101,6 +105,9 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-5PGDG
+- Add Amazon Linux 2023 support.
+
 * Thu Nov 20 2025 Devrim Gündüz <devrim@gunduz.org> - 2.2-4PGDG
 - Modernise OpenSSL dependencies.
 

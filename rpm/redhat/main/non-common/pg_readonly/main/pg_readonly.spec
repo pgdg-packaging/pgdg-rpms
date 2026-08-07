@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension which allows to set all cluster databases read only.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.6
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pierreforstmann/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/pierreforstmann/%{sname}
@@ -33,7 +33,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -74,6 +78,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Jul 15 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.6-1PGDG
 - Update to 1.0.6 per changes described at:
   https://github.com/pierreforstmann/pg_readonly/releases/tag/1.0.6

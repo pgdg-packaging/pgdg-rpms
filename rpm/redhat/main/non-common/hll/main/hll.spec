@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension adding HyperLogLog data structures as a native data type
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.21
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
@@ -33,7 +33,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -70,6 +74,9 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.21-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Fri Jun 5 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.21-1PGDG
 - Update to 2.21 per changes described at:
   https://github.com/citusdata/postgresql-hll/releases/tag/v2.21

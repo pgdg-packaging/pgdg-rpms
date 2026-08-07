@@ -6,7 +6,7 @@
 Summary:	PostgreSQL extension that transforms Postgres into a distributed database
 Name:		%{sname}_%{pgmajorversion}
 Version:	14.2.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	AGPLv3
 URL:		https://github.com/citusdata/%{sname}
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
@@ -72,7 +72,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -128,6 +132,9 @@ make %{?_smp_mflags}
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 14.2.0-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Thu Aug 6 2026 Devrim Gunduz <devrim@gunduz.org> - 14.2.0-1PGDG
 - Update to 14.2.0 per changes described at:
   https://github.com/citusdata/citus/releases/tag/v14.2.0

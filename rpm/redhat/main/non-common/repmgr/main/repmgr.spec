@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -93,7 +93,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -182,6 +186,9 @@ fi
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-8PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Dec 24 2025 Devrim Gündüz <devrim@gunduz.org> - 5.5.0-7PGDG
 - Add Restart=on-failure to unit file. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/127

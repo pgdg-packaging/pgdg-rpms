@@ -5,7 +5,7 @@
 Summary:	Extension for PostgreSQL for collecting statistics about messages in logfile
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.5
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/munakoiso/%{sname}
 Source0:	https://github.com/munakoiso/%{sname}/archive/v%{version}.tar.gz
@@ -27,7 +27,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -66,6 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.5-4PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 2.1.5-3PGDG
 - Add SLES 16 support
 

@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL passwordcheck extension, built with cracklib.
 License:	BSD
 URL:		https://github.com/devrimgunduz/%{sname}/
@@ -33,7 +33,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -63,6 +67,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.0-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Tue Jun 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.0-1PGDG
 - Update to 3.2.0 per changes described at:
   https://github.com/devrimgunduz/passwordcheck_cracklib/releases/tag/3.2.0

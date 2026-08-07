@@ -9,7 +9,7 @@
 Summary:	A PostgreSQL extension gathering CPU and disk acess statistics
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{kcachemajver}.%{kcachemidver}.%{kcacheminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/powa-team/%{sname}
 Source0:	https://github.com/powa-team/%{sname}/archive/REL%{kcachemajver}_%{kcachemidver}_%{kcacheminver}.tar.gz
@@ -32,7 +32,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -73,6 +77,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.2-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.2-1PGDG
 - Update to 2.3.2 per changes described at:
   https://github.com/powa-team/pg_stat_kcache/releases/tag/REL2_3_2

@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.10.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -35,7 +35,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -72,6 +76,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.3-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Jul 27 2026 Devrim Gündüz <devrim@gunduz.org> 2.10.3-1PGDG
 - Update to 2.10.3 per changes described at
   https://github.com/okbob/plpgsql_check/releases/tag/v2.10.3

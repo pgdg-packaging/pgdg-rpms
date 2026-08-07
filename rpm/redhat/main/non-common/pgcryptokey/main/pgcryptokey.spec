@@ -5,7 +5,7 @@
 Summary:	PostgreSQL table versioning extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.85
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 License:	BSD
 Source0:	http://momjian.us/download/%{sname}/%{sname}-%{version}.tar.gz
 URL:		http://momjian.us/download/%{sname}/
@@ -32,7 +32,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -68,6 +72,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.85-11PGDG
+- Add Amazon Linux 2023 support.
+
 * Tue Oct 7 2025 Devrim Gündüz <devrim@gunduz.org> - 0.85-10PGDG
 - Add SLES 16 support
 

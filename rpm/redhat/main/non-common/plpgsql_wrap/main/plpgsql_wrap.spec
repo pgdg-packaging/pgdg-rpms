@@ -5,7 +5,7 @@
 Summary:	Oracle-WRAP-equivalent procedural language for PostgreSQL.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/hexacluster/%{sname}/
 Source0:	https://github.com/hexacluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -44,7 +44,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -82,6 +86,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed May 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-1PGDG
 - Initial RPM packaging for the PostgreSQL RPM Repository:
   https://github.com/HexaCluster/plpgsql_wrap/releases/tag/v1.0

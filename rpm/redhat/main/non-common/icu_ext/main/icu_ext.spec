@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.11.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL extension to expose functionality from ICU to PostgreSQL applications
 License:	PostgreSQL
 URL:		https://github.com/dverite/%{sname}
@@ -29,7 +29,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -63,6 +67,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Sat Jun 20 2026 Devrim Gündüz <devrim@gunduz.org> 1.11.0-1PGDG
 - Update to 1.11.0 per changes described at:
   https://github.com/dverite/icu_ext/releases/tag/v1.11.0

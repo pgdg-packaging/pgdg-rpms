@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.10
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PL/pgSQL debugger server-side code
 License:	Artistic 2.0
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -39,7 +39,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -78,6 +82,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.10-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Tue May 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.10-1PGDG
 - Update to 1.10 per changes described at:
   https://github.com/EnterpriseDB/pldebugger/releases/tag/v1.10

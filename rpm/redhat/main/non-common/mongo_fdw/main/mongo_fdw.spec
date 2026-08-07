@@ -11,7 +11,7 @@
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	LGPLv3
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{relver}.tar.gz
@@ -57,7 +57,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -120,6 +124,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-4PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Nov 5 2025 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-3PGDG
 - Rebuild against OpenSSL 3 on SLES 15
 

@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.8
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	PostgreSQL background worker to report wether a node is a replication master or standby
 License:	PostgreSQL
 URL:		https://github.com/mhagander/%{sname}
@@ -41,7 +41,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -71,6 +75,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.8-4PGDG
+- Add Amazon Linux 2023 support.
+
 * Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-3PGDG
 - Add SLES 16 support
 

@@ -8,7 +8,7 @@
 Summary:	PostgreSQL tool to rewrite a table
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgrwmajver}.%{pgrwmidver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/cybertec-postgresql/pg_rewrite/archive/refs/tags/REL%{pgrwmajver}_%{pgrwmidver}.tar.gz
@@ -31,7 +31,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -63,6 +67,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Mon Jul 13 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2-1PGDG
 - Update to 2.2 per changes described at:
   https://github.com/cybertec-postgresql/pg_rewrite/releases/tag/REL2_2

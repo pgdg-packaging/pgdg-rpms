@@ -5,7 +5,7 @@
 Summary:	A hash-table based alternative to COUNT(DISTINCT ...) aggregate in PostgreSQL.
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/tvondra/%{sname}
@@ -30,7 +30,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -65,6 +69,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.2-4PGDG
+- Add Amazon Linux 2023 support.
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 3.0.2-3PGDG
 - Add SLES 16 support
 

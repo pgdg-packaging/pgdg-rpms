@@ -9,7 +9,7 @@
 Summary:	Procedural language interface between PostgreSQL and Lua
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plluangmajver}.%{plluangmidver}.%{plluangminver}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/REL_%{plluangmajver}_%{plluangmidver}_%{plluangminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -47,7 +47,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -102,6 +106,9 @@ LUALIB="-L%{libdir} -l lua" LUAC="%{_bindir}/luac" LUA="%{_bindir}/lua" \
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.12-7PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 2.0.12-6PGDG
 - Add SLES 16 support
 

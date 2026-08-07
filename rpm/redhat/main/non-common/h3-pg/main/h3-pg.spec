@@ -6,7 +6,7 @@
 Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.5.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	Apache
 URL:		https://github.com/postgis/%{sname}
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -31,7 +31,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -88,6 +92,9 @@ popd
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 4.5.0-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Sun Jun 7 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-1PGDG
 - Update to 4.5.0 per changes described at:
   https://github.com/postgis/h3-pg/releases/tag/v4.5.0

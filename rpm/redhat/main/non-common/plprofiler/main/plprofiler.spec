@@ -11,7 +11,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ppmajorver}.5
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 Summary:	PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -44,7 +44,11 @@ Requires:	llvm17
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 8
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	llvm >= 19.0
 %endif
@@ -79,6 +83,9 @@ export PATH=%{pginstdir}/bin:${PATH}
 %endif
 
 %changelog
+* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.5-6PGDG
+- Add Amazon Linux 2023 support.
+
 * Wed Feb 4 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-5PGDG
 - Split -client subpackage into its own package. Fixes
   https://github.com/pgdg-packaging/pgdg-rpms/issues/152
