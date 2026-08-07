@@ -1435,7 +1435,7 @@ fi
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 15.18-4PGDG
 - Add Amazon Linux 2023 support.
 
-* Mon Jun 2 2026 Devrim Gündüz <devrim@gunduz.org> - 15.18-3PGDG
+* Tue Jun 2 2026 Devrim Gündüz <devrim@gunduz.org> - 15.18-3PGDG
 - Backport a few fixes from PostgreSQL 19:
   Remove SUSE systemd scriptlet (%%service_add_post) as it can use
   the RHEL one as well.
