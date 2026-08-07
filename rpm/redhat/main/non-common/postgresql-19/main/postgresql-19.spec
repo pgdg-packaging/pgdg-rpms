@@ -146,7 +146,6 @@ BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
 %endif
 %if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
-
 %endif
 
 %endif
