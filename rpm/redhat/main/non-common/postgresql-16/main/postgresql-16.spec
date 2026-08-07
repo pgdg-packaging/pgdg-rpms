@@ -706,7 +706,7 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %{__install} -d -m 700 %{buildroot}/var/lib/pgsql/%{pgmajorversion}/backups
 
 # Create the multiple PostgreSQL version startup directory
-%{__install} -d -m 700 %{buildroot}/etc/sysconfig/pgsql/%{pgmajorversion}
+%{__install} -d -m 700 %{buildroot}/etc/sysconfig/pgsql/
 
 # Install linker conf file under postgresql installation directory.
 # We will install the latest version via alternatives.
@@ -1274,6 +1274,8 @@ fi
 %changelog
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 16.14-4PGDG
 - Add Amazon Linux 2023 support.
+- Apply a part of bcf82593 missed in for this spec file. Per report
+  from Muralikrishna Bandaru.
 
 * Tue Jun 2 2026 Devrim Gündüz <devrim@gunduz.org> - 16.14-3PGDG
 - Backport a few fixes from PostgreSQL 19:
