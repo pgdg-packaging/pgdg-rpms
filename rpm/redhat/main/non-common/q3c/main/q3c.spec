@@ -3,8 +3,8 @@
 %{!?llvm:%global llvm 1}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.4
-Release:	2PGDG%{?dist}
+Version:	2.0.5
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL extension used for indexing the sky
 License:	GPLv2
 URL:		https://github.com/segasai/%{sname}
@@ -72,6 +72,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sun Aug 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.5-1PGDG
+* Update to 2.0.5 per changes described at:
+  https://github.com/segasai/q3c/releases/tag/v2.0.5
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.4-2PGDG
 - Add Amazon Linux 2023 support.
 
