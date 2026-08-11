@@ -195,8 +195,8 @@ BuildRequires:	libopenssl-3-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} >= 43
-BuildRequires:	openssl-devel-engine
+%if 0%{?fedora} && 0%{?fedora} <= 44
+BuildRequires: 	openssl-devel-engine
 %endif
 %endif
 
@@ -1341,6 +1341,8 @@ fi
 %changelog
 * Tue Aug 11 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta3-1PGDG
 - Update to PostgreSQL 19 beta3
+- Fix builds on Fedora rawhide. Rawhide does not have openssl-devel-engine
+  anymore. It is all back to openssl-devel.
 
 * Thu Aug 6 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta2-2PGDG
 - Add Amazon Linux 2023 support.
