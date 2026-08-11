@@ -81,13 +81,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	14.23
+Version:	14.24
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420004PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1422,6 +1422,10 @@ fi
 %endif
 
 %changelog
+* Tue Aug 11 2026 Devrim Gündüz <devrim@gunduz.org> - 14.24-1PGDG
+- Update to 14.24, per changes described at
+  https://www.postgresql.org/docs/release/14.24/
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 14.23-4PGDG
 - Add Amazon Linux 2023 support.
 
