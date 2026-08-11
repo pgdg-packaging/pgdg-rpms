@@ -44,13 +44,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	17.10
+Version:	17.11
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420004PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1263,6 +1263,10 @@ fi
 %endif
 
 %changelog
+* Tue Aug 11 2026 Devrim Gündüz <devrim@gunduz.org> - 17.11-1PGDG
+- Update to 17.11 per changes described at:
+  https://www.postgresql.org/docs/release/17.11/
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 17.10-4PGDG
 - Add Amazon Linux 2023 support.
 
