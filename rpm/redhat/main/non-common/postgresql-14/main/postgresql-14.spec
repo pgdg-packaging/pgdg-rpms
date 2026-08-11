@@ -244,7 +244,7 @@ BuildRequires: libopenssl-3-devel
 %if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
 BuildRequires: openssl-devel
 %endif
-%if 0%{?fedora} >= 41
+%if 0%{?fedora} && 0%{?fedora} <= 44
 BuildRequires:	openssl-devel-engine
 %endif
 %endif
@@ -1425,6 +1425,8 @@ fi
 * Tue Aug 11 2026 Devrim Gündüz <devrim@gunduz.org> - 14.24-1PGDG
 - Update to 14.24, per changes described at
   https://www.postgresql.org/docs/release/14.24/
+- Fix builds on Fedora rawhide. Rawhide does not have openssl-devel-engine
+  anymore. It is all back to openssl-devel.
 
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 14.23-4PGDG
 - Add Amazon Linux 2023 support.
