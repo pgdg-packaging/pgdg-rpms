@@ -4,8 +4,8 @@
 
 Summary:	OAuth validator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.2
-Release:	2PGDG%{?dist}
+Version:	1.0.0
+Release:	1PGDG%{?dist}
 License:	Apache 2.0
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -78,6 +78,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Tue Aug 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-1PGDG
+- Update to 1.0.0
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2.0-2PGDG
 - Add Amazon Linux 2023 support.
 
