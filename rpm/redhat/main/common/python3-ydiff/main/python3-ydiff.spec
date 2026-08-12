@@ -1,14 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -23,17 +19,20 @@
 %global	python3_pkgversion 313
 %endif
 
-%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
-
 Name:		ydiff
 Version:	1.4.2
-Release:	48PGDG%{?dist}
+Release:	49PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
 Source0:	https://github.com/ymattw/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
-BuildRequires:	python%{python3_pkgversion}-devel
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
+
 BuildArch:	noarch
 
 Requires:	less
@@ -48,7 +47,7 @@ pager support.
 
 %package -n	python3-%{name}
 Summary:	%{summary}
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
 %{?python_provide:%python_provide python3-%{name}}
 %endif
 %description -n	python3-%{name}
@@ -59,11 +58,10 @@ Python library that implements API used by ydiff tool.
 %{_bindir}/sed -i '/#!\/usr\/bin\/env python/d' ydiff.py
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%{__ospython} setup.py install --root %{buildroot} -O1 --skip-build
+%pyproject_install
 
 %files
 %doc README.rst
@@ -73,9 +71,12 @@ Python library that implements API used by ydiff tool.
 %files -n python3-%{name}
 %{python3_sitelib}/__pycache__/*
 %{python3_sitelib}/%{name}.py
-%{python3_sitelib}/%{name}-%{version}-py%{py3ver}.egg-info
+%{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Wed Aug 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-49PGDG
+- Add Fedora 45 support
+
 * Tue Apr 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-48PGDG
 - Add Fedora 44 support
 
