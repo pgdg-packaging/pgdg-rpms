@@ -1,15 +1,11 @@
 %global modname py_consul
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -28,8 +24,8 @@
 %global pgdg_python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		py-consul
-Version:	1.6.0
-Release:	46PGDG%{?dist}
+Version:	1.7.1
+Release:	42PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -50,10 +46,10 @@ Python client for Consul
 %setup -q -n %{name}-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 
 %{__rm} -rf %{buildroot}%{python3_sitelib}/docs
 %{__rm} -f %{buildroot}/usr/*requirements*
@@ -62,7 +58,7 @@ Python client for Consul
 %defattr(-,root,root,-)
 %doc README.md
 %license LICENSE
-%{pgdg_python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/*
+%{pgdg_python3_sitelib}/%{modname}-%{version}.dist-info/
 %{pgdg_python3_sitelib}/consul/*.py*
 %{pgdg_python3_sitelib}/consul/api/*.py*
 %{pgdg_python3_sitelib}/consul/api/acl/*.py*
@@ -76,10 +72,13 @@ Python client for Consul
 %endif
 
 %changelog
-* Tue Jun 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6.0-46PGDG
-- Add Fedora 44 support
-
-- Add SLES 16 support
+* Wed Aug 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-42PGDG
+- Update to 1.7.1 per changes described at:
+  https://github.com/criteo/py-consul/releases/tag/v1.7.1
+  https://github.com/criteo/py-consul/releases/tag/v1.7.0
+  https://github.com/criteo/py-consul/releases/tag/v1.6.1
+- Switch to pyproject builds
+- Add Fedora 45 support
 
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 1.6.0-44PGDG.1
 - Add Fedora 43 support
