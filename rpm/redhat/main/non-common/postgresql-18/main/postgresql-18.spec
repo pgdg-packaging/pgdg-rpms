@@ -41,7 +41,7 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	18.5
+Version:	18.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
@@ -1341,9 +1341,10 @@ fi
 %endif
 
 %changelog
-* Tue Aug 11 2026 Devrim Gündüz <devrim@gunduz.org> - 18.5-1PGDG
-- Update to 18.5 per changes described at:
-  https://www.postgresql.org/docs/release/18.5/
+* Wed Aug 12 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-1PGDG
+- Update to 18.6 per changes described at:
+  https://www.postgresql.org/docs/release/18.6/
+  (18.5 is skipped due to a regression)
 - Fix builds on Fedora rawhide. Rawhide does not have openssl-devel-engine
   anymore. It is all back to openssl-devel.
 
