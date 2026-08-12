@@ -1,27 +1,19 @@
 %global modname py_consul
 %if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
 %if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
-
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global pgdg_python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		py-consul
 Version:	1.7.1
@@ -31,8 +23,11 @@ License:	MIT
 URL:		https://github.com/criteo/%{name}
 Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 BuildArch:	noarch
 
@@ -58,17 +53,17 @@ Python client for Consul
 %defattr(-,root,root,-)
 %doc README.md
 %license LICENSE
-%{pgdg_python3_sitelib}/%{modname}-%{version}.dist-info/
-%{pgdg_python3_sitelib}/consul/*.py*
-%{pgdg_python3_sitelib}/consul/api/*.py*
-%{pgdg_python3_sitelib}/consul/api/acl/*.py*
+%{python3_sitelib}/%{modname}-%{version}.dist-info/
+%{python3_sitelib}/consul/*.py*
+%{python3_sitelib}/consul/api/*.py*
+%{python3_sitelib}/consul/api/acl/*.py*
 %if 0%{?suse_version} == 1500
-%{pgdg_python3_sitelib}/docs/*.py
+%{python3_sitelib}/docs/*.py
 %endif
 %if 0%{?rhel} || 0%{?fedora}
-%{pgdg_python3_sitelib}/consul/__pycache__/*.py*
-%{pgdg_python3_sitelib}/consul/api/__pycache__/*.py*
-%{pgdg_python3_sitelib}/consul/api/acl/__pycache__/*.py*
+%{python3_sitelib}/consul/__pycache__/*.py*
+%{python3_sitelib}/consul/api/__pycache__/*.py*
+%{python3_sitelib}/consul/api/acl/__pycache__/*.py*
 %endif
 
 %changelog
