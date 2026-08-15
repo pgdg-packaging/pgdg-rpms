@@ -12,7 +12,11 @@ Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
-
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libstdc++-devel
+%else
+BuildRequires:	libstdc++-static
+%endif
 %description
 OAuth validator library for PostgreSQL 18.
 
@@ -51,12 +55,13 @@ This packages provides JIT support for pg_oidc_validator
 %setup -q -n %{sname}-%{version}
 
 %build
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags}
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
 
 %install
 %{__rm} -rf %{buildroot}
 
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR=%{buildroot}
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR=%{buildroot} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
+
 
 # Install README
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension/
