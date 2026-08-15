@@ -1,1 +1,0 @@
-../main/pgauditlogtofile18.spec
