@@ -16,7 +16,7 @@ Requires:	%{sname}-common
 BuildRequires:	gcc-c++
 BuildRequires:	cmake >= 3.2.0
 
-BuildRequires:	libpq5-devel curl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel curl-devel
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
