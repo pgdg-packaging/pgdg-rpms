@@ -16,13 +16,25 @@ Requires:	%{sname}-common
 BuildRequires:	gcc-c++
 BuildRequires:	cmake >= 3.2.0
 
-BuildRequires:	libpq5-devel openssl-devel curl-devel
+BuildRequires:	libpq5-devel curl-devel
+
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
+BuildRequires:	openssl-devel-engine
+%endif
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libexpat-devel
 Requires:	libexpat1
 %else
-BuildRequires:	expat-devel
+BuildRequires:	expat-devel libev-devel
 Requires:	expat
 %endif
 
