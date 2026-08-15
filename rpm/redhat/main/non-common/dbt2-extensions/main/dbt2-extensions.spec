@@ -6,12 +6,11 @@
 
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
-Version:	0.61.7
-Release:	6PGDG%{dist}
+Version:	0.62.0
+Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
-Patch0:		%{sname}-cmakelists-rpm.patch
 Requires:	%{sname}-common
 
 BuildRequires:	gcc-c++
@@ -62,7 +61,6 @@ This package provides JIT support for dbt2-extensions
 
 %prep
 %setup -q -n %{sname}-%{version}
-%patch -P 0 -p0
 
 %build
 
@@ -128,6 +126,9 @@ popd
 %endif
 
 %changelog
+* Sat Aug 15 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-1PGDG
+- Update 0.62.0
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.61.7-6PGDG
 - Add Amazon Linux 2023 support.
 
