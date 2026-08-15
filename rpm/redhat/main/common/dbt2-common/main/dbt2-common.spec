@@ -3,12 +3,11 @@
 
 Summary:	Database Test 2 Differences from the TPC-C - Common package
 Name:		%{sname}-common
-Version:	0.61.7
-Release:	3PGDG%{dist}
+Version:	0.62.0
+Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
-Patch0:		%{sname}-cmakelists-rpm.patch
 Patch1:		%{sname}-profile.patch
 
 BuildRequires:	cmake curl-devel libev-devel
@@ -41,7 +40,6 @@ This package includes binaries to run the test.
 
 %prep
 %setup -q -n %{sname}-%{version}
-%patch -P 0 -p0
 %patch -P 1 -p0
 
 %build
@@ -76,6 +74,9 @@ popd
 %{_mandir}/man1/dbt2*
 
 %changelog
+* Fri Aug 14 2026 Devrim Gündüz <devrim@gunduz.org> - 0.62.0-1PGDG
+- Update to 0.62.0
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.61.7-3PGDG
 - (Once again) fix builds against CMake 4
 
