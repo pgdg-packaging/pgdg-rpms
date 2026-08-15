@@ -11,7 +11,20 @@ URL:		https://github.com/osdldbt/%{sname}/
 Patch1:		%{sname}-profile.patch
 
 BuildRequires:	cmake curl-devel libev-devel
-BuildRequires:	libpq5-devel gcc-c++ openssl-devel
+BuildRequires:	libpq5-devel gcc-c++
+
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
+BuildRequires:	openssl-devel-engine
+%endif
+
 %if 0%{?suse_version} >= 1500
 BuildRequires:	cmake-full
 %else
@@ -22,7 +35,7 @@ BuildRequires:	cmake-rpm-macros
 BuildRequires:	libexpat-devel
 Requires:	libev4
 %else
-BuildRequires:	expat-devel
+BuildRequires:	expat-devel libev-devel
 Requires:	libev
 %endif
 
