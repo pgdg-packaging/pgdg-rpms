@@ -1,0 +1,1 @@
+../Fedora-main/pgdg-fedora.spec

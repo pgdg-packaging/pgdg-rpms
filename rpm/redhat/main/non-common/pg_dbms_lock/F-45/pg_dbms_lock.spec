@@ -1,0 +1,1 @@
+../main/pg_dbms_lock.spec

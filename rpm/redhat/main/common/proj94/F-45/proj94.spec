@@ -1,0 +1,1 @@
+../main/proj94.spec

@@ -1,0 +1,1 @@
+../main/pgsql_gzip.spec

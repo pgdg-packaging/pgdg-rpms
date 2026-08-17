@@ -1,0 +1,1 @@
+../main/../main/pgdg-srpm-macros.spec

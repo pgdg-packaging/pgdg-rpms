@@ -1,0 +1,1 @@
+../main/../main/pg_partman.spec

@@ -1,0 +1,1 @@
+../main/pgpool-II-extensions.spec

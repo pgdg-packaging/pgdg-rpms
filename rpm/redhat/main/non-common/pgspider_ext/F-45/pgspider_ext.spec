@@ -1,0 +1,1 @@
+../main/pgspider_ext.spec
