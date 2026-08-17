@@ -1,14 +1,15 @@
 %global sname check_pgactivity
 
-%global		_tag REL2_9
+%global cpgacmajver 2
+%global cpgacminver 11
 
 Name:		nagios-plugins-pgactivity
-Version:	2.10
+Version:	%{cpgacmajver}.%{cpgacminver}
 Release:	1PGDG%{dist}
 Summary:	PostgreSQL monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		http://opm.io
-Source0:	https://github.com/OPMDG/%{sname}/archive/%{_tag}.tar.gz
+Source0:	https://github.com/OPMDG/%{sname}/archive/REL%{cpgacmajver}_%{cpgacminver}.tar.gz
 BuildArch:	noarch
 Requires:	nagios-plugins
 Provides:	%{sname} = %{version}
@@ -19,7 +20,7 @@ many checks and allow the gathering of many performance counters.
 check_pgactivity is part of Open PostgreSQL Monitoring.
 
 %prep
-%setup -q -n %{sname}-%{_tag}
+%setup -q -n %{sname}-REL%{cpgacmajver}_%{cpgacminver}
 
 %build
 
@@ -33,6 +34,10 @@ check_pgactivity is part of Open PostgreSQL Monitoring.
 %license LICENSE
 
 %changelog
+* Mon Aug 17 2026 Devrim Gündüz <devrim@gunduz.org> 2.11-1PGDG
+- Update to 2.11 per changes described at:
+  https://github.com/OPMDG/check_pgactivity/releases/tag/REL2_11
+
 * Mon May 18 2026 Devrim Gündüz <devrim@gunduz.org> 2.10-1PGDG
 - Update to 2.10 per changes described at:
   https://github.com/OPMDG/check_pgactivity/releases/tag/REL2_10
