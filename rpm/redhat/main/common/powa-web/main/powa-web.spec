@@ -13,7 +13,7 @@
 
 Summary:	The user interface of PoWA
 Name:		%{sname}
-Version:	5.2.0
+Version:	5.3.0
 Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
@@ -71,6 +71,10 @@ This is the user interface of POWA.
 %{_unitdir}/%{sname}.service
 
 %changelog
+* Mon Aug 17 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-1PGDG
+- Update to 5.3.0 for changes described at
+  https://github.com/powa-team/powa-web/releases/tag/5.3.0
+
 * Mon Jul 13 2026 Devrim Gunduz <devrim@gunduz.org> - 5.2.0-1PGDG
 - Update to 5.2.0 for changes described at
   https://github.com/powa-team/powa-web/releases/tag/5.2.0
