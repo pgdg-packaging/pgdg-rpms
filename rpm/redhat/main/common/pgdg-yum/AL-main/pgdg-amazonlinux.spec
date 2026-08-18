@@ -7,11 +7,11 @@ URL:		https://yum.postgresql.org
 
 %ifarch aarch64
 Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AMAZONLINUX
-Source2:	pgdg-amazonlinux-all-rhel%{dist}-aarch64.repo
+Source2:	pgdg-amazonlinux-all-aarch64.repo
 %endif
 %ifarch x86_64
 Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AMAZONLINUX
-Source2:	pgdg-amazonlinux-all-rhel%{dist}.repo
+Source2:	pgdg-amazonlinux-all.repo
 %endif
 
 BuildArch:	noarch
