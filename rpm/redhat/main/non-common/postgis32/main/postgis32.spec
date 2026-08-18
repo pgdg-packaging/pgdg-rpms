@@ -19,9 +19,9 @@
 %global	projfullversion %proj96fullversion
 %global	projinstdir %proj96instdir
 %else
-%global	gdalfullversion %gdal312fullversion
-%global	gdalmajorversion %gdal312majorversion
-%global	gdalinstdir %gdal312instdir
+%global	gdalfullversion %gdal313fullversion
+%global	gdalmajorversion %gdal313majorversion
+%global	gdalinstdir %gdal313instdir
 %global	projmajorversion %proj98majorversion
 %global	projfullversion %proj98fullversion
 %global	projinstdir %proj98instdir
@@ -60,7 +60,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -71,8 +71,8 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.53 gmp-devel pcre2-devel
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+BuildRequires:	pgdg-srpm-macros >= 1.0.54 gmp-devel pcre2-devel
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
@@ -94,7 +94,7 @@ BuildRequires:	libxml2-devel
 BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL SFCGAL-devel >= 2.0.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
@@ -133,7 +133,7 @@ Requires:	libjson-c5
 Requires:	libxerces-c-3_3
 BuildRequires:	libxerces-c-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	json-c xerces-c
 BuildRequires:	xerces-c-devel
 %endif
@@ -268,7 +268,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -402,6 +402,9 @@ fi
 %endif
 
 %changelog
+* Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.10-4PGDG
+- Build with GDAL 3.13 on all platforms except RHEL 8.
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.10-3PGDG
 - Add Amazon Linux 2023 support.
 
