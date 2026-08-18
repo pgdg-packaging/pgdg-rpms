@@ -28,7 +28,7 @@ BuildRequires:	python3-devel
 BuildRequires:	systemd-rpm-macros systemd
 Requires:	systemd
 
-Provides:       user(etcd) group(etcd)
+Provides:	user(etcd) group(etcd)
 
 %description
 etcd is a distributed reliable key-value store for the most critical data
@@ -87,7 +87,7 @@ of a distributed system, with a focus on being:
 %{_unitdir}/%{name}.service
 
 %changelog
-* Tue Aug 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.33-1PGDG
+* Tue Aug 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.33-1PGDG
 - Roll out 3.5.33 in order to be upgrade to 3.6.X from an existing 3.5
   cluster. Per https://etcd.io/docs/v3.7/upgrades/upgrade_3_6/
 
