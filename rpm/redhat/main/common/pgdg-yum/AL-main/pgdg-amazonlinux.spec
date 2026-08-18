@@ -1,4 +1,4 @@
-Name:		pgdg-redhat-repo
+Name:		pgdg-amazonlinux-repo
 Version:	42.0
 Release:	67.al%{dist}PGDG
 Summary:	PostgreSQL PGDG RPMs - DNF Repository Configuration for Amazon Linux 2023
