@@ -4,8 +4,8 @@
 
 Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.3.1
-Release:	2PGDG%{?dist}
+Version:	1.4.0
+Release:	1PGDG%{?dist}
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	PostgreSQL
@@ -73,6 +73,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-1PGDG
+- Update to 1.4.0 per changes described at:
+  https://github.com/timescale/pg_textsearch/releases/tag/v1.4.0
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.1-2PGDG
 - Add Amazon Linux 2023 support.
 
