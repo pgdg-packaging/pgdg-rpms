@@ -1,6 +1,6 @@
 %global sname gdal
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1600
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1600
 %global gdal_python_enabled 1
 %{!?gdaljava:%global gdaljava 1}
 %else
@@ -8,17 +8,13 @@
 %{!?gdaljava:%global gdaljava 0}
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -71,7 +67,7 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}313
-Version:	3.13.2
+Version:	3.13.3
 Release:	1PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
@@ -528,6 +524,10 @@ done
 %endif
 
 %changelog
+* Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-1PGDG
+- Update to 3.13.3 per changes described at:
+  https://github.com/OSGeo/gdal/releases/tag/v3.13.3
+
 * Wed Jul 22 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.2-1PGDG
 - Update to 3.13.2 per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.13.2
