@@ -11,9 +11,9 @@
 %global	geosmajorversion %geos314majorversion
 %global	geosinstdir %geos314instdir
 
-%global	gdalfullversion %gdal312fullversion
-%global	gdalmajorversion %gdal312majorversion
-%global	gdalinstdir %gdal312instdir
+%global	gdalfullversion %gdal313fullversion
+%global	gdalmajorversion %gdal313majorversion
+%global	gdalinstdir %gdal313instdir
 %global	projmajorversion %proj98majorversion
 %global	projfullversion %proj98fullversion
 %global	projinstdir %proj98instdir
@@ -24,25 +24,25 @@
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
 %{!?sfcgal:%global	sfcgal 1}
 %endif
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	beta2_1PGDG%{?dist}
+Release:	beta2_2PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta1.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta1-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta2.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta2-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
-BuildRequires:	pgdg-srpm-macros >= 1.0.53 gmp-devel pcre2-devel
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+BuildRequires:	pgdg-srpm-macros >= 1.0.54 gmp-devel pcre2-devel
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
@@ -64,7 +64,7 @@ BuildRequires:	libxml2-devel
 BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL SFCGAL-devel >= 2.1.0
 %endif
 %if 0%{?suse_version} >= 1500
@@ -101,7 +101,7 @@ Requires:	libjson-c5
 Requires:	libxerces-c-3_3
 BuildRequires:	libxerces-c-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	json-c xerces-c
 BuildRequires:	xerces-c-devel
 %endif
@@ -201,7 +201,7 @@ This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}beta1
+%setup -q -n %{sname}-%{version}beta2
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -232,7 +232,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -366,6 +366,10 @@ fi
 %endif
 
 %changelog
+* Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0beta2-2PGDG
+- Build with GDAL 3.13 on all platforms except RHEL 8.
+- Previous package used beta1 sources, so rebuild to fix it.
+
 * Mon Aug 10 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0beta2-1PGDG
 - Update to 3.7.0 beta2 per:
   https://postgis.net/2026/08/PostGIS-3.7.0beta2/
