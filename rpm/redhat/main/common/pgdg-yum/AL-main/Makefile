@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="pgdg-redhat.spec"
+SPECFILE="pgdg-amazonlinux.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
