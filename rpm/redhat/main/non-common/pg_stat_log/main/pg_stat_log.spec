@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL extension that uses the Custom Cumulative Stats API to track log messages
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.1
-Release:	2PGDG%{?dist}
+Version:	0.2
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/fabriziomello/%{sname}
 Source0:	https://github.com/fabriziomello/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -75,6 +75,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2-1PGDG
+- Update to 0.2 per changes described at:
+  https://github.com/fabriziomello/pg_stat_log/releases/tag/0.2
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.1-2PGDG
 - Add Amazon Linux 2023 support.
 
