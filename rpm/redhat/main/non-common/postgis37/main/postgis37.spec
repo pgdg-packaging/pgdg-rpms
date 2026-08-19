@@ -214,6 +214,11 @@ SFCGAL_LDFLAGS="$SFCGAL_LDFLAGS -L/usr/lib64"; export SFCGAL_LDFLAGS
 LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -lgeos_c -L%{projinstdir}/lib64 -L%{gdalinstdir}/lib -L%{libgeotiffinstdir}/lib -ltiff -L/usr/lib64"; export LDFLAGS
 CFLAGS="$CFLAGS -I%{gdalinstdir}/include"; export CFLAGS
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:%{projinstdir}/lib64/pkgconfig
+# SLES 15.X does not ship gmp.pc, so apply a workaround here:
+%if 0%{?suse_version} < 1600
+export GMP_CFLAGS="-I/usr/include"
+export GMP_LIBS="-lgmp"
+%endif
 
 autoconf
 
