@@ -1,1 +1,0 @@
-../main/boxinfo.pl
