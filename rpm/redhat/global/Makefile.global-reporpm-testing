@@ -1,0 +1,29 @@
+#################################
+# Makefile for PostgreSQL 	#
+# repository RPM packaging	#
+# (testing repo variant)	#
+# https://yum.postgresql.org	#
+#				#
+# Devrim Gunduz			#
+# devrim@gunduz.org		#
+#################################
+
+## PostgreSQL repo rpm testing build targets
+
+repobfsrpm2023testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild2023testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm2023testing
