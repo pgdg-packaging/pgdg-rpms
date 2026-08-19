@@ -1,0 +1,1 @@
+../main/postgresql-20.spec

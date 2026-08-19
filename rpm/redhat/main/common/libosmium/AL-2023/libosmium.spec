@@ -1,0 +1,1 @@
+../main/libosmium.spec

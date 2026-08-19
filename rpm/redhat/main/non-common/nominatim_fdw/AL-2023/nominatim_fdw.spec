@@ -1,0 +1,1 @@
+../main/nominatim_fdw.spec

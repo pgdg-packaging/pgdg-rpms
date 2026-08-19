@@ -1,0 +1,1 @@
+../main/temporal_tables.spec

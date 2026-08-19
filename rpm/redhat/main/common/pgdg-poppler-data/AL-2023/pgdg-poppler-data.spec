@@ -1,0 +1,1 @@
+../main/pgdg-poppler-data.spec

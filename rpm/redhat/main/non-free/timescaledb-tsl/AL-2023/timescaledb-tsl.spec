@@ -1,0 +1,1 @@
+../main/timescaledb-tsl.spec

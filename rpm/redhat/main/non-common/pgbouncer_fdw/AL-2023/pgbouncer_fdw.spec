@@ -1,0 +1,1 @@
+../main/pgbouncer_fdw.spec

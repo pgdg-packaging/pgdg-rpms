@@ -1,0 +1,1 @@
+../main/pg_stat_log.spec

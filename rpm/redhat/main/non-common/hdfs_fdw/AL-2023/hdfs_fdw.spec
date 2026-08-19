@@ -1,0 +1,1 @@
+../main/../main/hdfs_fdw.spec

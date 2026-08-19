@@ -1,0 +1,1 @@
+../main/check_patroni.spec

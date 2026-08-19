@@ -1,0 +1,1 @@
+../main/../main/db2_fdw.spec

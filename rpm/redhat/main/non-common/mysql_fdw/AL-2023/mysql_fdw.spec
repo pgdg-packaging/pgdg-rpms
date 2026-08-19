@@ -1,0 +1,1 @@
+../main/../main/mysql_fdw.spec

@@ -1,0 +1,1 @@
+../main/dbt2-common.spec

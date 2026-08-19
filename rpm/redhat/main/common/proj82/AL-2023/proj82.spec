@@ -1,0 +1,1 @@
+../main/proj82.spec
