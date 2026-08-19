@@ -18,12 +18,12 @@
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.9
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
 BuildRequires:	postgresql%{pgmajorversion}-devel gdal%{gdalmajorversion}-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.53
+BuildRequires:	pgdg-srpm-macros >= 1.0.54
 Requires:	postgresql%{pgmajorversion}-server gdal%{gdalmajorversion}-libs
 
 %description
@@ -91,6 +91,9 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %endif
 
 %changelog
+* Wed Aug 19 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.9-3PGDG
+- Rebuild against GDAL 3.13
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.9-2PGDG
 - Add Amazon Linux 2023 support.
 
