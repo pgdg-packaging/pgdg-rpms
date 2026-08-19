@@ -58,6 +58,7 @@ Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 Patch0:		%{sname}%{postgiscurrmajorversion}-%{postgismajorversion}.0-gdalfpic.patch
+Patch1:		%{sname}%{postgiscurrmajorversion}-%{version}-gdal-minmax.patch
 
 URL:		https://www.postgis.net/
 
@@ -229,6 +230,7 @@ This package provides JIT support for PostGIS 3.3
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} .
 %patch -P 0 -p0
+%patch -P 1 -p0
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
@@ -398,6 +400,9 @@ fi
 %changelog
 * Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.10-4PGDG
 - Build with GDAL 3.13 on all platforms except RHEL 8.
+- Fix build failure with GDAL 3.13, which no longer defines the MIN/MAX
+  macros in cpl_port.h; use PostgreSQL's Min macro instead.
+
 
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.10-3PGDG
 - Add Amazon Linux 2023 support.
