@@ -21,8 +21,8 @@ The scripts distinguish between four repository categories:
   path in S3.
 - **Non-common** — packages built per PostgreSQL major version (e.g.,
   PostGIS, pgpool-II), stored in `rpm<version>/` directories.
-- **Extras** — additional packages for RHEL/SLES platforms, stored in
-  `pgdg.extras/`.
+- **Extras** — additional packages for RHEL/SLES/Amazon Linux platforms,
+  stored in `pgdg.extras/`.
 - **Repo RPM** (`pgdg-yum`) — the repository-definition RPM itself
   (`/etc/yum.repos.d/pgdg-*.repo`), built per OS release rather than per
   PostgreSQL version. Lives on disk alongside the common packages but is
@@ -84,10 +84,10 @@ a pre-loaded passphrase (see `gpg-setup-secure.sh`).
 
 `awssrpmurl` and `awsdebuginfourl` are derived automatically from
 `osdistro` (set in `global-local.sh`): SLES/openSUSE hosts get the
-`zypp-*` buckets, every other distro gets the `dnf-*` buckets. This isn't
-something you set per host — it's computed the same way
-`packagesync.sh` derives its `sync_base`. Set `AWS_PAGER=""` to suppress
-interactive output in automated runs.
+`zypp-*` buckets, every other distro (RHEL, Fedora, Amazon Linux) gets
+the `dnf-*` buckets. This isn't something you set per host — it's
+computed the same way `packagesync.sh` derives its `sync_base`. Set
+`AWS_PAGER=""` to suppress interactive output in automated runs.
 
 ### `sign_package <rpm_location>`
 
@@ -148,14 +148,14 @@ create it.
 
 | Variable | Example | Description |
 |---|---|---|
-| `osmajorversion` | `10` | OS major version (RHEL 10, SLES 15, Fedora 43) |
-| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap |
-| `osminversion` | `1` | Minor version for RHEL/SLES (e.g. RHEL 10.1) |
+| `osmajorversion` | `10` | OS major version (RHEL 10, SLES 15, Fedora 43, Amazon Linux 2023) |
+| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap, `amazonlinux-2023` for Amazon Linux |
+| `osminversion` | `1` | Minor version for RHEL/SLES (e.g. RHEL 10.1). Leave empty (`""`) for OSes with no minor version: Fedora, Amazon Linux |
 | `osislatest` | `0` or `1` | When `1`, packages are also synced to the major-version path (S3 has no symlinks) |
 | `osarch` | `x86_64` | Architecture; also `aarch64`, `ppc64le` |
-| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, or `opensuse`. Also drives the automatic `dnf-*`/`zypp-*` S3 bucket selection in `global.sh` |
-| `git_os` | `EL-10` | Git branch/directory suffix used in clone paths |
-| `extrasrepoenabled` | `1` | Enables the extras repository for RHEL/SLES |
+| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, `opensuse`, or `amazon`. Also drives the automatic `dnf-*`/`zypp-*` S3 bucket selection in `global.sh` |
+| `git_os` | `EL-10` | Git branch/directory suffix used in clone paths; `AL-2023` for Amazon Linux |
+| `extrasrepoenabled` | `1` | Enables the extras repository for RHEL/SLES/Amazon Linux |
 
 ### GPG Configuration
 
@@ -274,13 +274,17 @@ Builds and signs the `pgdg-yum` repo RPM — the package that installs
 reporpmbuild.sh [--testing]
 ```
 
-- `--testing` — runs `make repobuild<osmajorversion>.<osminversion>testing`
+- `--testing` — runs `make repobuild<osrelease>testing`
   and signs against `rpmcommontesting` instead of the production target.
 
-With no arguments it runs `make repobuild<osmajorversion>.<osminversion>`
-and signs the result against `rpmcommon`, using `sign_package` from
-`global.sh`. On failure, `log_build_failure` writes a timestamped log to
-`~/bin/logs/`, same as `packagebuild.sh`.
+With no arguments it runs `make repobuild<osrelease>` and signs the
+result against `rpmcommon`, using `sign_package` from `global.sh`. On
+failure, `log_build_failure` writes a timestamped log to `~/bin/logs/`,
+same as `packagebuild.sh`.
+
+`<osrelease>` is `<osmajorversion>.<osminversion>` when `osminversion` is
+set (e.g. `10.1`), or just `<osmajorversion>` for OSes with no minor
+version, such as Fedora or Amazon Linux (e.g. `2023`).
 
 ---
 

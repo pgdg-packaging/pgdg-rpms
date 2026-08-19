@@ -47,7 +47,14 @@ fi
 : "${osarch:?osarch is not set in global.sh}"
 : "${osdistro:?osdistro is not set in global.sh}"
 : "${os:?os is not set in global.sh}"
-: "${osminversion:?osminversion is not set in global.sh}"
+
+# osminversion is intentionally empty for Fedora/Amazon Linux (no minor
+# version), so it can't use the ":?" form above -- that treats an empty
+# string the same as unset and would reject a legitimate config.
+if [ -z "${osminversion+x}" ]; then
+    error "osminversion is not set in global.sh"
+    exit 1
+fi
 
 # Validate AWS CLI is available and configured
 if ! command -v aws &> /dev/null; then

@@ -28,7 +28,15 @@ while [[ $# -gt 0 ]]; do
 done
 
 packagename="pgdg-yum"
-osrelease="${osmajorversion}.${osminversion}"
+
+# Fedora and Amazon Linux have no minor version (osminversion is left empty
+# in global-local.sh for those); append it only when set, same convention as
+# osfullversion in packagesync.sh.
+if [ -n "${osminversion}" ]; then
+	osrelease="${osmajorversion}.${osminversion}"
+else
+	osrelease="${osmajorversion}"
+fi
 
 #################################
 #	Repo RPM (pgdg-yum)	#
