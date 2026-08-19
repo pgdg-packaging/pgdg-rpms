@@ -10,9 +10,9 @@
 %global gdalmajorversion %gdal38majorversion
 %global gdalinstdir %gdal38instdir
 %else
-%global gdalfullversion %gdal312fullversion
-%global gdalmajorversion %gdal312majorversion
-%global gdalinstdir %gdal312instdir
+%global gdalfullversion %gdal313fullversion
+%global gdalmajorversion %gdal313majorversion
+%global gdalinstdir %gdal313instdir
 %endif
 
 Summary:	PostgreSQL foreign data wrapper for OGR
