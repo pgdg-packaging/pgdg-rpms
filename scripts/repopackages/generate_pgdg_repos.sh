@@ -43,9 +43,11 @@ EXTRASREPOSENABLED_redhat=1
 SYNCTESTINGREPOS_redhat=1
 
 # Amazon Linux 2023: single OS version, two architectures
-VALID_ARCH_amazonlinux=("x86_64" "aarch64")
-EXTRASREPOSENABLED_amazonlinux=1
-SYNCTESTINGREPOS_amazonlinux=1
+# osdistro identifier is "amzn" (matches upstream Amazon Linux naming,
+# e.g. the %{dist} tag ".amzn2023"), not "amazon"/"amazonlinux".
+VALID_ARCH_amzn=("x86_64" "aarch64")
+EXTRASREPOSENABLED_amzn=1
+SYNCTESTINGREPOS_amzn=1
 
 # Fedora: version list is for reference/sync only; single file uses $releasever
 VALID_VER_fedora=("44" "43")
@@ -96,7 +98,7 @@ Output filenames:
 
 Options:
   -O, --os OS             Generate only for this OS type; repeatable
-                          Valid: redhat fedora sles opensuse amazonlinux
+                          Valid: redhat fedora sles opensuse amzn
   -o, --output-dir DIR    Output directory (default: current directory)
   -v, --ver VERSION       RHEL only: filter to this OS version (e.g. 10.0)
   -a, --arch ARCH         RHEL/Amazon Linux only: filter to this architecture (e.g. aarch64)
@@ -121,7 +123,7 @@ Valid SLES major   : ${VALID_SLES_MAJOR_VERSIONS[*]}
 Valid SLES arches  : ${VALID_ARCH_sles[*]}
 Valid Leap major   : ${VALID_LEAP_MAJOR_VERSIONS[*]}
 Valid Leap arches  : ${VALID_ARCH_opensuse[*]}
-Valid Amazon Linux arches: ${VALID_ARCH_amazonlinux[*]} (Amazon Linux 2023 only)
+Valid Amazon Linux arches: ${VALID_ARCH_amzn[*]} (Amazon Linux 2023 only)
 
 Examples:
   $(basename "$0")                        # All platforms
@@ -129,8 +131,8 @@ Examples:
   $(basename "$0") -O sles -O opensuse    # SLES + Leap only
   $(basename "$0") -O redhat -v 10.0      # RHEL 10.0 all arches
   $(basename "$0") -O redhat -v 10.0 -a x86_64
-  $(basename "$0") -O amazonlinux         # Amazon Linux 2023, all arches
-  $(basename "$0") -O amazonlinux -a aarch64
+  $(basename "$0") -O amzn                # Amazon Linux 2023, all arches
+  $(basename "$0") -O amzn -a aarch64
   $(basename "$0") -o /srv/repofiles      # Custom output directory
 EOF
 }
@@ -209,11 +211,11 @@ should_gen_singlefile_os() {
 }
 
 # Returns 0 if Amazon Linux should be generated at all (arch selection is
-# handled separately by looping VALID_ARCH_amazonlinux, same as RHEL).
+# handled separately by looping VALID_ARCH_amzn, same as RHEL).
 # When called without --os, -v (RHEL-version-specific) implies a RHEL-only
 # run, so Amazon Linux is skipped unless explicitly requested via --os.
-should_gen_amazonlinux() {
-	in_array "amazonlinux" "${FILTER_OS[@]}" && return 0
+should_gen_amzn() {
+	in_array "amzn" "${FILTER_OS[@]}" && return 0
 	[[ "${#FILTER_OS[@]}" -gt 0 ]] && return 1
 	[[ -n "$FILTER_VER" ]] && return 1
 	return 0
@@ -228,10 +230,10 @@ get_rhel_gpgkey() {
 }
 
 # Return the correct GPG key filename for a given Amazon Linux architecture
-get_amazonlinux_gpgkey() {
+get_amzn_gpgkey() {
 	case "$1" in
-		aarch64)	echo "PGDG-RPM-GPG-KEY-AARCH64-AMAZONLINUX" ;;
-		*)		echo "PGDG-RPM-GPG-KEY-AMAZONLINUX" ;;
+		aarch64)	echo "PGDG-RPM-GPG-KEY-AARCH64-AMZN" ;;
+		*)		echo "PGDG-RPM-GPG-KEY-AMZN" ;;
 	esac
 }
 
@@ -500,11 +502,11 @@ generate_redhat_repo() {
 # per-OS-version dimension (Amazon Linux 2023 is a single release).
 ##############################################################
 
-generate_amazonlinux_repo() {
+generate_amzn_repo() {
 	local arch="$1"
 
 	local osmajor="amzn2023"
-	local gpgkey; gpgkey=$(get_amazonlinux_gpgkey "$arch")
+	local gpgkey; gpgkey=$(get_amzn_gpgkey "$arch")
 
 	# x86_64 is the default — no arch suffix in the filename
 	local archsuffix=""
@@ -513,8 +515,10 @@ generate_amazonlinux_repo() {
 
 	local osdesc="Amazon Linux 2023"
 
-	# $basearch is a DNF variable resolved at install time — escape from bash
-	local OSURL="amazon/amazonlinux-2023-\$basearch"
+	# $basearch is a DNF variable resolved at install time — escape from bash.
+	# Path segment is "amzn"/"amzn-2023" (upstream naming), not "amazon"/
+	# "amazonlinux" -- only the shipped .repo *filename* keeps the longer form.
+	local OSURL="amzn/amzn-2023-\$basearch"
 	local YUM_BASE="https://download.postgresql.org/pub/repos/yum"
 	local SRPM_BASE="https://dnf-srpms.postgresql.org/srpms"
 	local DBG_BASE="https://dnf-debuginfo.postgresql.org"
@@ -544,7 +548,7 @@ generate_amazonlinux_repo() {
 		1 "$gpgkey"
 
 	# ── Extras ───────────────────────────────────────────────────────
-	if [[ "${EXTRASREPOSENABLED_amazonlinux}" -eq 1 ]]; then
+	if [[ "${EXTRASREPOSENABLED_amzn}" -eq 1 ]]; then
 		write_comment "$outfile" \
 			"We provide extra packages to support some of the RPMs in the PostgreSQL RPM" \
 			"repo, like consul, etcd, haproxy, etc."
@@ -565,7 +569,7 @@ generate_amazonlinux_repo() {
 		"PGDG Amazon Linux 2023 stable repositories:"
 	local pgver
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
-		pg_supported "amazonlinux" "2023" "$pgver" || continue
+		pg_supported "amzn" "2023" "$pgver" || continue
 		write_stanza "$outfile" \
 			"pgdg${pgver}" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch" \
@@ -574,7 +578,7 @@ generate_amazonlinux_repo() {
 	done
 
 	# ── Testing repos ─────────────────────────────────────────────────
-	if [[ "${SYNCTESTINGREPOS_amazonlinux}" -eq 1 ]]; then
+	if [[ "${SYNCTESTINGREPOS_amzn}" -eq 1 ]]; then
 		write_comment "$outfile" \
 			"PGDG Amazon Linux 2023 Updates Testing common repositories."
 		write_stanza "$outfile" \
@@ -587,7 +591,7 @@ generate_amazonlinux_repo() {
 			"PGDG Amazon Linux 2023 Updates Testing repositories. (These packages should not be used in production)" \
 			"Available for PostgreSQL 14 and above."
 		for pgver in "${PG_TEST_VERSIONS[@]}"; do
-			pg_supported "amazonlinux" "2023" "$pgver" || continue
+			pg_supported "amzn" "2023" "$pgver" || continue
 			write_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Updates testing" \
@@ -605,7 +609,7 @@ generate_amazonlinux_repo() {
 		"${SRPM_BASE}/common/${OSURL}" \
 		0 "$gpgkey"
 
-	if [[ "${EXTRASREPOSENABLED_amazonlinux}" -eq 1 ]]; then
+	if [[ "${EXTRASREPOSENABLED_amzn}" -eq 1 ]]; then
 		write_comment "$outfile" \
 			"PGDG Amazon Linux 2023 Extras SRPM repository"
 		write_stanza "$outfile" \
@@ -615,7 +619,7 @@ generate_amazonlinux_repo() {
 			0 "$gpgkey"
 	fi
 
-	if [[ "${SYNCTESTINGREPOS_amazonlinux}" -eq 1 ]]; then
+	if [[ "${SYNCTESTINGREPOS_amzn}" -eq 1 ]]; then
 		write_comment "$outfile" \
 			"PGDG Amazon Linux 2023 testing common SRPM repository for all PostgreSQL versions"
 		write_stanza "$outfile" \
@@ -624,7 +628,7 @@ generate_amazonlinux_repo() {
 			"${SRPM_BASE}/testing/common/${OSURL}" \
 			0 "$gpgkey"
 
-		if [[ "${EXTRASREPOSENABLED_amazonlinux}" -eq 1 ]]; then
+		if [[ "${EXTRASREPOSENABLED_amzn}" -eq 1 ]]; then
 			write_comment "$outfile" \
 				"PGDG Amazon Linux 2023 Extras Testing SRPM repository"
 			write_stanza "$outfile" \
@@ -638,9 +642,9 @@ generate_amazonlinux_repo() {
 	# Source RPMs: testing-only versions first, then stable interleaved
 	write_comment "$outfile" "PGDG Source RPMs (SRPMS) and their testing repositories:"
 
-	if [[ "${SYNCTESTINGREPOS_amazonlinux}" -eq 1 ]]; then
+	if [[ "${SYNCTESTINGREPOS_amzn}" -eq 1 ]]; then
 		for pgver in "${PG_TEST_VERSIONS[@]}"; do
-			pg_supported "amazonlinux" "2023" "$pgver" || continue
+			pg_supported "amzn" "2023" "$pgver" || continue
 			if ! in_array "$pgver" "${PG_ALL_VERSIONS[@]}"; then
 				write_stanza "$outfile" \
 					"pgdg${pgver}-updates-testing-source" \
@@ -652,13 +656,13 @@ generate_amazonlinux_repo() {
 	fi
 
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
-		pg_supported "amazonlinux" "2023" "$pgver" || continue
+		pg_supported "amzn" "2023" "$pgver" || continue
 		write_stanza "$outfile" \
 			"pgdg${pgver}-source" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Source" \
 			"${SRPM_BASE}/${pgver}/${OSURL}" \
 			0 "$gpgkey"
-		if [[ "${SYNCTESTINGREPOS_amazonlinux}" -eq 1 ]]; then
+		if [[ "${SYNCTESTINGREPOS_amzn}" -eq 1 ]]; then
 			write_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing-source" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Source updates testing" \
@@ -679,7 +683,7 @@ generate_amazonlinux_repo() {
 	write_comment "$outfile" \
 		"Debuginfo / debugsource packages for stable repos"
 	for pgver in "${PG_ALL_VERSIONS[@]}"; do
-		pg_supported "amazonlinux" "2023" "$pgver" || continue
+		pg_supported "amzn" "2023" "$pgver" || continue
 		write_stanza "$outfile" \
 			"pgdg${pgver}-debuginfo" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Debuginfo" \
@@ -687,12 +691,12 @@ generate_amazonlinux_repo() {
 			0 "$gpgkey"
 	done
 
-	if [[ "${SYNCTESTINGREPOS_amazonlinux}" -eq 1 ]]; then
+	if [[ "${SYNCTESTINGREPOS_amzn}" -eq 1 ]]; then
 		write_comment "$outfile" \
 			"Debuginfo / debugsource packages for testing repos" \
 			"Available for PostgreSQL 14 and above."
 		for pgver in "${PG_TEST_VERSIONS[@]}"; do
-			pg_supported "amazonlinux" "2023" "$pgver" || continue
+			pg_supported "amzn" "2023" "$pgver" || continue
 			write_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing-debuginfo" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Debuginfo" \
@@ -1105,9 +1109,9 @@ generate_suse_repo() {
 ##############################################################
 
 for os_filter in "${FILTER_OS[@]}"; do
-	if ! in_array "$os_filter" "redhat" "fedora" "sles" "opensuse" "amazonlinux"; then
+	if ! in_array "$os_filter" "redhat" "fedora" "sles" "opensuse" "amzn"; then
 		echo "${red}ERROR:${reset} Unknown OS type: ${os_filter}"
-		echo "Valid OS types: redhat fedora sles opensuse amazonlinux"
+		echo "Valid OS types: redhat fedora sles opensuse amzn"
 		exit 1
 	fi
 done
@@ -1180,10 +1184,10 @@ if should_gen_singlefile_os "opensuse"; then
 fi
 
 # Amazon Linux 2023: one file per arch (uses -a filtering same as RHEL)
-if os_enabled "amazonlinux" && should_gen_amazonlinux; then
-	for arch in "${VALID_ARCH_amazonlinux[@]}"; do
+if os_enabled "amzn" && should_gen_amzn; then
+	for arch in "${VALID_ARCH_amzn[@]}"; do
 		[[ -n "$FILTER_ARCH" && "$arch" != "$FILTER_ARCH" ]] && continue
-		generate_amazonlinux_repo "$arch"
+		generate_amzn_repo "$arch"
 		((count++))
 	done
 fi

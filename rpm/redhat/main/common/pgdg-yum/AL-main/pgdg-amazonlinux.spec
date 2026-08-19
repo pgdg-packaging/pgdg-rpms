@@ -1,16 +1,16 @@
 Name:		pgdg-amazonlinux-repo
 Version:	42.0
-Release:	67.al%{dist}PGDG
+Release:	68.al%{dist}PGDG
 Summary:	PostgreSQL PGDG RPMs - DNF Repository Configuration for Amazon Linux 2023
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
 
 %ifarch aarch64
-Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AMAZONLINUX
+Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AARCH64-AMZN
 Source2:	pgdg-amazonlinux-all-aarch64.repo
 %endif
 %ifarch x86_64
-Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AMAZONLINUX
+Source0:	https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-AMZN
 Source2:	pgdg-amazonlinux-all.repo
 %endif
 
@@ -46,5 +46,10 @@ key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Wed Aug 19 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-68PGDG
+- Rename GPG key Sources to match upstream Amazon Linux naming (amzn),
+  and fix aarch64 Source0 pointing at the x86_64 GPG key instead of the
+  AARCH64 one.
+
 * Tue Aug 18 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-67PGDG
 - The new repo package for Amazon Linux 2023

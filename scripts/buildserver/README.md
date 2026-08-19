@@ -149,11 +149,11 @@ create it.
 | Variable | Example | Description |
 |---|---|---|
 | `osmajorversion` | `10` | OS major version (RHEL 10, SLES 15, Fedora 43, Amazon Linux 2023) |
-| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap, `amazonlinux-2023` for Amazon Linux |
+| `os` | `rhel-10` | Full OS string used in directory and S3 paths; use `leap-16` for openSUSE Leap, `amzn-2023` for Amazon Linux (matches upstream's own `amzn` naming, e.g. the `.amzn2023` `%{dist}` tag — not `amazon`/`amazonlinux`) |
 | `osminversion` | `1` | Minor version for RHEL/SLES (e.g. RHEL 10.1). Leave empty (`""`) for OSes with no minor version: Fedora, Amazon Linux |
 | `osislatest` | `0` or `1` | When `1`, packages are also synced to the major-version path (S3 has no symlinks) |
 | `osarch` | `x86_64` | Architecture; also `aarch64`, `ppc64le` |
-| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, `opensuse`, or `amazon`. Also drives the automatic `dnf-*`/`zypp-*` S3 bucket selection in `global.sh` |
+| `osdistro` | `redhat` | Distro family: `fedora`, `redhat`, `suse`, `opensuse`, or `amzn`. Also drives the automatic `dnf-*`/`zypp-*` S3 bucket selection in `global.sh` |
 | `git_os` | `EL-10` | Git branch/directory suffix used in clone paths; `AL-2023` for Amazon Linux |
 | `extrasrepoenabled` | `1` | Enables the extras repository for RHEL/SLES/Amazon Linux |
 
