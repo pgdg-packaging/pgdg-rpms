@@ -102,19 +102,21 @@ These flags control which optional repo types are enabled by default when no `--
 ### Usage
 
 ```bash
-./sync_pgdg_rpms.sh --os <os> [--ver <version>] [--arch <arch>] [--sync <items...>] [--dry-run] [--debug]
+./sync_pgdg_rpms.sh [--os <os>] [--ver <version>] [--arch <arch>] [--sync <items...>] [--dry-run] [--debug]
 ```
 
 ### Options
 
 | Option | Required | Description |
 |---|---|---|
-| `--os` | Yes | Operating system: `redhat`, `fedora`, `sles`, or `opensuse` |
-| `--ver` | No | OS version (e.g. `9.7`, `15.6`, `43`). If omitted, all valid versions for the OS are synced |
-| `--arch` | No | Architecture: `aarch64`, `ppc64le`, or `x86_64`. If omitted, all supported architectures for the OS are synced |
+| `--os` | No | Operating system: `redhat`, `fedora`, `sles`, or `opensuse`. If omitted, all supported operating systems are synced |
+| `--ver` | No | OS version (e.g. `9.7`, `15.6`, `43`). If omitted, all valid versions for the OS(es) being processed are synced |
+| `--arch` | No | Architecture: `aarch64`, `ppc64le`, or `x86_64`. If omitted, all supported architectures for the OS(es) being processed are synced |
 | `--sync` | No | One or more items to sync: `common`, `extras`, `testing`, `non-free`, or a PG version number (e.g. `17`). Multiple values accepted. If omitted, all available repos are synced |
 | `--dry-run` | No | Print what would be synced without executing rsync |
 | `--debug` | No | Print detailed internal variable state before syncing |
+
+When `--os` is omitted, the script loops over every OS in `VALID_OS`. In that case a `--ver` or `--arch` value that doesn't apply to a given OS (e.g. `--ver 16.0` doesn't exist for `redhat`) simply skips that OS rather than erroring out — the skip is only visible with `--debug`. When `--os` is given explicitly, an invalid `--ver`/`--arch` for that OS is still treated as a hard error, as before.
 
 ### Sync Items
 
@@ -179,6 +181,9 @@ The script constructs the rsync source hostname dynamically:
 
 # Sync everything for all RHEL versions and all architectures
 ./sync_pgdg_rpms.sh --os redhat
+
+# Sync just the common repo across every supported OS and version
+./sync_pgdg_rpms.sh --sync common
 ```
 
 ### Error Handling
