@@ -4,7 +4,7 @@
 
 This suite of Bash scripts automates the synchronisation of PostgreSQL Global Development Group (PGDG) RPM packages from upstream build hosts to a local mirror. It supports Red Hat Enterprise Linux (RHEL), Fedora, SUSE Linux Enterprise Server (SLES), and openSUSE Leap, and is designed to be run manually or via a cron job.
 
-The suite consists of four files:
+The suite consists of five files:
 
 | File | Purpose |
 |---|---|
@@ -12,6 +12,7 @@ The suite consists of four files:
 | `sync_pgdg_rpms.sh` | Main sync script — drives rsync for a given OS, version, and architecture |
 | `sync_pgdg_rpms_cron.sh` | Cron wrapper — iterates over all OS/version combinations and calls the main script |
 | `sync_pgdg_rpms_completion.sh` | Bash tab-completion — provides context-aware completions for the main script |
+| `sync_pgdg_rpms_reporpms.sh` | Republishes the latest `pgdg-redhat-repo`/`pgdg-fedora-repo` RPM and its `-latest` symlink after a sync |
 
 ---
 
@@ -20,9 +21,11 @@ The suite consists of four files:
 ```
 sync_pgdg_rpms_config.sh       ← Single source of truth for all settings
         │
-        ├── sync_pgdg_rpms.sh        ← Manual/targeted sync
+        ├── sync_pgdg_rpms.sh          ← Manual/targeted sync
         │
-        └── sync_pgdg_rpms_cron.sh   ← Full automated sync (cron)
+        ├── sync_pgdg_rpms_cron.sh     ← Full automated sync (cron)
+        │
+        └── sync_pgdg_rpms_reporpms.sh ← Republish latest repo RPM + symlink
 
 sync_pgdg_rpms_completion.sh   ← Bash completion (sourced in shell profile)
 ```
@@ -40,7 +43,7 @@ This file is the single source of truth for all settings shared across the suite
 | Variable | Value | Description |
 |---|---|---|
 | `PG_ALL_VERSIONS` | `(18 17 16 15 14)` | All supported stable PG versions |
-| `PG_TEST_VERSIONS` | `(18 17 16 15 14)` | Versions available in testing repos |
+| `PG_TEST_VERSIONS` | `(20 19 18 17 16 15 14)` | Versions available in testing repos |
 
 ### Supported Operating Systems
 
@@ -59,8 +62,8 @@ This file is the single source of truth for all settings shared across the suite
 
 | OS | Supported Versions |
 |---|---|
-| `redhat` | `10.1`, `10.0`, `9.7`, `9.6`, `8.10` |
-| `fedora` | `43`, `42` |
+| `redhat` | `10.2`, `10.1`, `10.0`, `9.8`, `9.7`, `9.6`, `8.10` |
+| `fedora` | `44`, `43` |
 | `sles` | `15.6`, `15.7`, `16.0` |
 | `opensuse` | `16.0` |
 
@@ -219,6 +222,51 @@ This script is intended to be called by cron to perform a full, unattended sync 
 
 ---
 
+## Repo RPM Republisher (`sync_pgdg_rpms_reporpms.sh`)
+
+After a sync, the `pgdg-redhat-repo` and `pgdg-fedora-repo` RPMs (the packages that install the PGDG yum repo definitions) live in the freshly-synced `common` trees. This script finds the newest one for each OS/version/arch and republishes it under a dedicated `reporpms` tree so it can be served from a stable, predictable path.
+
+### Usage
+
+```bash
+./sync_pgdg_rpms_reporpms.sh [--os <os>] [--ver <version>] [--arch <arch>] [--dry-run] [--debug]
+```
+
+### Options
+
+| Option | Required | Description |
+|---|---|---|
+| `--os` | No | Restrict to one OS: `redhat` or `fedora` (default: both) |
+| `--ver` | No | Restrict to one OS version (must be valid for `--os`) |
+| `--arch` | No | Restrict to one architecture (must be valid for `--os`) |
+| `--dry-run` | No | Show what would change without touching any files |
+| `--debug` | No | Show detailed debug output |
+
+Only `redhat` and `fedora` are supported — `sles` and `opensuse` have no equivalent repo-RPM concept in this workflow.
+
+### Behaviour
+
+For every `os`/`ver`/`arch` combination:
+
+1. Looks in `<BASE_DIR_OS>/common/<os>/<osname>-<ver>-<arch>` for the highest-versioned `<reponame>-*.rpm` (sorted with `sort -V`).
+2. If it isn't already present in `<BASE_DIR_OS>/reporpms/EL-<ver>-<arch>` (redhat) or `.../F-<ver>-<arch>` (fedora), copies it in.
+3. Re-points the `<reponame>-latest.noarch.rpm` symlink at the new RPM.
+4. Removes any other file or symlink in the destination matching `<reponame>-*` (older versioned RPMs, stray symlinks, etc.), so the destination only ever holds the current RPM plus the `-latest` symlink.
+5. Skips a combination cleanly (no error) if the source `common` directory doesn't exist yet; warns and flags an error if the destination `reporpms` directory is missing.
+
+Like the main sync script, failures are collected rather than aborting the run: it exits `1` with a warning if any update failed, `0` if everything is up to date.
+
+### Suggested Crontab Entry
+
+Run after the nightly sync so the repo RPMs reflect what was just synced:
+
+```cron
+# Republish repo RPMs shortly after the nightly sync completes
+30 2 * * * /path/to/sync_pgdg_rpms_reporpms.sh >> /var/log/pgdg_reporpms.log 2>&1
+```
+
+---
+
 ## Bash Completion (`sync_pgdg_rpms_completion.sh`)
 
 This file provides context-aware tab completion for `sync_pgdg_rpms.sh`.
@@ -249,14 +297,14 @@ The completion function attempts to load `sync_pgdg_rpms_config.sh` automaticall
 
 ## Deployment Checklist
 
-1. Place all four scripts in the same directory.
+1. Place all five scripts in the same directory.
 2. Ensure `sync_pgdg_rpms_config.sh` is readable by the user running the sync.
-3. Make `sync_pgdg_rpms.sh` and `sync_pgdg_rpms_cron.sh` executable: `chmod +x sync_pgdg_rpms.sh sync_pgdg_rpms_cron.sh`
+3. Make `sync_pgdg_rpms.sh`, `sync_pgdg_rpms_cron.sh`, and `sync_pgdg_rpms_reporpms.sh` executable: `chmod +x sync_pgdg_rpms.sh sync_pgdg_rpms_cron.sh sync_pgdg_rpms_reporpms.sh`
 4. Verify SSH connectivity from the sync host to each upstream build host (`pgrpms-*.postgresql.org`) without a passphrase prompt (use SSH keys and `ssh-agent` or an `authorized_keys` entry).
-5. Confirm the local base directories (`/srv/yum/yum`, `/srv/zypp/zypp`) exist and are writable.
+5. Confirm the local base directories (`/srv/yum/yum`, `/srv/zypp/zypp`) exist and are writable, including the `reporpms/EL-<ver>-<arch>` and `reporpms/F-<ver>-<arch>` destination directories used by `sync_pgdg_rpms_reporpms.sh`.
 6. Test with `--dry-run` before running live.
 7. Source `sync_pgdg_rpms_completion.sh` in your shell profile for tab completion.
-8. Add `sync_pgdg_rpms_cron.sh` to crontab for automated nightly syncs.
+8. Add `sync_pgdg_rpms_cron.sh` to crontab for automated nightly syncs, and `sync_pgdg_rpms_reporpms.sh` shortly after it.
 
 ---
 
@@ -265,7 +313,7 @@ The completion function attempts to load `sync_pgdg_rpms_config.sh` automaticall
 All changes should be made exclusively in `sync_pgdg_rpms_config.sh`:
 
 - **New PG version** — add the version number to both `PG_ALL_VERSIONS` and `PG_TEST_VERSIONS`.
-- **New OS version** — add the version string to the relevant `VALID_VER_<os>` array.
+- **New OS version** — add the version string to the relevant `VALID_VER_<os>` array. For `redhat`/`fedora`, also create the matching `reporpms/EL-<ver>-<arch>` or `reporpms/F-<ver>-<arch>` destination directories, since `sync_pgdg_rpms_reporpms.sh` reads `VALID_VER_<os>` directly from the config and will warn (and flag an error) if the destination is missing.
 - **New OS** — add the OS name to `VALID_OS`, create `VALID_ARCH_<os>`, `VALID_VER_<os>`, `BASE_DIR_<os>`, `OSNAME_<os>`, `OSDISTRO_<os>`, and the three feature flag variables (`EXTRASREPOSENABLED_<os>`, `SYNCTESTINGREPOS_<os>`, `SYNCNONFREEREPOS_<os>`), then add a matching `case` block in `sync_pgdg_rpms.sh` (OS settings switch, `SOURCE_HOST`, and `NONFREE_SOURCE_HOST`), add the OS to `OS_VERSIONS` in `sync_pgdg_rpms_cron.sh`, and extend the fallback arrays and completion cases in `sync_pgdg_rpms_completion.sh`.
 
 ---
