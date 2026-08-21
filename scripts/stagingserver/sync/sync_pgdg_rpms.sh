@@ -176,6 +176,11 @@ process_os() {
 	local -n ver_ref="VALID_VER_${OS}"
 	local -a VALID_VER=("${ver_ref[@]}")
 
+	local -n nonfree_ver_ref="VALID_NONFREE_VER_${OS}"
+	local -a VALID_NONFREE_VER=("${nonfree_ver_ref[@]}")
+	local -n nonfree_arch_ref="VALID_NONFREE_ARCH_${OS}"
+	local -a VALID_NONFREE_ARCH=("${nonfree_arch_ref[@]}")
+
 	local osname_var="OSNAME_${OS}"
 	local osname="${!osname_var}"
 	local osdistro_var="OSDISTRO_${OS}"
@@ -385,28 +390,35 @@ process_os() {
 				done
 			fi
 
-			# Sync non-free repos
+			# Sync non-free repos (only where a non-free repo actually
+			# exists for this OS/version/arch combination)
 			if [[ "$os_sync_nonfree" -eq 1 ]]; then
-				# Determine non-free source host based on OS and arch
-				if [[ "$OS" == "redhat" ]]; then
-					NONFREE_SOURCE_HOST="pgrpms-non-free-el${VER}-${osarch}.postgresql.org"
-				elif [[ "$OS" == "fedora" ]]; then
-					NONFREE_SOURCE_HOST="pgrpms-non-free-fedora${VER}-${osarch}.postgresql.org"
-				elif [[ "$OS" == "sles" ]]; then
-					NONFREE_SOURCE_HOST="pgrpms-non-free-sles${VER}-${osarch}.postgresql.org"
-				elif [[ "$OS" == "opensuse" ]]; then
-					NONFREE_SOURCE_HOST="pgrpms-non-free-opensuse${VER}-${osarch}.postgresql.org"
-				fi
-
-				for pgnonfreerelease in "${PG_ALL_VERSIONS[@]}"; do
-					echo "  Syncing : $osname-$distrover-PG$pgnonfreerelease non-free repo"
-					NONFREE_RPM_DIR=/var/lib/pgsql/rpm${pgnonfreerelease}/ALLRPMS
-
-					if ! rsync -ave ssh --delete --delete-missing-args "$NONFREE_SOURCE_HOST":$NONFREE_RPM_DIR/ $BASE_DIR_OS/non-free/$pgnonfreerelease/$osdistro/$osname-$distrover-$osarch; then
-						echo "  [ERROR] Rsync failed for PG $pgnonfreerelease non-free repo ($osname-$distrover-$osarch)" >&2
-						sync_had_errors=1
+				if ! contains "$VER" "${VALID_NONFREE_VER[@]}"; then
+					$DEBUG && echo "  [DEBUG] Non-free repo not available for $OS $VER, skipping"
+				elif ! contains "$osarch" "${VALID_NONFREE_ARCH[@]}"; then
+					$DEBUG && echo "  [DEBUG] Non-free repo not available for $OS $VER ($osarch), skipping"
+				else
+					# Determine non-free source host based on OS and arch
+					if [[ "$OS" == "redhat" ]]; then
+						NONFREE_SOURCE_HOST="pgrpms-non-free-el${VER}-${osarch}.postgresql.org"
+					elif [[ "$OS" == "fedora" ]]; then
+						NONFREE_SOURCE_HOST="pgrpms-non-free-fedora${VER}-${osarch}.postgresql.org"
+					elif [[ "$OS" == "sles" ]]; then
+						NONFREE_SOURCE_HOST="pgrpms-non-free-sles${VER}-${osarch}.postgresql.org"
+					elif [[ "$OS" == "opensuse" ]]; then
+						NONFREE_SOURCE_HOST="pgrpms-non-free-opensuse${VER}-${osarch}.postgresql.org"
 					fi
-				done
+
+					for pgnonfreerelease in "${PG_ALL_VERSIONS[@]}"; do
+						echo "  Syncing : $osname-$distrover-PG$pgnonfreerelease non-free repo"
+						NONFREE_RPM_DIR=/var/lib/pgsql/rpm${pgnonfreerelease}/ALLRPMS
+
+						if ! rsync -ave ssh --delete --delete-missing-args "$NONFREE_SOURCE_HOST":$NONFREE_RPM_DIR/ $BASE_DIR_OS/non-free/$pgnonfreerelease/$osdistro/$osname-$distrover-$osarch; then
+							echo "  [ERROR] Rsync failed for PG $pgnonfreerelease non-free repo ($osname-$distrover-$osarch)" >&2
+							sync_had_errors=1
+						fi
+					done
+				fi
 			fi
 		done  # End of ARCH_LIST loop
 	done  # End of VER_LIST loop

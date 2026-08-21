@@ -98,6 +98,19 @@ These flags control which optional repo types are enabled by default when no `--
 | `SYNCTESTINGREPOS` | 1 | 1 | 0 | 0 |
 | `SYNCNONFREEREPOS` | 1 | 0 | 0 | 0 |
 
+### Non-Free Availability
+
+`SYNCNONFREEREPOS_<os>` above only controls whether non-free is attempted *at all* by default for an OS. Even where it's enabled, the actual non-free repo only exists for a limited subset of versions and architectures, tracked separately via `VALID_NONFREE_VER_<os>` and `VALID_NONFREE_ARCH_<os>`:
+
+| OS | Non-Free Versions | Non-Free Architectures |
+|---|---|---|
+| `redhat` | `10.2`, `10.1`, `9.8`, `9.7`, `8.10` | `x86_64` |
+| `fedora` | *(none)* | *(none)* |
+| `sles` | *(none)* | *(none)* |
+| `opensuse` | *(none)* | *(none)* |
+
+`sync_pgdg_rpms.sh` checks both lists for every OS/version/arch combination before attempting a non-free rsync; a combination not listed (e.g. RHEL `10.0`/`9.6`, or any `aarch64`/`ppc64le` target) is skipped quietly (visible with `--debug`) rather than attempted and failed.
+
 ### OS Naming
 
 | OS key | `OSNAME` | `OSDISTRO` |
@@ -330,8 +343,8 @@ The completion function attempts to load `sync_pgdg_rpms_config.sh` automaticall
 All changes should be made exclusively in `sync_pgdg_rpms_config.sh`:
 
 - **New PG version** — add the version number to both `PG_ALL_VERSIONS` and `PG_TEST_VERSIONS`.
-- **New OS version** — add the version string to the relevant `VALID_VER_<os>` array. For `redhat`/`fedora`, also create the matching `reporpms/EL-<ver>-<arch>` or `reporpms/F-<ver>-<arch>` destination directories, since `sync_pgdg_rpms_reporpms.sh` reads `VALID_VER_<os>` directly from the config and will warn (and flag an error) if the destination is missing. If the new version doesn't ship every architecture in `VALID_ARCH_<os>` yet, add a `VALID_ARCH_OVERRIDES["<os>:<ver>"]` entry restricting it to the architectures that actually exist (see "Per-Version Architecture Overrides" above) — otherwise both scripts will attempt (and fail or warn on) architectures that don't exist for that version.
-- **New OS** — add the OS name to `VALID_OS`, create `VALID_ARCH_<os>`, `VALID_VER_<os>`, `BASE_DIR_<os>`, `OSNAME_<os>`, `OSDISTRO_<os>`, and the three feature flag variables (`EXTRASREPOSENABLED_<os>`, `SYNCTESTINGREPOS_<os>`, `SYNCNONFREEREPOS_<os>`), then add a matching `case` block in `sync_pgdg_rpms.sh` (OS settings switch, `SOURCE_HOST`, and `NONFREE_SOURCE_HOST`), add the OS to `OS_VERSIONS` in `sync_pgdg_rpms_cron.sh`, and extend the fallback arrays and completion cases in `sync_pgdg_rpms_completion.sh`.
+- **New OS version** — add the version string to the relevant `VALID_VER_<os>` array. For `redhat`/`fedora`, also create the matching `reporpms/EL-<ver>-<arch>` or `reporpms/F-<ver>-<arch>` destination directories, since `sync_pgdg_rpms_reporpms.sh` reads `VALID_VER_<os>` directly from the config and will warn (and flag an error) if the destination is missing. If the new version doesn't ship every architecture in `VALID_ARCH_<os>` yet, add a `VALID_ARCH_OVERRIDES["<os>:<ver>"]` entry restricting it to the architectures that actually exist (see "Per-Version Architecture Overrides" above) — otherwise both scripts will attempt (and fail or warn on) architectures that don't exist for that version. If the new version also has a non-free repo, add it to `VALID_NONFREE_VER_<os>` (see "Non-Free Availability" above) — it is *not* picked up automatically just by being in `VALID_VER_<os>`.
+- **New OS** — add the OS name to `VALID_OS`, create `VALID_ARCH_<os>`, `VALID_VER_<os>`, `BASE_DIR_<os>`, `OSNAME_<os>`, `OSDISTRO_<os>`, the three feature flag variables (`EXTRASREPOSENABLED_<os>`, `SYNCTESTINGREPOS_<os>`, `SYNCNONFREEREPOS_<os>`), and `VALID_NONFREE_VER_<os>`/`VALID_NONFREE_ARCH_<os>` (empty arrays if the OS has no non-free repo). Then add a matching `elif` branch in `sync_pgdg_rpms.sh` for `SOURCE_HOST` and `NONFREE_SOURCE_HOST`, add the OS to `OS_VERSIONS` in `sync_pgdg_rpms_cron.sh`, and extend the fallback arrays and completion cases in `sync_pgdg_rpms_completion.sh`. (`VALID_ARCH_<os>`/`VALID_VER_<os>` themselves are picked up automatically via nameref — no per-OS `case` block needed for those.)
 
 ---
 

@@ -44,6 +44,21 @@ SYNCNONFREEREPOS_fedora=0
 SYNCNONFREEREPOS_sles=0
 SYNCNONFREEREPOS_opensuse=0
 
+# Non-free repos are only available for a limited subset of OS versions and
+# architectures, independent of VALID_VER_<os>/VALID_ARCH_<os> above (which
+# describe the regular repos). Only list versions/architectures here that
+# actually have a non-free repo; anything not listed is skipped when
+# syncing non-free.
+VALID_NONFREE_VER_redhat=("10.2" "10.1" "9.8" "9.7" "8.10")
+VALID_NONFREE_VER_fedora=()
+VALID_NONFREE_VER_sles=()
+VALID_NONFREE_VER_opensuse=()
+
+VALID_NONFREE_ARCH_redhat=("x86_64")
+VALID_NONFREE_ARCH_fedora=()
+VALID_NONFREE_ARCH_sles=()
+VALID_NONFREE_ARCH_opensuse=()
+
 # OS-specific naming
 OSNAME_redhat="rhel"
 OSNAME_fedora="fedora"
