@@ -1,16 +1,12 @@
 %global sname pg_statviz
 
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -27,7 +23,7 @@
 
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
-Version:	1.1
+Version:	1.2
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -41,7 +37,7 @@ Requires:	python%{python3_pkgversion}-packaging python%{python3_pkgversion}-pand
 Requires:	python%{python3_pkgversion}-plac python3-psycopg3 >= 3.2.1
 Requires:	python%{python3_pkgversion}-pyparsing python%{python3_pkgversion}-six
 
-%if 0%{?fedora} >= 38 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	python3-cycler python3-dateutil python3-pillow
 Requires:	python3-fonttools
 %endif
@@ -52,6 +48,18 @@ Requires:	python%{python3_pkgversion}-Pillow python%{python3_pkgversion}-FontToo
 %endif
 
 BuildArch:	noarch
+
+# AI deps. Currently only for Fedora:
+%if 0%{?fedora} >= 43
+# Claude:
+Requires:	python3-anthropic
+# Local:
+Requires:	python3-ollama
+# OpenAI:
+Requires:	python3-openai
+# Gemini:
+Requires:	python3-google-genai
+%endif
 
 %description
 pg_statviz is a minimalist extension and utility pair for time series analysis
@@ -82,6 +90,10 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Fri Aug 21 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2-1PGDG
+- Update to 1.2 per changes described at:
+  https://github.com/vyruss/pg_statviz/releases/tag/v1.2
+
 * Wed May 27 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1-1PGDG
 - Update to 1.1 per changes described at:
   https://github.com/vyruss/pg_statviz/releases/tag/v1.0
