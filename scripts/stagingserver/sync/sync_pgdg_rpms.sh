@@ -53,7 +53,7 @@ Examples:
   $0 --sync common
 
 EOF
-	exit 1
+	exit "${1:-1}"
 }
 
 # Contains helper
@@ -67,6 +67,9 @@ contains() {
 # Parse arguments
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+	--help|-h)
+		usage 0
+		;;
 	--os)
 		OS="$2"
 		shift 2

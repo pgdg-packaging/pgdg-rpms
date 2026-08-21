@@ -28,9 +28,36 @@ DRY_RUN=false
 DEBUG=false
 SYNC_OPTIONS=""  # Additional sync options (e.g., "--sync common 18")
 
+# Help
+usage() {
+	cat <<EOF
+Usage: $0 [--dry-run] [--debug] [--sync item1 item2 ...]
+
+Runs a full, unattended sync of every OS/version combination in
+sync_pgdg_rpms_config.sh by invoking sync_pgdg_rpms.sh once per os/ver pair
+(letting it fan out over that OS's architectures automatically).
+
+Optional:
+  --dry-run      Passed through to sync_pgdg_rpms.sh
+  --debug        Passed through to sync_pgdg_rpms.sh
+  --sync         Passed through to sync_pgdg_rpms.sh to limit what is synced
+                 (e.g. --sync common 18 17)
+
+Examples:
+  $0
+  $0 --dry-run
+  $0 --sync common
+
+EOF
+	exit "${1:-1}"
+}
+
 # Parse CLI options
 while [[ $# -gt 0 ]]; do
 	case "$1" in
+	--help|-h)
+		usage 0
+		;;
 	--dry-run)
 		DRY_RUN=true
 		shift
@@ -50,8 +77,7 @@ while [[ $# -gt 0 ]]; do
 		;;
 	*)
 		echo "Unknown option: $1" >&2
-		echo "Usage: $0 [--dry-run] [--debug] [--sync item1 item2 ...]"
-		exit 1
+		usage
 		;;
 	esac
 done
