@@ -27,6 +27,7 @@ OS_VERSIONS[opensuse]="${VALID_VER_opensuse[*]}"
 DRY_RUN=false
 DEBUG=false
 SYNC_OPTIONS=""  # Additional sync options (e.g., "--sync common 18")
+declare -a SYNC_ITEMS_RAW=()  # --sync items collected so far, "pg" not yet expanded
 
 # Help
 usage() {
@@ -41,12 +42,15 @@ Optional:
   --dry-run      Passed through to sync_pgdg_rpms.sh
   --debug        Passed through to sync_pgdg_rpms.sh
   --sync         Passed through to sync_pgdg_rpms.sh to limit what is synced
-                 (e.g. --sync common 18 17)
+                 (e.g. --sync common 18 17). The special keyword "pg" expands
+                 to every version in PG_ALL_VERSIONS (e.g. --sync pg common
+                 syncs all PostgreSQL versions plus the common repo).
 
 Examples:
   $0
   $0 --dry-run
   $0 --sync common
+  $0 --sync pg common
 
 EOF
 	exit "${1:-1}"
@@ -67,11 +71,15 @@ while [[ $# -gt 0 ]]; do
 		shift
 		;;
 	--sync)
-		# Collect all --sync arguments
-		SYNC_OPTIONS="--sync"
+		# Collect all --sync arguments. Each token is re-split on
+		# whitespace so this works whether items were passed as
+		# separate words (--sync pg common) or as one quoted string
+		# (--sync "pg common").
 		shift
 		while [[ $# -gt 0 && ! "$1" =~ ^-- ]]; do
-			SYNC_OPTIONS+=" $1"
+			for word in $1; do
+				SYNC_ITEMS_RAW+=("$word")
+			done
 			shift
 		done
 		;;
@@ -81,6 +89,20 @@ while [[ $# -gt 0 ]]; do
 		;;
 	esac
 done
+
+# Expand the "pg" keyword to every version in PG_ALL_VERSIONS, then build
+# the final --sync option string to pass through to sync_pgdg_rpms.sh.
+if [[ ${#SYNC_ITEMS_RAW[@]} -gt 0 ]]; then
+	declare -a SYNC_ITEMS_EXPANDED=()
+	for item in "${SYNC_ITEMS_RAW[@]}"; do
+		if [[ "$item" == "pg" ]]; then
+			SYNC_ITEMS_EXPANDED+=("${PG_ALL_VERSIONS[@]}")
+		else
+			SYNC_ITEMS_EXPANDED+=("$item")
+		fi
+	done
+	SYNC_OPTIONS="--sync ${SYNC_ITEMS_EXPANDED[*]}"
+fi
 
 # Logger
 log() {

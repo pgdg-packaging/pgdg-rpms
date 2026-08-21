@@ -233,15 +233,18 @@ This script is intended to be called by cron to perform a full, unattended sync 
 |---|---|
 | `--dry-run` | Passed through to `sync_pgdg_rpms.sh` |
 | `--debug` | Passed through to `sync_pgdg_rpms.sh` |
-| `--sync` | Passed through to `sync_pgdg_rpms.sh` to limit what is synced |
+| `--sync` | Passed through to `sync_pgdg_rpms.sh` to limit what is synced. The special keyword `pg` expands to every version in `PG_ALL_VERSIONS` |
+
+`pg` can be combined with any other item, e.g. `--sync pg common` syncs all PostgreSQL versions plus the common repo (equivalent to `--sync 18 17 16 15 14 common`, given the current `PG_ALL_VERSIONS`). It's expanded before being forwarded, so it works whether items are passed as separate words (`--sync pg common`) or as one quoted string (`--sync "pg common"`).
 
 ### Behaviour
 
 1. Sources `sync_pgdg_rpms_config.sh` to read all OS/version mappings.
 2. Builds an associative array (`OS_VERSIONS`) mapping each OS to its list of versions.
-3. Iterates over every `os → version` pair and invokes `sync_pgdg_rpms.sh --os <os> --ver <ver>`.
-4. If a particular `os/ver` combination fails, logs the error and continues with the next (using `|| continue`).
-5. Logs all actions with timestamps via a `log()` helper.
+3. Expands any `pg` keyword in `--sync` to the full `PG_ALL_VERSIONS` list.
+4. Iterates over every `os → version` pair and invokes `sync_pgdg_rpms.sh --os <os> --ver <ver>`.
+5. If a particular `os/ver` combination fails, logs the error and continues with the next (using `|| continue`).
+6. Logs all actions with timestamps via a `log()` helper.
 
 ### Suggested Crontab Entry
 
