@@ -2,7 +2,7 @@
 
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}_extension_%{pgmajorversion}
-Version:	0.9
+Version:	1.2
 Release:	1PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -41,6 +41,12 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %{pginstdir}/share/extension/*.sql
 
 %changelog
+* Fri Aug 21 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2-1PGDG
+- Update to 1.2 per changes described at:
+  https://github.com/vyruss/pg_statviz/releases/tag/v1.2
+  https://github.com/vyruss/pg_statviz/releases/tag/v1.1
+  https://github.com/vyruss/pg_statviz/releases/tag/v1.0
+
 * Thu Jan 15 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9-1PGDG
 - Update to 0.9
 
