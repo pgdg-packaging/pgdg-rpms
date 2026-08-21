@@ -13,7 +13,8 @@ BuildRequires:	python3-devel
 
 BuildRequires:	python3-hatch-fancy-pypi-readme python3-mcp
 BuildRequires:	python3-docstring-parser python3-google-auth+requests
-BuildRequires:	python3-httpx2 python3-jiter
+BuildRequires:	python3-httpx2 python3-jiter python3-sniffio
+BuildRequires:	python3-aiohttp python3-boto3 python3-botocore
 
 
 %description
