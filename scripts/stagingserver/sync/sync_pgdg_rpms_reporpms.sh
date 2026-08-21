@@ -190,9 +190,6 @@ process_os() {
 	local -n ver_ref="VALID_VER_${os}"
 	local -a ver_list=("${ver_ref[@]}")
 
-	local -n arch_ref="VALID_ARCH_${os}"
-	local -a arch_list=("${arch_ref[@]}")
-
 	if [[ -n "$VER" ]]; then
 		if ! contains "$VER" "${ver_list[@]}"; then
 			$DEBUG && echo "[DEBUG] Version $VER not valid for $os, skipping $os"
@@ -201,20 +198,26 @@ process_os() {
 		ver_list=("$VER")
 	fi
 
-	if [[ -n "$ARCH" ]]; then
-		if ! contains "$ARCH" "${arch_list[@]}"; then
-			$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $os, skipping $os"
-			return 0
-		fi
-		arch_list=("$ARCH")
-	fi
-
 	echo ""
 	echo "================================================"
 	echo "Processing $os repo RPMs"
 	echo "================================================"
 
 	for ver in "${ver_list[@]}"; do
+		# Not every version supports every arch in VALID_ARCH_<os> — see
+		# VALID_ARCH_OVERRIDES in sync_pgdg_rpms_config.sh
+		local -a ver_valid_arch
+		get_valid_arch_for "$os" "$ver" ver_valid_arch
+
+		local -a arch_list=("${ver_valid_arch[@]}")
+		if [[ -n "$ARCH" ]]; then
+			if ! contains "$ARCH" "${ver_valid_arch[@]}"; then
+				$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $os $ver, skipping $os $ver"
+				continue
+			fi
+			arch_list=("$ARCH")
+		fi
+
 		for arch in "${arch_list[@]}"; do
 			local src_dir="${base_dir}/common/${os}/${osname}-${ver}-${arch}"
 			local dest_dir="${base_dir}/reporpms/${destprefix}-${ver}-${arch}"

@@ -54,3 +54,34 @@ OSDISTRO_redhat="redhat"
 OSDISTRO_fedora="fedora"
 OSDISTRO_sles="suse"
 OSDISTRO_opensuse="opensuse"
+
+# Per-(OS,version) architecture overrides.
+#
+# VALID_ARCH_<os> lists the architectures an OS supports in general, but not
+# every version of that OS necessarily ships all of them (e.g. a brand-new
+# RHEL release may ship x86_64 packages before aarch64/ppc64le catch up).
+# List only the exceptions here; any "os:ver" pair not present here uses the
+# full VALID_ARCH_<os> list unchanged.
+#
+# Key format: "<os>:<ver>"   Value: space-separated architecture list
+#
+# Example:
+#   [redhat:10.0]="x86_64 aarch64"    # ppc64le not yet available for 10.0
+declare -A VALID_ARCH_OVERRIDES=(
+)
+
+# Resolve the valid architecture list for a given OS/version pair into the
+# array named by $3 (nameref), honoring VALID_ARCH_OVERRIDES when present
+# and falling back to VALID_ARCH_<os> otherwise.
+get_valid_arch_for() {
+	local os="$1" ver="$2" outvar="$3"
+	local -n _get_valid_arch_out="$outvar"
+	local key="${os}:${ver}"
+
+	if [[ -n "${VALID_ARCH_OVERRIDES[$key]:-}" ]]; then
+		_get_valid_arch_out=(${VALID_ARCH_OVERRIDES[$key]})
+	else
+		local -n _get_valid_arch_default="VALID_ARCH_${os}"
+		_get_valid_arch_out=("${_get_valid_arch_default[@]}")
+	fi
+}

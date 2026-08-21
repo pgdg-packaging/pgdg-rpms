@@ -107,6 +107,14 @@ if [[ -n "$OS" ]] && ! contains "$OS" "${VALID_OS[@]}"; then
 	usage
 fi
 
+# Was --ver explicitly requested? Captured now, before VER_LIST/the version
+# loop reuse "$VER" as a loop variable.
+if [[ -n "$VER" ]]; then
+	VER_EXPLICIT=true
+else
+	VER_EXPLICIT=false
+fi
+
 # Determine which OS(es) to process. If --os wasn't given, process all of
 # them; a --ver/--arch that doesn't apply to a particular OS then just
 # skips that OS rather than erroring out (see STRICT_OS below).
@@ -165,8 +173,6 @@ process_os() {
 	local OS="$1"
 
 	# Determine OS-specific settings
-	local -n arch_ref="VALID_ARCH_${OS}"
-	local -a VALID_ARCH=("${arch_ref[@]}")
 	local -n ver_ref="VALID_VER_${OS}"
 	local -a VALID_VER=("${ver_ref[@]}")
 
@@ -200,25 +206,7 @@ process_os() {
 		VER_LIST=("$VER")
 	fi
 
-	# Populate ARCH_LIST based on --arch parameter
-	local -a ARCH_LIST
-	if [[ -z "$ARCH" ]]; then
-		ARCH_LIST=("${VALID_ARCH[@]}")
-		echo "No architecture specified, will sync all architectures for $OS: ${ARCH_LIST[*]}"
-	else
-		if ! contains "$ARCH" "${VALID_ARCH[@]}"; then
-			if $STRICT_OS; then
-				echo "Invalid arch: $ARCH"
-				usage
-			else
-				$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $OS, skipping $OS"
-				return 0
-			fi
-		fi
-		ARCH_LIST=("$ARCH")
-	fi
-
-	# Resolve which repo types to sync for this OS
+	# Resolve which repo types to sync for this OS (architecture-independent)
 	local os_sync_common os_sync_extras os_sync_testing os_sync_nonfree
 	local -a os_sync_pg_versions
 	if $HAVE_SYNC_ITEMS; then
@@ -235,44 +223,65 @@ process_os() {
 		os_sync_pg_versions=("${PG_ALL_VERSIONS[@]}")
 	fi
 
-	# Debug output
-	if $DEBUG; then
-		echo "[DEBUG] OS:   $OS"
-		echo "[DEBUG] ARCH: $ARCH"
-		echo "[DEBUG] ARCH_LIST: ${ARCH_LIST[*]}"
-		echo "[DEBUG] VER:  $VER"
-		echo "[DEBUG] VER_LIST: ${VER_LIST[*]}"
-		echo "[DEBUG] osname: $osname"
-		echo "[DEBUG] osdistro: $osdistro"
-		echo "[DEBUG] EXTRASREPOSENABLED: $EXTRASREPOSENABLED"
-		echo "[DEBUG] SYNCTESTINGREPOS: $SYNCTESTINGREPOS"
-		echo "[DEBUG] SYNC_COMMON: $os_sync_common"
-		echo "[DEBUG] SYNC_EXTRAS: $os_sync_extras"
-		echo "[DEBUG] SYNC_TESTING: $os_sync_testing"
-		echo "[DEBUG] SYNC_NONFREE: $os_sync_nonfree"
-		echo "[DEBUG] SYNC_PG_VERSIONS: ${os_sync_pg_versions[*]}"
-		echo "[DEBUG] Dry run:    $DRY_RUN"
-	fi
-
-	# Dry-run mode
-	if $DRY_RUN; then
-		echo "[DRY-RUN] Would sync $OS versions: ${VER_LIST[*]}"
-		echo "[DRY-RUN] Architectures: ${ARCH_LIST[*]}"
-		echo "[DRY-RUN] SYNC_COMMON: $os_sync_common"
-		echo "[DRY-RUN] SYNC_EXTRAS: $os_sync_extras"
-		echo "[DRY-RUN] SYNC_TESTING: $os_sync_testing"
-		echo "[DRY-RUN] SYNC_NONFREE: $os_sync_nonfree"
-		echo "[DRY-RUN] SYNC_PG_VERSIONS: ${os_sync_pg_versions[*]}"
-		return 0
-	fi
-
-	# Run the sync command. This is the main loop.
 	echo "Starting sync operation for $OS"
 	echo "Versions to sync: ${VER_LIST[*]}"
-	echo "Architectures to sync: ${ARCH_LIST[*]}"
 
 	# Loop through each version
 	for VER in "${VER_LIST[@]}"; do
+		# Resolve the architectures valid for this specific OS+version pair
+		# (not every version supports every arch in VALID_ARCH_<os> — see
+		# VALID_ARCH_OVERRIDES in sync_pgdg_rpms_config.sh)
+		local -a ver_valid_arch
+		get_valid_arch_for "$OS" "$VER" ver_valid_arch
+
+		local -a ARCH_LIST
+		if [[ -z "$ARCH" ]]; then
+			ARCH_LIST=("${ver_valid_arch[@]}")
+			echo "No architecture specified, will sync all architectures for $OS $VER: ${ARCH_LIST[*]}"
+		else
+			if ! contains "$ARCH" "${ver_valid_arch[@]}"; then
+				if $STRICT_OS && $VER_EXPLICIT; then
+					echo "Invalid arch '$ARCH' for $OS $VER"
+					echo "Valid architectures for $OS $VER: ${ver_valid_arch[*]}"
+					exit 1
+				else
+					$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $OS $VER, skipping $OS $VER"
+					continue
+				fi
+			fi
+			ARCH_LIST=("$ARCH")
+		fi
+
+		# Debug output
+		if $DEBUG; then
+			echo "[DEBUG] OS:   $OS"
+			echo "[DEBUG] VER:  $VER"
+			echo "[DEBUG] ARCH: $ARCH"
+			echo "[DEBUG] ARCH_LIST: ${ARCH_LIST[*]}"
+			echo "[DEBUG] osname: $osname"
+			echo "[DEBUG] osdistro: $osdistro"
+			echo "[DEBUG] EXTRASREPOSENABLED: $EXTRASREPOSENABLED"
+			echo "[DEBUG] SYNCTESTINGREPOS: $SYNCTESTINGREPOS"
+			echo "[DEBUG] SYNC_COMMON: $os_sync_common"
+			echo "[DEBUG] SYNC_EXTRAS: $os_sync_extras"
+			echo "[DEBUG] SYNC_TESTING: $os_sync_testing"
+			echo "[DEBUG] SYNC_NONFREE: $os_sync_nonfree"
+			echo "[DEBUG] SYNC_PG_VERSIONS: ${os_sync_pg_versions[*]}"
+			echo "[DEBUG] Dry run:    $DRY_RUN"
+		fi
+
+		# Dry-run mode
+		if $DRY_RUN; then
+			echo "[DRY-RUN] Would sync $OS $VER"
+			echo "[DRY-RUN] Architectures: ${ARCH_LIST[*]}"
+			echo "[DRY-RUN] SYNC_COMMON: $os_sync_common"
+			echo "[DRY-RUN] SYNC_EXTRAS: $os_sync_extras"
+			echo "[DRY-RUN] SYNC_TESTING: $os_sync_testing"
+			echo "[DRY-RUN] SYNC_NONFREE: $os_sync_nonfree"
+			echo "[DRY-RUN] SYNC_PG_VERSIONS: ${os_sync_pg_versions[*]}"
+			continue
+		fi
+
 		echo ""
 		echo "================================================"
 		echo "Processing version: $OS $VER"

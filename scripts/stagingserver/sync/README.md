@@ -58,6 +58,18 @@ This file is the single source of truth for all settings shared across the suite
 | `sles` | `x86_64` |
 | `opensuse` | `x86_64` |
 
+### Per-Version Architecture Overrides
+
+Not every OS version necessarily ships every architecture listed above — e.g. a brand-new RHEL release may ship `x86_64` packages before `aarch64`/`ppc64le` catch up. `VALID_ARCH_OVERRIDES` is an associative array keyed `"<os>:<ver>"` that restricts the architecture list for just that one version; any `os:ver` pair not listed there falls back to the full `VALID_ARCH_<os>` list unchanged:
+
+```bash
+declare -A VALID_ARCH_OVERRIDES=(
+	[redhat:10.0]="x86_64 aarch64"    # ppc64le not yet available for 10.0
+)
+```
+
+Both `sync_pgdg_rpms.sh` and `sync_pgdg_rpms_reporpms.sh` resolve the architecture list per OS/version pair via the `get_valid_arch_for` helper (also defined in the config file), so an override here is picked up automatically by both — no other changes required. A `--arch` that doesn't apply to a given version is skipped quietly (shown with `--debug`), except when both `--os` and `--ver` are given explicitly together with an explicit `--arch` in `sync_pgdg_rpms.sh`, where a mismatch is still a hard error since exactly one target was requested.
+
 ### Versions per OS
 
 | OS | Supported Versions |
@@ -318,7 +330,7 @@ The completion function attempts to load `sync_pgdg_rpms_config.sh` automaticall
 All changes should be made exclusively in `sync_pgdg_rpms_config.sh`:
 
 - **New PG version** — add the version number to both `PG_ALL_VERSIONS` and `PG_TEST_VERSIONS`.
-- **New OS version** — add the version string to the relevant `VALID_VER_<os>` array. For `redhat`/`fedora`, also create the matching `reporpms/EL-<ver>-<arch>` or `reporpms/F-<ver>-<arch>` destination directories, since `sync_pgdg_rpms_reporpms.sh` reads `VALID_VER_<os>` directly from the config and will warn (and flag an error) if the destination is missing.
+- **New OS version** — add the version string to the relevant `VALID_VER_<os>` array. For `redhat`/`fedora`, also create the matching `reporpms/EL-<ver>-<arch>` or `reporpms/F-<ver>-<arch>` destination directories, since `sync_pgdg_rpms_reporpms.sh` reads `VALID_VER_<os>` directly from the config and will warn (and flag an error) if the destination is missing. If the new version doesn't ship every architecture in `VALID_ARCH_<os>` yet, add a `VALID_ARCH_OVERRIDES["<os>:<ver>"]` entry restricting it to the architectures that actually exist (see "Per-Version Architecture Overrides" above) — otherwise both scripts will attempt (and fail or warn on) architectures that don't exist for that version.
 - **New OS** — add the OS name to `VALID_OS`, create `VALID_ARCH_<os>`, `VALID_VER_<os>`, `BASE_DIR_<os>`, `OSNAME_<os>`, `OSDISTRO_<os>`, and the three feature flag variables (`EXTRASREPOSENABLED_<os>`, `SYNCTESTINGREPOS_<os>`, `SYNCNONFREEREPOS_<os>`), then add a matching `case` block in `sync_pgdg_rpms.sh` (OS settings switch, `SOURCE_HOST`, and `NONFREE_SOURCE_HOST`), add the OS to `OS_VERSIONS` in `sync_pgdg_rpms_cron.sh`, and extend the fallback arrays and completion cases in `sync_pgdg_rpms_completion.sh`.
 
 ---
