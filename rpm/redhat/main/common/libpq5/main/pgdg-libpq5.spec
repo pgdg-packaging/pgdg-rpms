@@ -68,7 +68,7 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
 BuildRequires:	openssl-devel-engine
 %endif
 
