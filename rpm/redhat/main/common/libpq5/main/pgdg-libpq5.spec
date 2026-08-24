@@ -5,7 +5,7 @@
 
 Summary:	PostgreSQL Client Library
 Name:		libpq5
-Version:	%{pgmajorversion}.4
+Version:	%{pgmajorversion}.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
@@ -27,11 +27,11 @@ BuildRequires:	readline-devel zlib-devel >= 1.0.4
 BuildRequires:	krb5-devel libicu-devel libxml2-devel libxslt-devel
 BuildRequires:	pam-devel e2fsprogs-devel systemd systemd-devel
 BuildRequires:	systemtap-sdt-devel
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 10
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 10
 BuildRequires:	systemtap-sdt-dtrace
 %endif
 BuildRequires:	perl(ExtUtils::MakeMaker)
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	perl-FindBin
 %endif
 
@@ -51,7 +51,10 @@ BuildRequires:	llvm17-devel clang17-devel
 %if 0%{?suse_version} == 1600
 BuildRequires:	llvm19-devel clang19-devel
 %endif
-%if 0%{?fedora} || 0%{?rhel}
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 
@@ -61,12 +64,11 @@ Requires:	/sbin/ldconfig libicu
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-
-%if 0%{?fedora} >= 41
+%if 0%{?fedora} && 0%{?fedora} <= 44
 BuildRequires:	openssl-devel-engine
 %endif
 
@@ -111,7 +113,7 @@ BuildRequires:	selinux-policy >= 3.9.13
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -252,6 +254,10 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-1PGDG
+- Update to 18.6
+- Add Amazon Linux 2023 and Fedora 45 support
+
 * Tue May 12 2026 Devrim Gündüz <devrim@gunduz.org> - 18.4-1PGDG
 - Update to 18.4
 
