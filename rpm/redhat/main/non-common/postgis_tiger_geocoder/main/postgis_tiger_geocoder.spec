@@ -9,7 +9,7 @@ License:	MIT
 URL:		https://gitea.osgeo.org/postgis/%{sname}
 Source0:	https://gitea.osgeo.org/postgis/%{sname}/releases/download/%{version}/%{sname}-%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
-Requires:	postgresql%{pgmajorversion} postgis3_%{version} >= 3.7.0
+Requires:	postgresql%{pgmajorversion} postgis3_%{pgmajorversion} >= 3.7.0
 BuildArch:	noarch
 
 %description
