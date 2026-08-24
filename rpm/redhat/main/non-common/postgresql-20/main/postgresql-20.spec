@@ -198,7 +198,7 @@ BuildRequires:	libopenssl-3-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
 BuildRequires:  openssl-devel-engine
 %endif
 %endif
@@ -1339,6 +1339,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 20.0alpha-3PGDG
+- Fix macros for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 20.0alpha-2PGDG
 - Add Amazon Linux 2023 support.
 

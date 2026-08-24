@@ -4,7 +4,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Common package
 Name:		%{sname}-common
 Version:	0.62.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -21,7 +21,7 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
 BuildRequires:	openssl-devel-engine
 %endif
 
@@ -87,6 +87,9 @@ popd
 %{_mandir}/man1/dbt2*
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.62.0-2PGDG
+- Fix macros for Amazon Linux 2023
+
 * Fri Aug 14 2026 Devrim Gündüz <devrim@gunduz.org> - 0.62.0-1PGDG
 - Update to 0.62.0
 

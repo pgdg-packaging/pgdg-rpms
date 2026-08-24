@@ -40,9 +40,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta3_420001PGDG%{?dist}
+Release:	beta3_420002PGDG%{?dist}
 %else
-Release:	beta3_1PGDG%{?dist}
+Release:	beta3_2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -195,7 +195,7 @@ BuildRequires:	libopenssl-3-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
 BuildRequires: 	openssl-devel-engine
 %endif
 %endif
@@ -1339,6 +1339,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta3-2PGDG
+- Fix macros for Amazon Linux 2023
+
 * Tue Aug 11 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0beta3-1PGDG
 - Update to PostgreSQL 19 beta3
 - Fix builds on Fedora rawhide. Rawhide does not have openssl-devel-engine

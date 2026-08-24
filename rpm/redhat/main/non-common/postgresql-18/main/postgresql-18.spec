@@ -45,9 +45,9 @@ Version:	18.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200001PGDG%{?dist}
+Release:	4200002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -202,7 +202,7 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
 BuildRequires:	openssl-devel-engine
 %endif
 %endif
@@ -1341,6 +1341,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-2PGDG
+- Fix macros for Amazon Linux 2023
+
 * Wed Aug 12 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-1PGDG
 - Update to 18.6 per changes described at:
   https://www.postgresql.org/docs/release/18.6/
