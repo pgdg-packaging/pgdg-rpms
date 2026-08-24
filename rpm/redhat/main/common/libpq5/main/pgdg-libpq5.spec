@@ -9,9 +9,9 @@ Version:	%{pgmajorversion}.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420001PGDG%{?dist}
+Release:	420002PGDG%{?dist}
 %else
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -64,7 +64,7 @@ Requires:	/sbin/ldconfig libicu
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -113,7 +113,7 @@ BuildRequires:	selinux-policy >= 3.9.13
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -254,6 +254,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-1PGDG
 - Update to 18.6
 - Add Amazon Linux 2023 and Fedora 45 support

@@ -3,7 +3,7 @@
 Summary:	command line utility for exporting XML, JSON, BYTEA document from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
@@ -38,7 +38,7 @@ Requires:	libzstd >= 1.4.0
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -70,6 +70,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-6PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Thu Nov 20 2025 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-5PGDG
 - Modernise OpenSSL dependencies.
 

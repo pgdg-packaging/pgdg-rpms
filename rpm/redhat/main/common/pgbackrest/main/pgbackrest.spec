@@ -4,7 +4,7 @@
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.59.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -21,7 +21,7 @@ BuildRequires:	libzstd-devel meson zlib-devel
 Requires:	libopenssl3 libsystemd0
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k systemd-libs
 BuildRequires:	openssl-devel
 %endif
@@ -126,6 +126,9 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.1-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Mon Aug 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.1-1PGDG
 - Update to 2.59.1, per changes described at:
   https://pgbackrest.org/release.html#2.59.1

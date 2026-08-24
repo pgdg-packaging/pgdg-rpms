@@ -8,7 +8,7 @@
 
 Name:		haproxy
 Version:	3.4.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
 License:	GPLv2+
@@ -29,7 +29,7 @@ BuildRequires:	systemd-devel systemd
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -149,6 +149,9 @@ done
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.3-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Thu Jul 30 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.3-1PGDG
 - Update to 3.4.3 per changes described at:
   https://mail-archive.com/haproxy@formilux.org/msg47348.html

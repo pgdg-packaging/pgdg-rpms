@@ -4,7 +4,7 @@
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
 Version:	0.18
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
@@ -33,7 +33,7 @@ Requires:	lz4-libs
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -74,6 +74,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgcopydb
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Sun Jun 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-1PGDG
 - Update to 0.18 per changes described at:
   https://github.com/dimitri/pgcopydb/releases/tag/v0.18

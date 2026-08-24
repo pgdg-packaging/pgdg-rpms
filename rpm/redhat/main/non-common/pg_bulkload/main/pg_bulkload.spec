@@ -10,7 +10,7 @@
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
@@ -31,7 +31,7 @@ Requires:	lz4-libs
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -128,6 +128,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-3PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-2PGDG
 - Add Amazon Linux 2023 support.
 

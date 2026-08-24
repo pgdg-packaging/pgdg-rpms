@@ -11,7 +11,7 @@
 Name:		keepalived
 Summary:	High Availability monitor built upon LVS, VRRP and service pollers
 Version:	2.4.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2+
 URL:		https://www.keepalived.org/
 Source0:	https://www.keepalived.org/software/keepalived-%{version}.tar.gz
@@ -37,7 +37,7 @@ BuildRequires:	systemd-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -122,6 +122,9 @@ touch aclocal.m4 Makefile.in lib/config.h.in configure
 %{_mandir}/man8/keepalived.8*
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.3-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Tue Jul 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.3-1PGDG
 - Update to 2.4.3 per changes described at:
   https://www.keepalived.org/release-notes/Release-2.4.3/

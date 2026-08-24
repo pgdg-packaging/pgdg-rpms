@@ -4,7 +4,7 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -16,7 +16,7 @@ BuildRequires:	libmemcached-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -97,6 +97,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Thu Jun 4 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-1PGDG
 - Update to 4.7.2 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-7-2.html

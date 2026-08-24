@@ -5,7 +5,7 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -39,7 +39,7 @@ Requires:	libz1
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -96,6 +96,9 @@ popd
 %license license.txt
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0002-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Jul 3 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0002-1PGDG
 - Update to 18.00.0002 per changes described at:
   https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-18_00_0002

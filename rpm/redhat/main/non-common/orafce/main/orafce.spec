@@ -11,7 +11,7 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -22,7 +22,7 @@ BuildRequires:	krb5-devel meson
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -68,6 +68,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.7-2PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Jun 5 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.7-1PGDG
 - Update to 4.16.7 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_16_7

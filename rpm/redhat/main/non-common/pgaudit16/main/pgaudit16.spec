@@ -5,7 +5,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	16.1
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/pgaudit/pgaudit/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -15,7 +15,7 @@ BuildRequires:	krb5-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -89,6 +89,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 16.1-6PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 16.1-5PGDG
 - Add Amazon Linux 2023 support.
 

@@ -5,7 +5,7 @@
 Summary:	Run periodic jobs in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.7
-Release:	6PGDG%{dist}
+Release:	7PGDG%{dist}
 License:	PostgreSQL
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}
@@ -18,7 +18,7 @@ Requires(postun):	%{_sbindir}/update-alternatives
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel openldap2-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel openldap-devel
 %endif
@@ -82,6 +82,9 @@ PATH=%{pginstdir}/bin/:$PATH %make_install
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6.7-7PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6.7-6PGDG
 - Add Amazon Linux 2023 support.
 

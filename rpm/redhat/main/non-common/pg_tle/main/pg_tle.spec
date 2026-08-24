@@ -5,7 +5,7 @@
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
@@ -16,7 +16,7 @@ Requires:	postgresql%{pgmajorversion}-server
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -82,6 +82,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.2-5PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.2-4PGDG
 - Add Amazon Linux 2023 support.
 

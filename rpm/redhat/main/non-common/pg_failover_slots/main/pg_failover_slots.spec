@@ -5,7 +5,7 @@
 Summary:	Makes PostgreSQL logical replication slots practically usable across physical failover.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -17,7 +17,7 @@ BuildRequires:	krb5-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -92,6 +92,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-6PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-5PGDG
 - Add Amazon Linux 2023 support.
 

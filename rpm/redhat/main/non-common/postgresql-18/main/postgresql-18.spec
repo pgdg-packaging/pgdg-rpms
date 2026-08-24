@@ -198,7 +198,7 @@ BuildRequires:	selinux-policy >= 3.4.3
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -322,7 +322,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -340,7 +340,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 %endif
 
@@ -359,7 +359,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 %endif
 

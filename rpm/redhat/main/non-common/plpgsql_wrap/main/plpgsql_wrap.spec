@@ -5,7 +5,7 @@
 Summary:	Oracle-WRAP-equivalent procedural language for PostgreSQL.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/hexacluster/%{sname}/
 Source0:	https://github.com/hexacluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -16,7 +16,7 @@ Requires:	postgresql%{pgmajorversion}-server
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -86,6 +86,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %endif
 
 %changelog
+* Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-4PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-2PGDG
 - Add Amazon Linux 2023 support.
 

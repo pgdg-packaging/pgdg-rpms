@@ -19,7 +19,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
@@ -40,7 +40,7 @@ BuildRequires:	maven krb5-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -104,6 +104,9 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-4PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Wed Nov 5 2025 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-3PGDG
 - Rebuild against OpenSSL 3 on SLES 15
 

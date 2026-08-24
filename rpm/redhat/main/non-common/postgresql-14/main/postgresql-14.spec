@@ -241,7 +241,7 @@ BuildRequires:	libopenssl-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires: libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 BuildRequires: openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
@@ -311,7 +311,7 @@ Requires:	libopenssl3
 %if 0%{?suse_version} == 1600
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 %endif
 

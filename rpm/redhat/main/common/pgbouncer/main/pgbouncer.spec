@@ -4,7 +4,7 @@
 
 Name:		pgbouncer
 Version:	1.25.2
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -26,7 +26,7 @@ BuildRequires:	pam-devel pandoc
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -163,6 +163,9 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-44PGDG
+- Fix OpenSSL dependency for Amazon Linux 2023
+
 * Mon May 11 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-43PGDG
 - Attempt to fix builds on SLES 15.7 by playing with tar command. There
   is an issue around openat() somewhere on this platform.
