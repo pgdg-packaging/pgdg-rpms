@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -25,7 +29,7 @@
 
 Name:		python%{python3_pkgversion}-attrs
 Version:	22.1.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Python attributes without boilerplate
 
 License:	MIT
@@ -63,6 +67,10 @@ object protocols.
 %{python3_sitelib}/%{pypi_name}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 22.1.0-44PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Tue Jun 2 2026 Devrim Gunduz <devrim@gunduz.org> - 22.1.0-43PGDG
 - Update URL in attempt to fix
   https://github.com/pgdg-packaging/pgdg-rpms/issues/202

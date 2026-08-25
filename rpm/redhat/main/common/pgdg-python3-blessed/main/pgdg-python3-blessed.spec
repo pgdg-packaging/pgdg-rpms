@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -26,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.22.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Easy, practical library for making terminal apps, by providing an elegant, well- documented interface to Colors, Keyboard input, and screen Positioning capabilities
 
 License:	MIT
@@ -63,6 +67,10 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 %{python3_sitelib}/%{sname}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.22.0-44PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Oct 6 2025 Devrim Gündüz <devrim@gunduz.org> - 1.22.0-42PGDG
 - Update to 1.22.0
 - Use more macros and get rid of pypi_source macro.

@@ -19,6 +19,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -33,7 +37,7 @@
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
@@ -112,6 +116,11 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-5PGDG
+- Set python3_pkgversion/__ospython for Amazon Linux 2023 (python3.13),
+  to keep the Python stack consistent across all packages in the repo.
+  The llvmjit subpackage already had separate amzn handling for llvm.
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-4PGDG
 - Add Amazon Linux 2023 support.
 

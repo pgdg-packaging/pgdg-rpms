@@ -16,6 +16,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -28,7 +32,7 @@
 Name:		python%{python3_pkgversion}-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	0.16.2
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -109,6 +113,10 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Tue Aug 25 2026 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-45PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Sat Mar 28 2026 - Devrim Gündüz <devrim@gunduz.org> 0.16.2-44PGDG
 - Add Fedora 44 support
 - Change package name to match other "PGDG" branded Python packages

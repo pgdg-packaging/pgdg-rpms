@@ -10,6 +10,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -24,7 +28,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -240,6 +244,12 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-2PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo. Note:
+  the per-distro Requires blocks (click, cryptography, psutil, etc.)
+  still don't cover amzn and need a follow-up.
+
 * Wed Aug 12 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-1PGDG
 - Update to 4.1.5, per changes described at:
   https://github.com/zalando/patroni/blob/master/docs/releases.rst#version-415

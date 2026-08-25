@@ -16,6 +16,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -27,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.0.15
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -78,6 +82,10 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.15-4PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.15-3PGDG
 - Add missing BRs
 

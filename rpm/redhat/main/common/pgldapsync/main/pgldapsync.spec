@@ -16,6 +16,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -25,7 +29,7 @@
 %global	python3_pkgversion 313
 %endif
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -34,7 +38,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -87,6 +91,10 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-10PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-9PGDG
 - Now that we use Python 3.1X on all RHEL platforms, updated the
   conditional to fix builds on RHEL 8 and 9.

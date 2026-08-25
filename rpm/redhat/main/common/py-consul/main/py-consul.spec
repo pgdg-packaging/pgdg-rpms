@@ -8,6 +8,9 @@
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	python3_pkgversion 311
 %endif
@@ -17,7 +20,7 @@
 
 Name:		py-consul
 Version:	1.7.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -67,6 +70,10 @@ Python client for Consul
 %endif
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-43PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Wed Aug 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-42PGDG
 - Update to 1.7.1 per changes described at:
   https://github.com/criteo/py-consul/releases/tag/v1.7.1

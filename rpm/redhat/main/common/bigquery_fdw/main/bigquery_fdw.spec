@@ -18,6 +18,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -34,7 +38,7 @@
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
@@ -84,6 +88,10 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-8PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-7PGDG
 - Add missing BR
 

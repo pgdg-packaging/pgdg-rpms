@@ -10,6 +10,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -24,7 +28,7 @@
 
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
@@ -60,6 +64,10 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> 2.2.0-4PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Wed Oct 15 2025 Devrim Gündüz <devrim@gunduz.org> 2.2.0-3PGDG
 - Fix builds on SLES
 

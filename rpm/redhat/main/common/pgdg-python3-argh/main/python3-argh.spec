@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -23,7 +27,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.29.4
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -68,6 +72,10 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 0.29.4-44PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Fri May 8 2026 Devrim Gündüz <devrim@gunduz.org> - 0.29.4-43PGDG
 - Add missing BR
 

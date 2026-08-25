@@ -20,6 +20,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -68,7 +72,7 @@
 
 Name:		%{sname}313
 Version:	3.13.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -524,6 +528,12 @@ done
 %endif
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-2PGDG
+- Set python3_pkgversion/__ospython for Amazon Linux 2023 (python3.13),
+  to keep the Python stack consistent across all packages in the repo.
+  Note: gdal_python_enabled still doesn't cover amzn, so this has no
+  effect until that's revisited separately.
+
 * Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-1PGDG
 - Update to 3.13.3 per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.13.3

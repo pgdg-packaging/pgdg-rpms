@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} >= 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -22,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.1.1
-Release:	43PGDG%{?dist}.1
+Release:	44PGDG%{?dist}.1
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -65,6 +69,10 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-44PGDG.1
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-43PGDG.1
 - Add Fedora 43 support
 

@@ -16,6 +16,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -30,7 +34,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.38.19
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -87,6 +91,10 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-4PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Feb 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-3PGDG
 - Add Fedora 44 and SLES 16 support. Need it for an internal sync script
   on SLES 16.

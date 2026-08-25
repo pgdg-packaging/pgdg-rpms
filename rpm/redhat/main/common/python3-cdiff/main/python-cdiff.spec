@@ -7,6 +7,9 @@
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	python3_pkgversion 311
 %endif
@@ -17,7 +20,7 @@
 
 Name:		python3-%{sname}
 Version:	1.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	View colored, incremental diff in a workspace or from stdin, with side by side and auto pager support
 
 License:	BSD
@@ -61,6 +64,10 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %{python3_sitelib}/cdiff*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-44PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-43PGDG
 - Add missing BRs
 

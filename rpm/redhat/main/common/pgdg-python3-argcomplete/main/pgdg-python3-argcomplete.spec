@@ -12,6 +12,10 @@
 %global	__python3 %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__python3 %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} >= 1500
 %global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -20,7 +24,7 @@
 Name:		python%{python3_pkgversion}-%{modname}
 Summary:	Bash tab completion for argparse
 Version:	3.6.2
-Release:	1PGDG%{dist}.1
+Release:	2PGDG%{dist}.1
 License:	Apache-2.0
 URL:		https://github.com/kislyuk/%{modname}
 Source0:	https://files.pythonhosted.org/packages/source/a/%{modname}/%{modname}-%{version}.tar.gz
@@ -85,6 +89,10 @@ sed -i '/^#!/d' argcomplete/scripts/*.py
 %{python3_sitelib}/argcomplete/scripts/__pycache__/*.py*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-2PGDG.1
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-1PGDG.1
 - Add Fedora 43 support
 

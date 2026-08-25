@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} >= 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -22,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -80,6 +84,10 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-2PGDG.1
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-1PGDG.1
 - Add Fedora 43 support
 

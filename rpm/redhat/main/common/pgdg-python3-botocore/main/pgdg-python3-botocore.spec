@@ -16,6 +16,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -30,7 +34,7 @@
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.38.19
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -68,6 +72,10 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-3PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Feb 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-3PGDG
 - Add Fedora 44 and SLES 16 support. Need it for an internal sync script
   on SLES 16.

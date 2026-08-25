@@ -10,6 +10,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -21,7 +25,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	49PGDG%{?dist}
+Release:	50PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -74,6 +78,10 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-50PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Wed Aug 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-49PGDG
 - Add Fedora 45 support
 

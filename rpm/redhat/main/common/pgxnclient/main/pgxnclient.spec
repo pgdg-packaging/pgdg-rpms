@@ -16,6 +16,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -31,7 +35,7 @@
 Summary:	Command line tool designed to interact with the PostgreSQL Extension Network
 Name:		pgxnclient
 Version:	1.3.2
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 Source0:	https://pypi.python.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 License:	BSD
 Url:		https://github.com/pgxn/%{name}
@@ -73,6 +77,10 @@ removing extensions in a PostgreSQL installation or database.
 %{python3_sitelib}/%{name}/utils/__pycache__/*.p*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> 1.3.2-8PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> 1.3.2-7PGDG
 - Add missing BRs
 

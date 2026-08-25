@@ -14,6 +14,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -30,7 +34,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.19.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -165,6 +169,10 @@ touch %{buildroot}/var/log/barman/barman.log
 %{python_sitelib}/%{name}/
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.19.1-43PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Wed May 27 2026 Devrim Gündüz <devrim@gunduz.org> - 3.19.1-42PGDG
 - Update to 3.19.1, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.19.1

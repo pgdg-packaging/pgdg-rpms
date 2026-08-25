@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -27,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	3.13.1
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -75,6 +79,10 @@ sed -Ei 's/ ?--cov(-[^ ]+)? +[^ ]+//g' tox.ini
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-44PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Oct 6 2025 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-43PGDG
 - Use more macros and get rid of pypi_source macro.
 

@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} >= 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -23,7 +27,7 @@
 Summary:	A PostgreSQL database adapter for Python %{python3_pkgversion}
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.9.10
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -67,6 +71,10 @@ export PATH=%{pginstdir}/bin:$PATH
 
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.10-2PGDG.1
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 2.9.10-1PGDG.1
 - Add Fedora 43 support
 

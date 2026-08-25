@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} >= 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -22,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.23.0
-Release:	43PGDG%{?dist}.1
+Release:	44PGDG%{?dist}.1
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
@@ -63,6 +67,10 @@ compression library. A C extension and CFFI interface are provided.
 %endif
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-44PGDG.1
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Mon Sep 22 2025 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-43PGDG.1
 - Add Fedora 43 support
 

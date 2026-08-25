@@ -17,6 +17,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
@@ -32,7 +36,7 @@
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
@@ -71,6 +75,10 @@ This is a PostgreSQL FDW for Mailchimp
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-7PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
+  the Python stack consistent across all packages in the repo.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 0.3.1-6PGDG
 - Add missing BR
 
