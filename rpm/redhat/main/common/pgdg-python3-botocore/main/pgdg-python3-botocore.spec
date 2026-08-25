@@ -30,11 +30,12 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.38.19
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -64,6 +65,12 @@ rm -vr tests/functional/leak
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+%if 0%{?amzn} == 2023
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
+%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}/%{pypi_name}
+%endif
 
 %files
 %doc README.rst
@@ -72,6 +79,18 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-4PGDG
+- Add a local python3_sitelib override tied to __ospython (this spec
+  was the only one in the pgdg-python3-* family missing it), and
+  explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
+  Without the override, %%files would look for installed files under
+  the system default python3's site-packages instead of the
+  python3.13 alt-stack's, since AL2023's default python3 isn't 3.13
+  (unlike Fedora/RHEL/SUSE, where the chosen alt version always
+  happens to match the distro's actual default). AL2023's
+  brp-python-bytecompile also doesn't auto-discover the alt-stack
+  site-packages dir, so __pycache__ was never populated either.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-3PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

@@ -32,7 +32,7 @@
 
 Name:		python3-plac
 Version:	1.3.5
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	The smartest command line arguments parser in the world
 License:	BSD-2-Clause
 URL:		https://github.com/ialbert/plac
@@ -76,6 +76,12 @@ in your source code.}
 %if 0%{?suse_version}
 %py3_compile %{buildroot}%{python3_sitelib}
 %endif
+%if 0%{?amzn} == 2023
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
+%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}
+%endif
 
 %files
 %doc CHANGES.md README.md RELEASE.md
@@ -87,6 +93,14 @@ in your source code.}
 %{python3_sitelib}/__pycache__/%{sname}*pyc
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-44PGDG
+- Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
+  AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+  alt-stack site-packages dir, so __pycache__ was never populated and
+  the build would have failed with a missing-file error (this file's
+  __pycache__ entry in %%files, unlike its siblings', isn't gated to a
+  specific distro set).
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-43PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

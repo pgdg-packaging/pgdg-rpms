@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.4.0
-Release:	45PGDG%{dist}.1
+Release:	46PGDG%{dist}.1
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -58,6 +58,12 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+%if 0%{?amzn} == 2023
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
+%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}/%{modname}
+%endif
 
 %files
 %doc README.md CHANGELOG.md
@@ -67,6 +73,12 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-46PGDG.1
+- Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
+  AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+  alt-stack site-packages dir, so __pycache__ was never populated and
+  the build failed with a missing-file error.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-45PGDG.1
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

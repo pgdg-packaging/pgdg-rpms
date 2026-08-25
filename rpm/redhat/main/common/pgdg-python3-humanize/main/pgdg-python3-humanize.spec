@@ -27,11 +27,11 @@
 
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
-%global python_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	3.13.1
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -79,6 +79,15 @@ sed -Ei 's/ ?--cov(-[^ ]+)? +[^ ]+//g' tox.ini
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-45PGDG
+- Fix a pre-existing typo: the sitelib macro was defined as
+  "python_sitelib" but %%files referenced "python3_sitelib", so %%files
+  was always resolving against the system default python3's
+  site-packages rather than this spec's own __ospython-selected
+  interpreter. Harmless on Fedora/RHEL/SUSE (where the chosen alt
+  version always happens to match the true system default), but would
+  have broken on Amazon Linux 2023, where it doesn't.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-44PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-click
 Version:	8.1.7
-Release:	44PGDG%{?dist}.1
+Release:	45PGDG%{?dist}.1
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -52,6 +52,12 @@ comes with good defaults out of the box.
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+%if 0%{?amzn} == 2023
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
+%py_byte_compile %{__ospython} %{buildroot}%{pgdg_python3_sitearch}/%{modname}
+%endif
 
 %files
 %license LICENSE.rst
@@ -62,6 +68,12 @@ comes with good defaults out of the box.
 %{pgdg_python3_sitearch}/%{modname}/py.typed
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-45PGDG.1
+- Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
+  AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+  alt-stack site-packages dir, so __pycache__ was never populated and
+  the build failed with a missing-file error.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-44PGDG.1
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

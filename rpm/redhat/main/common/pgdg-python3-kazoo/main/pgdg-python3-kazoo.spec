@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.8.0
-Release:	43PGDG%{?dist}.1
+Release:	44PGDG%{?dist}.1
 Summary:	Higher level Python Zookeeper client
 
 License:	Apache-2.0
@@ -54,6 +54,12 @@ find . -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+%if 0%{?amzn} == 2023
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
+%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}/%{modname}
+%endif
 
 #delete tests
 %{__rm} -fr %{buildroot}%{python3_sitelib}/%{modname}/tests/
@@ -64,6 +70,11 @@ find . -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 %{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-44PGDG.1
+- Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
+  AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+  alt-stack site-packages dir, so __pycache__ was never populated.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-43PGDG.1
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	2PGDG%{?dist}.1
+Release:	3PGDG%{?dist}.1
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -67,6 +67,12 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+%if 0%{?amzn} == 2023
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
+%py_byte_compile %{__ospython} %{buildroot}%{pgdg_python3_sitearch}/%{modname}
+%endif
 
 
 %files
@@ -84,6 +90,12 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/*
 
 %changelog
+* Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-3PGDG.1
+- Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
+  AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+  alt-stack site-packages dir, so __pycache__ was never populated and
+  the build failed with a missing-file error.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-2PGDG.1
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.
