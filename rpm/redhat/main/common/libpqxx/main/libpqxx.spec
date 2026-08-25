@@ -99,10 +99,6 @@ popd
 - Add Amazon Linux 2023 support.
 
 * Mon Jul 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-42PGDG
-- AUpdate to 8.0.2 per changes described at
-  https://github.com/jtv/libpqxx/releases/tag/8.0.2
-
-* Mon Jul 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-42PGDG
 - Update to 8.0.2 per changes described at
   https://github.com/jtv/libpqxx/releases/tag/8.0.2
 
