@@ -8,13 +8,22 @@
 %global __ospython %{_bindir}/python3.9
 %global python3_sitearch %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
 %else
+%if 0%{?amzn} == 2023
+# AL2023's default python3 is 3.9, but psycopg requires >= 3.10, so build
+# against the python3.13 alt-stack (also the only one with a Cython package).
+%global __python3 %{_bindir}/python3.13
+%global python3_runtimes python3.13
+%global __ospython %{_bindir}/python3.13
+%global python3_sitearch %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
+%else
 %global python3_runtimes python3
 %global __ospython %{_bindir}/python3
+%endif
 %endif
 
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -31,13 +40,16 @@ Source0:	https://github.com/psycopg/psycopg/archive/refs/tags/%{version}.tar.gz
 Patch0:		psycopg-3.3.3-pyproject-license.patch
 Patch1:		psycopg-3.3.3-_c_pyproject-license.patch
 
-BuildRequires:	postgresql%{pgmajorversion}-devel python3-wheel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+%if 0%{?amzn} == 2023
+BuildRequires:	python3.13-wheel
+BuildRequires:	python3.13-devel python3.13-pip python3.13-setuptools
+BuildRequires:	python3.13-cython
+%else
+BuildRequires:	python3-wheel
 BuildRequires:	python3-devel python3-pip python3-setuptools
 %if 0%{?suse_version} == 1600
 BuildRequires:	python313-Cython
-%else
-%if 0%{?amzn} == 2023
-BuildRequires:	python3-Cython
 %else
 BuildRequires:	python3-cython
 %endif
@@ -152,7 +164,7 @@ fi
 %{python3_sitelib}/psycopg/types/*.py*
 %{python3_sitelib}/psycopg/py.typed
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
 %{python3_sitelib}/psycopg/__pycache__/*.pyc
 %{python3_sitelib}/psycopg/crdb/__pycache__/*.py*
 %{python3_sitelib}/psycopg/pq/__pycache__/*.py*
@@ -182,7 +194,9 @@ fi
 
 %changelog
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-2PGDG
-- Add Amazon Linux 2023 support.
+- Build against the python3.13 alt-stack on Amazon Linux 2023, since the
+  default python3 there is 3.9 and psycopg requires >= 3.10. It's also
+  the only alt-Python version on AL2023 with a Cython package available.
 
 * Sun May 3 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-1PGDG
 - Update to 3.3.4 per changes described at:
