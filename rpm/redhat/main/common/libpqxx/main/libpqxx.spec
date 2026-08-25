@@ -5,7 +5,7 @@ Name:		libpqxx
 Summary:	C++ client API for PostgreSQL
 Epoch:		1
 Version:	%{libpqxxmajorver}.2
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 
 License:	BSD
 URL:		https://github.com/jtv/%{name}
@@ -95,6 +95,9 @@ popd
 %{_docdir}/%{name}/*.md
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-45PGDG
+- Bump up Release: which I forgot in d68dbc3
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-44PGDG
 - Add Amazon Linux 2023 support.
 
