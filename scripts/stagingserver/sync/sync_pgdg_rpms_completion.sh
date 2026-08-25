@@ -46,15 +46,17 @@ _sync_pgdg_rpms() {
 	# Try to load config, use fallback if not available
 	if ! _sync_pgdg_rpms_get_config; then
 		# Fallback values
-		VALID_OS=("redhat" "fedora" "sles" "opensuse")
+		VALID_OS=("redhat" "fedora" "sles" "opensuse" "amzn")
 		VALID_ARCH_redhat=("aarch64" "ppc64le" "x86_64")
 		VALID_ARCH_fedora=("x86_64")
 		VALID_ARCH_sles=("x86_64")
 		VALID_ARCH_opensuse=("x86_64")
+		VALID_ARCH_amzn=("x86_64" "aarch64")
 		VALID_VER_redhat=("10.2" "10.1" "10.0" "9.8" "9.7" "9.6" "8.10")
 		VALID_VER_fedora=("44" "43")
 		VALID_VER_sles=("15.6" "15.7" "16.0")
 		VALID_VER_opensuse=("16.0")
+		VALID_VER_amzn=("2023")
 		PG_ALL_VERSIONS=(18 17 16 15 14)
 	fi
 
@@ -83,6 +85,8 @@ _sync_pgdg_rpms() {
 			COMPREPLY=($(compgen -W "${VALID_ARCH_sles[*]}" -- "$cur"))
 		elif [[ "$os_choice" == "opensuse" ]]; then
 			COMPREPLY=($(compgen -W "${VALID_ARCH_opensuse[*]}" -- "$cur"))
+		elif [[ "$os_choice" == "amzn" ]]; then
+			COMPREPLY=($(compgen -W "${VALID_ARCH_amzn[*]}" -- "$cur"))
 		else
 			# If OS not specified yet, show all possible architectures
 			COMPREPLY=($(compgen -W "aarch64 ppc64le x86_64" -- "$cur"))
@@ -98,9 +102,11 @@ _sync_pgdg_rpms() {
 			COMPREPLY=($(compgen -W "${VALID_VER_sles[*]}" -- "$cur"))
 		elif [[ "$os_choice" == "opensuse" ]]; then
 			COMPREPLY=($(compgen -W "${VALID_VER_opensuse[*]}" -- "$cur"))
+		elif [[ "$os_choice" == "amzn" ]]; then
+			COMPREPLY=($(compgen -W "${VALID_VER_amzn[*]}" -- "$cur"))
 		else
 			# If OS not specified, show all versions
-			local all_versions="${VALID_VER_redhat[*]} ${VALID_VER_fedora[*]} ${VALID_VER_sles[*]} ${VALID_VER_opensuse[*]}"
+			local all_versions="${VALID_VER_redhat[*]} ${VALID_VER_fedora[*]} ${VALID_VER_sles[*]} ${VALID_VER_opensuse[*]} ${VALID_VER_amzn[*]}"
 			COMPREPLY=($(compgen -W "$all_versions" -- "$cur"))
 		fi
 		return 0

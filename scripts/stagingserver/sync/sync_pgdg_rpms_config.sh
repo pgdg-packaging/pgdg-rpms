@@ -8,41 +8,47 @@ PG_ALL_VERSIONS=(18 17 16 15 14)     # All supported stable versions
 PG_TEST_VERSIONS=(20 19 18 17 16 15 14)    # Versions available in testing repos
 
 # Valid operating systems
-VALID_OS=("redhat" "fedora" "sles" "opensuse")
+VALID_OS=("redhat" "fedora" "sles" "opensuse" "amzn")
 
 # Valid architectures per OS
 VALID_ARCH_redhat=("aarch64" "ppc64le" "x86_64")
 VALID_ARCH_fedora=("x86_64")
 VALID_ARCH_sles=("x86_64")
 VALID_ARCH_opensuse=("x86_64")
+VALID_ARCH_amzn=("x86_64" "aarch64")
 
 # Valid versions per OS
 VALID_VER_redhat=("10.2" "10.1" "10.0" "9.8" "9.7" "9.6" "8.10")
 VALID_VER_fedora=("44" "43")
 VALID_VER_sles=("15.6" "15.7" "16.0")
 VALID_VER_opensuse=("16.0")
+VALID_VER_amzn=("2023")
 
 # Base directories per OS
 BASE_DIR_redhat="/srv/yum/yum"
 BASE_DIR_fedora="/srv/yum/yum"
 BASE_DIR_sles="/srv/zypp/zypp"
 BASE_DIR_opensuse="/srv/zypp/zypp"
+BASE_DIR_amzn="/srv/yum/yum"
 
 # Feature flags per OS
 EXTRASREPOSENABLED_redhat=1
 EXTRASREPOSENABLED_fedora=0
 EXTRASREPOSENABLED_sles=1
 EXTRASREPOSENABLED_opensuse=1
+EXTRASREPOSENABLED_amzn=1
 
 SYNCTESTINGREPOS_redhat=1
 SYNCTESTINGREPOS_fedora=1
 SYNCTESTINGREPOS_sles=1
 SYNCTESTINGREPOS_opensuse=1
+SYNCTESTINGREPOS_amzn=1
 
 SYNCNONFREEREPOS_redhat=1
 SYNCNONFREEREPOS_fedora=0
 SYNCNONFREEREPOS_sles=0
 SYNCNONFREEREPOS_opensuse=0
+SYNCNONFREEREPOS_amzn=0
 
 # Non-free repos are only available for a limited subset of OS versions and
 # architectures, independent of VALID_VER_<os>/VALID_ARCH_<os> above (which
@@ -53,22 +59,26 @@ VALID_NONFREE_VER_redhat=("10.2" "10.1" "9.8" "9.7" "8.10")
 VALID_NONFREE_VER_fedora=()
 VALID_NONFREE_VER_sles=()
 VALID_NONFREE_VER_opensuse=()
+VALID_NONFREE_VER_amzn=()
 
 VALID_NONFREE_ARCH_redhat=("x86_64")
 VALID_NONFREE_ARCH_fedora=()
 VALID_NONFREE_ARCH_sles=()
 VALID_NONFREE_ARCH_opensuse=()
+VALID_NONFREE_ARCH_amzn=()
 
 # OS-specific naming
 OSNAME_redhat="rhel"
 OSNAME_fedora="fedora"
 OSNAME_sles="sles"
 OSNAME_opensuse="leap"
+OSNAME_amzn="amzn"
 
 OSDISTRO_redhat="redhat"
 OSDISTRO_fedora="fedora"
 OSDISTRO_sles="suse"
 OSDISTRO_opensuse="opensuse"
+OSDISTRO_amzn="amzn"
 
 # Per-(OS,version) architecture overrides.
 #

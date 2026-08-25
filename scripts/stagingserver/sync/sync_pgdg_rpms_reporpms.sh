@@ -27,14 +27,14 @@ usage() {
 	cat <<EOF
 Usage: $0 [options]
 
-Finds the latest pgdg-redhat-repo / pgdg-fedora-repo RPM under each
-common/<os>/<osname>-<ver>-<arch> directory and republishes it under
-reporpms/EL-<ver>-<arch> (redhat) or reporpms/F-<ver>-<arch> (fedora),
-removing the previous repo RPM and re-pointing the
-"*-repo-latest.noarch.rpm" symlink at the new one.
+Finds the latest pgdg-redhat-repo / pgdg-fedora-repo / pgdg-amazonlinux-repo
+RPM under each common/<os>/<osname>-<ver>-<arch> directory and republishes it
+under reporpms/EL-<ver>-<arch> (redhat), reporpms/F-<ver>-<arch> (fedora), or
+reporpms/AL-<ver>-<arch> (amzn), removing the previous repo RPM and
+re-pointing the "*-repo-latest.noarch.rpm" symlink at the new one.
 
 Optional:
-  --os           Restrict to one OS: redhat, fedora (default: both)
+  --os           Restrict to one OS: redhat, fedora, amzn (default: all three)
   --ver          Restrict to one OS version (must be valid for --os)
   --arch         Restrict to one architecture (must be valid for --os)
   --dry-run      Show what would change without touching any files
@@ -90,8 +90,8 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-if [[ -n "$OS" ]] && ! contains "$OS" "redhat" "fedora"; then
-	echo "Invalid OS: $OS (must be redhat or fedora)"
+if [[ -n "$OS" ]] && ! contains "$OS" "redhat" "fedora" "amzn"; then
+	echo "Invalid OS: $OS (must be redhat, fedora, or amzn)"
 	usage
 fi
 
@@ -235,6 +235,10 @@ fi
 
 if [[ -z "$OS" || "$OS" == "fedora" ]]; then
 	process_os "fedora" "fedora" "pgdg-fedora-repo" "F"
+fi
+
+if [[ -z "$OS" || "$OS" == "amzn" ]]; then
+	process_os "amzn" "amzn" "pgdg-amazonlinux-repo" "AL"
 fi
 
 echo ""

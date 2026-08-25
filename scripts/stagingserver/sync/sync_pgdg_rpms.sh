@@ -32,7 +32,7 @@ Optional:
   --os           Operating system: ${VALID_OS[*]}
                  If not specified, syncs all supported operating systems
 
-  --ver          OS version: redhat (${VALID_VER_redhat[*]}), fedora (${VALID_VER_fedora[*]}), sles (${VALID_VER_sles[*]}), opensuse (${VALID_VER_opensuse[*]})
+  --ver          OS version: redhat (${VALID_VER_redhat[*]}), fedora (${VALID_VER_fedora[*]}), sles (${VALID_VER_sles[*]}), opensuse (${VALID_VER_opensuse[*]}), amzn (${VALID_VER_amzn[*]})
                  If not specified, syncs all versions for the OS(es) being processed
                  If --os is also omitted, an OS for which this version is not valid is skipped
 
@@ -311,6 +311,8 @@ process_os() {
 				SOURCE_HOST="pgrpms-sles${VER}-${osarch}.postgresql.org"
 			elif [[ "$OS" == "opensuse" ]]; then
 				SOURCE_HOST="pgrpms-opensuse${VER}-${osarch}.postgresql.org"
+			elif [[ "$OS" == "amzn" ]]; then
+				SOURCE_HOST="pgrpms-amzn${VER}-${osarch}.postgresql.org"
 			else
 				echo "Unsupported OS: $OS"
 				exit 1
@@ -410,6 +412,8 @@ process_os() {
 						NONFREE_SOURCE_HOST="pgrpms-non-free-sles${VER}-${osarch}.postgresql.org"
 					elif [[ "$OS" == "opensuse" ]]; then
 						NONFREE_SOURCE_HOST="pgrpms-non-free-opensuse${VER}-${osarch}.postgresql.org"
+					elif [[ "$OS" == "amzn" ]]; then
+						NONFREE_SOURCE_HOST="pgrpms-non-free-amzn${VER}-${osarch}.postgresql.org"
 					fi
 
 					for pgnonfreerelease in "${PG_ALL_VERSIONS[@]}"; do
