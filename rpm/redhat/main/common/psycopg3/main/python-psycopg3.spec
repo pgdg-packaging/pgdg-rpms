@@ -23,7 +23,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	3.3.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -36,7 +36,11 @@ BuildRequires:	python3-devel python3-pip python3-setuptools
 %if 0%{?suse_version} == 1600
 BuildRequires:	python313-Cython
 %else
+%if 0%{?amzn} == 2023
+BuildRequires:	python3-Cython
+%else
 BuildRequires:	python3-cython
+%endif
 %endif
 
 %if 0%{?suse_version} >= 1500
@@ -177,6 +181,9 @@ fi
 %{python3_sitelib}/psycopg_c/py.typed
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-2PGDG
+- Add Amazon Linux 2023 support.
+
 * Sun May 3 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-1PGDG
 - Update to 3.3.4 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.3.4
