@@ -5,7 +5,7 @@ Name:		libpqxx
 Summary:	C++ client API for PostgreSQL
 Epoch:		1
 Version:	%{libpqxxmajorver}.2
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 
 License:	BSD
 URL:		https://github.com/jtv/%{name}
@@ -21,6 +21,10 @@ BuildRequires:	xmlto
 
 %if 0%{?rhel} == 9
 BuildRequires:	gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-plugin-annobin
+%endif
+
+%if 0%{?amzn} == 2023
+BuildRequires:	gcc14 gcc14-c++
 %endif
 
 %description
@@ -48,6 +52,11 @@ BuildArch:	noarch
 %if 0%{?rhel} == 9
 export PATH=/opt/rh/gcc-toolset-15/root/usr/bin/:$PATH
 %endif
+%if 0%{?amzn} == 2023
+export CC=/usr/bin/gcc14-gcc
+export CXX=/usr/bin/gcc14-g++
+%undefine _annotated_build
+%endif
 mkdir build
 pushd build
 %cmake -G Ninja	..
@@ -57,6 +66,10 @@ popd
 %install
 %if 0%{?rhel} == 9
 export PATH=/opt/rh/gcc-toolset-15/root/usr/bin/:$PATH
+%endif
+%if 0%{?amzn} == 2023
+export CC=/usr/bin/gcc14-gcc
+export CXX=/usr/bin/gcc14-g++
 %endif
 pushd build
 %ninja_install
@@ -82,6 +95,13 @@ popd
 %{_docdir}/%{name}/*.md
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-44PGDG
+- Add Amazon Linux 2023 support.
+
+* Mon Jul 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-42PGDG
+- AUpdate to 8.0.2 per changes described at
+  https://github.com/jtv/libpqxx/releases/tag/8.0.2
+
 * Mon Jul 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-42PGDG
 - Update to 8.0.2 per changes described at
   https://github.com/jtv/libpqxx/releases/tag/8.0.2
