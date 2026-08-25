@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL extension for sampling active session history
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.1
-Release:	2PGDG%{?dist}
+Version:	1.5.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -69,6 +69,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.0-1PGDG
+- Update to 1.5.0 per changes described at:
+  https://github.com/pgsentinel/pgsentinel/releases/tag/v1.5.0
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.1-2PGDG
 - Add Amazon Linux 2023 support.
 
