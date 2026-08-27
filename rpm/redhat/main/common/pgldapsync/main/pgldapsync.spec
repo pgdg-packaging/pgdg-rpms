@@ -39,7 +39,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -71,8 +71,10 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{__install} -d %{buildroot}%{_sysconfdir}/%{sname}
 %{__cp} %{sname}/config_default.ini %{sname}/config.ini.example %{buildroot}%{_sysconfdir}/%{sname}
 
-# Create __pycache__ directories and their contents in SLES *too*:
-%if 0%{?suse_version}
+# Create __pycache__ directories and their contents in SLES and
+# Amazon Linux 2023 *too*, since the automatic RPM Python bytecompile
+# doesn't reliably compile against the python3.13 alt-stack there:
+%if 0%{?suse_version} || 0%{?amzn} == 2023
 %py3_compile %{buildroot}%{python3_sitelib}
 %endif
 
@@ -92,6 +94,11 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-12PGDG
+- Explicitly run %py3_compile on Amazon Linux 2023, too, so the
+  __pycache__/*.pyc files listed in %files actually exist in the
+  buildroot when building against the python3.13 alt-stack.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-11PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13
