@@ -5,7 +5,7 @@
 Summary:	pdf type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	GPLv2
 URL:		https://github.com/Florents-Tselai/%{sname}/
 Source0:	https://github.com/Florents-Tselai/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -18,7 +18,7 @@ Requires:	libpoppler135 libpoppler-glib8
 BuildRequires:	libpoppler-glib-devel
 Requires:	libpoppler148 libpoppler-glib8
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8  || 0%{?amzn}
 BuildRequires:	poppler-glib-devel
 Requires:	poppler
 %endif
@@ -76,6 +76,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 0.1.0-6PGDG
+- Fix Amazon Linux 2023 support.
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.1.0-5PGDG
 - Add Amazon Linux 2023 support.
 
