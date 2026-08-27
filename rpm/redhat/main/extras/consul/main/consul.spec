@@ -1,4 +1,4 @@
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8  || 0%{?amzn}
 %global		debug_package %{nil}
 %global		_missing_build_ids_terminate_build 0
 %endif
@@ -15,7 +15,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul
 Version:	2.0.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
 License:	MPLv2.0
@@ -97,6 +97,9 @@ any number of regions without complex configuration.
 %doc
 
 %changelog
+* Thu Aug 27 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.3-2PGDG
+- Add Amazon Linux 2023 support
+
 * Sun Aug 9 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.3-1PGDG
 - Update to 2.0.3 per changes described at:
   https://github.com/hashicorp/consul/releases/tag/v2.0.3
