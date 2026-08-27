@@ -8,11 +8,11 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the MySQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mysqlfdwmajver}.%{mysqlfdwmidver}.%{mysqlfdwminver}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/REL-%{mysqlfdwmajver}_%{mysqlfdwmidver}_%{mysqlfdwminver}.tar.gz
 URL:		https://github.com/EnterpriseDB/mysql_fdw
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -23,6 +23,10 @@ Requires:	mariadb-connector-c-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libmariadb-devel
 Requires:	libmariadb-devel
+%endif
+
+%if 0%{?amzn}
+BuildRequires:	mariadb-connector-c-devel
 %endif
 
 %description
@@ -88,6 +92,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.3-7PGDG
+- Fix Amazon Linux 2023 support.
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.3-6PGDG
 - Add Amazon Linux 2023 support.
 
