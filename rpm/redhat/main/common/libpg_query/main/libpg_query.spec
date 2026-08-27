@@ -1,7 +1,7 @@
 
 Summary:	C library for accessing the PostgreSQL parser outside of the server
 Name:		libpg_query
-Version:	6.2.2
+Version:	6.2.3
 Release:	1PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/pganalyze/%{name}
@@ -36,6 +36,10 @@ pg_query.go (Go), pgsql-parser (Node), psqlparse (Python) and pglast
 %{_libdir}/libpg_query.so*
 
 %changelog
+* Thu Aug 27 2026 - Devrim Gündüz <devrim@gunduz.org> 6.2.3-1PGDG
+- Update to 6.2.3 per changes described at:
+  https://github.com/pganalyze/libpg_query/releases/tag/17-6.2.3
+
 * Tue Jan 27 2026 - Devrim Gündüz <devrim@gunduz.org> 6.2.2-1PGDG
 - Update to 6.2.2 per changes described at:
   https://github.com/pganalyze/libpg_query/releases/tag/17-6.2.2
