@@ -19,7 +19,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
@@ -30,8 +30,13 @@ Source1:	%{sname}.pom
 BuildRequires:	java-11-openjdk-devel
 Requires:	java-11-openjdk
 %else
+%if 0%{?amzn} == 2023
+BuildRequires:	java-25-amazon-corretto-devel
+Requires:	java-25-amazon-corretto
+%else
 BuildRequires:	java-devel
 Requires:	java
+%endif
 %endif
 
 BuildRequires:	maven krb5-devel
@@ -67,6 +72,9 @@ export JAVA_HOME=/usr/lib/jvm/java-openjdk/
 %endif
 %if 0%{?suse_version} >= 1500
 export JAVA_HOME=/usr/lib64/jvm/java-openjdk/
+%endif
+%if 0%{?amzn} == 2023
+export JAVA_HOME=/usr/lib/jvm/java-25-amazon-corretto.%{_arch}
 %endif
 # Common for all distros:
 mvn clean install -Dso.debug=true -Psaxon-examples
@@ -104,6 +112,9 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Thu Aug 27 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-5PGDG
+- Add Amazon Linux 2023 support, using java-25-amazon-corretto-devel
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-4PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
