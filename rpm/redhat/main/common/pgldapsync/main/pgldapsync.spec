@@ -45,7 +45,10 @@ URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
-BuildRequires:	python3-devel >= 3.5 pgdg-srpm-macros >= 1.0.17
+BuildRequires:	python3-devel >= 3.5
+%if 0%{?amzn} == 2023
+BuildRequires:	python-rpm-macros
+%endif
 
 Requires:	libpq5 >= 10.0 python3-psycopg2
 Requires:	python3-ldap3
@@ -71,11 +74,17 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{__install} -d %{buildroot}%{_sysconfdir}/%{sname}
 %{__cp} %{sname}/config_default.ini %{sname}/config.ini.example %{buildroot}%{_sysconfdir}/%{sname}
 
-# Create __pycache__ directories and their contents in SLES and
-# Amazon Linux 2023 *too*, since the automatic RPM Python bytecompile
-# doesn't reliably compile against the python3.13 alt-stack there:
-%if 0%{?suse_version} || 0%{?amzn} == 2023
+# Create __pycache__ directories and their contents in SLES *too*:
+%if 0%{?suse_version}
 %py3_compile %{buildroot}%{python3_sitelib}
+%endif
+
+# Same for Amazon Linux 2023, since the automatic RPM Python bytecompile
+# doesn't reliably compile against the python3.13 alt-stack there.
+# SUSE uses its own %py3_compile macro (path-only); RHEL-family systems
+# use %py_byte_compile, which additionally takes the interpreter binary:
+%if 0%{?amzn} == 2023
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}
 %endif
 
 %files
@@ -95,9 +104,11 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 
 %changelog
 * Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-12PGDG
-- Explicitly run %py3_compile on Amazon Linux 2023, too, so the
+- Explicitly run %py_byte_compile on Amazon Linux 2023, too, so the
   __pycache__/*.pyc files listed in %files actually exist in the
-  buildroot when building against the python3.13 alt-stack.
+  buildroot when building against the python3.13 alt-stack. Unlike
+  SUSE's %py3_compile, %py_byte_compile also needs the interpreter
+  binary passed in.
 
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-11PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
