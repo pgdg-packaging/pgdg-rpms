@@ -29,7 +29,7 @@
 
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
@@ -39,6 +39,11 @@ BuildArch:	noarch
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python%{python3_pkgversion}-devel
 %endif
 Requires:	nagios-plugins
 Provides:	%{sname} = %{version}
@@ -65,6 +70,12 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-6PGDG
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch, needed to pull python3-rpm-generators into the
+  buildroot for this pyproject build. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-5PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

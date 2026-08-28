@@ -32,7 +32,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	3.3.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -184,7 +184,7 @@ fi
 %endif
 
 %files c
-%{python3_sitelib}/psycopg_c-%{version}.dist-info/*
+%{python3_sitelib}/psycopg_c-%{version}.dist-info/
 %{python3_sitelib}/psycopg_c/*.py*
 %{python3_sitelib}/psycopg_c/__pycache__/*py*
 %{python3_sitelib}/psycopg_c/_psycopg/*
@@ -193,6 +193,15 @@ fi
 %{python3_sitelib}/psycopg_c/py.typed
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-3PGDG
+- Package the psycopg_c .dist-info directory itself instead of globbing
+  only its contents (dist-info/*), so RHEL/Fedora's pythondist.attr
+  generator (which is anchored on the .dist-info directory entry)
+  actually fires and emits the correct runtime Requires for this
+  subpackage too (the main psycopg package already packaged its own
+  .dist-info directory correctly). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-2PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, since the
   default python3 there is 3.9 and psycopg requires >= 3.10. It's also

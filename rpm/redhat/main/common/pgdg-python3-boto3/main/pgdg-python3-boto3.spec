@@ -34,7 +34,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.38.19
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -80,7 +80,7 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %doc CHANGELOG.rst
 %doc README.rst
 %license LICENSE
-%{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/*
+%{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/
 %{python3_sitelib}/%{modname}/*.py*
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 %{python3_sitelib}/%{modname}/data/*
@@ -97,6 +97,13 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-6PGDG
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-5PGDG
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13

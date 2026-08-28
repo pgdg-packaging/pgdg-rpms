@@ -30,7 +30,7 @@
 
 Name:		python3-%{sname}
 Version:	1.1.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 Summary:	Python client for Consul
 
 License:	MIT
@@ -68,9 +68,16 @@ Python client for Consul (http://www.consul.io/)
 %doc README.rst
 %{python3_sitelib}/consul/__pycache__/*
 %{python3_sitelib}/consul/*.py
-%{python3_sitelib}/python_%{sname}-%{version}.dist-info/*
+%{python3_sitelib}/python_%{sname}-%{version}.dist-info/
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-8PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-7PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

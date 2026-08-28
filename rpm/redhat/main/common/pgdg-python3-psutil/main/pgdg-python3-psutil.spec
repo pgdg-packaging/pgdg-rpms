@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.1.1
-Release:	45PGDG%{?dist}.1
+Release:	46PGDG%{?dist}.1
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -69,12 +69,19 @@ done
 %files
 %doc CREDITS HISTORY.rst README.rst
 %exclude %{python3_sitearch}/%{modname}/tests
-%{python3_sitearch}/%{modname}-%{version}-py%{pybasever}.egg-info/*
+%{python3_sitearch}/%{modname}-%{version}-py%{pybasever}.egg-info/
 %{python3_sitearch}/%{modname}/*.py*
 %{python3_sitearch}/%{modname}/__pycache__/*.py*
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-46PGDG.1
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-45PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13

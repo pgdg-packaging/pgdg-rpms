@@ -5,7 +5,7 @@
 
 Name:		powa-collector
 Version:	1.3.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -72,9 +72,16 @@ database (in the powa_servers table).
 %{_tmpfilesdir}/%{sname}.conf
 %{python3_sitelib}/%{pname}/*.py
 %{python3_sitelib}/%{pname}/__pycache__/*.py*
-%{python3_sitelib}/%{pname}-%{version}.dist-info/*
+%{python3_sitelib}/%{pname}-%{version}.dist-info/
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-2PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Sun Mar 15 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-1PGDG
 - Update to 1.3.2 per changes described at:
   https://github.com/powa-team/powa-collector/releases/tag/1.3.2

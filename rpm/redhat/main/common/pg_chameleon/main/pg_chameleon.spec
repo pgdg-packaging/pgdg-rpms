@@ -34,13 +34,20 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject builds alone do not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+%if !0%{?suse_version}
+BuildRequires:	python%{python3_pkgversion}-devel
+%endif
 
 
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
@@ -77,7 +84,7 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %license LICENSE.txt
 %{_bindir}/chameleon
 %{_bindir}/chameleon.py
-%{python3_sitelib}/%{name}-%{version}.dist-info/*
+%{python3_sitelib}/%{name}-%{version}.dist-info/
 %{python3_sitelib}/%{name}/*.py
 %{python3_sitelib}/%{name}/__pycache__/*.pyc
 %{python3_sitelib}/%{name}/configuration/config-example.yml
@@ -87,6 +94,17 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-8PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch, needed to pull python3-rpm-generators into the
+  buildroot for this pyproject build. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-7PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

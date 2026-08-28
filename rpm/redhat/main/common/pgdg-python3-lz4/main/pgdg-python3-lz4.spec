@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.3.3
-Release:	45PGDG%{?dist}.1
+Release:	46PGDG%{?dist}.1
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
@@ -70,7 +70,7 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %files
 %license LICENSE
 %doc README.rst
-%{python3_sitearch}/%{srcname}-%{version}-py%{pybasever}.egg-info/*
+%{python3_sitearch}/%{srcname}-%{version}-py%{pybasever}.egg-info/
 %{python3_sitearch}/%{srcname}/*.py*
 %{python3_sitearch}/%{srcname}/*.so
 %{python3_sitearch}/%{srcname}/block/*.py*
@@ -84,6 +84,13 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.3.3-46PGDG.1
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 4.3.3-45PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13

@@ -7,7 +7,7 @@
 
 Name:		python311-%{sname}
 Version:	3.13.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -50,10 +50,17 @@ find -name '*.po' -delete
 
 %files
 %doc README.md
-%{python311_sitelib}/humanize-0.0.0-py%{py3ver}.egg-info/*
+%{python311_sitelib}/humanize-0.0.0-py%{py3ver}.egg-info/
 %{python311_sitelib}/humanize/*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.13.1-43PGDG
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Mon Feb 19 2024 Devrim Gündüz <devrim@gunduz.org> - 3.13.1-42PGDG
 - Initial packaging for the PostgreSQL RPM repository to support
   pg_activity dependency on SLES 15.

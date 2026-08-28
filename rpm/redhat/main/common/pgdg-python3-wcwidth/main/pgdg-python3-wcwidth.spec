@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.2.13
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -45,6 +45,11 @@ Provides:	python%{python3_pkgversion}dist(wcwidth)
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python%{python3_pkgversion}-devel
 %endif
 
 %description
@@ -66,11 +71,22 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %files
 %doc README.rst
 %license LICENSE
-%{python3_sitelib}/%{modname}-%{version}.dist-info/*
+%{python3_sitelib}/%{modname}-%{version}.dist-info/
 %{python3_sitelib}/%{modname}/*.py*
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-6PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch, needed to pull python3-rpm-generators into the
+  buildroot for this pyproject build. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-5PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

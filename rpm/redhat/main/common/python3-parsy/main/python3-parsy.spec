@@ -34,7 +34,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.1
-Release:	45PGDG%{dist}
+Release:	46PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -71,13 +71,20 @@ documentation and it doesn't say things like that!
 %doc README.rst
 %license LICENSE
 
-%{python3_sitelib}/%{sname}-%{version}-py%{py3ver}.egg-info/*
+%{python3_sitelib}/%{sname}-%{version}-py%{py3ver}.egg-info/
 %{python3_sitelib}/%{sname}/__init__.py
 %if 0%{?fedora} >= 41 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600
 %{python3_sitelib}/%{sname}/__pycache__/__init__*
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1-46PGDG
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1-45PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

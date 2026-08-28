@@ -33,7 +33,7 @@
 Name:		python%{python3_pkgversion}-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	0.16.2
-Release:	46PGDG%{?dist}
+Release:	47PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -78,7 +78,7 @@ Python versions.
 
 %files
 %{_bindir}/%{sname}
-%{python3_sitelib}/%{sname}-%{version}.dist-info/*
+%{python3_sitelib}/%{sname}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}/__pycache__/*.py*
 %{python3_sitelib}/%{sname}/*.py*
 %{python3_sitelib}/%{sname}/contrib/*.py*
@@ -114,6 +114,13 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.16.2-47PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.16.2-46PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

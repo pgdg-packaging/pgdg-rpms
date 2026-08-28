@@ -35,7 +35,7 @@
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.38.19
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -75,10 +75,17 @@ rm -vr tests/functional/leak
 %files
 %doc README.rst
 %license LICENSE.txt
-%{python3_sitelib}/%{pypi_name}-%{version}-py%{pybasever}.egg-info/*
+%{python3_sitelib}/%{pypi_name}-%{version}-py%{pybasever}.egg-info/
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-5PGDG
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-4PGDG
 - Add a local python3_sitelib override tied to __ospython (this spec
   was the only one in the pgdg-python3-* family missing it), and

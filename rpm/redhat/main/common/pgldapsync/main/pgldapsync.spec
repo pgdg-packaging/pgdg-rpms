@@ -39,7 +39,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	13PGDG%{?dist}
+Release:	14PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -91,7 +91,7 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %doc README.md
 %{_sysconfdir}/%{sname}/*
 %{_bindir}/%{sname}
-%{python3_sitelib}/%{sname}-%{version}-py%{pyver}.egg-info/*
+%{python3_sitelib}/%{sname}-%{version}-py%{pyver}.egg-info/
 %{python3_sitelib}/%{sname}/*.py
 %{python3_sitelib}/%{sname}/config.ini.example
 %{python3_sitelib}/%{sname}/config_default.ini
@@ -102,6 +102,13 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-14PGDG
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-13PGDG
 - Pass %{__ospython} instead of %{__python3} to %py_byte_compile on
   Amazon Linux 2023. %{__python3} left the macro's %1 unexpanded

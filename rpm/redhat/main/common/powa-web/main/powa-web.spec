@@ -14,7 +14,7 @@
 Summary:	The user interface of PoWA
 Name:		%{sname}
 Version:	5.3.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
 Source2:	%{sname}.service
@@ -66,11 +66,18 @@ This is the user interface of POWA.
 %{_bindir}/%{sname}
 %dir %{python_sitelib}/%{swebname}
 %{python_sitelib}/%{swebname}/*
-%{python_sitelib}/powa_web-%{version}.dist-info/*
+%{python_sitelib}/powa_web-%{version}.dist-info/
 %{_sysconfdir}/powa-web.conf-dist
 %{_unitdir}/%{sname}.service
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-2PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Mon Aug 17 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-1PGDG
 - Update to 5.3.0 for changes described at
   https://github.com/powa-team/powa-web/releases/tag/5.3.0

@@ -29,7 +29,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -91,10 +91,17 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %defattr(644,root,root,755)
 %license LICENSE
 %attr(0755,root,root) %{_bindir}/%{sname}
-%{python3_sitelib}/%{sname}-%{version}.dist-info/*
+%{python3_sitelib}/%{sname}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-4PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-3PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

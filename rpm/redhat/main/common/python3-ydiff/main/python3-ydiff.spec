@@ -26,7 +26,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	51PGDG%{?dist}
+Release:	52PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -36,6 +36,11 @@ Source0:	https://github.com/ymattw/%{name}/archive/%{version}/%{name}-%{version}
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python%{python3_pkgversion}-devel
 %endif
 
 BuildArch:	noarch
@@ -79,6 +84,12 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-52PGDG
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch, needed to pull python3-rpm-generators into the
+  buildroot for this pyproject build. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-51PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

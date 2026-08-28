@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.23.0
-Release:	45PGDG%{?dist}.1
+Release:	46PGDG%{?dist}.1
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
@@ -64,7 +64,7 @@ compression library. A C extension and CFFI interface are provided.
 %files
 %license LICENSE zstd/COPYING
 %doc README.rst
-%{python3_sitearch}/%{pypi_name}-%{version}-py%{pybasever}.egg-info/*
+%{python3_sitearch}/%{pypi_name}-%{version}-py%{pybasever}.egg-info/
 %{python3_sitearch}/%{pypi_name}/*.py*
 %{python3_sitearch}/%{pypi_name}/py.typed
 %{python3_sitearch}/%{pypi_name}/*.so
@@ -73,6 +73,13 @@ compression library. A C extension and CFFI interface are provided.
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-46PGDG.1
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-45PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13

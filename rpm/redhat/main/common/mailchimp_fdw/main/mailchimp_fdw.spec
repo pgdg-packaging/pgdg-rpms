@@ -37,7 +37,7 @@
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
@@ -48,6 +48,11 @@ BuildArch:	noarch
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python%{python3_pkgversion}-devel
 %endif
 
 BuildRequires:	python%{python3_pkgversion}-wheel
@@ -76,6 +81,12 @@ This is a PostgreSQL FDW for Mailchimp
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3.1-9PGDG
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch, needed to pull python3-rpm-generators into the
+  buildroot for this pyproject build. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3.1-8PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

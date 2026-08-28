@@ -8,7 +8,7 @@
 Summary:	Compare and synchronize PostgreSQL database schemas
 Name:		python3-%{sname}
 Version:	0.10.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/perseas/%{cname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/perseas/%{cname}/
@@ -38,10 +38,17 @@ Andromeda Project. This is Python 3 version.
 %{_bindir}/dbaugment
 %{_bindir}/dbtoyaml
 %{_bindir}/yamltodb
-%{python3_sitelib}/%{cname}-%{version}-py%{py3ver}*.egg-info/*
+%{python3_sitelib}/%{cname}-%{version}-py%{py3ver}*.egg-info/
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Fri Aug 28 2026 - Devrim Gündüz <devrim@gunduz.org> 0.10.0-3PGDG
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Wed Feb 21 2024 - Devrim Gündüz <devrim@gunduz.org> 0.10.0-2-PGDG
 - Add PGDG branding
 

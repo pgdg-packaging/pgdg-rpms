@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	47PGDG%{?dist}
+Release:	48PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -74,10 +74,17 @@ find examples -type f | xargs chmod a-x
 %defattr(-,root,root,-)
 # Add README.* when it is included with the source (commit a906279)
 %doc {ChangeLog,LICENSE,examples}
-%{python3_sitelib}/dnspython-*.dist-info/*
+%{python3_sitelib}/dnspython-*.dist-info/
 %{python3_sitelib}/dns
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-48PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-47PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

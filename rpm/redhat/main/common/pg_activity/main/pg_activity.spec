@@ -36,7 +36,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.2
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -44,6 +44,13 @@ Patch0:		%{name}-3.6.1-pyproject.patch
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject builds alone do not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+%if !0%{?suse_version}
+BuildRequires:	python%{python3_pkgversion}-devel
+%endif
 
 %if 0%{?rhel} == 8
 BuildRequires:	python3-setuptools >= 39.2
@@ -105,7 +112,7 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %files
 %defattr(-,root,root)
 %{_bindir}/%{name}
-%{python_sitelib}/%{name}-%{version}.dist-info/*
+%{python_sitelib}/%{name}-%{version}.dist-info/
 %{python_sitelib}/pgactivity/*.py*
 %{python_sitelib}/pgactivity/__pycache__/*.pyc
 %{python_sitelib}/pgactivity/profiles/*.conf
@@ -114,6 +121,17 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-45PGDG
+- Package the .dist-info directory itself instead of globbing only its
+  contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .dist-info directory entry) actually fires
+  and emits the correct runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch, needed to pull python3-rpm-generators into the
+  buildroot for this pyproject build. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-44PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

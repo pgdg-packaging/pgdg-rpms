@@ -12,7 +12,7 @@
 
 Name:		%{sname}-client
 Version:	%{ppmajorver}.5
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 Summary:	Command Line Tool for the PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -24,6 +24,11 @@ AutoReqProv:	no
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+# python3-devel is what pulls python3-rpm-generators into the buildroot
+# on RHEL/Fedora; pyproject-rpm-macros alone does not. Without it,
+# neither python(abi) nor python3dist(...) get generated. Per
+# https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python3-devel
 %endif
 
 BuildRequires:	python3-six >= 1.4
@@ -60,6 +65,14 @@ cd ..
 %{python3_sitelib}/%{sname}/lib/*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-6PGDG
+- Add back python3-devel as a BuildRequires on the non-SLES branch,
+  needed to pull python3-rpm-generators into the buildroot for this
+  pyproject build (the .dist-info directory itself was already
+  correctly packaged via an explicit %dir line, so issue 226's glob
+  bug doesn't apply here). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Wed Feb 4 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-5PGDG
 - Initial packaging for the PostgreSQL RPM repository. Fixes
   https://github.com/pgdg-packaging/pgdg-rpms/issues/152
