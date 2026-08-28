@@ -1,14 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -17,10 +13,6 @@
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -33,8 +25,8 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.19.1
-Release:	43PGDG%{?dist}
+Version:	3.20.0
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -75,7 +67,8 @@ Requires:	python%{python3_pkgversion}-six
 Requires:	python%{python3_pkgversion}-zstandard
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} >= 41
+%if 0%{?fedora} && 0%{?fedora} >= 43
+BuildRequires:	python3-uv-build
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
 Requires:	python3-lz4 python3-zstandard
@@ -87,7 +80,7 @@ Requires:	python3-psycopg2 >= 2.9.9 python3-six
 Requires:	python3-lz4 python3-zstandard
 %endif
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} >= 1600
 Requires:	python%{python3_pkgversion}-argcomplete
 Requires:	python%{python3_pkgversion}-lz4
 Requires:	python%{python3_pkgversion}-python-dateutil
@@ -103,10 +96,10 @@ Python libraries used by Barman.
 %setup -q -n barman-release-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
+%pyproject_install
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/bash_completion.d
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/cron.d/
 %{__mkdir} -p %{buildroot}%{_sysconfdir}/logrotate.d/
@@ -133,8 +126,6 @@ touch %{buildroot}/var/log/barman/barman.log
 %defattr(-,root,root)
 %doc RELNOTES.md README.rst
 %{_bindir}/%{name}
-%doc %{_mandir}/man1/%{name}.1.gz
-%doc %{_mandir}/man5/%{name}.5.gz
 %config(noreplace) %{_sysconfdir}/bash_completion.d/
 %config(noreplace) %{_sysconfdir}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/cron.d/%{name}
@@ -160,15 +151,19 @@ touch %{buildroot}/var/log/barman/barman.log
 %{_bindir}/barman-cloud-wal-restore
 %{_bindir}/barman-wal-archive
 %{_bindir}/barman-wal-restore
-%doc %{_mandir}/man1/barman*
 
 %files -n python3-barman
 %defattr(-,root,root)
 %doc RELNOTES.md README.rst
-%{python_sitelib}/%{name}-%{version}%{?extra_version:%{extra_version}}-py%{pybasever}.egg-info
+%{python_sitelib}/%{name}-%{version}.dist-info
 %{python_sitelib}/%{name}/
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.0-42PGDG
+- Update to 3.20.0, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.20.0
+- Drop SLES 15 support, as this version requires Python 3.12+
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.19.1-43PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.
