@@ -4,7 +4,7 @@
 
 Name:		pgbouncer
 Version:	1.25.2
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -15,23 +15,32 @@ Source4:	%{name}.service
 Source5:	%{name}-sysusers.conf
 Source6:	%{name}-tmpfiles.d
 Patch0:		%{name}-ini.patch
+# Amazon Linux 2023 does not ship a pandoc package, which is used
+# upstream only to (re)build the pgbouncer.1/pgbouncer.5 man pages
+# from Markdown. This patch ships pre-built man pages and makes the
+# doc/Makefile rule tolerate a missing pandoc, so the build does not
+# fail on that platform.
+Patch1:		%{name}-al2023-no-pandoc.patch
 
 Requires:	python3 python3-psycopg2
 
 BuildRequires:	libevent-devel >= 2.0
 Requires:	libevent >= 2.0
 
-BuildRequires:	pam-devel pandoc
+BuildRequires:	pam-devel
+%if 0%{?amzn} != 2023
+BuildRequires:	pandoc
+%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	c-ares-devel >= 1.13
 Requires:	c-ares >= 1.13
 %endif
@@ -48,7 +57,7 @@ Requires:	libldap-2_4-2
 BuildRequires:	openldap2-devel
 Requires:	libldap-2
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	openldap-devel
 Requires:	openldap
 %endif
@@ -69,6 +78,9 @@ pgbouncer uses libevent for low-level socket handling.
 %prep
 %setup -q
 %patch -P 0 -p0
+%if 0%{?amzn} == 2023
+%patch -P 1 -p0
+%endif
 
 %build
 sed -i.fedora \
@@ -163,6 +175,13 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-45PGDG
+- Fix build on Amazon Linux 2023, which does not ship a pandoc
+  package. pandoc is only used upstream to regenerate the
+  pgbouncer.1/pgbouncer.5 man pages from Markdown; ship pre-built
+  man pages and make doc/Makefile tolerate a missing pandoc via
+  a new patch, and drop the pandoc BuildRequires on that platform.
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-44PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
