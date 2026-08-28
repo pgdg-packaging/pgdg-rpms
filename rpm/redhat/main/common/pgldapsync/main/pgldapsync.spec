@@ -39,7 +39,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	12PGDG%{?dist}
+Release:	13PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -79,12 +79,11 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %py3_compile %{buildroot}%{python3_sitelib}
 %endif
 
-# Same for Amazon Linux 2023, since the automatic RPM Python bytecompile
-# doesn't reliably compile against the python3.13 alt-stack there.
-# SUSE uses its own %py3_compile macro (path-only); RHEL-family systems
-# use %py_byte_compile, which additionally takes the interpreter binary:
+# AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
+# alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
+# never gets populated. Bytecompile explicitly instead.
 %if 0%{?amzn} == 2023
-%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}
+%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}
 %endif
 
 %files
@@ -103,6 +102,12 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-13PGDG
+- Pass %{__ospython} instead of %{__python3} to %py_byte_compile on
+  Amazon Linux 2023. %{__python3} left the macro's %1 unexpanded
+  during %install, causing the bytecompile to silently no-op and the
+  __pycache__ files to still be missing at %files time.
+
 * Thu Aug 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-12PGDG
 - Explicitly run %py_byte_compile on Amazon Linux 2023, too, so the
   __pycache__/*.pyc files listed in %files actually exist in the
