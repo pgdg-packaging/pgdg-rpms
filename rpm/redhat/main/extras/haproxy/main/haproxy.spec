@@ -7,8 +7,8 @@
 %global _hardened_build 1
 
 Name:		haproxy
-Version:	3.4.3
-Release:	2PGDG%{?dist}
+Version:	3.4.4
+Release:	1PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
 License:	GPLv2+
@@ -149,6 +149,10 @@ done
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.4-1PGDG
+- Update to 3.4.4 per changes described at:
+  https://mail-archive.com/haproxy@formilux.org/msg47424.html
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.3-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
