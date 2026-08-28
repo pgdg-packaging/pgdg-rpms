@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.4.0
-Release:	46PGDG%{dist}.1
+Release:	47PGDG%{dist}.1
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -68,11 +68,18 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %files
 %doc README.md CHANGELOG.md
 %license COPYING
-%{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/*
+%{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/
 %{python3_sitelib}/%{modname}/*.py*
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-47PGDG.1
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the wcwidth runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-46PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
