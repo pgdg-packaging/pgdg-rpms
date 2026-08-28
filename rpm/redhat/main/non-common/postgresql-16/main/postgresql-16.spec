@@ -62,9 +62,9 @@ Version:	16.15
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -88,6 +88,7 @@ Source19:	%{sname}-%{pgmajorversion}-tmpfiles.d
 %if %sysuserd
 Source20:	%{sname}-%{pgmajorversion}-sysusers.conf
 %endif
+Source21:	%{sname}-%{pgmajorversion}-sshd-selinux.te
 
 Patch1:		%{sname}-%{pgmajorversion}-rpm-pgsql.patch
 Patch3:		%{sname}-%{pgmajorversion}-conf.patch
@@ -196,6 +197,11 @@ BuildRequires:	selinux-policy >= 3.9.13
 # RHEL/Fedora has selinux-policy:
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	selinux-policy >= 3.9.13
+%endif
+# EL-10 ships a local policy module to work around a search/read denial
+# for sshd_session_t on postgresql_db_t (see %post server):
+%if 0%{?rhel} >= 10
+BuildRequires:	selinux-policy-devel
 %endif
 %endif
 
@@ -718,6 +724,16 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %{__install} -m 0644 -D %{SOURCE20} %{buildroot}%{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
 %endif
 
+%if %selinux && 0%{?rhel} >= 10
+# Build and install the local SELinux policy module that lets sshd_session_t
+# search/read the postgres user's home dir (postgresql_db_t), needed for
+# ~/.ssh/authorized_keys pubkey auth to work under EL-10's SELinux policy.
+checkmodule -M -m -o postgresql%{pgmajorversion}_sshd_fix.mod %{SOURCE21}
+semodule_package -o postgresql%{pgmajorversion}_sshd_fix.pp -m postgresql%{pgmajorversion}_sshd_fix.mod
+%{__install} -d -m 755 %{buildroot}%{_datadir}/selinux/packages
+%{__install} -m 644 postgresql%{pgmajorversion}_sshd_fix.pp %{buildroot}%{_datadir}/selinux/packages/
+%endif
+
 %if %test
 	# tests. There are many files included here that are unnecessary,
 	# but include them anyway for completeness. We replace the original
@@ -847,6 +863,11 @@ export PGDATA
 chown postgres: /var/lib/pgsql/.bash_profile
 chmod 700 /var/lib/pgsql/.bash_profile
 
+%if %selinux && 0%{?rhel} >= 10
+%{_sbindir}/selinuxenabled 2>/dev/null && \
+	%{_sbindir}/semodule -i %{_datadir}/selinux/packages/postgresql%{pgmajorversion}_sshd_fix.pp >/dev/null 2>&1 || :
+%endif
+
 %preun server
 if [ $1 -eq 0 ] ; then
 	# Package removal, not upgrade
@@ -861,6 +882,14 @@ if [ $1 -ge 1 ] ; then
 	# Package upgrade, not uninstall
 	/bin/systemctl try-restart %{sname}-%{pgmajorversion}.service >/dev/null 2>&1 || :
 fi
+
+%if %selinux && 0%{?rhel} >= 10
+if [ $1 -eq 0 ] ; then
+	# Package removal, not upgrade
+	%{_sbindir}/selinuxenabled 2>/dev/null && \
+		%{_sbindir}/semodule -r postgresql%{pgmajorversion}_sshd_fix >/dev/null 2>&1 || :
+fi
+%endif
 
 # Create alternatives entries for common binaries and man files
 %post
@@ -1150,6 +1179,9 @@ fi
 %endif
 %{_tmpfilesdir}/%{sname}-%{pgmajorversion}.conf
 %{_unitdir}/%{sname}-%{pgmajorversion}.service
+%if %selinux && 0%{?rhel} >= 10
+%{_datadir}/selinux/packages/postgresql%{pgmajorversion}_sshd_fix.pp
+%endif
 %if %pam
 %config(noreplace) /etc/pam.d/%{sname}
 %endif
@@ -1272,6 +1304,12 @@ fi
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 16.15-3PGDG
+- EL-10: Ship a local SELinux policy module (loaded in %post server) that
+  allows sshd_session_t to search/read postgresql_db_t, fixing SSH pubkey
+  auth for the postgres user via ~/.ssh/authorized_keys under EL-10's
+  SELinux policy. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/229
+
 * Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 16.15-2PGDG
 - Fix macros for Amazon Linux 2023
 
