@@ -21,7 +21,7 @@
 
 Name:		py-consul
 Version:	1.7.1
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -31,6 +31,11 @@ Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
+# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
+# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
+# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python%{python3_pkgversion}-devel
 %endif
 
 BuildArch:	noarch
@@ -71,6 +76,15 @@ Python client for Consul
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-45PGDG
+- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+  non-SLES branch. The switch to pyproject builds in 1.7.1-42PGDG dropped
+  it (and python3-setuptools) in favor of pyproject-rpm-macros alone, but
+  pyproject-rpm-macros does not pull in python3-rpm-generators the way
+  -devel does, so the build was about to silently lose python(abi) and
+  the python3Xdist(...) auto-Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-44PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13
