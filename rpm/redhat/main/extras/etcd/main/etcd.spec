@@ -14,7 +14,7 @@
 
 Name:		etcd
 Version:	3.7.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Distributed reliable key-value store
 License:	ASL 2.0
 URL:		https://github.com/%{name}-io/%{name}
@@ -87,6 +87,10 @@ of a distributed system, with a focus on being:
 %{_unitdir}/%{name}.service
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.1-2PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Tue Aug 18 2026  Devrim Gündüz <devrim@gunduz.org> - 3.7.1-1PGDG
 - Update to 3.7.1, per changes described at:
   https://github.com/etcd-io/etcd/releases/tag/v3.7.1

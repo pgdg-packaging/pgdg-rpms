@@ -11,7 +11,7 @@
 Name:		keepalived
 Summary:	High Availability monitor built upon LVS, VRRP and service pollers
 Version:	2.4.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	GPLv2+
 URL:		https://www.keepalived.org/
 Source0:	https://www.keepalived.org/software/keepalived-%{version}.tar.gz
@@ -122,6 +122,10 @@ touch aclocal.m4 Makefile.in lib/config.h.in configure
 %{_mandir}/man8/keepalived.8*
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.3-3PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.3-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

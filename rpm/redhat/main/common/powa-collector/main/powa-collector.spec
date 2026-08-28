@@ -5,7 +5,7 @@
 
 Name:		powa-collector
 Version:	1.3.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -75,6 +75,10 @@ database (in the powa_servers table).
 %{python3_sitelib}/%{pname}-%{version}.dist-info/
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-3PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-2PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator

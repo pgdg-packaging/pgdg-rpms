@@ -9,6 +9,8 @@
 Description=Manages Virtual IP for Patroni
 After=network-online.target
 Before=patroni.service
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=simple
@@ -16,6 +18,7 @@ Type=simple
 ExecStart=/usr/bin/vip-manager --config=/etc/vip-manager/vip-manager.yml
 
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

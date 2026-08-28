@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
@@ -152,6 +152,11 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-10PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  pgagent-14..19 service files, so that Restart=on-failure cannot
+  crash-loop indefinitely. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Mon Apr 13 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-9PGDG
 - Fix builds against CMake 4.
 

@@ -9,7 +9,8 @@
 [Unit]
 Description=Postgresql performance and auditing reporting
 Documentation=man:pgcluu(1)
-
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 PermissionsStartOnly=true
@@ -22,6 +23,7 @@ ExecStartPre=-/usr/bin/chmod u=rwX,g=rsX,o= $REPORTDIR
 ExecStart=/usr/bin/pgcluu -o $REPORTDIR $STATDIR
 
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

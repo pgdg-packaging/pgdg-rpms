@@ -11,6 +11,8 @@ Documentation=https://powa.readthedocs.io/en/latest/powa-collector/
 
 After=syslog.target
 After=network.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=idle
@@ -23,6 +25,7 @@ KillMode=mixed
 KillSignal=SIGTERM
 
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

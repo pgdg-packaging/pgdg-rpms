@@ -4,7 +4,7 @@
 
 Name:		pgbouncer
 Version:	1.25.2
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -175,6 +175,10 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-46PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-45PGDG
 - Fix build on Amazon Linux 2023, which does not ship a pandoc
   package. pandoc is only used upstream to regenerate the

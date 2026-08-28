@@ -8,7 +8,7 @@
 
 Name:		haproxy
 Version:	3.4.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	HAProxy reverse proxy for high availability environments
 
 License:	GPLv2+
@@ -149,6 +149,10 @@ done
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.4-2PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 3.4.4-1PGDG
 - Update to 3.4.4 per changes described at:
   https://mail-archive.com/haproxy@formilux.org/msg47424.html

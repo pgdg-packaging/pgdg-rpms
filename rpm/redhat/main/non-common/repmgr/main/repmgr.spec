@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -186,6 +186,11 @@ fi
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-10PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  repmgr-pg14..18 service files, so that Restart=on-failure cannot
+  crash-loop indefinitely. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-9PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

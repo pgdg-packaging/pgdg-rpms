@@ -13,6 +13,8 @@ Description=pgmoneta is a backup / restore solution for PostgreSQL.
 Documentation=man:pgmoneta(1)
 Documentation=https://pgmoneta.github.io/
 After=network.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=exec
@@ -23,6 +25,7 @@ KillSignal=SIGINT
 LimitNOFILE=1024
 
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

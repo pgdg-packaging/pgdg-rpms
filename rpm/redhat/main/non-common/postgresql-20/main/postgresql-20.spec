@@ -1371,6 +1371,10 @@ fi
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-5PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-4PGDG
 - EL-10: Ship a local SELinux policy module (loaded in %post server) that
   allows sshd_session_t to search/read postgresql_db_t, fixing SSH pubkey

@@ -7,7 +7,8 @@
 [Unit]
 Description=Postgresql performance and auditing statistics collecting
 Documentation=man:pgcluu(1)
-
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=forking
@@ -22,8 +23,6 @@ KillMode=process
 Restart=on-failure
 RestartSec=60s
 PIDFile=/run/postgresql/pgcluu_collectd.pid
-
-Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

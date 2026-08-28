@@ -3,6 +3,8 @@ Description=Etcd Server
 After=network.target
 After=network-online.target
 Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=notify
@@ -12,6 +14,7 @@ User=etcd
 # set GOMAXPROCS to number of processors
 ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /usr/bin/etcd"
 Restart=on-failure
+RestartSec=5s
 LimitNOFILE=65536
 
 [Install]

@@ -1,6 +1,8 @@
 [Unit]
 Description=PGPool-II Middleware Between PostgreSQL Servers And PostgreSQL Database Clients
 After=syslog.target network.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 User=postgres
@@ -13,6 +15,7 @@ KillMode=mixed
 KillSignal=SIGINT
 
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

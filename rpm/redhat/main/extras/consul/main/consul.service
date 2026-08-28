@@ -3,6 +3,8 @@ Description=Consul is a tool for service discovery and configuration. Consul is 
 Documentation=http://www.consul.io
 After=network-online.target
 Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 User=consul
@@ -12,6 +14,7 @@ ExecStart=/usr/bin/consul $CMD_OPTS
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
 Restart=on-failure
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

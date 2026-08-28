@@ -15,6 +15,8 @@ Description=PostgreSQL 17 database server
 Documentation=https://www.postgresql.org/docs/17/static/
 After=syslog.target
 After=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=notify
@@ -45,6 +47,7 @@ KillMode=mixed
 KillSignal=SIGINT
  
 Restart=on-failure
+RestartSec=5s
 
 # Do not set any timeout value, so that systemd will not kill postgres 
 # main process during crash recovery.

@@ -9,6 +9,8 @@
 Description=PgAgent for PostgreSQL 17
 After=syslog.target
 After=network.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
 
 [Service]
 Type=forking
@@ -32,6 +34,7 @@ KillMode=mixed
 KillSignal=SIGINT
 
 Restart=on-failure
+RestartSec=5s
 
 # Give a reasonable amount of time for the server to start up/shut down
 TimeoutSec=300

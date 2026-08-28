@@ -40,9 +40,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta3_420003PGDG%{?dist}
+Release:	beta3_420004PGDG%{?dist}
 %else
-Release:	beta3_3PGDG%{?dist}
+Release:	beta3_4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1371,6 +1371,10 @@ fi
 %endif
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0beta3-4PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0beta3-3PGDG
 - EL-10: Ship a local SELinux policy module (loaded in %post server) that
   allows sshd_session_t to search/read postgresql_db_t, fixing SSH pubkey

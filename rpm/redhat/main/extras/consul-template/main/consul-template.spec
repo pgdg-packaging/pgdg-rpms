@@ -13,7 +13,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul-template
 Version:	0.42.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
 License:	MPLv2.0
@@ -79,6 +79,10 @@ unless the -once flag is specified.
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 0.42.1-2PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Tue Jul 21 2026 Devrim Gündüz <devrim@gunduz.org> 0.42.1-1PGDG
 - Update to 0.42.1 per changes described at
   https://github.com/hashicorp/consul-template/releases/tag/v0.42.1

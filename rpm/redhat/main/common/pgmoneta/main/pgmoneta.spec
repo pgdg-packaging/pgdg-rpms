@@ -1,6 +1,6 @@
 Name:		pgmoneta
 Version:	0.21.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
 URL:		https://github.com/%{name}/%{name}
@@ -128,6 +128,10 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-2PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  service file, so that Restart=on-failure cannot crash-loop
+  indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Wed Apr 29 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-1PGDG
 - Update to 0.21.0 per changes described at:
   https://github.com/pgmoneta/pgmoneta/releases/tag/0.21.0

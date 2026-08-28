@@ -4,7 +4,7 @@
 Summary:	PostgreSQL performance monitoring and auditing tool
 Name:		pgcluu
 Version:	4.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -73,6 +73,12 @@ of the PostgreSQL cluster and the system utilization
 %{_unitdir}/%{name}.timer
 
 %changelog
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0-3PGDG
+- Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
+  pgcluu and pgcluu_collectd service files, and drop a redundant
+  duplicate Restart=on-failure line from pgcluu_collectd.service, so
+  that Restart=on-failure cannot crash-loop indefinitely. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 * Wed Dec 24 2025 Devrim Gündüz <devrim@gunduz.org> - 4.0-2PGDG
 - Add Restart=on-failure to unit file. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/127
