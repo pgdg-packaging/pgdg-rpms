@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	3PGDG%{?dist}.1
+Release:	4PGDG%{?dist}.1
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -87,9 +87,16 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/__pycache__/*.py*
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/*.py*
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/%{modname}-zoneinfo.tar.gz
-%{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/*
+%{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/
 
 %changelog
+* Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-4PGDG.1
+- Package the .egg-info directory itself instead of globbing only its
+  contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
+  (which is anchored on the .egg-info directory entry) actually fires
+  and emits the six>=1.5 runtime Requires. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-3PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
