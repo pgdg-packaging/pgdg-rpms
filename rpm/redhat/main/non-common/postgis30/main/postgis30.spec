@@ -35,6 +35,17 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 %{!?utils:%global	utils 1}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %if 0%{?suse_version} >= 1500
@@ -57,7 +68,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.9
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/%{sname}/docs/%{sname}-%{version}.pdf
@@ -250,17 +261,17 @@ autoconf
 	--with-geosconfig=/%{geosinstdir}/bin/geos-config \
 	--with-gdalconfig=%{gdalinstdir}/bin/gdal-config
 
-SHLIB_LINK="$SHLIB_LINK" %{__make} LPATH=`%{pginstdir}/bin/pg_config --pkglibdir` shlib="%{sname}-%{postgissomajorversion}.so"
+SHLIB_LINK="$SHLIB_LINK" %{__make} LPATH=`%{pginstdir}/bin/pg_config --pkglibdir` shlib="%{sname}-%{postgissomajorversion}.so" %{with_llvm_arg}
 
-%{__make} -C extensions
+%{__make} -C extensions %{with_llvm_arg}
 
 %if %utils
- SHLIB_LINK="$SHLIB_LINK" %{__make} -C utils
+ SHLIB_LINK="$SHLIB_LINK" %{__make} -C utils %{with_llvm_arg}
 %endif
 
 %install
 %{__rm} -rf %{buildroot}
-SHLIB_LINK="$SHLIB_LINK" %{__make} install DESTDIR=%{buildroot}
+SHLIB_LINK="$SHLIB_LINK" %{__make} install DESTDIR=%{buildroot} %{with_llvm_arg}
 
 %if %utils
 %{__install} -d %{buildroot}%{_datadir}/%{name}
@@ -382,6 +393,13 @@ fi
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.9-12PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.9-11PGDG
 - Add Amazon Linux 2023 support.
 

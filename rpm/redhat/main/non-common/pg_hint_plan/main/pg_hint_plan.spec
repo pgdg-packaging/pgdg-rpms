@@ -27,10 +27,22 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
+
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
@@ -77,11 +89,11 @@ This package provides JIT support for pg_hint_plan
 %setup -q -n %{sname}-REL%{pgmajorversion}_%{git_tag}
 
 %build
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
+USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
+USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} DESTDIR=%{buildroot} install
 %if %{pgmajorversion} >= 14
 # Install README and howto file under PostgreSQL installation directory:
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
@@ -105,6 +117,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-7PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-6PGDG
 - Add Amazon Linux 2023 support.
 

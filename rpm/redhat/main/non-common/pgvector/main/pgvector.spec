@@ -3,9 +3,20 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.8.6
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Open-source vector similarity search for Postgres
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}/
@@ -59,11 +70,11 @@ This package provides JIT support for pgvector
 %patch -P 0 -p0
 
 %build
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
+USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
+USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot}
 
 # Remove header file, we don't need it right now:
 %{__rm} %{buildroot}%{pginstdir}/include/server/extension/%{pname}/%{pname}.h
@@ -84,6 +95,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.6-3PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.6-2PGDG
 - Add Amazon Linux 2023 support.
 

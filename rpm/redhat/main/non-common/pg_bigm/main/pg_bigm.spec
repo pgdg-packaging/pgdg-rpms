@@ -3,10 +3,22 @@
 %global sname pg_bigm
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
+
 Summary:	2-gram (bigram) index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbigmver}_%{pgbigmpackagever}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/pgbigm/%{sname}
 Source0:	https://github.com/pgbigm/%{sname}/archive/refs/tags/v%{pgbigmver}-%{pgbigmpackagever}.tar.gz
 License:	PostgreSQL
@@ -47,11 +59,11 @@ This package provides JIT support for pg_bigm
 %setup -q -n %{sname}-%{pgbigmver}-%{pgbigmpackagever}
 
 %build
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags}
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{buildroot} install
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} DESTDIR=%{buildroot} install
 
 # Install documentation with a better name:
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
@@ -75,6 +87,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pgbigmver}_%{pgbigmpackagever}-5PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2_20250903-3PGDG
 - Add Amazon Linux 2023 support.
 

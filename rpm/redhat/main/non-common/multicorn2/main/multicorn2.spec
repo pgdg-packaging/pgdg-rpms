@@ -3,6 +3,17 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 %if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -38,7 +49,7 @@
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
@@ -92,11 +103,11 @@ This package provides JIT support for multicorn2
 %patch -P 0 -p0
 
 %build
-PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
+PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install
+PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install %{with_llvm_arg}
 # Install Python portions manually:
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{pname}
 %{__cp} -rp python/multicorn/* %{buildroot}%{python3_sitearch}/%{pname}
@@ -117,6 +128,13 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-7PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-6PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

@@ -2,10 +2,21 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 Summary:	Postgres extension and service for automated failover and high-availability
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2
-Release:	6PGDG%{dist}
+Release:	7PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}/
@@ -78,10 +89,10 @@ This package provides JIT support for pg_auto_failover
 %setup -q -n %{sname}-%{version}
 
 %build
-PG_CONFIG=%{pginstdir}/bin/pg_config %{__make} %{?_smp_mflags}
+PG_CONFIG=%{pginstdir}/bin/pg_config %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
-PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
+PG_CONFIG=%{pginstdir}/bin/pg_config %make_install %{with_llvm_arg}
 # Install documentation with a better name:
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
@@ -105,6 +116,13 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-7PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-6PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

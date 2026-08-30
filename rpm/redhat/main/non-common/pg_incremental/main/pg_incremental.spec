@@ -2,10 +2,22 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
+
 Summary:	Incremental Data Processing in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Group:		Applications/Databases
 URL:		https://github.com/CrunchyData/%{sname}
@@ -46,11 +58,11 @@ This package provides JIT support for pg_incremental
 %setup -q -n %{sname}-%{version}
 
 %build
-%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags}
+%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} DESTDIR=%{buildroot} install
+%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} DESTDIR=%{buildroot} install
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__mv} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
@@ -72,6 +84,13 @@ This package provides JIT support for pg_incremental
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-5PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-4PGDG
 - Add Amazon Linux 2023 support.
 

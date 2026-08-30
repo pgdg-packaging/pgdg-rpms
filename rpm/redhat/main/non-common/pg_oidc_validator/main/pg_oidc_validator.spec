@@ -2,10 +2,22 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
+
 Summary:	OAuth validator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	Apache 2.0
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -55,12 +67,12 @@ This packages provides JIT support for pg_oidc_validator
 %setup -q -n %{sname}-%{version}
 
 %build
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
 
 %install
 %{__rm} -rf %{buildroot}
 
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR=%{buildroot} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
 
 
 # Install README
@@ -83,6 +95,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-3PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Mon Aug 17 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-2PGDG
 - Rebuild on RHEL 10.2 x86_64 because of package signing issue
 

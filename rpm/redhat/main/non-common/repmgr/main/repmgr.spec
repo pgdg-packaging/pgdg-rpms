@@ -3,9 +3,20 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -115,12 +126,12 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 %configure
 
 %build
-USE_PGXS=1 %{__make} %{?_smp_mflags}
+USE_PGXS=1 %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__mkdir} -p %{buildroot}/%{pginstdir}/bin/
 # Use new %%make_install macro:
-USE_PGXS=1 %make_install DESTDIR=%{buildroot}
+USE_PGXS=1 %make_install %{with_llvm_arg} DESTDIR=%{buildroot}
 
 %{__mkdir} -p %{buildroot}/%{pginstdir}/bin/
 # Install sample conf file
@@ -186,6 +197,13 @@ fi
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-11PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-10PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   repmgr-pg14..18 service files, so that Restart=on-failure cannot

@@ -4,10 +4,21 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.62.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -86,7 +97,7 @@ popd
 
 pushd storedproc/pgsql/c
 export PATH=%{pginstdir}/bin:$PATH
-%{__make} DESTDIR=%{buildroot}
+%{__make} DESTDIR=%{buildroot} %{with_llvm_arg}
 popd
 
 %install
@@ -98,7 +109,7 @@ popd
 
 pushd storedproc/pgsql/c
 export PATH=%{pginstdir}/bin:$PATH
-%{__make} DESTDIR=%{buildroot} install
+%{__make} DESTDIR=%{buildroot} %{with_llvm_arg} install
 popd
 
 # Install extrension control file
@@ -138,6 +149,15 @@ popd
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-3PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+- Note: the cmake-based dbt2 driver-tool build/install is untouched by
+  this, since it's unrelated to the PGXS-based storedproc extension.
+
 * Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-2PGDG
 - Fix macros for Amazon Linux 2023
 

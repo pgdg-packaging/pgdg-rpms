@@ -2,10 +2,21 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 Summary:	A PostgreSQL foreign data wrapper (FDW) for Firebird
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.2
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Source0:	https://github.com/ibarwick/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/ibarwick/%{sname}
 License:	PostgreSQL
@@ -51,12 +62,12 @@ This code is very much work-in-progress; USE AT YOUR OWN RISK.
 
 %build
 export PG_CONFIG=%{pginstdir}/bin/pg_config
-PG_CPPFLAGS="-I%{_includedir}/firebird" USE_PGXS=1 %{__make} %{?_smp_mflags}
+PG_CPPFLAGS="-I%{_includedir}/firebird" USE_PGXS=1 %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
 %{__rm} -rf %{buildroot}
 export PG_CONFIG=%{pginstdir}/bin/pg_config
-USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
+USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install %{with_llvm_arg}
 
 %files
 %defattr(-, root, root)
@@ -70,6 +81,13 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-3PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-2PGDG
 - Add Amazon Linux 2023 support.
 

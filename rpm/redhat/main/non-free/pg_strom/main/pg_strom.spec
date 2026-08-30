@@ -8,9 +8,20 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 Name:		%{sname}_%{pgmajorversion}
 Version:	6.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PG-Strom extension module for PostgreSQL
 License:	PostgreSQL
 URL:		https://github.com/heterodb/pg-strom
@@ -68,7 +79,7 @@ This package provides JIT support for pg_strom
 export PG_CONFIG=%{pginstdir}/bin/pg_config
 export CUDA_PATH=%{__cuda_path}
 
-%{__make} -C src %{?_smp_mflags}
+%{__make} -C src %{?_smp_mflags} %{with_llvm_arg}
 
 %{__make} -C arrow-tools DESTDIR=%{buildroot} PREFIX=%{pginstdir} arrow2csv
 %{__make} -C arrow-tools DESTDIR=%{buildroot} PREFIX=%{pginstdir} pg2arrow
@@ -78,7 +89,7 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 export CUDA_PATH=%{__cuda_path}
 
 %{__rm} -rf %{buildroot}
-%{__make} -C src DESTDIR=%{buildroot} install
+%{__make} -C src DESTDIR=%{buildroot} %{with_llvm_arg} install
 %{__install} -Dpm 644 %{SOURCE1} %{buildroot}/%{__systemd_conf}
 
 %{__make} -C arrow-tools DESTDIR=%{buildroot} PREFIX=%{pginstdir} install-arrow2csv
@@ -107,6 +118,15 @@ export CUDA_PATH=%{__cuda_path}
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1-3PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+- Note: the arrow-tools sub-build (arrow2csv/pg2arrow) is untouched by
+  this, since those are standalone CLI tools, not PGXS-based PG extensions.
+
 * Tue Jan 20 2026 Devrim Gündüz <devrim@gunduz.org> - 6.1-2PGDG
 - Depend on Apache Arrow's packages. Please refer to
   https://yum.postgresql.org/extensions/pg_strom/ for details.

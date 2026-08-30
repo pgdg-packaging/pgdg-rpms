@@ -34,6 +34,17 @@
 
 %{!?llvm:%global llvm 1}
 
+# Propagate %%llvm into the actual build: PGXS decides whether to invoke
+# clang/llvm-config based on with_llvm from the installed postgresql*-devel's
+# Makefile.global, not from this spec's %%llvm. Without passing with_llvm=no
+# through to make, setting %%llvm 0 here only drops the llvm BuildRequires/
+# subpackage/files, while the build still tries to run clang regardless.
+%if %llvm
+%global with_llvm_arg %{nil}
+%else
+%global with_llvm_arg with_llvm=no
+%endif
+
 %{!?utils:%global	utils 1}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global     raster 1}
@@ -52,7 +63,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -271,17 +282,17 @@ autoconf
 find . -name "Makefile" | xargs sed -i 's/-flto\b//g'
 %endif
 
-SHLIB_LINK="$SHLIB_LINK" %{__make} LPATH=`%{pginstdir}/bin/pg_config --pkglibdir` shlib="%{sname}-%{postgissomajorversion}.so"
+SHLIB_LINK="$SHLIB_LINK" %{__make} LPATH=`%{pginstdir}/bin/pg_config --pkglibdir` shlib="%{sname}-%{postgissomajorversion}.so" %{with_llvm_arg}
 
-%{__make} %{?_smp_mflags} -C extensions
+%{__make} %{?_smp_mflags} -C extensions %{with_llvm_arg}
 
 %if %utils
- SHLIB_LINK="$SHLIB_LINK" %{__make} %{?_smp_mflags} -C utils
+ SHLIB_LINK="$SHLIB_LINK" %{__make} %{?_smp_mflags} -C utils %{with_llvm_arg}
 %endif
 
 %install
 %{__rm} -rf %{buildroot}
-SHLIB_LINK="$SHLIB_LINK" %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot}
+SHLIB_LINK="$SHLIB_LINK" %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg}
 
 %if %utils
 %{__install} -d %{buildroot}%{_datadir}/%{name}
@@ -398,6 +409,13 @@ fi
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-5PGDG
+- Make %%llvm actually control the build, not just packaging: pass
+  with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
+  dropped the llvm BuildRequires/subpackage/files while the build still
+  invoked clang regardless, per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+
 * Tue Aug 18 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.10-4PGDG
 - Build with GDAL 3.13 on all platforms except RHEL 8.
 - Fix build failure with GDAL 3.13, which no longer defines the MIN/MAX
