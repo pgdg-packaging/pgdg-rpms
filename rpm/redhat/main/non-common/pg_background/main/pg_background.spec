@@ -4,8 +4,8 @@
 
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.2
-Release:	3PGDG%{?dist}
+Version:	2.0.3
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/vibhorkum/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vibhorkum/%{sname}
@@ -80,6 +80,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.3-1PGDG
+- Update to 2.0.3 per changes described at:
+  https://github.com/vibhorkum/pg_background/releases/tag/v2.0.3
+
 * Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.2-3PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
