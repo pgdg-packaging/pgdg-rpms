@@ -878,7 +878,7 @@ cat postgresql-regress-%{pgmajorversion}.lang > pg_test.lst
 %endif
 
 %pre server
-%sysusers_create_package %{name} %SOURCE%{pgmajorversion}
+%sysusers_create_package %{name} %SOURCE20
 
 %post server
 /sbin/ldconfig
@@ -1372,6 +1372,9 @@ fi
 %endif
 
 %changelog
+* Sun Aug 30 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-6PGDG
+- Fix %%pre server's %%sysusers_create_package call.
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-5PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop
