@@ -35,7 +35,7 @@ _sync_pgdg_rpms_get_config() {
 
 _sync_pgdg_rpms() {
 	local cur prev opts os_choice sync_mode
-	local i
+	local i v
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
@@ -58,7 +58,20 @@ _sync_pgdg_rpms() {
 		VALID_VER_opensuse=("16.0")
 		VALID_VER_amzn=("2023")
 		PG_ALL_VERSIONS=(18 17 16 15 14)
+		PG_TEST_VERSIONS=(20 19 18 17 16 15 14)
 	fi
+
+	# PG versions that only exist in testing (not yet in PG_ALL_VERSIONS),
+	# so --sync completion doesn't offer the same version number twice
+	local -a pg_testing_only=()
+	local pgver already
+	for pgver in "${PG_TEST_VERSIONS[@]}"; do
+		already=0
+		for v in "${PG_ALL_VERSIONS[@]}"; do
+			[[ "$v" == "$pgver" ]] && already=1 && break
+		done
+		[[ "$already" -eq 0 ]] && pg_testing_only+=("$pgver")
+	done
 
 	# Extract --os value if provided
 	for i in "${!COMP_WORDS[@]}"; do
@@ -112,14 +125,15 @@ _sync_pgdg_rpms() {
 		return 0
 		;;
 	--sync)
-		# Offer sync options: common, extras, testing, non-free, or PG versions
-		COMPREPLY=($(compgen -W "common extras testing non-free ${PG_ALL_VERSIONS[*]}" -- "$cur"))
+		# Offer sync options: common, extras, testing, non-free, pg, or PG versions
+		# (stable + testing-only, e.g. 19/20 - only meaningful combined with testing)
+		COMPREPLY=($(compgen -W "common extras testing non-free pg ${PG_ALL_VERSIONS[*]} ${pg_testing_only[*]}" -- "$cur"))
 		return 0
 		;;
 	*)
 		# If we're in --sync mode (following --sync values), continue offering sync options
 		if [[ -n "$sync_mode" && "$cur" != --* ]]; then
-			COMPREPLY=($(compgen -W "common extras testing non-free ${PG_ALL_VERSIONS[*]}" -- "$cur"))
+			COMPREPLY=($(compgen -W "common extras testing non-free pg ${PG_ALL_VERSIONS[*]} ${pg_testing_only[*]}" -- "$cur"))
 			return 0
 		fi
 		;;
