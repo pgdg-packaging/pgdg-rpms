@@ -17,8 +17,8 @@ source "$CONFIG_FILE"
 
 # Runtime variables
 OS=""
-ARCH=""
-VER=""
+ARCH_ARGS=()				# Architectures requested via one or more --arch
+VER_ARGS=()				# OS versions requested via one or more --ver
 DRY_RUN=false
 DEBUG=false
 SYNC_ITEMS=()				# Items to sync (common, extras, testing, non-free, or PG versions)
@@ -33,15 +33,18 @@ Optional:
                  If not specified, syncs all supported operating systems
 
   --ver          OS version: redhat (${VALID_VER_redhat[*]}), fedora (${VALID_VER_fedora[*]}), sles (${VALID_VER_sles[*]}), opensuse (${VALID_VER_opensuse[*]}), amzn (${VALID_VER_amzn[*]})
+                 Can be given multiple times to sync several versions (e.g. --ver 10.0 --ver 10.1)
                  If not specified, syncs all versions for the OS(es) being processed
                  If --os is also omitted, an OS for which this version is not valid is skipped
 
   --arch         Architecture: aarch64, ppc64le, x86_64
+                 Can be given multiple times to sync several architectures (e.g. --arch x86_64 --arch aarch64)
                  If not specified, syncs all supported architectures for the OS(es) being processed
                  If --os is also omitted, an OS for which this architecture is not valid is skipped
 
-  --sync         Sync specific items: common, extras, testing, non-free, or PG version (e.g. 18)
+  --sync         Sync specific items: common, extras, testing, non-free, pg, or PG version (e.g. 18)
                  Can specify multiple items (e.g. --sync common 18 17)
+                 "pg" is shorthand for every stable PG version (${PG_ALL_VERSIONS[*]})
                  Versions that only exist in testing (e.g. 19, 20) must be combined with
                  "testing" (e.g. --sync testing 19), and restrict the testing sync to just
                  that version instead of all testing versions
@@ -53,6 +56,7 @@ Examples:
   $0 --os redhat --ver 9.7 --sync common
   $0 --os sles --ver 15.6 --arch x86_64 --sync 18 17
   $0 --os fedora --ver 43 --sync common extras testing
+  $0 --os redhat --ver 10.0 --ver 10.1 --ver 10.2 --arch aarch64 --arch x86_64 --sync pg
   $0 --sync common
 
 EOF
@@ -63,6 +67,7 @@ EOF
 contains() {
 	local val="$1"
 	shift
+	local item
 	for item in "$@"; do [[ "$item" == "$val" ]] && return 0; done
 	return 1
 }
@@ -78,11 +83,11 @@ while [[ $# -gt 0 ]]; do
 		shift 2
 		;;
 	--arch)
-		ARCH="$2"
+		ARCH_ARGS+=("$2")
 		shift 2
 		;;
 	--ver)
-		VER="$2"
+		VER_ARGS+=("$2")
 		shift 2
 		;;
 	--sync)
@@ -114,8 +119,8 @@ if [[ -n "$OS" ]] && ! contains "$OS" "${VALID_OS[@]}"; then
 fi
 
 # Was --ver explicitly requested? Captured now, before VER_LIST/the version
-# loop reuse "$VER" as a loop variable.
-if [[ -n "$VER" ]]; then
+# loop reuse "VER" as a loop variable.
+if [[ ${#VER_ARGS[@]} -gt 0 ]]; then
 	VER_EXPLICIT=true
 else
 	VER_EXPLICIT=false
@@ -160,17 +165,31 @@ if [[ ${#SYNC_ITEMS[@]} -gt 0 ]]; then
 		non-free)
 			SYNC_NONFREE=1
 			;;
+		pg)
+			SYNC_PG_VERSIONS+=("${PG_ALL_VERSIONS[@]}")
+			;;
 		*)
 			if contains "$item" "${PG_ALL_VERSIONS[@]}" "${PG_TEST_VERSIONS[@]}"; then
 				SYNC_PG_VERSIONS+=("$item")
 			else
 				echo "Invalid sync item: $item"
-				echo "Valid items: common, extras, testing, non-free, or PG version (stable: ${PG_ALL_VERSIONS[*]}; testing-only, requires 'testing': ${PG_TEST_VERSIONS[*]})"
+				echo "Valid items: common, extras, testing, non-free, pg, or PG version (stable: ${PG_ALL_VERSIONS[*]}; testing-only, requires 'testing': ${PG_TEST_VERSIONS[*]})"
 				exit 1
 			fi
 			;;
 		esac
 	done
+
+	# Dedup SYNC_PG_VERSIONS in case "pg" was combined with an explicit
+	# version, or an item was repeated.
+	if [[ ${#SYNC_PG_VERSIONS[@]} -gt 1 ]]; then
+		SYNC_PG_VERSIONS_DEDUP=()
+		for item in "${SYNC_PG_VERSIONS[@]}"; do
+			contains "$item" "${SYNC_PG_VERSIONS_DEDUP[@]}" || SYNC_PG_VERSIONS_DEDUP+=("$item")
+		done
+		SYNC_PG_VERSIONS=("${SYNC_PG_VERSIONS_DEDUP[@]}")
+		unset SYNC_PG_VERSIONS_DEDUP
+	fi
 fi
 
 # Was a PG version explicitly requested via --sync (as opposed to the
@@ -208,23 +227,28 @@ process_os() {
 	local nonfree_var="SYNCNONFREEREPOS_${OS}"
 	local SYNCNONFREEREPOS="${!nonfree_var}"
 
-	# Populate VER_LIST based on --ver parameter
+	# Populate VER_LIST based on --ver parameter(s)
 	local -a VER_LIST
-	if [[ -z "$VER" ]]; then
+	if [[ ${#VER_ARGS[@]} -eq 0 ]]; then
 		VER_LIST=("${VALID_VER[@]}")
 		echo "No version specified, will sync all versions for $OS: ${VER_LIST[*]}"
 	else
-		if ! contains "$VER" "${VALID_VER[@]}"; then
-			if $STRICT_OS; then
-				echo "Invalid version '$VER' for OS '$OS'"
+		VER_LIST=()
+		for v in "${VER_ARGS[@]}"; do
+			if contains "$v" "${VALID_VER[@]}"; then
+				VER_LIST+=("$v")
+			elif $STRICT_OS; then
+				echo "Invalid version '$v' for OS '$OS'"
 				echo "Valid versions: ${VALID_VER[*]}"
 				exit 1
 			else
-				$DEBUG && echo "[DEBUG] Version $VER not valid for $OS, skipping $OS"
-				return 0
+				$DEBUG && echo "[DEBUG] Version $v not valid for $OS, skipping"
 			fi
+		done
+		if [[ ${#VER_LIST[@]} -eq 0 ]]; then
+			$DEBUG && echo "[DEBUG] No requested versions valid for $OS, skipping $OS"
+			return 0
 		fi
-		VER_LIST=("$VER")
 	fi
 
 	# Resolve which repo types to sync for this OS (architecture-independent)
@@ -256,28 +280,33 @@ process_os() {
 		get_valid_arch_for "$OS" "$VER" ver_valid_arch
 
 		local -a ARCH_LIST
-		if [[ -z "$ARCH" ]]; then
+		if [[ ${#ARCH_ARGS[@]} -eq 0 ]]; then
 			ARCH_LIST=("${ver_valid_arch[@]}")
 			echo "No architecture specified, will sync all architectures for $OS $VER: ${ARCH_LIST[*]}"
 		else
-			if ! contains "$ARCH" "${ver_valid_arch[@]}"; then
-				if $STRICT_OS && $VER_EXPLICIT; then
-					echo "Invalid arch '$ARCH' for $OS $VER"
+			ARCH_LIST=()
+			for a in "${ARCH_ARGS[@]}"; do
+				if contains "$a" "${ver_valid_arch[@]}"; then
+					ARCH_LIST+=("$a")
+				elif $STRICT_OS && $VER_EXPLICIT; then
+					echo "Invalid arch '$a' for $OS $VER"
 					echo "Valid architectures for $OS $VER: ${ver_valid_arch[*]}"
 					exit 1
 				else
-					$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $OS $VER, skipping $OS $VER"
-					continue
+					$DEBUG && echo "[DEBUG] Arch $a not valid for $OS $VER, skipping"
 				fi
+			done
+			if [[ ${#ARCH_LIST[@]} -eq 0 ]]; then
+				$DEBUG && echo "[DEBUG] No requested architectures valid for $OS $VER, skipping $OS $VER"
+				continue
 			fi
-			ARCH_LIST=("$ARCH")
 		fi
 
 		# Debug output
 		if $DEBUG; then
 			echo "[DEBUG] OS:   $OS"
 			echo "[DEBUG] VER:  $VER"
-			echo "[DEBUG] ARCH: $ARCH"
+			echo "[DEBUG] ARCH_ARGS (requested): ${ARCH_ARGS[*]}"
 			echo "[DEBUG] ARCH_LIST: ${ARCH_LIST[*]}"
 			echo "[DEBUG] osname: $osname"
 			echo "[DEBUG] osdistro: $osdistro"
