@@ -7,10 +7,10 @@ require {
 	class file { open read getattr };
 }
 
-# EL-10's split-out sshd_session_t domain does not get search/read access to
-# postgresql_db_t (the label of the postgres user's home dir, /var/lib/pgsql)
-# the way the older combined sshd_t domain did, which breaks SSH pubkey auth
-# via ~/.ssh/authorized_keys. See:
+# EL-10's and Fedora >= 44's split-out sshd_session_t domain does not get
+# search/read access to postgresql_db_t (the label of the postgres user's
+# home dir, /var/lib/pgsql) the way the older combined sshd_t domain did,
+# which breaks SSH pubkey auth via ~/.ssh/authorized_keys. See:
 # https://github.com/pgdg-packaging/pgdg-rpms/issues/229
 allow sshd_session_t postgresql_db_t:dir { search getattr };
 allow sshd_session_t postgresql_db_t:file { open read getattr };
