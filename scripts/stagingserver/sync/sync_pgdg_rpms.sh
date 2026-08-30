@@ -42,6 +42,9 @@ Optional:
 
   --sync         Sync specific items: common, extras, testing, non-free, or PG version (e.g. 18)
                  Can specify multiple items (e.g. --sync common 18 17)
+                 Versions that only exist in testing (e.g. 19, 20) must be combined with
+                 "testing" (e.g. --sync testing 19), and restrict the testing sync to just
+                 that version instead of all testing versions
                  If not specified, syncs all available repos
   --dry-run      Simulate the sync without transferring files
   --debug        Show detailed debug output
@@ -157,16 +160,26 @@ if [[ ${#SYNC_ITEMS[@]} -gt 0 ]]; then
 		non-free)
 			SYNC_NONFREE=1
 			;;
-		18|17|16|15|14|13|12|11|10)
-			SYNC_PG_VERSIONS+=("$item")
-			;;
 		*)
-			echo "Invalid sync item: $item"
-			echo "Valid items: common, extras, testing, non-free, or PG version (18, 17, 16, 15, 14, etc.)"
-			exit 1
+			if contains "$item" "${PG_ALL_VERSIONS[@]}" "${PG_TEST_VERSIONS[@]}"; then
+				SYNC_PG_VERSIONS+=("$item")
+			else
+				echo "Invalid sync item: $item"
+				echo "Valid items: common, extras, testing, non-free, or PG version (stable: ${PG_ALL_VERSIONS[*]}; testing-only, requires 'testing': ${PG_TEST_VERSIONS[*]})"
+				exit 1
+			fi
 			;;
 		esac
 	done
+fi
+
+# Was a PG version explicitly requested via --sync (as opposed to the
+# per-OS default list of stable versions used when --sync is omitted)?
+# The testing loop in process_os() uses this to decide whether to sync
+# every version in PG_TEST_VERSIONS or only the ones requested.
+HAVE_EXPLICIT_PG_VERSIONS=false
+if $HAVE_SYNC_ITEMS && [[ ${#SYNC_PG_VERSIONS[@]} -gt 0 ]]; then
+	HAVE_EXPLICIT_PG_VERSIONS=true
 fi
 
 # Process a single OS: resolves its version/arch/feature-flag settings,
@@ -328,6 +341,10 @@ process_os() {
 			# Sync non-common repo (specific PG versions)
 			if [[ ${#os_sync_pg_versions[@]} -gt 0 ]]; then
 				for pgrelease in "${os_sync_pg_versions[@]}"; do
+					if ! contains "$pgrelease" "${PG_ALL_VERSIONS[@]}"; then
+						echo "  [WARN] PG $pgrelease has no stable repo, skipping (pass 'testing' to sync its testing repo)"
+						continue
+					fi
 					echo "  Syncing : $osname-$distrover-PG$pgrelease"
 
 					RPM_DIR=/var/lib/pgsql/rpm$pgrelease/ALLRPMS
@@ -382,8 +399,21 @@ process_os() {
 					fi
 				fi
 
-				# Sync testing repos for specific PG versions
-				for pgtestrelease in "${PG_TEST_VERSIONS[@]}"; do
+				# Sync testing repos for specific PG versions. If specific PG
+				# versions were explicitly requested via --sync, restrict the
+				# testing sync to those (intersected with PG_TEST_VERSIONS);
+				# otherwise sync every version in PG_TEST_VERSIONS (default).
+				local -a testing_pg_versions
+				if $HAVE_EXPLICIT_PG_VERSIONS; then
+					testing_pg_versions=()
+					for v in "${os_sync_pg_versions[@]}"; do
+						contains "$v" "${PG_TEST_VERSIONS[@]}" && testing_pg_versions+=("$v")
+					done
+				else
+					testing_pg_versions=("${PG_TEST_VERSIONS[@]}")
+				fi
+
+				for pgtestrelease in "${testing_pg_versions[@]}"; do
 					echo "  Syncing : $osname-$distrover-PG$pgtestrelease testing repo"
 					testdir="rpm${pgtestrelease}testing"
 					TESTING_RPM_DIR=/var/lib/pgsql/$testdir/ALLRPMS
