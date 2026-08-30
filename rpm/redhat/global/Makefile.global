@@ -14,7 +14,7 @@ prep:
 	git pull
 
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S $(SPECFILE)
+	spectool -g -S --define "_sourcedir $(PWD)" $(SPECFILE)
 
 allclean:
 	git clean -dfx

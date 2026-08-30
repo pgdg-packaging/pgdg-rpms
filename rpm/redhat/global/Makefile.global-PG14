@@ -22,7 +22,7 @@ prep14:
 	# Update spec file, patches, etc, before running spectool:
 	git pull
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" $(SPECFILE)
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" $(SPECFILE)
 
 build14: prep14
 	rpmbuild --define "_sourcedir $(PWD)" \

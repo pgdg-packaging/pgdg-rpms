@@ -22,7 +22,7 @@ prep16:
 	# Update spec file, patches, etc, before running spectool:
 	git pull
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" $(SPECFILE)
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" $(SPECFILE)
 
 build16: prep16
 	rpmbuild --define "_sourcedir $(PWD)" \

@@ -22,7 +22,7 @@ prep20:
 	# Update spec file, patches, etc, before running spectool:
 	git pull
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" $(SPECFILE)
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 20" --define "pginstdir /usr/pgsql-20" --define "pgpackageversion 20" $(SPECFILE)
 
 build20testing: prep20
 	rpmbuild --define "_sourcedir $(PWD)" \
