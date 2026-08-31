@@ -42,10 +42,10 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	beta2_3PGDG%{?dist}
+Release:	rc1_1PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}beta2.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}beta2-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc1.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc1-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
@@ -212,7 +212,7 @@ This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}beta2
+%setup -q -n %{sname}-%{version}rc1
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -382,6 +382,10 @@ fi
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0rc1-1PGDG
+- Update to 3.7.0 rc1 per:
+  https://postgis.net/2026/08/PostGIS-3.7.0rc1/
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.0-beta2_3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
