@@ -16,15 +16,36 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.3
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	libxml2-devel java-devel javapackages-tools
+BuildRequires:	libxml2-devel javapackages-tools
+%if 0%{?rhel} == 8
+BuildRequires:	java-11-openjdk-devel
+Requires:	java-11-openjdk
+%else
+%if 0%{?rhel} == 9
+BuildRequires:	java-17-openjdk-devel
+Requires:	java-17-openjdk
+%else
+%if 0%{?rhel} == 10
+BuildRequires:	java-21-openjdk-devel
+Requires:	java-21-openjdk
+%else
+%if 0%{?amzn} == 2023
+BuildRequires:	java-25-amazon-corretto-devel
+Requires:	java-25-amazon-corretto
+%else
+BuildRequires:	java-devel
+Requires:	java
+%endif
+%endif
+%endif
+%endif
 
 Requires:	postgresql%{pgmajorversion}-server
-Requires:	java
 
 %description
 This PostgreSQL extension implements a Foreign Data Wrapper (FDW) for
@@ -119,6 +140,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-6PGDG
+- Pin java-11/17/21-openjdk(-devel) on RHEL 8/9/10 respectively (and
+  java-25-amazon-corretto on Amazon Linux 2023), instead of the
+  unversioned java-devel/java, which resolves to the outdated default
+  JDK 8 on RHEL 8. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/110
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

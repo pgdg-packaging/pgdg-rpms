@@ -43,7 +43,7 @@
 
 Name:		%{sname}311
 Version:	3.11.5
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -183,7 +183,19 @@ BuildRequires:	libdap-devel
 BuildRequires:	expat-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
 BuildRequires:	jasper-devel
+%if 0%{?rhel} == 8
+BuildRequires:	java-11-openjdk-devel
+%else
+%if 0%{?rhel} == 9
+BuildRequires:	java-17-openjdk-devel
+%else
+%if 0%{?rhel} == 10
+BuildRequires:	java-21-openjdk-devel
+%else
 BuildRequires:	java-devel >= 1:1.6.0
+%endif
+%endif
+%endif
 BuildRequires:	json-c-devel
 BuildRequires:	libdap-devel libgta-devel
 BuildRequires:	perl-devel
@@ -488,6 +500,12 @@ done
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.11.5-6PGDG
+- Pin java-11/17/21-openjdk-devel BuildRequires on RHEL 8/9/10
+  respectively, instead of the unversioned java-devel, which resolves
+  to the outdated default JDK 8 on RHEL 8. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/110
+
 * Tue Nov 4 2025 Devrim Gunduz <devrim@gunduz.org> - 3.11.5-1PGDG
 - Update to 3.11.5, per changes described at:
   https://github.com/OSGeo/gdal/releases/tag/v3.11.5

@@ -15,13 +15,34 @@
 Summary:	JDBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
 Patch0:		%{sname}-pgdg-rpm.patch
 
+%if 0%{?rhel} == 8
+BuildRequires:	java-11-openjdk-devel
+Requires:	java-11-openjdk
+%else
+%if 0%{?rhel} == 9
+BuildRequires:	java-17-openjdk-devel
+Requires:	java-17-openjdk
+%else
+%if 0%{?rhel} == 10
+BuildRequires:	java-21-openjdk-devel
+Requires:	java-21-openjdk
+%else
+%if 0%{?amzn} == 2023
+BuildRequires:	java-25-amazon-corretto-devel
+Requires:	java-25-amazon-corretto
+%else
 BuildRequires:	java-devel
+Requires:	java
+%endif
+%endif
+%endif
+%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	krb5-devel
 %if 0%{?suse_version} >= 1500
@@ -33,7 +54,6 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 
-Requires:	java
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -74,7 +94,7 @@ This package provides JIT support for jdbc_fdw
 %if 0%{?suse_version} >= 1500
 export PATH=/usr/lib64/jvm/java-openjdk/bin:$PATH
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 9
+%if 0%{?fedora} || 0%{?rhel} >= 8
 export PATH=/usr/lib/jvm/java-openjdk/bin:$PATH
 %endif
 
@@ -102,6 +122,16 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-8PGDG
+- Pin java-11/17/21-openjdk(-devel) on RHEL 8/9/10 respectively (and
+  java-25-amazon-corretto on Amazon Linux 2023), instead of the
+  unversioned java-devel/java, which resolves to the outdated default
+  JDK 8 on RHEL 8. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/110
+- Also set PATH to the java-openjdk alternative in %%build on RHEL 8,
+  matching RHEL 9/10 and Fedora; it was previously left unset there,
+  so the build silently fell back to whatever java/javac was default
+  on PATH.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

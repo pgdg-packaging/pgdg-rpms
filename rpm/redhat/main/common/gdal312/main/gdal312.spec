@@ -76,7 +76,7 @@
 
 Name:		%{sname}312
 Version:	3.12.4
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -212,7 +212,19 @@ BuildRequires:	libdap-devel
 BuildRequires:	expat-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
 BuildRequires:	jasper-devel
+%if 0%{?rhel} == 8
+BuildRequires:	java-11-openjdk-devel
+%else
+%if 0%{?rhel} == 9
+BuildRequires:	java-17-openjdk-devel
+%else
+%if 0%{?rhel} == 10
+BuildRequires:	java-21-openjdk-devel
+%else
 BuildRequires:	java-devel >= 1:1.6.0
+%endif
+%endif
+%endif
 BuildRequires:	json-c-devel
 BuildRequires:	libdap-devel libgta-devel
 BuildRequires:	perl-devel
@@ -532,6 +544,12 @@ done
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-6PGDG
+- Pin java-11/17/21-openjdk-devel BuildRequires on RHEL 8/9/10
+  respectively, instead of the unversioned java-devel, which resolves
+  to the outdated default JDK 8 on RHEL 8. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/110
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-5PGDG
 - Set python3_pkgversion/__ospython for Amazon Linux 2023 (python3.13),
   to keep the Python stack consistent across all packages in the repo.
