@@ -5,6 +5,13 @@
 
 %global relver %{pljavamajver}_%{pljavamidver}_%{pljavaminver}
 
+# Every pljava version PGDG has ever shipped as an extension-packaged
+# release (i.e. excluding pre-release betas, which never persisted as a
+# real installed extension version string). Append the version being
+# superseded here every time %%version is bumped for a new release --
+# never remove or reorder entries. See %%install below for why.
+%global pljava_old_versions 1.5.0 1.5.1 1.5.2 1.5.3 1.5.4 1.5.5 1.5.6 1.6.2 1.6.3 1.6.4 1.6.5 1.6.6 1.6.7 1.6.8 1.6.9
+
 %if 0%{?suse_version} >= 1500
 %else
 %global debug_package %{nil}
@@ -19,7 +26,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
@@ -45,7 +52,7 @@ BuildRequires:	maven krb5-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -93,6 +100,19 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{__cp} -f %{sname}-packaging/target/classes/%{sname}.sql %{buildroot}%{pginstdir}/share/%{sname}/%{sname}--%{version}.sql
 %{__cp} -f %{sname}-packaging/target/classes/%{sname}--unpackaged.sql %{buildroot}%{pginstdir}/share/%{sname}/%{sname}--unpackaged--%{version}.sql
 
+# ALTER EXTENSION pljava UPDATE has no path to follow unless a
+# %%sname--<old>--<new>.sql script exists for the hop. Provide a direct
+# one-hop path from every version we've ever shipped straight to this
+# one, so nobody is forced to DROP/CREATE the extension (which would
+# CASCADE-drop the java/javau languages and every function written in
+# them) just to move to a newer pljava. This is safe because the
+# packaged SQL only contains idempotent CREATE OR REPLACE/DROP IF
+# EXISTS DDL, so replaying it as an "upgrade" is equivalent to a fresh
+# install. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/176
+for oldver in %{pljava_old_versions}; do
+  ln -sf %{sname}--%{version}.sql %{buildroot}%{pginstdir}/share/%{sname}/%{sname}--${oldver}--%{version}.sql
+done
+
 %{__install} -d %{buildroot}%{pginstdir}/share/extension
 %{__cp} -f %{sname}-packaging/target/classes/%{sname}.control %{buildroot}%{pginstdir}/share/extension
 
@@ -112,6 +132,13 @@ mvn clean install -Dso.debug=true -Psaxon-examples
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-6PGDG
+- Ship one-hop ALTER EXTENSION UPDATE paths (pljava--<old>--1.6.10.sql,
+  symlinked to the plain install script) from every pljava version PGDG
+  has ever shipped, so upgrading no longer requires an unsafe DROP/
+  CREATE EXTENSION cycle. Fixes
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/176
+
 * Thu Aug 27 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-5PGDG
 - Add Amazon Linux 2023 support, using java-25-amazon-corretto-devel
 
