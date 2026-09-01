@@ -33,8 +33,8 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.38.19
-Release:	6PGDG%{?dist}
+Version:	1.43.83
+Release:	1PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -97,6 +97,10 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-1PGDG
+- Update to 1.43.83 per changes described at:
+  https://pypi.org/project/boto3/1.43.83/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-6PGDG
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
