@@ -1,8 +1,8 @@
 %global library google-oauthlib
 
 Name:		python3-%{library}
-Version:	0.4.1
-Release:	3PGDG%{?dist}
+Version:	1.2.4
+Release:	1PGDG%{?dist}
 Epoch:		1
 Summary:	oauthlib integration for Google Auth
 License:	ASL 2.0
@@ -42,6 +42,10 @@ Requires:	python3
 %{python3_sitelib}/google_auth_oauthlib/tool/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.4-1PGDG
+- Update to 1.2.4 per changes described at:
+  https://github.com/googleapis/google-auth-library-python-oauthlib/releases/tag/v1.2.4
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.4.1-3PGDG
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
