@@ -29,8 +29,8 @@
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	1.22.0
-Release:	44PGDG%{?dist}
+Version:	1.49.0
+Release:	1PGDG%{?dist}
 Summary:	Easy, practical library for making terminal apps, by providing an elegant, well- documented interface to Colors, Keyboard input, and screen Positioning capabilities
 
 License:	MIT
@@ -67,6 +67,10 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 %{python3_sitelib}/%{sname}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.49.0-1PGDG
+- Update to 1.49.0 per changes described at:
+  https://pypi.org/project/blessed/1.49.0/
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.22.0-44PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.
