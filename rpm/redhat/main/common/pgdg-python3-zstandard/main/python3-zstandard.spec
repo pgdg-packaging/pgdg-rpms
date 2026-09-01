@@ -25,8 +25,8 @@
 %{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
-Version:	0.23.0
-Release:	46PGDG%{?dist}.1
+Version:	0.25.0
+Release:	1PGDG%{?dist}.1
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
@@ -73,6 +73,10 @@ compression library. A C extension and CFFI interface are provided.
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-1PGDG.1
+- Update to 0.25.0 per changes described at:
+  https://pypi.org/project/zstandard/0.25.0/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.23.0-46PGDG.1
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
