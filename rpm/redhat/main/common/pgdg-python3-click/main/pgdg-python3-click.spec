@@ -25,8 +25,8 @@
 %global pgdg_python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-click
-Version:	8.1.7
-Release:	46PGDG%{?dist}.1
+Version:	8.5.0
+Release:	1PGDG%{?dist}.1
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -68,6 +68,10 @@ comes with good defaults out of the box.
 %{pgdg_python3_sitearch}/%{modname}/py.typed
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-1PGDG.1
+- Update to 8.5.0 per changes described at:
+  https://github.com/pallets/click/releases/tag/8.5.0
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 8.1.7-46PGDG.1
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
