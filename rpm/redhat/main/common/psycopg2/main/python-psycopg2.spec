@@ -15,7 +15,7 @@
 %global __ospython %{_bindir}/python3
 %global python3_runtimes python3
 
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -120,6 +120,7 @@ done
 * Wed Apr 22 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.12-42PGDG
 - Update to 2.9.12 per changes descrihed at:
   https://github.com/psycopg/psycopg2/releases/tag/2.9.12
+  https://github.com/psycopg/psycopg2/releases/tag/2.9.11
 
 * Mon Oct 13 2025 Devrim Gündüz <devrim@gunduz.org> - 2.9.11-42PGDG
 - Update to 2.9.11 per changes descrihed at:
