@@ -16,8 +16,8 @@
 
 Summary:	Makes PostgreSQL logical replication slots practically usable across physical failover.
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.2.0
-Release:	7PGDG%{?dist}
+Version:	1.2.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -104,6 +104,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.1-1PGDG
+- Update to 1.2.1 per changes described at:
+  https://github.com/EnterpriseDB/pg_failover_slots/releases/tag/v1.2.1
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
