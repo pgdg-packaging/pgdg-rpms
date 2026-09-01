@@ -3,7 +3,7 @@
 %global library google-auth
 
 Name:		python3-%{library}
-Version:	1.14.3
+Version:	2.48.0
 Release:	1%{?dist}
 Epoch:		1
 Summary:	Google Auth Python Library
@@ -44,6 +44,10 @@ sed -i 's/<3\.2/<5.0/g' setup.py
 %{python3_sitelib}/google_auth-%{version}*.pth
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 2.48.0-1
+- Update to 2.48.0 per changes described at:
+  https://github.com/googleapis/google-auth-library-python/releases/tag/v2.48.0
+
 * Mon May 18 2020 Devrim Gündüz <devrim@gunduz.org> - 1.14.3-1
 - Initial packaging for PostgreSQL RPM repository to satisfy
   bigquery_fdw dependency.
