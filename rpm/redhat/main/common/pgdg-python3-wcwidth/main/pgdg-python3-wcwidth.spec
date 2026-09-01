@@ -29,8 +29,8 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.2.13
-Release:	6PGDG%{dist}
+Version:	0.8.3
+Release:	1PGDG%{dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -76,6 +76,10 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-1PGDG
+- Update to 0.8.3 per changes described at:
+  https://pypi.org/project/wcwidth/0.8.3/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-6PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
