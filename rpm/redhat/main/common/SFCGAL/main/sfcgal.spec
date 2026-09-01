@@ -10,6 +10,7 @@ BuildRequires:	cgal-devel
 %if 0%{?suse_version} && 0%{?suse_version} == 1600
 Version:	2.3.0
 BuildRequires:	CGAL-devel >= 6.1
+BuildRequires:	nlohmann_json-devel >= 3.11
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} == 8
@@ -21,11 +22,13 @@ BuildRequires:	CGAL-devel >= 5.4
 %if 0%{?rhel} && 0%{?rhel} >= 9
 Version:	2.3.0
 BuildRequires:	CGAL-devel >= 5.6
+BuildRequires:	json-devel >= 3.11
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} >= 41
 Version:	2.3.0
 BuildRequires:	CGAL-devel >= 5.6
+BuildRequires:	json-devel >= 3.11
 %endif
 
 Release:	2PGDG%{?dist}
@@ -39,7 +42,7 @@ BuildRequires:  cmake-full
 %else
 BuildRequires:  cmake-rpm-macros
 %endif
-BuildRequires:	cmake pgdg-srpm-macros json-devel
+BuildRequires:	cmake pgdg-srpm-macros
 
 %if 0%{?suse_version} == 1500
 BuildRequires:	libboost_date_time1_66_0 libboost_thread1_66_0
