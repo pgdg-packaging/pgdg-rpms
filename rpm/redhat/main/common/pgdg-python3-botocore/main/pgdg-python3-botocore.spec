@@ -34,8 +34,8 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
-Version:	1.38.19
-Release:	5PGDG%{?dist}
+Version:	1.43.83
+Release:	1PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -79,6 +79,10 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-1PGDG
+- Update to 1.43.83 per changes described at:
+  https://pypi.org/project/botocore/1.43.83/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.38.19-5PGDG
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
