@@ -26,8 +26,8 @@
 
 Summary:	A PostgreSQL database adapter for Python %{python3_pkgversion}
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	2.9.10
-Release:	3PGDG%{?dist}.1
+Version:	2.9.12
+Release:	1PGDG%{?dist}.1
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -77,6 +77,11 @@ export PATH=%{pginstdir}/bin:$PATH
 
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.12-1PGDG.1
+- Update to 2.9.12 per changes described at:
+  https://github.com/psycopg/psycopg2/releases/tag/2.9.12
+  https://github.com/psycopg/psycopg2/releases/tag/2.9.11
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.10-3PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
