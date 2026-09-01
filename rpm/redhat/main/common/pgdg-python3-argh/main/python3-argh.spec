@@ -27,8 +27,8 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.29.4
-Release:	45PGDG%{?dist}
+Version:	0.31.3
+Release:	1PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -73,6 +73,10 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.31.3-1PGDG
+- Update to 0.31.3 per changes described at:
+  https://pypi.org/project/argh/0.31.3/
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.29.4-45PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13
