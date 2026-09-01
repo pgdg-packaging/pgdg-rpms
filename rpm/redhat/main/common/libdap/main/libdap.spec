@@ -1,6 +1,6 @@
 Name:		libdap
 Summary:	The C++ DAP2 library from OPeNDAP
-Version:	3.20.5
+Version:	3.20.11
 Release:	1%{?dist}
 
 License:	LGPLv2+
@@ -121,6 +121,10 @@ touch -r ChangeLog __dist_docs/*
 
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.11-1
+- Update to 3.20.11 per changes described at:
+  https://github.com/OPENDAP/libdap4/releases/tag/3.20.11
+
 * Sat Feb 15 2020 Devrim Gündüz <devrim@gunduz.org> - 3.20.5-1
 - Initial packaging for PostgreSQL RPM repository, to satisfy
   gdal30 dependency on SLES 12.
