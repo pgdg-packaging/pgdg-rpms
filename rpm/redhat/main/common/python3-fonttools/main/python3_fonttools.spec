@@ -5,7 +5,7 @@
 
 Name:		python3-%{pname}
 Summary:	Tools to manipulate font files
-Version:	4.55.3
+Version:	4.63.0
 Release:	1PGDG%{?dist}
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/%{version}/%{sname}-%{version}.tar.gz
@@ -58,6 +58,10 @@ export FONTTOOLS_WITH_CYTHON=1
 %{python3_sitearch}/%{sname}-%{version}-py%{py3ver}.egg-info
 
 %changelog
+* Mon Aug 31 2026 - Devrim Gündüz <devrim@gunduz.org> 4.63.0-1PGDG
+- Update to 4.63.0 per changes described at:
+  https://github.com/fonttools/fonttools/releases/tag/4.63.0
+
 * Sun Dec 29 2024 - Devrim Gündüz <devrim@gunduz.org> 4.55.3-1PGDG
 - Initial packaging for PostgreSQL RPM repository, to satisfy
   pg_chameleon dependency on SLES 15.
