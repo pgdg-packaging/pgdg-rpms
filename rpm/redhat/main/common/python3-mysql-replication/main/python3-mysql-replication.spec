@@ -1,14 +1,10 @@
 %global sname	mysql-replication
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
@@ -31,8 +27,8 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	1.0.15
-Release:	6PGDG%{?dist}
+Version:	1.0.17
+Release:	1PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -88,6 +84,11 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-1PGDG
+- Update to 1.0.17 per changes described at:
+  https://github.com/noplay/python-mysql-replication/releases/tag/1.0.17
+  https://github.com/noplay/python-mysql-replication/releases/tag/1.0.16
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.15-6PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
