@@ -25,13 +25,13 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	3.4.0
-Release:	47PGDG%{dist}.1
+Version:	3.18.0
+Release:	1PGDG%{dist}.1
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
 URL:		https://github.com/jazzband/%{modname}
-Source0:	https://files.pythonhosted.org/packages/source/p/prettytable/prettytable-3.4.0.tar.gz
+Source0:	https://files.pythonhosted.org/packages/source/p/prettytable/prettytable-3.18.0.tar.gz
 
 BuildArch:	noarch
 
@@ -73,6 +73,10 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.18.0-1PGDG.1
+- Update to 3.18.0 per changes described at:
+  https://pypi.org/project/prettytable/3.18.0/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.0-47PGDG.1
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
