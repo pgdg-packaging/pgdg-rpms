@@ -1,5 +1,5 @@
 Name:		python-anthropic
-Version:	1.0.0
+Version:	1.2.0
 Release:	1PGDG%{dist}
 Summary:	The official Python library for the anthropic API
 
@@ -48,6 +48,10 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %license LICENSE
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.0-1PGDG
+- Update to 1.2.0 per changes described at:
+  https://pypi.org/project/anthropic/1.2.0/
+
 * Fri Aug 21 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-1PGDG
 - Initial packaging for PGDG RPM repository to support pg_statviz package, per:
   https://github.com/anthropics/anthropic-sdk-python/releases
