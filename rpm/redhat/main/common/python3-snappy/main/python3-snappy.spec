@@ -25,12 +25,12 @@
 %endif
 
 Name:		python3-snappy
-Version:	0.6.1
-Release:	44PGDG%{dist}
+Version:	0.7.3
+Release:	1PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
-Source:		https://files.pythonhosted.org/packages/source/p/python-snappy/python-snappy-%{version}.tar.gz
+Source:		https://files.pythonhosted.org/packages/39/66/9185fbb6605ba92716d9f77fbb13c97eb671cd13c3ad56bd154016fbf08b/python_snappy-%{version}.tar.gz
 
 BuildRequires:	gcc-c++ pkgconfig snappy-devel
 %if 0%{?suse_version} >= 1500
@@ -46,7 +46,7 @@ Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 Python library for the snappy compression library from Google.
 
 %prep
-%setup -q -n python-snappy-%{version}
+%setup -q -n python_snappy-%{version}
 sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 
 %build
@@ -61,6 +61,13 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.3-1PGDG
+- Update to 0.7.3 per changes described at:
+  https://pypi.org/project/python-snappy/0.7.3/
+- Update Source0 to the renamed python_snappy-0.7.3.tar.gz artifact and
+  %setup -n to python_snappy-%{version}, since upstream renamed the
+  sdist from python-snappy to python_snappy starting with this release.
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-44PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13
