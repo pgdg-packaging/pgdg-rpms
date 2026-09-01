@@ -6,7 +6,7 @@ persistence to stress test it, or anonymize data taken from a production\
 service, Faker is for you.
 
 Name:		python3-%{sname}
-Version:	6.1.1
+Version:	40.37.0
 Release:	1%{?dist}
 Summary:	Faker is a Python package that generates fake data for you
 
@@ -45,6 +45,10 @@ Summary:	Documentation for %{name}
 %doc README.rst CHANGELOG.md CONTRIBUTING.rst RELEASE_PROCESS.rst docs/*.rst
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 40.37.0-1
+- Update to 40.37.0 per changes described at:
+  https://github.com/joke2k/faker/releases/tag/v40.37.0
+
 * Wed Feb 10 2021 Juan Orti Alcaine <jortialc@redhat.com> - 6.1.1-1
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   postgresql_faker extension dependency on RHEL 7 and 8.
