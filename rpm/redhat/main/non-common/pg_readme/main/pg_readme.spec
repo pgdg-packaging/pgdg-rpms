@@ -2,7 +2,7 @@
 
 Summary:	PostgreSQL extension to generate a README.md document for a database extension or schema
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.7.0
+Version:	0.7.1
 Release:	1PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
@@ -40,5 +40,9 @@ in the pg_description system catalog.
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Mon Aug 31 2026 - Devrim Gündüz <devrim@gunduz.org> - 0.7.1-1PGDG
+- Update to 0.7.1 per changes described at:
+  https://github.com/bigsmoke/pg_readme/releases/tag/v0.7.1
+
 * Tue Sep 3 2024 - Devrim Gündüz <devrim@gunduz.org> - 0.7.0-1PGDG
 - Initial RPM packaging for the PostgreSQL RPM repository.
