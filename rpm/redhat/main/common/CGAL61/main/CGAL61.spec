@@ -1,8 +1,8 @@
 %global		 _sourcename CGAL
 
 Name:		CGAL
-Version:	6.1
-Release:	420001PGDG%{?dist}
+Version:	6.1.2
+Release:	1PGDG%{?dist}
 Summary:	Computational Geometry Algorithms Library
 License:	GPL-3.0-or-later AND LGPL-3.0-or-later
 URL:		https://www.cgal.org/
@@ -114,6 +114,10 @@ export CXX="g++-13"
 %doc %{_docdir}/%{name}-doc/CHANGES.md
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 6.1.2-1PGDG
+- Update to 6.1.2 per changes described at:
+  https://github.com/CGAL/cgal/releases/tag/v6.1.2
+
 * Fri Nov 7 2025 Devrim Gündüz <devrim@gunduz.org> - 6.1-420001PGDG
 - Initial packaging for the PostgreSQL RPM repository to support SFCGAL on SLES 16.
   Took spec file from:
