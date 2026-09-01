@@ -69,6 +69,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %{__rm} -rf %{buildroot}
 %{__install} -d %{buildroot}%{pginstdir}/include/server
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} DESTDIR=%{buildroot} install
+# Install devel files manually:
+%{__install} -m 644 src/rum.h src/rumsort.h %{buildroot}%{pginstdir}/include/server/
 # Install README and howto file under PostgreSQL installation directory:
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
