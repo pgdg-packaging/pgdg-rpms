@@ -15,8 +15,8 @@
 
 Summary:	PostgreSQL and Greenplum job scheduler
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.27
-Release:	4PGDG%{?dist}
+Version:	2.1.29
+Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
@@ -80,6 +80,9 @@ This package provides JIT support for pg_task
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.29-1PGDG
+- Update to 2.1.29
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.27-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
