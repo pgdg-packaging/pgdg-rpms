@@ -67,8 +67,8 @@
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
-Version:	%{postgismajorversion}.9
-Release:	12PGDG%{?dist}
+Version:	%{postgismajorversion}.12
+Release:	1PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/%{sname}/docs/%{sname}-%{version}.pdf
@@ -393,6 +393,10 @@ fi
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.12-1PGDG
+- Update to 3.0.12 per changes described at:
+  https://github.com/postgis/postgis/releases/tag/3.0.12
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.9-12PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
