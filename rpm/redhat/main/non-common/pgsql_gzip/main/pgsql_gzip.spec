@@ -16,8 +16,8 @@
 
 Summary:	PostgreSQL gzip/gunzip functions
 Name:		%{pname}_%{pgmajorversion}
-Version:	1.1.0
-Release:	3PGDG%{?dist}
+Version:	1.1.1
+Release:	1PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -102,6 +102,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.1-1PGDG
+- Update to 1.1.1 per changes described at:
+  https://github.com/pramsey/pgsql-gzip/releases/tag/v1.1.1
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
