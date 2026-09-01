@@ -1,7 +1,7 @@
 %global pypi_name kazoo
 
 Name:		python3-%{pypi_name}
-Version:	2.8.0
+Version:	2.11.0
 Release:	1%{?dist}
 Summary:	Higher level Python Zookeeper client
 
@@ -57,6 +57,10 @@ sphinx-build docs html
 %doc html
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-1
+- Update to 2.11.0 per changes described at:
+  https://pypi.org/project/kazoo/2.11.0/
+
 * Wed Aug 5 2020 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-1
 - Initial packaging for the PostgreSQL RPM repository, to satisfy patroni
   dependency on RHEL 8, based on Fedora rawhide spec file.
