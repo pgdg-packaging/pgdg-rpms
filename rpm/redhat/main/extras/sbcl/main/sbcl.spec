@@ -7,8 +7,8 @@
 
 Name:		sbcl
 Summary:	Steel Bank Common Lisp
-Version:	2.2.10
-Release:	3%{?dist}
+Version:	2.6.8
+Release:	1%{?dist}
 
 License:	BSD
 URL:		http://sbcl.sourceforge.net/
@@ -169,6 +169,10 @@ find %{buildroot} -name .cvsignore | xargs rm -fv
 %{_prefix}/lib/sbcl/sbcl.core
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6.8-1PGDG
+- Update to 2.6.8 per changes described at:
+  https://www.sbcl.org/news.html
+
 * Sat May 23 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.10-3PGDG
 - Remove self-BR dependency.
 
