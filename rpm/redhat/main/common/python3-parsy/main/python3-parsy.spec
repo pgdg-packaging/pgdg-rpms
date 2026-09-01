@@ -33,8 +33,8 @@
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	2.1
-Release:	46PGDG%{dist}
+Version:	2.2
+Release:	1PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -78,6 +78,10 @@ documentation and it doesn't say things like that!
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2-1PGDG
+- Update to 2.2 per changes described at:
+  https://github.com/python-parsy/parsy/releases/tag/v2.2
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1-46PGDG
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
