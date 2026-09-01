@@ -16,8 +16,8 @@
 
 Summary:	PostgreSQL tool for transferring data with URL syntax
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.4.4
-Release:	5PGDG%{?dist}
+Version:	2.4.5
+Release:	1PGDG%{?dist}
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 License:	MIT
@@ -80,6 +80,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
     %{pginstdir}/lib/bitcode/%{sname}/*.bc
 %endif
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.5-1PGDG
+- Update to 2.4.5 per changes described at:
+  https://pgxn.org/dist/pg_curl/2.4.5/
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.4-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
