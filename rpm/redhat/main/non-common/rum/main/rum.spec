@@ -15,8 +15,8 @@
 
 Summary:	RUM access method - inverted index with additional information in posting lists
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.3.14
-Release:	6PGDG%{?dist}
+Version:	1.3.15
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}/
@@ -92,6 +92,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %{pginstdir}/include/server/rum*.h
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.15-1PGDG
+- Update to 1.3.15 per changes described at:
+  https://github.com/postgrespro/rum/releases/tag/1.3.15
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.14-6PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
