@@ -10,8 +10,8 @@
 %global sname rohmu
 
 Name:		python3-%{sname}
-Version:	1.0.9
-Release:	2PGDG%{?dist}
+Version:	2.8.2
+Release:	1PGDG%{?dist}
 Epoch:		1
 Summary:	Python library for building backup tools for databases
 
@@ -46,6 +46,10 @@ CFLAGS="%{optflags}" %{__python3} setup.py build
 %{python3_sitelib}/%{sname}/*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-1PGDG
+- Update to 2.8.2 per changes described at:
+  https://github.com/aiven/rohmu/releases/tag/releases/2.8.2
+
 * Tue Dec 17 2024 Devrim Gündüz <devrim@gunduz.org> - 1:1.0.9-2PGDG
 - Add RHEL 10 support
 - Add PGDG branding
