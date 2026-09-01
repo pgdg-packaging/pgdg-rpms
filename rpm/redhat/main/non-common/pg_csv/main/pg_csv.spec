@@ -16,8 +16,8 @@
 
 Summary:	Flexible CSV processing as a solution for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.1
-Release:	5PGDG%{?dist}
+Version:	1.0.2
+Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/PostgREST/%{sname}/
 Source0:	https://github.com/PostgREST/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -78,6 +78,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.2-1PGDG
+- Update to 1.0.2 per changes described at:
+  https://github.com/PostgREST/pg_csv/releases/tag/v1.0.2
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.1-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
