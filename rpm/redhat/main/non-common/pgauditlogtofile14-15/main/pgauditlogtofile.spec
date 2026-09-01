@@ -25,8 +25,8 @@
 
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8.4
-Release:	4PGDG%{?dist}
+Version:	1.8.5
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
@@ -126,6 +126,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.5-1PGDG
+- Update to 1.8.5 per changes described at:
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.5
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.4-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
