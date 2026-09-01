@@ -16,8 +16,8 @@
 
 Summary:	Incremental Data Processing in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.0
-Release:	5PGDG%{?dist}
+Version:	1.5.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Group:		Applications/Databases
 URL:		https://github.com/CrunchyData/%{sname}
@@ -84,6 +84,16 @@ This package provides JIT support for pg_incremental
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-1PGDG
+- Update to 1.5.0 per changes described at:
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.5.0
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.4.1
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.3.0
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.2.0
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.1.1
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.1.0
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.0.1
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
