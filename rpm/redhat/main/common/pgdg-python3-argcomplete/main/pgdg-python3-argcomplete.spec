@@ -23,8 +23,8 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Summary:	Bash tab completion for argparse
-Version:	3.6.2
-Release:	3PGDG%{dist}.1
+Version:	3.7.2
+Release:	1PGDG%{dist}.1
 License:	Apache-2.0
 URL:		https://github.com/kislyuk/%{modname}
 Source0:	https://files.pythonhosted.org/packages/source/a/%{modname}/%{modname}-%{version}.tar.gz
@@ -89,6 +89,10 @@ sed -i '/^#!/d' argcomplete/scripts/*.py
 %{python3_sitelib}/argcomplete/scripts/__pycache__/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.2-1PGDG.1
+- Update to 3.7.2 per changes described at:
+  https://pypi.org/project/argcomplete/3.7.2/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-3PGDG.1
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
@@ -104,5 +108,5 @@ sed -i '/^#!/d' argcomplete/scripts/*.py
 - Add Fedora 43 support
 
 * Mon May 19 2025 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-1PGDG
-- Inıtial packaging for the PostgreSQL RPM repository to support Barman
+- Initial packaging for the PostgreSQL RPM repository to support Barman
   on RHEL 9 and RHEL 8. Modified Fedora rawhide spec file.
