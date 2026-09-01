@@ -25,8 +25,8 @@
 %{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
 
 Name:		python%{python3_pkgversion}-%{srcname}
-Version:	4.3.3
-Release:	46PGDG%{?dist}.1
+Version:	4.4.5
+Release:	1PGDG%{?dist}.1
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
@@ -84,6 +84,10 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-1PGDG.1
+- Update to 4.4.5 per changes described at:
+  https://pypi.org/project/lz4/4.4.5/
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.3.3-46PGDG.1
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
