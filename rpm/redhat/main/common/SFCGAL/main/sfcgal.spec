@@ -28,7 +28,7 @@ Version:	2.3.0
 BuildRequires:	CGAL-devel >= 5.6
 %endif
 
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
@@ -39,7 +39,7 @@ BuildRequires:  cmake-full
 %else
 BuildRequires:  cmake-rpm-macros
 %endif
-BuildRequires:	cmake pgdg-srpm-macros
+BuildRequires:	cmake pgdg-srpm-macros json-devel
 
 %if 0%{?suse_version} == 1500
 BuildRequires:	libboost_date_time1_66_0 libboost_thread1_66_0
@@ -131,6 +131,9 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Tue Sep 1 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-2PGDG
+- Add missing BR
+
 * Mon Jul 13 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-1PGDG
 - Update to 2.3.0 on RHEL 9+, Fedora and SLES 16per changes described at:
   https://gitlab.com/sfcgal/SFCGAL/-/releases/v2.3.0
