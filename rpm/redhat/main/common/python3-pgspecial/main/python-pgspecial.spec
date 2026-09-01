@@ -11,8 +11,8 @@
 %global srcname pgspecial
 
 Name:		python3-%{sname}
-Version:	2.0.1
-Release:	2PGDG%{?dist}
+Version:	2.2.1
+Release:	1PGDG%{?dist}
 Epoch:		1
 Summary:	Meta-commands handler for Postgres Database.
 
@@ -43,6 +43,10 @@ CFLAGS="%{optflags}" %{__ospython3} setup.py build
 %{python3_sitelib}/%{sname}/*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.2.1-1PGDG
+- Update to 2.2.1 per changes described at:
+  https://pypi.org/project/pgspecial/2.2.1/
+
 * Wed Dec 18 2024 Devrim Gündüz <devrim@gunduz.org> - 1:2.0.1-2PGDG
 - Add RHEL 10 support
 - Add PGDG branding
