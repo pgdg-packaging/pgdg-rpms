@@ -31,8 +31,8 @@
 
 
 Name:		python3-plac
-Version:	1.3.5
-Release:	44PGDG%{?dist}
+Version:	1.4.6
+Release:	1PGDG%{?dist}
 Summary:	The smartest command line arguments parser in the world
 License:	BSD-2-Clause
 URL:		https://github.com/ialbert/plac
@@ -93,6 +93,10 @@ in your source code.}
 %{python3_sitelib}/__pycache__/%{sname}*pyc
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.6-1PGDG
+- Update to 1.4.6 per changes described at:
+  https://github.com/ialbert/plac/releases/tag/v1.4.6
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.5-44PGDG
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
