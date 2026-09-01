@@ -1,13 +1,13 @@
 %global sname tabulate
 
 Name:		python3-%{sname}
-Version:	0.8.9
-Release:        2%{?dist}
+Version:	0.10.0
+Release:        1%{?dist}
 Summary:	Pretty-print tabular data in Python, a library and a command-line utility
 
 License:	MIT
 URL:		https://pypi.python.org/pypi/tabulate
-Source:		https://files.pythonhosted.org/packages/ae/3d/9d7576d94007eaf3bb685acbaaec66ff4cdeb0b18f1bf1f17edbeebffb0a/%{sname}-%{version}.tar.gz
+Source:		https://files.pythonhosted.org/packages/46/58/8c37dea7bbf769b20d58e7ace7e5edfe65b849442b00ffcdd56be88697c6/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
 
@@ -53,5 +53,9 @@ BuildRequires:	python3dist(wcwidth)
 %{python3_sitelib}/__pycache__/%{sname}.*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 0.10.0-1
+- Update to 0.10.0 per changes described at:
+  https://pypi.org/project/tabulate/0.10.0/
+
 * Tue Jan 4 2022 Devrim Gündüz <devrim@gunduz.org> - 0.8.9-1
 - Initial packaging to provide pg_chameleon dependency on SLES 15.
