@@ -15,8 +15,8 @@
 
 Summary:	PostgreSQL extension which enables DML error logging
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.2
-Release:	3PGDG%{?dist}
+Version:	2.4
+Release:	1PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/HexaCluster/%{sname}/
@@ -84,6 +84,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} INSTALL_P
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4-1PGDG
+- Update to 2.4 per changes described at:
+  https://github.com/HexaCluster/pg_dbms_errlog/releases/tag/v2.4
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
