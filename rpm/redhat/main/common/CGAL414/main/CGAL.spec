@@ -10,7 +10,7 @@
 %global alphaname %{nil}
 
 Name:		CGAL
-Version:	4.14
+Version:	4.14.3
 Release:	1%{alphatag}%{?dist}
 Summary:	Computational Geometry Algorithms Library
 
@@ -166,6 +166,10 @@ touch -r demo %{buildroot}%{_datadir}/CGAL/
 %exclude %{_datadir}/CGAL/*/*/skip_vcproj_auto_generation
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 4.14.3-1
+- Update to 4.14.3 per changes described at:
+  https://github.com/CGAL/cgal/releases/tag/releases/CGAL-4.14.3
+
 * Thu Aug 29 2019 Devrim Gündüz <devrim@gunduz.org> - 4.14-1
 - Update to 4.14 for RHEL 8 packaging.
 
