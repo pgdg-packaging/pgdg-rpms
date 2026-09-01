@@ -25,8 +25,8 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2.8.0
-Release:	44PGDG%{?dist}.1
+Version:	2.11.0
+Release:	1PGDG%{?dist}.1
 Summary:	Higher level Python Zookeeper client
 
 License:	Apache-2.0
@@ -70,6 +70,10 @@ find . -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 %{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.0-1PGDG.1
+- Update to 2.11.0 per changes described at:
+  https://pypi.org/project/kazoo/2.11.0/
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-44PGDG.1
 - Explicitly bytecompile with %%py_byte_compile on Amazon Linux 2023.
   AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
