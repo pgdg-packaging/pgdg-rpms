@@ -12,7 +12,7 @@
 
 
 Name:           CGAL
-Version:        5.4.2
+Version:        5.4.5
 Release:        1%{?dist}
 Summary:        Computational Geometry Algorithms Library
 
@@ -157,6 +157,10 @@ ldd ./constrained_plus
 %exclude %{_datadir}/CGAL/*/*/skip_vcproj_auto_generation
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 5.4.5-1
+- Update to 5.4.5 per changes described at:
+  https://github.com/CGAL/cgal/releases/tag/v5.4.5
+
 * Mon Aug 22 2022 Devrim Gündüz <devrim@gunduz.org> - 5.4.2-1
 - Update to 5.4.2, and also add to RHEL 8 as well.
 
