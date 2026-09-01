@@ -28,8 +28,8 @@
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-attrs
-Version:	22.1.0
-Release:	44PGDG%{?dist}
+Version:	26.1.0
+Release:	1PGDG%{?dist}
 Summary:	Python attributes without boilerplate
 
 License:	MIT
@@ -67,6 +67,10 @@ object protocols.
 %{python3_sitelib}/%{pypi_name}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-1PGDG
+- Update to 26.1.0 per changes described at:
+  https://github.com/python-attrs/attrs/releases/tag/26.1.0
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 22.1.0-44PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.
