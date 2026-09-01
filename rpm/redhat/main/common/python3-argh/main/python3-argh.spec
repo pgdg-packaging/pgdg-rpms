@@ -1,7 +1,7 @@
 %global	pypi_name argh
 
 Name:		python3-%{pypi_name}
-Version:	0.26.2
+Version:	0.31.3
 Release:	1PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
@@ -42,6 +42,10 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 0.31.3-1PGDG
+- Update to 0.31.3 per changes described at:
+  https://pypi.org/project/argh/0.31.3/
+
 * Mon Jul 3 2023 Devrim Gündüz <devrim@gunduz.org> - 0.26.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support
   pg_statviz package.
