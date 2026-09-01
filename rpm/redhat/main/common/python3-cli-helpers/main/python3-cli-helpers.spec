@@ -2,8 +2,8 @@
 
 Summary:	Python helpers for common CLI tasks
 Name:		python3-cli-helpers
-Version:	2.2.1
-Release:	2%{?dist}
+Version:	2.15.1
+Release:	1%{?dist}
 License:	BSD
 URL:		https://github.com/dbcli/cli_helpers
 Source0:	https://github.com/dbcli/cli_helpers/archive/refs/tags/v%{version}.tar.gz
@@ -41,6 +41,10 @@ command-line interfaces.
 %{python3_sitelib}/%{pypi_name}-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 2.15.1-1
+- Update to 2.15.1 per changes described at:
+  https://github.com/dbcli/cli_helpers/releases/tag/v2.15.1
+
 * Mon May 8 2023 Devrim Gündüz <devrim@gunduz.org> - 2.2.1-2
 - Spec file cleanup: Remove non-python3 portions.
 
