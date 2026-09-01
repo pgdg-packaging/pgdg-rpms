@@ -3,8 +3,8 @@
 
 Name:		pgdg-%{sname}
 Summary:	Encoding files for use with poppler
-Version:	0.4.9
-Release:	7%{?dist}
+Version:	0.4.12
+Release:	1%{?dist}
 
 # NOTE: The licensing details are explained in COPYING file in source archive.
 License:	BSD and GPLv2
@@ -58,6 +58,10 @@ pkgconfig utility allowing your software to be build with poppler-data.
 %{_libdir}/pkgconfig/%{name}.pc
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 0.4.12-1
+- Update to 0.4.12 per changes described at:
+  https://poppler.freedesktop.org/releases.html
+
 * Wed May 19 2021 Devrim Gündüz <devrim@gunduz.org> - 0.4.9-7
 - Initial packaging for PostgreSQL RPM repository, to prevent
   further breakages caused by Poppler updates on RHEL 8.x. Spec file taken
