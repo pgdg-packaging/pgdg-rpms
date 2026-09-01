@@ -14,8 +14,8 @@
 %endif
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.5.0
-Release:	3PGDG%{?dist}
+Version:	3.6.1
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Protocol Buffers logical decoder plugin
 
 License:	MIT
@@ -84,6 +84,10 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.1-1PGDG
+- Update to 3.6.1 per changes described at:
+  https://github.com/debezium/postgres-decoderbufs/releases/tag/v3.6.1.Final
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.5.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
