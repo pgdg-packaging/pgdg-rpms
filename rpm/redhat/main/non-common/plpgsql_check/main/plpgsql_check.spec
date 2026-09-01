@@ -4,8 +4,8 @@
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.10.3
-Release:	2PGDG%{?dist}
+Version:	2.10.4
+Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -76,6 +76,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.4-1PGDG
+- Update to 2.10.4 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.10.4
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.3-2PGDG
 - Add Amazon Linux 2023 support.
 
