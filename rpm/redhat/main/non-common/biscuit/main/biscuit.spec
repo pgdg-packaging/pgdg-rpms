@@ -15,8 +15,8 @@
 
 Summary:	High-Performance Pattern Matching Index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.4.1
-Release:	3PGDG%{?dist}
+Version:	3.0.0
+Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/crystallinecore/%{sname}/
 Source0:	https://github.com/crystallinecore/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -84,6 +84,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-1PGDG
+- Update to 3.0.0 per changes described at:
+  https://github.com/CrystallineCore/Biscuit/releases/tag/v3.0.0
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.1-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
