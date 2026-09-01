@@ -25,8 +25,8 @@
 %{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	6.1.1
-Release:	46PGDG%{?dist}.1
+Version:	7.2.2
+Release:	1PGDG%{?dist}.1
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -75,6 +75,10 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 7.2.2-1PGDG.1
+- Update to 7.2.2 per changes described at:
+  https://github.com/giampaolo/psutil/releases/tag/release-7.2.2
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1.1-46PGDG.1
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator
