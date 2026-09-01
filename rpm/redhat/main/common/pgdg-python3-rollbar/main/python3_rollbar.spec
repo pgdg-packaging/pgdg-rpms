@@ -32,8 +32,8 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
-Version:	0.16.2
-Release:	47PGDG%{?dist}
+Version:	1.4.0
+Release:	1PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -114,6 +114,10 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-1PGDG
+- Update to 1.4.0 per changes described at:
+  https://github.com/rollbar/pyrollbar/releases/tag/v1.4.0
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.16.2-47PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
