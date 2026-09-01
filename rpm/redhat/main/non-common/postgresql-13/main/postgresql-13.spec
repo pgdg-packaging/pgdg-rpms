@@ -77,13 +77,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	13.24
+Version:	13.23
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420003PGDG%{?dist}
+Release:	420004PGDG%{?dist}
 %else
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1386,17 +1386,6 @@ fi
 %endif
 
 %changelog
-* Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 13.24-3PGDG
-- Add Amazon Linux 2023 support.
-
-* Thu Mar 5 2026 Devrim Gündüz <devrim@gunduz.org> - 13.24-2PGDG
-- Fix builds when ssl macro is disabled.
-  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/164
-
-* Tue Feb 10 2026 Devrim Gündüz <devrim@gunduz.org> - 13.24-1PGDG
-- Update to 13.24, per changes described at
-  https://www.postgresql.org/docs/release/13.24/
-
 * Wed Nov 19 2025 Devrim Gündüz <devrim@gunduz.org> - 13.23-4PGDG
 - Rebuild on RHEL 7 because of package signing issue
 
