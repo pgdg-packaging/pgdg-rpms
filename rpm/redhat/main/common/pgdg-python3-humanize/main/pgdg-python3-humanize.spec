@@ -30,8 +30,8 @@
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	3.13.1
-Release:	45PGDG%{?dist}
+Version:	4.16.0
+Release:	1PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -79,6 +79,10 @@ sed -Ei 's/ ?--cov(-[^ ]+)? +[^ ]+//g' tox.ini
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-1PGDG
+- Update to 4.16.0 per changes described at:
+  https://pypi.org/project/humanize/4.16.0/
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.1-45PGDG
 - Fix a pre-existing typo: the sitelib macro was defined as
   "python_sitelib" but %%files referenced "python3_sitelib", so %%files
