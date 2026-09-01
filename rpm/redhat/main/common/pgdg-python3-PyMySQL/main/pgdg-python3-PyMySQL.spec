@@ -13,8 +13,8 @@
 %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	1.1.2
-Release:	43PGDG%{?dist}
+Version:	1.2.0
+Release:	1PGDG%{?dist}
 Summary:	Pure-Python MySQL client library
 
 License:	MIT
@@ -57,6 +57,10 @@ and Jython.
 %{python3_sitelib}/%{pname}/constants/__pycache__/*.py*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-1PGDG
+- Update to 1.2.0 per changes described at:
+  https://github.com/PyMySQL/PyMySQL/releases/tag/v1.2.0
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.2-43PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator
