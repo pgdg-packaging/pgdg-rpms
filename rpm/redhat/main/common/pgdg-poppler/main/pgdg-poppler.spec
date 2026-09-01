@@ -3,8 +3,8 @@
 
 Summary:	PDF rendering library
 Name:		pgdg-%{sname}
-Version:	20.11.0
-Release:	3%{?dist}
+Version:	26.08.0
+Release:	1%{?dist}
 License:	(GPLv2 or GPLv3) and GPLv2+ and LGPLv2+ and MIT
 URL:		https://poppler.freedesktop.org/
 Source0:	https://poppler.freedesktop.org/poppler-%{version}.tar.xz
@@ -203,6 +203,10 @@ cd build
 %{popplerinstdir}/share/man/man1/*
 
 %changelog
+* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 26.08.0-1
+- Update to 26.08.0 per changes described at:
+  https://poppler.freedesktop.org/releases.html
+
 * Wed May 19 2021 Devrim Gündüz <devrim@gunduz.org> - 20.11.0-3
 - Add linker config file
 
