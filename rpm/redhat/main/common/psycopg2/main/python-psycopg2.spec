@@ -24,7 +24,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	%{ppg2majver}.%{ppg2midver}.%{ppg2minver}
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -117,6 +117,9 @@ done
 %endif
 
 %changelog
+* Wed Sep 2 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.12-43PGDG
+- Rebuild, per https://github.com/pgdg-packaging/pgdg-rpms/issues/233
+
 * Wed Apr 22 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.12-42PGDG
 - Update to 2.9.12 per changes descrihed at:
   https://github.com/psycopg/psycopg2/releases/tag/2.9.12
