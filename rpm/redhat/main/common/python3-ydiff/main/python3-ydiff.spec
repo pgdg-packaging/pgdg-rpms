@@ -26,7 +26,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	52PGDG%{?dist}
+Release:	53PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -49,6 +49,9 @@ Requires:	less
 Requires:	python%{python3_pkgversion}-%{name}
 
 Provides:	python%{python3_pkgversion}dist(ydiff)
+%if 0%{?amzn} == 2023
+Provides:	python%{python3_pkgversion}-ydiff
+%endif
 
 %description
 Term based tool to view colored, incremental diff in a Git/Mercurial/Svn
@@ -84,6 +87,9 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Thu Sep 3 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-53PGDG
+- Provide another package for AL 2023
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-52PGDG
 - Add back python%{python3_pkgversion}-devel as a BuildRequires on the
   non-SLES branch, needed to pull python3-rpm-generators into the
