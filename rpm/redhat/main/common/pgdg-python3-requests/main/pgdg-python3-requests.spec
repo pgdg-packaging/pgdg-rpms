@@ -49,8 +49,14 @@ designed to make HTTP requests easy for developers.
 %prep
 %autosetup -n requests-%{version}
 
+%if 0%{?amzn} == 2023
+# The bundled trove-classifiers on AL2023 doesn't yet recognize the
+# "Python :: 3.15" classifier, which makes setuptools' pyproject.toml
+# metadata validation abort the build. Strip it; it's metadata only.
+sed -i '/Programming Language :: Python :: 3.15/d' pyproject.toml
+%endif
+
 %build
-export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %pyproject_wheel
 
 %install
