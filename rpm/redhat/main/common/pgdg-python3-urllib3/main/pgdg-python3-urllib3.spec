@@ -38,7 +38,7 @@ URL:		https://github.com/%{modname}/%{modname}
 Source0:	%{url}/archive/%{version}/urllib3-%{version}.tar.gz
 
 BuildRequires:	gcc sed python%{python3_pkgversion}-devel
-BuildRequires:	ca-certificates
+BuildRequires:	ca-certificates python%{python3_pkgversion}-hatchling
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
