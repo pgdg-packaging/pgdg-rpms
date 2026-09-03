@@ -51,9 +51,12 @@ designed to make HTTP requests easy for developers.
 
 %if 0%{?amzn} == 2023
 # The bundled trove-classifiers on AL2023 doesn't yet recognize the
-# "Python :: 3.15" classifier, which makes setuptools' pyproject.toml
-# metadata validation abort the build. Strip it; it's metadata only.
-sed -i '/Programming Language :: Python :: 3.15/d' pyproject.toml
+# "Python :: 3.15" and "Free Threading :: 2 - Beta" classifiers, which
+# makes setuptools' pyproject.toml metadata validation abort the build.
+# Strip them; they're metadata only.
+sed -i -e '/Programming Language :: Python :: 3.15/d' \
+       -e '/Programming Language :: Python :: Free Threading :: 2 - Beta/d' \
+       pyproject.toml
 %endif
 
 %build
