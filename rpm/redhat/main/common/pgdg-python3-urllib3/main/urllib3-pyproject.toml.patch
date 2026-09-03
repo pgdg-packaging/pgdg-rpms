@@ -1,0 +1,25 @@
+--- pyproject.toml.old
++++ pyproject.toml
+@@ -1,7 +1,7 @@
+ # This file is protected via CODEOWNERS
+ 
+ [build-system]
+-requires = ["hatchling>=1.27.0,<2", "hatch-vcs>=0.4.0,<0.6.0", "setuptools-scm>=8,<11"]
++requires = ["hatchling>=1.27.0,<2"]
+ build-backend = "hatchling.build"
+ 
+ [project]
+@@ -129,11 +129,8 @@
+ "Issue tracker" = "https://github.com/urllib3/urllib3/issues"
+ 
+ [tool.hatch.version]
+-source = "vcs"
+-[tool.hatch.version.raw-options]
+-local_scheme = "no-local-version"
+-[tool.hatch.build.hooks.vcs]
+-version-file = "src/urllib3/_version.py"
++path = "src/urllib3/_version.py"
++pattern = "__version__ = \"(?P<version>[^\"]+)\""
+ 
+ [tool.hatch.build.targets.sdist]
+ include = [

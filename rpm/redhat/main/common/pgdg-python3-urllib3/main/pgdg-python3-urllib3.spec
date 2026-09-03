@@ -4,13 +4,9 @@
 %global __python3 %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 43
 %global __python3 %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__python3 %{_bindir}/python3.12
@@ -36,6 +32,7 @@ Summary:	HTTP library with thread-safe connection pooling, file post, and more
 License:	MIT
 URL:		https://github.com/%{modname}/%{modname}
 Source0:	%{url}/archive/%{version}/urllib3-%{version}.tar.gz
+Patch0:		urllib3-pyproject.toml.patch
 
 BuildRequires:	gcc sed python%{python3_pkgversion}-devel
 BuildRequires:	ca-certificates python%{python3_pkgversion}-hatchling
@@ -65,7 +62,12 @@ many critical features that are missing from the Python standard libraries:
 
 %prep
 %autosetup -n %{modname}-%{version}
-sed -i 's/setuptools-scm>=8,<10/setuptools-scm>=8/' pyproject.toml
+
+# Upstream computes the version dynamically via hatch-vcs from git metadata,
+# which isn't available from this GitHub source archive tarball. Patch0 makes
+# hatchling read the version from src/urllib3/_version.py instead; populate
+# that file here.
+echo '__version__ = "%{version}"' > src/urllib3/_version.py
 
 # Make sure that the RECENT_DATE value doesn't get too far behind what the current date is.
 # RECENT_DATE must not be older that 2 years from the build time, or else test_recent_date
@@ -87,7 +89,6 @@ sed -i "s/^RECENT_DATE = datetime.date(.*)/RECENT_DATE = datetime.date($recent_d
 
 
 %build
-export SETUPTOOLS_SCM_PRETEND_VERSION='%{version}'
 %pyproject_wheel
 
 %install
