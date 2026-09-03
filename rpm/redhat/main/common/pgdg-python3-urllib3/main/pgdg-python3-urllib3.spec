@@ -31,8 +31,8 @@ Summary:	HTTP library with thread-safe connection pooling, file post, and more
 
 License:	MIT
 URL:		https://github.com/%{modname}/%{modname}
-Source0:	%{url}/archive/%{version}/urllib3-%{version}.tar.gz
-Patch0:		urllib3-pyproject.toml.patch
+Source0:	%{url}/archive/%{version}/%{modname}-%{version}.tar.gz
+Patch0:		%{modname}-pyproject.toml.patch
 
 BuildRequires:	gcc sed python%{python3_pkgversion}-devel
 BuildRequires:	ca-certificates python%{python3_pkgversion}-hatchling
@@ -45,7 +45,7 @@ Requires:	ca-certificates
 
 BuildArch:      noarch
 
-Provides:	python%{python3_pkgversion}dist(urllib3)
+Provides:	python%{python3_pkgversion}dist(%{modname})
 
 %description
 urllib3 is a powerful, user-friendly HTTP client for Python. urllib3 brings
@@ -100,8 +100,8 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %pyproject_install
 
 %files
-%{python3_sitelib}/urllib3-2.7.0.dist-info/
-%{python3_sitelib}/urllib3/*
+%{python3_sitelib}/%{modname}-%{version}.dist-info/
+%{python3_sitelib}/%{modname}/*
 
 %changelog
 * Thu Sep 3 2026 Devrim Gunduz <devrim@gunduz.org> - 2.7.0-1PGDG
