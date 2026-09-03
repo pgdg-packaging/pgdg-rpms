@@ -41,7 +41,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-Provides:	python%{python3_pkgversion}dist(pyyaml)
+Provides:	python%{python3_pkgversion}pyyaml
 
 %description
 YAML is a data serialization format designed for human readability and\
