@@ -89,6 +89,11 @@ sed -i "s/^RECENT_DATE = datetime.date(.*)/RECENT_DATE = datetime.date($recent_d
 
 
 %build
+# The installed trove-classifiers package may lag behind the classifiers
+# listed in this release's pyproject.toml (e.g. the PEP 703 free-threading
+# classifiers), which would otherwise make hatchling fail metadata
+# validation with "Unknown classifier in field `project.classifiers`".
+export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %pyproject_wheel
 
 %install
