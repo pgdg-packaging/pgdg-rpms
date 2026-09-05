@@ -127,6 +127,9 @@ log_build_failure() {
 # Usage: is_already_built <rpms_dir> <pgmajorversion>
 # Must be called from inside the package's build directory (the one
 # containing the *.spec file).
+# On success (return 0), sets the global $already_built_version to the
+# package's "version-release" (e.g. "2.4.0-1PGDG.f44") so callers can
+# include it in their skip message.
 is_already_built() {
 	local rpms_dir="$1"
 	local pg_version="$2"
@@ -157,6 +160,11 @@ is_already_built() {
 			return 1
 		fi
 	done <<< "$expected_rpms"
+
+	already_built_version=$(rpmspec --define "pgmajorversion ${pg_version}" \
+		--define "pginstdir /usr/pgsql-${pg_version}" \
+		--define "pgpackageversion ${pg_version}" \
+		-q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
 
 	return 0
 }

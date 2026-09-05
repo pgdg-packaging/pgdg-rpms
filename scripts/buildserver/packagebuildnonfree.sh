@@ -76,7 +76,7 @@ then
 		then
 			cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
 			if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}/RPMS $packageBuildVersion; then
-				echo "${yellow}$packagename is already built against PostgreSQL $packageBuildVersion. Skipping (use --force to rebuild).${reset}"
+				echo "${yellow}$packagename is already built ($already_built_version) against PostgreSQL $packageBuildVersion. Skipping (use --force to rebuild).${reset}"
 				cd
 				continue
 			fi

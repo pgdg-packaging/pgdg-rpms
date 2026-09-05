@@ -53,7 +53,7 @@ then
 	then
 		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommontesting/RPMS $pgAlphaVersion; then
-			echo "${yellow}$packagename is already built for OS release $osrelease (testing repo). Skipping (use --force to rebuild).${reset}"
+			echo "${yellow}$packagename is already built ($already_built_version) for OS release $osrelease (testing repo). Skipping (use --force to rebuild).${reset}"
 			cd
 			exit 0
 		fi
@@ -68,7 +68,7 @@ then
 	else
 		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommon/RPMS $pgAlphaVersion; then
-			echo "${yellow}$packagename is already built for OS release $osrelease. Skipping (use --force to rebuild).${reset}"
+			echo "${yellow}$packagename is already built ($already_built_version) for OS release $osrelease. Skipping (use --force to rebuild).${reset}"
 			cd
 			exit 0
 		fi
