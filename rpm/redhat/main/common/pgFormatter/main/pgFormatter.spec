@@ -1,12 +1,12 @@
 Summary:	A PostgreSQL SQL syntax beautifier
 Name:		pgFormatter
-Version:	5.10
+Version:	5.11
 Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{name}/
 BuildRequires:	perl(ExtUtils::MakeMaker) make
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn} == 2023
 BuildRequires:	perl-macros
 %endif
 BuildArch:	noarch
@@ -40,6 +40,10 @@ find %{buildroot} -depth -type d -exec rmdir {} 2>/dev/null \;
 %{perl_vendorlib}/%{name}/*.pm
 
 %changelog
+* Sat Sep 5 2026 - Devrim Gündüz <devrim@gunduz.org> 5.11-1PGDG
+- Update to 5.11 per changes described at:
+  https://github.com/darold/pgFormatter/releases/tag/v5.11
+
 * Tue May 12 2026 - Devrim Gündüz <devrim@gunduz.org> 5.10-1PGDG
 - Update to 5.10 per changes described at:
   https://github.com/darold/pgFormatter/releases/tag/v5.10
