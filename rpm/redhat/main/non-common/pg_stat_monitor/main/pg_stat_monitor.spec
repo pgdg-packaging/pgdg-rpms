@@ -15,8 +15,8 @@
 
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.3.2
-Release:	3PGDG%{?dist}
+Version:	2.4.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -97,10 +97,14 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %if %llvm
 %files llvmjit
  %{pginstdir}/lib/bitcode/%{sname}*.bc
- %{pginstdir}/lib/bitcode/%{sname}/*.bc
+ %{pginstdir}/lib/bitcode/%{sname}/src/*.bc
 %endif
 
 %changelog
+* Sat Sep 5 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
+- Update to 2.4.0 per changes described at:
+  https://github.com/percona/pg_stat_monitor/releases/tag/2.4.0
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.2-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
