@@ -54,7 +54,11 @@ popd
 %install
 %{__rm} -rf %{buildroot}
 pushd build
+%if 0%{?suse_version}
+%{__make} install DESTDIR=%{buildroot}
+%else
 %cmake_install
+%endif
 popd
 
 %post	-p /sbin/ldconfig
@@ -72,6 +76,10 @@ popd
 - Fix SLES build failure: %%cmake resolves the source directory
   relative to the pushd'd build/ directory on SUSE, so use plain
   cmake .. there instead, matching h3.spec / h3-pg.spec
+- Fix SLES %%install failure: %%cmake_install also assumes it's
+  invoked from the source root, so combined with our manual
+  pushd build it looked for build/build. Use plain make install
+  on SUSE instead, same fix pattern as %%build.
 
 * Sat Sep 5 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.2-1PGDG
 - Update to 4.0.2 per changes described at:
