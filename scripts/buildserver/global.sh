@@ -120,6 +120,47 @@ log_build_failure() {
 	echo "${red}Build failed. Log written to: $log_file${reset}"
 }
 
+# Check whether every binary RPM a spec file would produce already exists
+# in the given RPMS directory, so that packagebuild.sh (and friends) can
+# skip a rebuild that would otherwise just re-stamp already-published RPMs
+# and break mirror timestamps. Use packagebuild.sh's --force to bypass.
+# Usage: is_already_built <rpms_dir> <pgmajorversion>
+# Must be called from inside the package's build directory (the one
+# containing the *.spec file).
+is_already_built() {
+	local rpms_dir="$1"
+	local pg_version="$2"
+	local specfile
+	specfile=$(ls *.spec 2>/dev/null | head -n 1)
+
+	if [ -z "$specfile" ] || [ ! -d "$rpms_dir" ]; then
+		return 1
+	fi
+
+	# Ask rpmspec for every binary RPM this spec would produce, named
+	# exactly the way rpmbuild would name them:
+	local expected_rpms
+	expected_rpms=$(rpmspec --define "pgmajorversion ${pg_version}" \
+		--define "pginstdir /usr/pgsql-${pg_version}" \
+		--define "pgpackageversion ${pg_version}" \
+		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null)
+
+	if [ -z "$expected_rpms" ]; then
+		return 1
+	fi
+
+	local rpm_file arch
+	while IFS= read -r rpm_file; do
+		arch="${rpm_file%.rpm}"
+		arch="${arch##*.}"
+		if [ ! -f "${rpms_dir}/${arch}/${rpm_file}" ]; then
+			return 1
+		fi
+	done <<< "$expected_rpms"
+
+	return 0
+}
+
 # Common function to sign packages using GPG agent
 sign_package() {
 	# Remove all files with .sig suffix. They are leftovers which appear

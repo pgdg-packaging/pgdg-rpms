@@ -219,7 +219,7 @@ extras repository and acts accordingly.
 ### Usage
 
 ```
-packagebuild.sh [--beta] [--testing] <git-package-name> <sign-package-name> [pg-version]
+packagebuild.sh [--beta] [--testing] [--force] <git-package-name> <sign-package-name> [pg-version]
 ```
 
 - `--beta` — build against the current beta PostgreSQL version
@@ -227,6 +227,9 @@ packagebuild.sh [--beta] [--testing] <git-package-name> <sign-package-name> [pg-
   `pgBetaVersion` is unset.
 - `--testing` — build against `pgTestBuilds` versions and target testing
   repository targets.
+- `--force` — rebuild even if the package's RPMs already exist in the
+  target `RPMS` directory for that PostgreSQL version/repo (see "Already-built
+  check" below).
 - `<git-package-name>` — the directory name in the git tree (e.g.
   `postgresql-16`, `pgpool-II-41`).
 - `<sign-package-name>` — the prefix used by `rpmsign` to locate built
@@ -257,6 +260,19 @@ The script checks three locations in order and stops at the first match:
 
 On any build failure, `log_build_failure` (from `global.sh`) writes a
 timestamped log to `~/bin/logs/` and the script exits immediately.
+
+### Already-built check
+
+Before running `make`, the script asks `rpmspec` (via `is_already_built` in
+`global.sh`) for every binary RPM the spec would produce for that
+PostgreSQL version/repo, and checks whether all of them already exist in
+the corresponding `RPMS` directory (e.g. `~/rpm18/RPMS`, `~/rpmcommon/RPMS`,
+`~/pgdg.extras/RPMS`, or their `testing`-suffixed counterparts). If they're
+all present, the build (and sign) is skipped with a warning instead of
+re-running `make` — re-running an unchanged build just re-stamps RPMs that
+are already published, which breaks timestamp-based mirror syncing. In the
+non-common loop this only skips that one PostgreSQL version, not the whole
+package. Pass `--force` to rebuild anyway.
 
 ---
 

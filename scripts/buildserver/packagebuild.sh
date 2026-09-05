@@ -12,6 +12,7 @@ source ~/bin/global.sh
 # Parse command line arguments
 beta_mode=0
 testing_mode=0
+force_mode=0
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		--beta)
@@ -20,6 +21,10 @@ while [[ $# -gt 0 ]]; do
 			;;
 		--testing)
 			testing_mode=1
+			shift
+			;;
+		--force)
+			force_mode=1
 			shift
 			;;
 		*)
@@ -33,7 +38,7 @@ done
 	then
 		echo
 		echo "${red}ERROR:${reset} This script must be run with at least two parameters:"
-		echo "       [--beta] [--testing] package name, package version"
+		echo "       [--beta] [--testing] [--force] package name, package version"
 		echo "       and optional: The actual package name to sign, and also the PostgreSQL version to build against"
 		echo
 	exit 1
@@ -66,9 +71,14 @@ then
 
 	if [ -x ~/git/pgrpms/rpm/redhat/$pgBetaVersion/$packagename/$git_os ]
 	then
+		cd ~/git/pgrpms/rpm/redhat/$pgBetaVersion/$packagename/$git_os
+		if [ $force_mode -eq 0 ] && is_already_built ~/rpm${pgBetaVersion}testing/RPMS $pgBetaVersion; then
+			echo "${yellow}$packagename is already built for PostgreSQL $pgBetaVersion beta. Skipping (use --force to rebuild).${reset}"
+			cd
+			exit 0
+		fi
 		echo "${green}Ok, building $packagename on $git_os for PostgreSQL $pgBetaVersion beta:${reset}"
 		sleep 1
-		cd ~/git/pgrpms/rpm/redhat/$pgBetaVersion/$packagename/$git_os
 		if ! time make "build${pgBetaVersion}testing"; then
 			packageVersion=`rpmspec --define "pgmajorversion ${pgBetaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
@@ -107,9 +117,14 @@ then
 
 	if [ $testing_mode -eq 1 ]
 	then
+		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
+		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommontesting/RPMS $pgAlphaVersion; then
+			echo "${yellow}$packagename is already built for the common testing repo. Skipping (use --force to rebuild).${reset}"
+			cd
+			exit 0
+		fi
 		echo "${green}Ok, this is a common package, and I am building $packagename for $git_os for common testing repo.${reset}"
 		sleep 1
-		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if ! time make commonbuildtesting; then
 			packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
@@ -117,9 +132,14 @@ then
 			exit 1
 		fi
 	else
+		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
+		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommon/RPMS $pgAlphaVersion; then
+			echo "${yellow}$packagename is already built for the common repo. Skipping (use --force to rebuild).${reset}"
+			cd
+			exit 0
+		fi
 		echo "${green}Ok, this is a common package, and I am building $packagename for $git_os for common repo.${reset}"
 		sleep 1
-		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if ! time make commonbuild; then
 			packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
@@ -175,11 +195,16 @@ then
 	do
 		if [ -x ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os ]
 		then
+			cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
 			if [ $testing_mode -eq 1 ]
 			then
+				if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}testing/RPMS $packageBuildVersion; then
+					echo "${yellow}$packagename is already built against PostgreSQL $packageBuildVersion testing. Skipping (use --force to rebuild).${reset}"
+					cd
+					continue
+				fi
 				echo "${green}Ok, building $packagename on $git_os against PostgreSQL $packageBuildVersion testing${reset}"
 				sleep 1
-				cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
 				if ! time make build${packageBuildVersion}testing; then
 					packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 					cd
@@ -187,9 +212,13 @@ then
 					exit 1
 				fi
 			else
+				if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}/RPMS $packageBuildVersion; then
+					echo "${yellow}$packagename is already built against PostgreSQL $packageBuildVersion. Skipping (use --force to rebuild).${reset}"
+					cd
+					continue
+				fi
 				echo "${green}Ok, building $packagename on $git_os against PostgreSQL $packageBuildVersion${reset}"
 				sleep 1
-				cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
 				echo "time make build${packageBuildVersion}"
 				if ! time make build${packageBuildVersion}; then
 					packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
@@ -221,9 +250,14 @@ then
 	then
 		if [ $testing_mode -eq 1 ]
 		then
+			cd ~/git/pgrpms/rpm/redhat/main/extras/$packagename/$git_os
+			if [ $force_mode -eq 0 ] && is_already_built ~/pgdg.extrastesting/RPMS $pgAlphaVersion; then
+				echo "${yellow}$packagename is already built for the extras testing repo. Skipping (use --force to rebuild).${reset}"
+				cd
+				exit 0
+			fi
 			echo "${green}Ok, building $packagename on $git_os testing repo:${reset}"
 			sleep 1
-			cd ~/git/pgrpms/rpm/redhat/main/extras/$packagename/$git_os
 			if ! time make extrasbuildtesting; then
 				packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 				cd
@@ -231,9 +265,14 @@ then
 				exit 1
 			fi
 		else
+			cd ~/git/pgrpms/rpm/redhat/main/extras/$packagename/$git_os
+			if [ $force_mode -eq 0 ] && is_already_built ~/pgdg.extras/RPMS $pgAlphaVersion; then
+				echo "${yellow}$packagename is already built for the extras repo. Skipping (use --force to rebuild).${reset}"
+				cd
+				exit 0
+			fi
 			echo "${green}Ok, building $packagename on $git_os:${reset}"
 			sleep 1
-			cd ~/git/pgrpms/rpm/redhat/main/extras/$packagename/$git_os
 			if ! time make extrasbuild; then
 				packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 				cd
