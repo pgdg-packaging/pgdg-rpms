@@ -287,11 +287,15 @@ Builds and signs the `pgdg-yum` repo RPM — the package that installs
 ### Usage
 
 ```
-reporpmbuild.sh [--testing]
+reporpmbuild.sh [--testing] [--force]
 ```
 
 - `--testing` — runs `make repobuild<osrelease>testing`
   and signs against `rpmcommontesting` instead of the production target.
+- `--force` — rebuild even if `pgdg-yum`'s RPM already exists in the
+  target `RPMS` directory (`~/rpmcommon/RPMS` or `~/rpmcommontesting/RPMS`).
+  Without it, the same `is_already_built` check `packagebuild.sh` uses
+  skips the build (and sign) with a warning when it's already there.
 
 With no arguments it runs `make repobuild<osrelease>` and signs the
 result against `rpmcommon`, using `sign_package` from `global.sh`. On
@@ -312,6 +316,10 @@ deliberately, to prevent accidentally building proprietary packages on
 shared community build instances. It does not support `--beta` or
 `--testing` flags and has no extras/common handling. Build failures are
 logged via the same shared `log_build_failure` function in `global.sh`.
+
+Supports `--force` the same way `packagebuild.sh` does: by default each
+PostgreSQL version is skipped (with a warning) if its RPMs already exist
+in `~/rpm<version>/RPMS`, via the shared `is_already_built` check.
 
 ---
 

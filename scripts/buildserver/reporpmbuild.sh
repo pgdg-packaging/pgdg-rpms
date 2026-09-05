@@ -15,10 +15,15 @@ source ~/bin/global.sh
 
 # Parse command line arguments
 testing_mode=0
+force_mode=0
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		--testing)
 			testing_mode=1
+			shift
+			;;
+		--force)
+			force_mode=1
 			shift
 			;;
 		*)
@@ -46,9 +51,14 @@ if [ -x ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os ]
 then
 	if [ $testing_mode -eq 1 ]
 	then
+		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
+		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommontesting/RPMS $pgAlphaVersion; then
+			echo "${yellow}$packagename is already built for OS release $osrelease (testing repo). Skipping (use --force to rebuild).${reset}"
+			cd
+			exit 0
+		fi
 		echo "${green}Ok, building $packagename on $git_os for OS release $osrelease (testing repo):${reset}"
 		sleep 1
-		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if ! time make repobuild${osrelease}testing; then
 			packageVersion=`rpmspec -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
@@ -56,9 +66,14 @@ then
 			exit 1
 		fi
 	else
+		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
+		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommon/RPMS $pgAlphaVersion; then
+			echo "${yellow}$packagename is already built for OS release $osrelease. Skipping (use --force to rebuild).${reset}"
+			cd
+			exit 0
+		fi
 		echo "${green}Ok, building $packagename on $git_os for OS release $osrelease:${reset}"
 		sleep 1
-		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if ! time make repobuild${osrelease}; then
 			packageVersion=`rpmspec -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd

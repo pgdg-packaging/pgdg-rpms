@@ -9,12 +9,26 @@
 # Include common values:
 source ~/bin/global.sh
 
+# Parse command line arguments
+force_mode=0
+while [[ $# -gt 0 ]]; do
+	case $1 in
+		--force)
+			force_mode=1
+			shift
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
 # Throw an error if less than two arguments are supplied:
 if [ $# -le 1 ]
 then
 	echo
 	echo "${red}ERROR:${reset} This script must be run with at least two parameters:"
-	echo "       package name, package version"
+	echo "       [--force] package name, package version"
 	echo "       and optional: The actual package name to sign, and also the PostgreSQL version to build against"
 	echo
 	exit 1
@@ -60,9 +74,14 @@ then
 	do
 		if [ -x ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os ]
 		then
+			cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
+			if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}/RPMS $packageBuildVersion; then
+				echo "${yellow}$packagename is already built against PostgreSQL $packageBuildVersion. Skipping (use --force to rebuild).${reset}"
+				cd
+				continue
+			fi
 			echo "${green}Ok, building $packagename on $git_os against PostgreSQL $packageBuildVersion${reset}"
 			sleep 1
-			cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
 			echo "time make build${packageBuildVersion}"
 			if ! time make build${packageBuildVersion}; then
 				packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
