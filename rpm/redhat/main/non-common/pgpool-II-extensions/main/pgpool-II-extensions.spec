@@ -1,10 +1,9 @@
-%global debug_package %{nil}
 %global sname pgpool-II
 
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -97,6 +96,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Mon Sep 7 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-3PGDG
+- Re-enable debug* subpackages.
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
