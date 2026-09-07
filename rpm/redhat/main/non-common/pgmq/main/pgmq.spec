@@ -2,7 +2,7 @@
 
 Summary:	A lightweight message queue on PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.12.0
+Version:	1.13.0
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}/
@@ -34,6 +34,10 @@ popd
 %{pginstdir}/share/extension/pgmq--*.sql
 
 %changelog
+* Mon Sep 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.13.0-1PGDG
+- Update to 1.13.0 per changes described at:
+  https://github.com/pgmq/pgmq/releases/tag/v1.13.0
+
 * Wed Jul 15 2026 Devrim Gündüz <devrim@gunduz.org> - 1.12.0-1PGDG
 - Update to 1.12.0 per changes described at:
   https://github.com/pgmq/pgmq/releases/tag/v1.12.0
