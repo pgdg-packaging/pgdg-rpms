@@ -1,17 +1,18 @@
-%global debug_package %{nil}
 %global sname pgbouncer_fdw
 
 Summary:	pgbouncer Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/CrunchyData/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/CrunchyData/%{sname}
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	make postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 Requires:	pgbouncer >= 1.17
+
+BuildArch:	noarch
 
 %description
 pgbouncer_fdw provides a direct SQL interface to the pgbouncer SHOW commands.
@@ -40,6 +41,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Wed Sep 9 2026 Devrim Gunduz <devrim@gunduz.org> 1.4.0-2PGDG
+- Mark this package as noarch as this is an SQL-only extension.
+
 * Wed Apr 30 2025 Devrim Gündüz <devrim@gunduz.org> 1.4.0-1PGDG
 - Update to 1.4.0 per changes described at:
   https://github.com/CrunchyData/pgbouncer_fdw/releases/tag/v1.4.0
