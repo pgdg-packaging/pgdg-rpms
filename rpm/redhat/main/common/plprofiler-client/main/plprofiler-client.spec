@@ -1,4 +1,3 @@
-%global debug_package %{nil}
 %global sname	plprofiler
 
 %global plprofilermajver 4
@@ -12,12 +11,13 @@
 
 Name:		%{sname}-client
 Version:	%{ppmajorver}.5
-Release:	6PGDG%{dist}
+Release:	7PGDG%{dist}
 Summary:	Command Line Tool for the PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
 Source0:	https://github.com/bigsql/%{sname}/archive/refs/tags/%{git_tag}.tar.gz
 
+BuildArch:	noarch
 AutoReqProv:	no
 
 %if 0%{?suse_version} >= 1500
@@ -65,11 +65,14 @@ cd ..
 %{python3_sitelib}/%{sname}/lib/*
 
 %changelog
+* Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-7PGDG
+- Mark this package as noarch.
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-6PGDG
 - Add back python3-devel as a BuildRequires on the non-SLES branch,
   needed to pull python3-rpm-generators into the buildroot for this
   pyproject build (the .dist-info directory itself was already
-  correctly packaged via an explicit %dir line, so issue 226's glob
+  correctly packaged via an explicit %%dir line, so issue 226's glob
   bug doesn't apply here). Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 
