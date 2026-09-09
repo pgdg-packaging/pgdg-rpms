@@ -15,8 +15,8 @@
 
 Summary:	Run periodic jobs in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.6.7
-Release:	8PGDG%{dist}
+Version:	1.6.8
+Release:	1PGDG%{dist}
 License:	PostgreSQL
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}
@@ -93,6 +93,10 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.8-1PGDG
+- Update to 1.6.8, per changes described at:
+  https://github.com/citusdata/pg_cron/releases/tag/v1.6.8
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6.7-8PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
