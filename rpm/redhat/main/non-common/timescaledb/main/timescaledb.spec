@@ -2,8 +2,8 @@
 
 Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.29.2
-Release:	2PGDG%{?dist}
+Version:	2.30.0
+Release:	1PGDG%{?dist}
 License:	Apache
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/timescale/%{sname}
@@ -55,6 +55,10 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.30.0-1PGDG
+- Update to 2.30.0, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.30.0
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2.29.2-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
