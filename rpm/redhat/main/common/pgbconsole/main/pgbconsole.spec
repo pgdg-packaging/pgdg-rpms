@@ -1,17 +1,15 @@
-%if 0%{?fedora} || 0%{?rhel}
-%global debug_package %{nil}
-%endif
 %global sname	pgbconsole
 
 Summary:	top-like console for Pgbouncer - PostgreSQL connection pooler
 Name:		pgbconsole
 Version:	0.1.1
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/lesovsky/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/lesovsky/%{sname}
 BuildRequires:	postgresql%{pgmajorversion} ncurses-devel
 BuildRequires:	libpq5-devel >= 10.0 pgdg-srpm-macros
+BuildRequires:	make gcc
 Requires:	libpq5 >= 10.0
 
 %description
@@ -29,7 +27,7 @@ pooler. Features:
 %setup -q -n %{sname}-%{version}
 
 %build
-USE_PGXS=1 %{__make} %{?_smp_mflags}
+USE_PGXS=1 %{__make} %{?_smp_mflags} CFLAGS="%{optflags} -std=gnu99 -Wall -pedantic"
 
 %install
 %{__rm} -rf %{buildroot}
@@ -48,6 +46,9 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{_bindir}/%{sname}
 
 %changelog
+* Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> 0.1.1-6PGDG
+- Make sure that debug* packages are always produced.
+
 * Mon Feb 19 2024 Devrim Gündüz <devrim@gunduz.org> 0.1.1-5PGDG
 - Enable debug package on SLES 15.
 
