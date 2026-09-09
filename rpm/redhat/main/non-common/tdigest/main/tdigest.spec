@@ -15,8 +15,8 @@
 
 Summary:	t-digest implementation for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.4
-Release:	6PGDG%{?dist}
+Version:	1.4.5
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/tvondra/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/tvondra/%{sname}
@@ -85,6 +85,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.5-1PGDG
+- Update to 1.4.5 per changes described at:
+  https://github.com/tvondra/tdigest/releases/tag/v1.4.5
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.4-6PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
