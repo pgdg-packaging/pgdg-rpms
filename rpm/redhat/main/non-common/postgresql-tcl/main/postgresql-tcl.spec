@@ -19,7 +19,7 @@ Source0:	https://github.com/flightaware/Pgtcl/archive/v%{version}.tar.gz
 
 Requires:	tcl(abi) >= 8.5
 
-BuildRequires:	postgresql%{pgmajorversion}-devel tcl-devel
+BuildRequires:	gcc postgresql%{pgmajorversion}-devel tcl-devel
 BuildRequires:	autoconf
 
 %{!?tcl_version: %global tcl_version %(echo 'puts $tcl_version' | tclsh)}
