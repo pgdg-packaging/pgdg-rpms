@@ -1,4 +1,3 @@
-%global debug_package %{nil}
 %global _vpath_builddir .
 %global sname	dbt2
 
@@ -18,7 +17,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.62.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -149,6 +148,9 @@ popd
 %endif
 
 %changelog
+* Wed Sep 9 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-4PGDG
+- Re-enable debug* packages.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
