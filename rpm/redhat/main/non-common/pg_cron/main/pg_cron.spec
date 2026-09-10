@@ -16,7 +16,7 @@
 Summary:	Run periodic jobs in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.8
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	PostgreSQL
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}
@@ -93,6 +93,9 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.8-2PGDG
+- Rebuild on AL 2023 because of a signature issue.
+
 * Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.8-1PGDG
 - Update to 1.6.8, per changes described at:
   https://github.com/citusdata/pg_cron/releases/tag/v1.6.8
