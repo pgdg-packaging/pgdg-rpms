@@ -15,12 +15,12 @@
 
 Summary:	Extra Window Functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0
-Release:	10PGDG%{dist}
+Version:	2.0
+Release:	1PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.tar.gz
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -81,6 +81,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-1PGDG
+- Update to 2.0 per changes described at:
+  https://github.com/xocolatl/extra_window_functions/releases/tag/v2.0
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-10PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
