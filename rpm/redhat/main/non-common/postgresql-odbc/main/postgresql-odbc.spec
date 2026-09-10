@@ -1,11 +1,11 @@
 %global pgodbcmajver 18
 %global pgodbcmidver 00
-%global pgodbcminver 0002
+%global pgodbcminver 0003
 
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -96,6 +96,10 @@ popd
 %license license.txt
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0003-1PGDG
+- Update to 18.00.0003 per changes described at:
+  https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-18_00_0003
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0002-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
