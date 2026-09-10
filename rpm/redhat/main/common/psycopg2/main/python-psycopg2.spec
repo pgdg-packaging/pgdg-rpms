@@ -3,13 +3,20 @@
 
 %global ppg2majver 2
 %if 0%{?rhel} == 8
-# DO NOT BUMP UP THESE VALUES FOR RHEL 8 #
+# DO NOT BUMP UP THESE VALUES FOR RHEL 8
 %global ppg2midver 9
 %global ppg2minver 6
-%else
+%endif
+%if 0%{?rhel} == 9 || 0%{?amzn} == 2023 || 0%{?suse_version} <= 1599
+# DO NOT BUMP UP THESE VALUES FOR RHEL 9, AL 2023 and SLES 15.
+%global ppg2midver 9
+%global ppg2minver 12
+%endif
+%if 0%{?rhel} >= 10 || 0%{?fedora} >= 43 || 0%{?suse_version} >= 1600
 %global ppg2midver 9
 %global ppg2minver 13
 %endif
+
 %{!?with_docs:%global with_docs 0}
 
 %global __ospython %{_bindir}/python3
@@ -24,7 +31,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	%{ppg2majver}.%{ppg2midver}.%{ppg2minver}
-Release:	43PGDG%{?dist}
+Release:	42PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -120,6 +127,8 @@ done
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.13-42PGDG
 - Update to 2.9.13 per changes descrihed at:
   https://github.com/psycopg/psycopg2/releases/tag/2.9.13
+- Lock versions for SLES 15 and RHEL 9 as well as 2.9.13 now requires
+  Python 3.10+
 
 * Wed Sep 2 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.12-43PGDG
 - Rebuild, per https://github.com/pgdg-packaging/pgdg-rpms/issues/233
