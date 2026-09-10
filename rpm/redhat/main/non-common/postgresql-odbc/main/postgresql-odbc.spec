@@ -12,7 +12,7 @@ URL:		https://odbc.postgresql.org/
 Source0:	https://github.com/postgresql-interfaces/psqlodbc/archive/refs/tags/REL-%{pgodbcmajver}_%{pgodbcmidver}_%{pgodbcminver}.tar.gz
 Source1:	acinclude.m4
 
-BuildRequires:	autoconf krb5-devel pam-devel automake
+BuildRequires:	autoconf krb5-devel pam-devel automake libtool
 BuildRequires:	pam-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	unixODBC-devel
 
