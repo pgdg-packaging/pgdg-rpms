@@ -14,8 +14,8 @@ ExcludeArch:	ppc64le
 %endif
 
 Name:		consul
-Version:	2.0.3
-Release:	3PGDG%{?dist}
+Version:	2.0.4
+Release:	1PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
 License:	MPLv2.0
@@ -97,6 +97,10 @@ any number of regions without complex configuration.
 %doc
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.4-1PGDG
+- Update to 2.0.4 per changes described at:
+  https://github.com/hashicorp/consul/releases/tag/v2.0.4
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.3-3PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop
