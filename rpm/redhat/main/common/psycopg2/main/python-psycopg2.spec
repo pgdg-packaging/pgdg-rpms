@@ -8,7 +8,7 @@
 %global ppg2minver 6
 %else
 %global ppg2midver 9
-%global ppg2minver 12
+%global ppg2minver 13
 %endif
 %{!?with_docs:%global with_docs 0}
 
@@ -117,6 +117,10 @@ done
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.13-42PGDG
+- Update to 2.9.13 per changes descrihed at:
+  https://github.com/psycopg/psycopg2/releases/tag/2.9.13
+
 * Wed Sep 2 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.12-43PGDG
 - Rebuild, per https://github.com/pgdg-packaging/pgdg-rpms/issues/233
 
