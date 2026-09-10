@@ -11,13 +11,13 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	krb5-devel meson
+BuildRequires:	gcc krb5-devel meson
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
@@ -68,6 +68,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.8-2PGDG
+- Add missing BR
+
 * Wed Sep 2 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.8-1PGDG
 - Update to 4.16.8 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_16_8
