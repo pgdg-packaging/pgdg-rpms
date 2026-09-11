@@ -3,10 +3,11 @@
 Summary:	Activate/deactivate/verify checksums in offline Postgres clusters
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/credativ/%{sname}
 Source0:	https://github.com/credativ/%{sname}/archive/%{version}.tar.gz
+BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -46,6 +47,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %attr (755,root,root) %{pginstdir}/bin/%{sname}_ext
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-2PGDG
+- Add missing BR
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-1PGDGG
 - Update to 1.4 per changes described at:
   https://github.com/credativ/pg_checksums/releases/tag/1.4

@@ -11,7 +11,7 @@
 
 Name:		%{sname}-client
 Version:	%{ppmajorver}.5
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 Summary:	Command Line Tool for the PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -28,7 +28,7 @@ BuildRequires:	pyproject-rpm-macros
 # on RHEL/Fedora; pyproject-rpm-macros alone does not. Without it,
 # neither python(abi) nor python3dist(...) get generated. Per
 # https://github.com/pgdg-packaging/pgdg-rpms/issues/228
-BuildRequires:	python3-devel
+BuildRequires:	python3-devel python3-pip python3-setuptools
 %endif
 
 BuildRequires:	python3-six >= 1.4
@@ -65,6 +65,9 @@ cd ..
 %{python3_sitelib}/%{sname}/lib/*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-8PGDG
+- Add missing BR
+
 * Wed Sep 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-7PGDG
 - Mark this package as noarch.
 

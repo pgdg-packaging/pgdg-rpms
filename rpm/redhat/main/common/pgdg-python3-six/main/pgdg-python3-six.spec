@@ -22,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-six
 Version:	1.17.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Python 2 and 3 compatibility utilities
 
 License:	MIT
@@ -32,6 +32,8 @@ Source0:	https://files.pythonhosted.org/packages/source/s/six/six-%{version}.tar
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -61,6 +63,9 @@ of writing Python code that is compatible on both Python versions.}
 %pycached %{python3_sitelib}/six.py
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-4PGDG
+- Add missing BR
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-3PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

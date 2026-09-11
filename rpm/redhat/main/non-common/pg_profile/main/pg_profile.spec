@@ -3,10 +3,11 @@
 Summary:	Tool to find out most resource intensive activities in your PostgreSQL databases
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.15
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/zubkov-andrei/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/zubkov-andrei/%{sname}
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-contrib postgresql%{pgmajorversion}-server
 Recommends:	pg_stat_kcache_%{pgmajorversion}
@@ -40,6 +41,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.15-2PGDG
+- Add missing BR
+
 * Thu Jul 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.15-1PGDG
 - Update to 4.15 per changes described at:
   https://github.com/zubkov-andrei/pg_profile/releases/tag/4.15

@@ -16,11 +16,12 @@
 Summary:	Track per-plan call counts, execution times and EXPLAIN texts in Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pganalyze/%{sname}
 Source0:	https://github.com/pganalyze/%{sname}/archive/refs/tags/v%{version}.tar.gz
 
+BuildRequires:	openssl-devel krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -95,6 +96,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-4PGDG
+- Add missing BR
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

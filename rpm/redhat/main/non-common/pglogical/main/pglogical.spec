@@ -20,10 +20,11 @@
 Summary:	Logical Replication extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pglogicalmajver}.%{pglogicalmidver}.%{pglogicalminver}
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
+BuildRequires:	numactl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -125,6 +126,9 @@ PATH=%{pginstdir}/bin:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.8-5PGDG
+- Add missing BR
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.8-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

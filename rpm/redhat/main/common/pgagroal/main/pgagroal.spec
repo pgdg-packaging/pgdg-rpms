@@ -1,12 +1,14 @@
 Name:		pgagroal
 Version:	2.1.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 Summary:	High-performance connection pool for PostgreSQL
 License:	BSD
 URL:		https://github.com/agroal/%{name}
 Source0:	https://github.com/agroal/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:	gcc cmake make python3-docutils
+BuildRequires:	bzip2-devel liburing liburing-devel libzstd-devel lz4-devel
+BuildRequires:	zlib-devel
 BuildRequires:	libev libev-devel
 BuildRequires:	systemd systemd-devel libatomic
 Requires:	libev systemd
@@ -136,6 +138,9 @@ fi
 %{_unitdir}/%{name}.socket
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-4PGDG
+- Add missing BR
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-3PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

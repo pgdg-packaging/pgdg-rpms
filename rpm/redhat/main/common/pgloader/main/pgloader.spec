@@ -7,11 +7,12 @@
 Summary:	Fast data loader for PostgreSQL
 Name:		pgloader
 Version:	3.6.10
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://pgloader.io
 Source0:	https://github.com/dimitri/%{name}/archive/refs/tags/v%{version}.tar.gz
 
+BuildRequires:	make
 BuildRequires:	sbcl >= 2.2.9
 BuildRequires:	freetds-devel
 BuildRequires:	openssl-devel
@@ -55,6 +56,9 @@ export DYNSIZE="DYNSIZE=1024"
 %{_bindir}/%{name}
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.10-2PGDG
+- Add missing BR
+
 * Mon Dec 4 2023 Devrim Gündüz <devrim@gunduz.org> - 3.6.10-1PGDG
 - Update to 3.6.10
 - Add PGDG branding

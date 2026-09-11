@@ -4,10 +4,11 @@
 Summary:	DDL eXtractor functions for PostgreSQL (ddlx)
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.30
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/lacanoid/%{pname}/archive/%{version}.tar.gz
 URL:		https://github.com/lacanoid/%{pname}
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
@@ -38,6 +39,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.30-3PGDG
+- Add missing BR
+
 * Sun Oct 5 2025 Devrim Gunduz <devrim@gunduz.org> - 0.30-2PGDG
 - Remove redundant BR
 

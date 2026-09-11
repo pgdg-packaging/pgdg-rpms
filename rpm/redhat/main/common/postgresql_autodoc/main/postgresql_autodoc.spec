@@ -1,6 +1,6 @@
 Name:		postgresql_autodoc
 Version:	1.41.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PostgreSQL AutoDoc Utility
 License:	BSD
 URL:		https://github.com/devrimgunduz/%{name}/
@@ -8,6 +8,7 @@ Source0:	https://github.com/devrimgunduz/%{name}/archive/%{version}.tar.gz
 Patch0:		%{name}-makefile.patch
 BuildArch:	noarch
 
+BuildRequires:	make
 BuildRequires:	perl(DBD::Pg)
 BuildRequires:	perl(HTML::Template), perl(Term::ReadKey)
 
@@ -39,6 +40,9 @@ DESTDIR=%{buildroot} PREFIX=%{_usr} make install %{?_smp_mflags}
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.41.1-3PGDG
+- Add missing BR
+
 * Wed Feb 21 2024 Devrim Gunduz <devrim@gunduz.org> - 1.41.1-2PGDG
 - Add PGDG branding
 

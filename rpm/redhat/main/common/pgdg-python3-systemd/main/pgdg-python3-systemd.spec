@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-systemd
 Version:	235
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Python module wrapping libsystemd functionality
 
 License:	LGPL-2.1-or-later
@@ -42,6 +42,8 @@ Patch0:		https://github.com/systemd/%{sname}/pull/140.patch
 
 BuildRequires:	make gcc systemd-devel
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -76,6 +78,9 @@ sed -i 's/py\.test/pytest/' Makefile
 %{python3_sitearch}/systemd_python-%{version}.dist-info
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 235-44PGDG
+- Add missing BR
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 235-43PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

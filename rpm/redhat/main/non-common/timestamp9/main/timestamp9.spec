@@ -3,10 +3,11 @@
 Summary:	An efficient nanosecond precision timestamp type for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/optiver/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 URL:		https://github.com/optiver/%{sname}
+BuildRequires:	gcc gcc-c++
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	cmake >= 3.17
 Requires:	postgresql%{pgmajorversion}-server
@@ -39,6 +40,9 @@ popd
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-5PGDG
+- Add missing BR
+
 * Mon Apr 13 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-4PGDG
 - Fix builds against CMake 4
 

@@ -1,7 +1,7 @@
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
 Version:	2.8.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	Apache License 2.0
 Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		pghoard-pyproject.toml.patch
@@ -9,7 +9,8 @@ URL:		https://github.com/Aiven-Open/%{name}
 BuildArch:	noarch
 Requires:	python3-snappy python3-cryptography python3-boto
 Requires:	python3-rohmu
-BuildRequires:	python3-devel python3-build python3-hatchling
+BuildRequires:	python3-devel python3-build python3-hatchling python3-pip
+BuildRequires:	systemd-rpm-macros
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -59,6 +60,9 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %license LICENSE
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-2PGDG
+- Add missing BR
+
 * Thu Jul 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-1PGDG
 - Update to 2.8.0 per changes described at:
   https://github.com/Aiven-Open/pghoard/releases/tag/2.8.0

@@ -29,7 +29,7 @@
 
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	6PGDG%{dist}
+Release:	7PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
@@ -44,6 +44,8 @@ BuildRequires:	pyproject-rpm-macros
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
 %endif
 Requires:	nagios-plugins
 Provides:	%{sname} = %{version}
@@ -70,6 +72,9 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-7PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-6PGDG
 - Add back python%{python3_pkgversion}-devel as a BuildRequires on the
   non-SLES branch, needed to pull python3-rpm-generators into the

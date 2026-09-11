@@ -1,12 +1,13 @@
 Name:		sqlsmith
 Version:	1.5
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	Random SQL generator
 License:	GPLv3
 URL:		https://github.com/anse1/%{name}
 Source0:	https://github.com/anse1/%{name}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	autoconf gcc-c++ libpqxx-devel libpq5-devel sqlite-devel
+BuildRequires:	autoconf autoconf-archive automake gcc-c++ libpq5-devel
+BuildRequires:	libpqxx-devel sqlite-devel
 Requires:	libpqxx boost-regex sqlite-libs
 
 %if 0%{?amzn} == 2023
@@ -45,6 +46,9 @@ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=%{pginstdir}/lib/pkgconfig ./conf
 %license COPYING
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5-1PGDG
 - Update to 1.5 per changes described at:
   https://github.com/anse1/sqlsmith/releases/tag/v1.5

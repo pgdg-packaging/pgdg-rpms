@@ -3,10 +3,11 @@
 Summary:	PostgreSQL extension to keep track of settings modification
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/rjuju/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/rjuju/%{sname}
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -49,6 +50,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.2-4PGDG
+- Add missing BR
+
 * Fri Jan 17 2025 Devrim Gündüz <devrim@gunduz.org> - 2.1.2-3PGDG
 - Mark package as noarch.
 

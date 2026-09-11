@@ -21,7 +21,7 @@
 
 Name:		py-consul
 Version:	1.7.1
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -36,6 +36,8 @@ BuildRequires:	pyproject-rpm-macros
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
 %endif
 
 BuildArch:	noarch
@@ -76,6 +78,9 @@ Python client for Consul
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-46PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-45PGDG
 - Add back python%{python3_pkgversion}-devel as a BuildRequires on the
   non-SLES branch. The switch to pyproject builds in 1.7.1-42PGDG dropped

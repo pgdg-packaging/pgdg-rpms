@@ -28,7 +28,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.5
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -36,7 +36,9 @@ URL:		https://github.com/patroni/%{name}
 
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	systemd-rpm-macros
 
 Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-dateutil
 Requires:	python%{python3_pkgversion}-systemd
@@ -244,6 +246,9 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-4PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-3PGDG
 - Drop the dead Restart=on-failure line from the service file: it was
   immediately overridden by the later, intentional Restart=no, which

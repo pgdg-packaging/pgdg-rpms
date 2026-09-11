@@ -28,7 +28,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.31.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -38,7 +38,9 @@ Source1:	https://www.gnu.org/licenses/lgpl-3.0.txt
 Source2:	https://www.gnu.org/licenses/gpl-3.0.txt
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-flit-core
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-flit-core
+BuildRequires:	python%{python3_pkgversion}-pip
 
 Provides:	python3-%{modname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -73,6 +75,9 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.31.3-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.31.3-1PGDG
 - Update to 0.31.3 per changes described at:
   https://pypi.org/project/argh/0.31.3/

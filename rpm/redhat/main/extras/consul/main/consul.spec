@@ -15,7 +15,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul
 Version:	2.0.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
 License:	MPLv2.0
@@ -27,6 +27,8 @@ Source4:	%{name}.json
 Source5:	%{name}.logrotate
 Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
+
+BuildRequires:	systemd-rpm-macros
 
 Requires:	systemd
 
@@ -97,6 +99,9 @@ any number of regions without complex configuration.
 %doc
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.4-2PGDG
+- Add missing BR
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.4-1PGDG
 - Update to 2.0.4 per changes described at:
   https://github.com/hashicorp/consul/releases/tag/v2.0.4

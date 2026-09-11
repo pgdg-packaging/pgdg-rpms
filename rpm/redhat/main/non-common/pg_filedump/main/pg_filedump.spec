@@ -8,11 +8,12 @@
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pg_fdmajorver}.%{pg_fdminorver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
 Patch0:		%{sname}-makefile-rpm-gcc.patch
 License:	GPLv2+
+BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -51,6 +52,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-3PGDG
+- Add missing BR
+
 * Thu Jul 23 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-2PGDG
 - Add a patch to fix(?) intermittent build issues on Fedora.
 

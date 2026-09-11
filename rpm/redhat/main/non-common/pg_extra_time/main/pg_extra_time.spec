@@ -3,11 +3,12 @@
 Summary:	Extra date time functions and operators for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 URL:		https://github.com/bigsmoke/%{sname}
 Source0:	https://github.com/bigsmoke/%{sname}/archive/refs/tags/v%{version}.tar.gz
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
@@ -39,6 +40,9 @@ functions and operators.
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-2PGDG
+- Add missing BR
+
 * Thu Jun 11 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
 - Update to 2.1.0 per changes described at:
   https://github.com/bigsmoke/pg_extra_time/releases/tag/v2.1.0

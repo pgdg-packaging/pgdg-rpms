@@ -4,11 +4,13 @@
 Summary:	PostgreSQL log file re-player
 Name:		%{sname}
 Version:	1.5.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/laurenz/%{sname}/archive/%{vname}.tar.gz
 URL:		https://github.com/laurenz/%{sname}
 Requires:	postgresql-server >= 10.0
+BuildRequires:	gcc
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	libpq5-devel
 
 %description
@@ -48,6 +50,9 @@ affect you.
 %{_mandir}/man1/%{sname}*
 
 %changelog
+* Thu Sep 10 2026 - Devrim Gündüz <devrim@gunduz.org> 1.5.0-2PGDG
+- Add missing BR
+
 * Thu Nov 13 2025 - Devrim Gündüz <devrim@gunduz.org> 1.5.0-1PGDG
 - Update to 1.5.0
 

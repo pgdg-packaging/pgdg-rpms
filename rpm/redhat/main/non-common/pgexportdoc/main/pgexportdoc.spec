@@ -3,10 +3,11 @@
 Summary:	command line utility for exporting XML, JSON, BYTEA document from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
+BuildRequires:	clang gcc make numactl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
@@ -70,6 +71,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-7PGDG
+- Add missing BR
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-6PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

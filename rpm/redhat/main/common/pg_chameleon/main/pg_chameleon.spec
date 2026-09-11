@@ -34,13 +34,15 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 # python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
 # into the buildroot on RHEL/Fedora; pyproject builds alone do not.
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
@@ -94,6 +96,9 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-9PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-8PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator

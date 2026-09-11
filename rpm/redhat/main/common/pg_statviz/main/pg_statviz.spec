@@ -29,12 +29,15 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
 
-BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-wheel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 Requires:	python%{python3_pkgversion}-argh python%{python3_pkgversion}-kiwisolver
 Requires:	python%{python3_pkgversion}-matplotlib python%{python3_pkgversion}-numpy
@@ -95,6 +98,9 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-5PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-4PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator

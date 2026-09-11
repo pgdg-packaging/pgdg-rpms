@@ -4,7 +4,7 @@
 
 Name:		pgmodeler
 Version:	1.2.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL Database Modeler
 License:	GPLv3
 URL:		http://pgmodeler.io/
@@ -14,11 +14,14 @@ Source3:	%{name}-mime-dbm.xml
 
 Requires:	hicolor-icon-theme shared-mime-info libpq5
 BuildRequires:	desktop-file-utils gettext libxml2-devel libpq5-devel
+BuildRequires:	libXext-devel
 
 %if 0%{?suse_version} >= 1500
-BuildRequires:	libappstream-glib8 qt6-base-devel qt6-svg-devel qt6-macros appstream-glib
+BuildRequires:	appstream-glib libappstream-glib8 qt6-base-devel qt6-macros
+BuildRequires:	qt6-svg-devel
 %else
-BuildRequires:	qt6-qtbase-devel qt6-qtsvg-devel qt6-rpm-macros libappstream-glib
+BuildRequires:	libappstream-glib qt6-qtbase-devel qt6-qtsvg-devel
+BuildRequires:	qt6-rpm-macros
 %endif
 
 %description
@@ -92,6 +95,9 @@ appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/%{name}.a
 %{_datadir}/appdata/%{name}.appdata.xml
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 1.2.3-2PGDG
+- Add missing BR
+
 * Sat Feb 7 2026 Devrim Gündüz <devrim@gunduz.org> 1.2.3-1PGDG
 - Update to 1.2.3 per changes described at:
   https://github.com/pgmodeler/pgmodeler/releases/tag/v1.2.3

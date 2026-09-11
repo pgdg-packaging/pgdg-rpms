@@ -4,7 +4,7 @@
 Summary:	PostgreSQL performance monitoring and auditing tool
 Name:		pgcluu
 Version:	4.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -14,6 +14,9 @@ Source4:	%{name}-httpd.conf
 Patch0:		%{name}-systemd-rpm-paths.patch
 URL:		http://%{name}.darold.net/
 BuildArch:	noarch
+BuildRequires:	make perl-ExtUtils-MakeMaker perl-devel perl-interpreter
+BuildRequires:	perl-macros
+BuildRequires:	systemd-rpm-macros
 %if 0%{?rhel} && 0%{?rhel} == 7
 %else
 Recommends:	httpd sysstat
@@ -73,6 +76,9 @@ of the PostgreSQL cluster and the system utilization
 %{_unitdir}/%{name}.timer
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0-4PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0-3PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   pgcluu and pgcluu_collectd service files, and drop a redundant

@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	48PGDG%{?dist}
+Release:	49PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -43,6 +43,13 @@ Patch0:		pgdg-python3-dns-removehatchling.patch
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(dnspython) = %{version}-%{release}
@@ -78,6 +85,9 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-49PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-48PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator

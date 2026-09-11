@@ -23,7 +23,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.34.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	HTTP library, written in Python, for human beings
 
 License:	Apache-2.0
@@ -31,6 +31,8 @@ URL:		https://pypi.io/project/requests
 Source0:	https://github.com/requests/requests/archive/v%{version}/requests-v%{version}.tar.gz
 
 BuildRequires:	gcc python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -70,6 +72,9 @@ sed -i -e '/Programming Language :: Python :: 3.15/d' \
 %{python3_sitelib}/%{modname}/*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.34.2-2PGDG
+- Add missing BR
+
 * Thu Sep 3 2026 Devrim Gunduz <devrim@gunduz.org> - 2.34.2-1PGDG
 - Inıtial packaging for the PostgreSQL RPM repository to support Patroni
   on Amazon Linux 2023

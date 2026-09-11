@@ -21,7 +21,7 @@
 
 Name:		python3-%{sname}
 Version:	1.0
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 Summary:	View colored, incremental diff in a workspace or from stdin, with side by side and auto pager support
 
 License:	BSD
@@ -32,7 +32,9 @@ BuildArch:	noarch
 
 Requires:	less python3
 BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -65,6 +67,9 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %{python3_sitelib}/cdiff*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-46PGDG
+- Add missing BR
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-45PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

@@ -1,13 +1,15 @@
 Name:		pgexporter
 Version:	0.8.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Summary:	Prometheus exporter for PostgreSQL
 License:	BSD
 URL:		https://github.com/%{name}/%{name}
 Source0:	https://github.com/%{name}/%{name}/archive/%{version}.tar.gz
 
 BuildRequires:	bzip2-devel cmake gcc libev libev-devel liburing liburing-devel
-BuildRequires:	libyaml libyaml-devel libzstd make openssl-devel python3-docutils
+BuildRequires:	libyaml libyaml-devel libzstd libzstd-devel lz4-devel make
+BuildRequires:	openssl-devel python3-docutils
+BuildRequires:	zlib-devel
 BuildRequires:	systemd systemd-devel
 Requires:	libev liburing libyaml openssl systemd
 
@@ -84,6 +86,9 @@ cd %{buildroot}%{_libdir}/
 %{_libdir}/libpgexporter.so.%{version}
 
 %changelog
+* Thu Sep 10 2026 - Devrim Gündüz <devrim@gunduz.org> 0.8.0-3PGDG
+- Add missing BR
+
 * Thu Aug 27 2026 - Devrim Gündüz <devrim@gunduz.org> 0.8.0-2PGDG
 - Add missing BR
 

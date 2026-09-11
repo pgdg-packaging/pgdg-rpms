@@ -2,7 +2,7 @@
 
 Name:		PyGreSQL
 Version:	6.2.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	A Python client library for PostgreSQL
 
 URL:		http://www.PyGreSQL.org/
@@ -19,7 +19,9 @@ Provides:	python3-%{name} = %{version}-%{release}
 Provides:	python3-%{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python2-%{name}}
 
-BuildRequires:	postgresql%{pgmajorversion}-devel python3-devel python3-wheel
+BuildRequires:	gcc
+BuildRequires:	postgresql%{pgmajorversion}-devel python3-devel python3-pip
+BuildRequires:	python3-setuptools python3-wheel
 BuildRequires:	libpq5-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -58,6 +60,9 @@ find -type f -exec chmod 644 {} +
 %{python3_sitearch}/pgdb/*py*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 6.2.3-3PGDG
+- Add missing BR
+
 * Fri Aug 7 2026 Devrim Gündüz <devrim@gunduz.org> - 6.2.3-2PGDG
 - Add missing BR
 

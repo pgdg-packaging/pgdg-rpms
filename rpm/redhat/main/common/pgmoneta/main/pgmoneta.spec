@@ -1,6 +1,6 @@
 Name:		pgmoneta
 Version:	0.21.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
 URL:		https://github.com/%{name}/%{name}
@@ -12,6 +12,7 @@ Patch0:		%{name}-conf-rpm.patch
 
 BuildRequires:	gcc cmake make python3-docutils zlib-devel ncurses-devel
 BuildRequires:	libzstd-devel lz4-devel bzip2-devel liburing-devel
+BuildRequires:	libyaml-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
 BuildRequires:	libssh-devel libarchive-devel cjson-devel libatomic
 Requires:	libev openssl systemd zlib libzstd lz4 bzip2 libssh
@@ -128,6 +129,9 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-3PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-2PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop

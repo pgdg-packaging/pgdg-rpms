@@ -13,7 +13,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul-template
 Version:	0.43.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
 License:	MPLv2.0
@@ -24,6 +24,8 @@ Source2:	%{name}.service
 Source4:	%{name}.json
 Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
+
+BuildRequires:	systemd-rpm-macros
 
 Requires:	systemd
 
@@ -79,6 +81,9 @@ unless the -once flag is specified.
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 0.43.0-2PGDG
+- Add missing BR
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 0.43.0-1PGDG
 - Update to 0.43.0 per changes described at
   https://github.com/hashicorp/consul-template/releases/tag/v0.43.0

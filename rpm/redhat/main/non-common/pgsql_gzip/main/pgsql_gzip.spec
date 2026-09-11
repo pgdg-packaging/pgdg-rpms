@@ -17,7 +17,7 @@
 Summary:	PostgreSQL gzip/gunzip functions
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.1.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -26,6 +26,10 @@ BuildRequires:	postgresql%{pgmajorversion}-devel
 %if 0%{?fedora} == 40
 BuildRequires:	zlib-ng-compat-devel
 Requires:	zlib-ng-compat
+%endif
+%if 0%{?fedora} >= 41
+BuildRequires:	zlib-devel
+Requires:	zlib
 %endif
 %if 0%{?rhel} >= 8
 BuildRequires:	zlib-devel
@@ -102,6 +106,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.1-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.1-1PGDG
 - Update to 1.1.1 per changes described at:
   https://github.com/pramsey/pgsql-gzip/releases/tag/v1.1.1

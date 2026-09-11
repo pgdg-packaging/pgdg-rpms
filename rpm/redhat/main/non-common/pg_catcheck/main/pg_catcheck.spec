@@ -3,11 +3,12 @@
 Summary:	Tool for diagnosing PostgreSQL system catalog corruption
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	clang gcc make
+BuildRequires:	postgresql%{pgmajorversion}-devel numactl-devel
 Requires:	postgresql%{pgmajorversion}-server
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
@@ -82,6 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-6PGDG
+- Add missing BR
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-5PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

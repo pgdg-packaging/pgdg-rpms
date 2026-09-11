@@ -39,13 +39,13 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	14PGDG%{?dist}
+Release:	15PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
-BuildRequires:	python3-devel >= 3.5
+BuildRequires:	python3-devel >= 3.5 python3-setuptools
 %if 0%{?amzn} == 2023
 BuildRequires:	python-rpm-macros
 %endif
@@ -102,6 +102,9 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-15PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-14PGDG
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator

@@ -3,10 +3,11 @@
 Summary:	PostgreSQL extension to add compatibility to Oracle UTL_SMTP package.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/hexacluster/%{sname}/
 Source0:	https://github.com/hexacluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-plperl postgresql%{pgmajorversion}-server perl-Net-SNMP
 
@@ -39,6 +40,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=%{buildroot
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-3PGDG
+- Add missing BR
+
 * Thu Jan 22 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-2PGDG
 - Fix plperl dependency
 

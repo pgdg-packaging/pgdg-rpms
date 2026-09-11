@@ -16,11 +16,12 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.3
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
 
+BuildRequires:	numactl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	readline-devel zlib-devel
 # lz4 dependency
@@ -112,6 +113,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{bui
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-7PGDG
+- Add missing BR
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-6PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

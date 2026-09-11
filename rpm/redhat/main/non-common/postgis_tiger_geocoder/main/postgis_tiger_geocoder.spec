@@ -4,10 +4,11 @@ Summary:	Functions for geocoding, reverse geocoding, and standardizing address d
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2025.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 URL:		https://gitea.osgeo.org/postgis/%{sname}
 Source0:	https://gitea.osgeo.org/postgis/%{sname}/releases/download/%{version}/%{sname}-%{version}.tar.gz
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion} postgis3_%{pgmajorversion} >= 3.7.0
 BuildArch:	noarch
@@ -43,5 +44,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2025.2-2PGDG
+- Add missing BR
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2025.2-1PGDG
 - Initial RPM packaging for PostgreSQL RPM Repository

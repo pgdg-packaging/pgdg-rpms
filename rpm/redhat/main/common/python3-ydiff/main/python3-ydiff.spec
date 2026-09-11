@@ -26,7 +26,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	53PGDG%{?dist}
+Release:	54PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -41,6 +41,8 @@ BuildRequires:	pyproject-rpm-macros
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
 %endif
 
 BuildArch:	noarch
@@ -87,6 +89,9 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-54PGDG
+- Add missing BR
+
 * Thu Sep 3 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-53PGDG
 - Provide another package for AL 2023
 

@@ -3,12 +3,13 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
 Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
+BuildRequires:	clang gcc llvm
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
 BuildRequires:	libmemcached-devel
 %if 0%{?suse_version} >= 1500
@@ -96,6 +97,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-4PGDG
+- Add missing BR
+
 * Mon Sep 7 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-3PGDG
 - Re-enable debug* subpackages.
 

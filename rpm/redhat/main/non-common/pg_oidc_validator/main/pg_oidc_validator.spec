@@ -17,11 +17,12 @@
 Summary:	OAuth validator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	Apache 2.0
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 
+BuildRequires:	openssl-devel krb5-devel libcurl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if 0%{?suse_version} >= 1500
@@ -95,6 +96,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-4PGDG
+- Add missing BR
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

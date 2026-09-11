@@ -5,7 +5,7 @@
 
 Name:		powa-collector
 Version:	1.3.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -13,8 +13,14 @@ Source0:	https://github.com/powa-team/%{name}/archive/%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	%{sname}-tmpfiles.d
 
-BuildRequires:	python3-devel python3-wheel
+BuildRequires:	python3-devel python3-wheel python3-pip python3-setuptools
 BuildRequires:		systemd systemd-devel systemd-rpm-macros
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Requires:	python3-psycopg2
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
@@ -75,6 +81,9 @@ database (in the powa_servers table).
 %{python3_sitelib}/%{pname}-%{version}.dist-info/
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-4PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-3PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop

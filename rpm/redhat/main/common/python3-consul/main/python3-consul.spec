@@ -30,7 +30,7 @@
 
 Name:		python3-%{sname}
 Version:	1.1.0
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 Summary:	Python client for Consul
 
 License:	MIT
@@ -48,7 +48,9 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 
 %description
@@ -71,6 +73,9 @@ Python client for Consul (http://www.consul.io/)
 %{python3_sitelib}/python_%{sname}-%{version}.dist-info/
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-9PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-8PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), so RHEL/Fedora's pythondist.attr generator

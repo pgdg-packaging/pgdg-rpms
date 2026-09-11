@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.8.3
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -50,6 +50,8 @@ BuildRequires:	pyproject-rpm-macros
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-hatchling
+BuildRequires:	python%{python3_pkgversion}-pip
 %endif
 
 %description
@@ -76,6 +78,9 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-1PGDG
 - Update to 0.8.3 per changes described at:
   https://pypi.org/project/wcwidth/0.8.3/

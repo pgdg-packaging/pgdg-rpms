@@ -58,7 +58,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.7
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -66,7 +66,9 @@ Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
 
-BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
+BuildRequires:	autoconf automake libtool
+BuildRequires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
+BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
 BuildRequires:	pgdg-srpm-macros >= 1.0.54 gmp-devel pcre2-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
@@ -81,10 +83,12 @@ Requires:	gmp
 %endif
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
-BuildRequires:	libjson-c-devel proj%{projmajorversion}-devel >= %{projfullversion}
+BuildRequires:	libjson-c-devel
+BuildRequires:	proj%{projmajorversion}-devel >= %{projfullversion}
 %endif
 %else
-BuildRequires:	proj%{projmajorversion}-devel >= %{projfullversion} flex json-c-devel
+BuildRequires:	flex json-c-devel
+BuildRequires:	proj%{projmajorversion}-devel >= %{projfullversion}
 %endif
 BuildRequires:	libxml2-devel
 %if %{shp2pgsqlgui}
@@ -404,6 +408,9 @@ fi
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.7-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.5.7-1PGDG
 - Update to 3.5.7 per changes described at:
   https://gitea.osgeo.org/postgis/postgis/raw/tag/3.5.7/NEWS

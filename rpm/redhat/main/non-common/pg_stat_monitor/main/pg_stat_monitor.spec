@@ -16,11 +16,12 @@
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 
+BuildRequires:	openssl-devel krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -101,6 +102,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-2PGDG
+- Add missing BR
+
 * Sat Sep 5 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
 - Update to 2.4.0 per changes described at:
   https://github.com/percona/pg_stat_monitor/releases/tag/2.4.0

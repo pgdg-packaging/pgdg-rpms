@@ -6,13 +6,19 @@
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
 Version:	4.6.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/dbcli/%{name}
 Source0:	https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 
-BuildRequires:	python3-devel
+BuildRequires:	python3-devel python3-pip python3-setuptools
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 BuildRequires:	python3-pytest python3-sqlparse python3-cli-helpers
 BuildRequires:	python3-mock python3-pexpect
@@ -69,6 +75,9 @@ This is a build of the pgcli for the debug build of Python 3.
 %doc LICENSE.txt
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-3PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-2PGDG
 - Package the .dist-info directory itself instead of globbing only its
   contents (dist-info/*), matching correct RPM directory-packaging

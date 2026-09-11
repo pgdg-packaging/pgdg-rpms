@@ -3,10 +3,11 @@
 Summary:	PostgreSQL extension to partition tables following a foreign key
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	GPLv2
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/lemoineat/pg_fkpart
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
@@ -37,6 +38,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install install DESTDIR=%{buildroo
 %{pginstdir}/share/extension/%{sname}*.sql
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-7PGDG
+- Add missing BR
+
 * Thu Apr 25 2024  Devrim Gündüz <devrim@gunduz.org> - 1.7.0-6PGDG
 - Fix bogus changelog date
 

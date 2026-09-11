@@ -3,10 +3,11 @@
 Summary:	PostgreSQL table versioning extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.11.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/linz/postgresql-tableversion/archive/%{version}.tar.gz
 URL:		https://github.com/linz/postgresql-tableversion/
+BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel jq
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
@@ -42,6 +43,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/table_version.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.11.1-3PGDG
+- Add missing BR
+
 * Wed Jan 29 2025 Devrim Gündüz <devrim@gunduz.org> - 1.11.1-2PGDG
 - Mark shell script executable.
 - Remove redundant BR

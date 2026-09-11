@@ -4,7 +4,7 @@
 
 Name:		pgbouncer
 Version:	1.25.2
-Release:	46PGDG%{?dist}
+Release:	47PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -24,6 +24,7 @@ Patch1:		%{name}-al2023-no-pandoc.patch
 
 Requires:	python3 python3-psycopg2
 
+BuildRequires:	gcc
 BuildRequires:	libevent-devel >= 2.0
 Requires:	libevent >= 2.0
 
@@ -63,6 +64,7 @@ Requires:	openldap
 %endif
 
 BuildRequires:		systemd
+BuildRequires:		systemd-devel
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 Requires(post):		systemd
@@ -175,6 +177,9 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-47PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-46PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop

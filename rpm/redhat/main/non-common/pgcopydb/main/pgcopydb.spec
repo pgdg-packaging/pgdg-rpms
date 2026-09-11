@@ -4,11 +4,12 @@
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
 Version:	0.18
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel
+BuildRequires:	gcc make
+BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel numactl-devel
 BuildRequires:	krb5-devel bison flex sqlite-devel
 # zstd dependency
 %if 0%{?suse_version} >= 1500
@@ -74,6 +75,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgcopydb
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-3PGDG
+- Add missing BR
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 

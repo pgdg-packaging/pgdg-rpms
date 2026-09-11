@@ -39,13 +39,16 @@
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
 Source0:	https://github.com/gabfl/%{name}/archive/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-packaging
+BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
 %if 0%{?suse_version} >= 1500
@@ -89,6 +92,9 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-10PGDG
+- Add missing BR
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-9PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
   %pyproject_wheel/%pyproject_install actually build against python3.13

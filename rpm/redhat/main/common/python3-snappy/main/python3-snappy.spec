@@ -26,13 +26,14 @@
 
 Name:		python3-snappy
 Version:	0.7.3
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
 Source:		https://files.pythonhosted.org/packages/39/66/9185fbb6605ba92716d9f77fbb13c97eb671cd13c3ad56bd154016fbf08b/python_snappy-%{version}.tar.gz
 
-BuildRequires:	gcc-c++ pkgconfig snappy-devel
+BuildRequires:	gcc-c++ pkgconfig python3-packaging python3-pip
+BuildRequires:	python3-setuptools snappy-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -61,6 +62,9 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.3-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.3-1PGDG
 - Update to 0.7.3 per changes described at:
   https://pypi.org/project/python-snappy/0.7.3/

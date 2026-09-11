@@ -1,11 +1,12 @@
 Summary:	PostgreSQL Log Analyzer Script
 Name:		pgsi
 Version:	1.7.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	http://bucardo.org/downloads/%{name}-%{version}.tar.gz
 URL:		http://bucardo.org/pgsi
 Requires:	perl(Data::Dumper) perl(Getopt::Long) perl(IO::Handle) perl(Time::Local)
+BuildRequires:	make perl-Pod-Html
 BuildRequires:	perl-Test-Simple >= 0.80 perl-ExtUtils-MakeMaker
 BuildArch:	noarch
 
@@ -44,6 +45,9 @@ produce wiki-ready system impact reports.
 %{_docdir}/%{name}-%{version}/*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.1-3PGDG
+- Add missing BR
+
 * Mon Aug 21 2023 Devrim Gündüz <devrim@gunduz.org> - 1.7.1-2PGDG
 - Remove RHEL 6 bits
 - Add PGDG branding

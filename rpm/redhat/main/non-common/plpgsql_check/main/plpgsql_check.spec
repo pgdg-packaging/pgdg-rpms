@@ -5,12 +5,13 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.10.7
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
 Source0:	https://github.com/okbob/%{sname}/archive/v%{version}.tar.gz
 
+BuildRequires:	gcc
 BuildRequires:	postgresql%{pgmajorversion}-devel meson
 Requires:	postgresql%{pgmajorversion}
 
@@ -76,6 +77,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.7-2PGDG
+- Add missing BR
+
 * Sat Sep 5 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.7-1PGDG
 - Update to 2.10.7 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.10.7

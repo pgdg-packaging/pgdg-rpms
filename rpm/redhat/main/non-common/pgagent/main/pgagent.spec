@@ -4,13 +4,14 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
 Source6:	%{sname}-sysusers.conf
 Source7:	%{sname}-tmpfiles.d
 URL:		https://github.com/pgadmin-org/%{sname}
+BuildRequires:	gcc-c++
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	cmake >= 3.0.0
 
@@ -25,11 +26,13 @@ BuildRequires:	libboost_system1_86_0 libboost_serialization1_86_0
 BuildRequires:	libboost_serialization1_86_0-devel libboost_atomic1_86_0-devel
 BuildRequires:	libboost_filesystem1_86_0-devel libboost_regex1_86_0-devel
 %endif
-%if 0%{?rhel} || 0%{?fedora}
-BuildRequires:	boost-thread boost-date-time boost-serialization
-%endif
 %if 0%{?rhel}
-BuildRequires:	boost-system
+BuildRequires:	boost-thread boost-date-time boost-serialization
+BuildRequires:	boost-devel boost-system boost-filesystem boost-regex
+%endif
+%if 0%{?fedora}
+BuildRequires:	boost-thread boost-date-time boost-serialization
+BuildRequires:	boost-devel boost-filesystem boost-regex
 %endif
 
 BuildRequires:		systemd, systemd-devel
@@ -152,6 +155,9 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-11PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-10PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   pgagent-14..19 service files, so that Restart=on-failure cannot

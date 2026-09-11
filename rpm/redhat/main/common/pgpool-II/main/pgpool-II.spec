@@ -5,7 +5,7 @@
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.7.2
-Release:		3PGDG%{?dist}
+Release:		4PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -15,6 +15,7 @@ Source6:		%{sname}-sysusers.conf
 Source7:		%{sname}-tmpfiles.d
 Patch1:			%{sname}-conf.sample.patch
 
+BuildRequires:		clang gcc llvm
 BuildRequires:		postgresql%{pgmajorversion}-devel pam-devel
 BuildRequires:		libmemcached-devel
 Requires:		libmemcached
@@ -196,6 +197,9 @@ fi
 %{_libdir}/libpgpoolpcp.so*
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-4PGDG
+- Add missing BR
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-3PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop

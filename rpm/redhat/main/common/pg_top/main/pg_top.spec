@@ -4,10 +4,11 @@
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
 Version:	4.1.3
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	BSD
 URL:		https://gitlab.com/%{sname}/%{sname}
 Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
+BuildRequires:	gcc
 BuildRequires:	libpq5-devel ncurses-devel cmake
 BuildRequires:	libbsd-devel
 %if 0%{?suse_version} >= 1500
@@ -53,6 +54,9 @@ popd
 %{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-43PGDG
+- Add missing BR
+
 * Mon Jun 8 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-42PGDG
 - Update to 4.1.3 per changes described at:
   https://gitlab.com/pg_top/pg_top/-/releases/v4.1.3
