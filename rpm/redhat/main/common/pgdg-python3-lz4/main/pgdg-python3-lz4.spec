@@ -1,12 +1,12 @@
 %global srcname lz4
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.4.5
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
@@ -84,6 +84,10 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-1PGDG.1
 - Update to 4.4.5 per changes described at:
   https://pypi.org/project/lz4/4.4.5/

@@ -1,12 +1,12 @@
 %global pypi_name zstandard
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.25.0
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
@@ -73,6 +73,10 @@ compression library. A C extension and CFFI interface are provided.
 %endif
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-1PGDG.1
 - Update to 0.25.0 per changes described at:
   https://pypi.org/project/zstandard/0.25.0/

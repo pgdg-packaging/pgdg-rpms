@@ -6,10 +6,6 @@
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
@@ -34,7 +30,7 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -96,6 +92,9 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-10PGDG
+- Remove Fedora <= 42 support
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-9PGDG
 - Add missing BR
 

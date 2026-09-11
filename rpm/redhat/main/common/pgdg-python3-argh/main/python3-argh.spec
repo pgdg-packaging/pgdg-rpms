@@ -1,12 +1,12 @@
 %global	modname argh
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -28,7 +28,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.31.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -75,6 +75,10 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.31.3-3PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.31.3-2PGDG
 - Add missing BR
 

@@ -1,12 +1,12 @@
 %global modname psutil
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	7.2.2
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -75,6 +75,10 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 7.2.2-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 7.2.2-1PGDG.1
 - Update to 7.2.2 per changes described at:
   https://github.com/giampaolo/psutil/releases/tag/release-7.2.2

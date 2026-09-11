@@ -1,12 +1,12 @@
 %global sname humanize
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	4.16.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -79,6 +79,10 @@ sed -Ei 's/ ?--cov(-[^ ]+)? +[^ ]+//g' tox.ini
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-1PGDG
 - Update to 4.16.0 per changes described at:
   https://pypi.org/project/humanize/4.16.0/

@@ -1,12 +1,12 @@
 %global sname consul
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -30,7 +30,7 @@
 
 Name:		python3-%{sname}
 Version:	1.1.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 Summary:	Python client for Consul
 
 License:	MIT
@@ -73,6 +73,10 @@ Python client for Consul (http://www.consul.io/)
 %{python3_sitelib}/python_%{sname}-%{version}.dist-info/
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-10PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-9PGDG
 - Add missing BR
 

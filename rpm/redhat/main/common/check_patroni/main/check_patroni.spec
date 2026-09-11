@@ -1,10 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -29,7 +29,7 @@
 
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
@@ -72,6 +72,10 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-8PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-7PGDG
 - Add missing BR
 

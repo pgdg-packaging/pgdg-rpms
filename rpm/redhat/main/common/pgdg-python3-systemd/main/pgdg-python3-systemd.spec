@@ -1,16 +1,16 @@
 %global sname python-systemd
 
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
 %global __python3 %{_bindir}/python3.15
 %global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __python3 %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __python3 %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__python3 %{_bindir}/python3.12
@@ -78,6 +78,11 @@ sed -i 's/py\.test/pytest/' Makefile
 %{python3_sitearch}/systemd_python-%{version}.dist-info
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 235-44PGDG
+- Fix Fedora 44 mapped to python3.15 instead of python3.14
+- Add Fedora 45 support (python3.15)
+- Remove Fedora <= 42 support
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 235-44PGDG
 - Add missing BR
 

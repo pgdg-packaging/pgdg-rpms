@@ -1,16 +1,16 @@
 %global sname	rollbar
 
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
 %global __ospython %{_bindir}/python3.15
 %global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -77,12 +77,14 @@ Python versions.
 
 %install
 %pyproject_install
+%{__rm} -rf %{buildroot}%{python3_sitelib}/%{sname}/examples
 
 %files
 %{_bindir}/%{sname}
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}/__pycache__/*.py*
 %{python3_sitelib}/%{sname}/*.py*
+%{python3_sitelib}/%{sname}/py.typed
 %{python3_sitelib}/%{sname}/contrib/*.py*
 %{python3_sitelib}/%{sname}/contrib/__pycache__/*py*
 %{python3_sitelib}/%{sname}/contrib/asgi/*.py*
@@ -116,6 +118,11 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-2PGDG
+- Fix Fedora 44 mapped to python3.15 instead of python3.14
+- Add Fedora 45 support (python3.15)
+- Remove Fedora <= 42 support
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-2PGDG
 - Add missing BR
 

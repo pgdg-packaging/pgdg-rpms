@@ -22,10 +22,6 @@
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
@@ -49,7 +45,7 @@
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
@@ -128,6 +124,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-8PGDG
+- Remove Fedora <= 42 support
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

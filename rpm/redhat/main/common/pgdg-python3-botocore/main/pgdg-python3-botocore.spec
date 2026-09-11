@@ -1,16 +1,12 @@
 %global pypi_name botocore
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -35,7 +31,7 @@
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.43.83
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -44,6 +40,7 @@ Source0:	https://files.pythonhosted.org/packages/source/b/botocore/botocore-%{ve
 
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools
 Provides:	bundled(python%{python3_version}-six) = 1.16.0
 Provides:	bundled(python%{python3_version}-requests) = 2.7.0
 
@@ -79,6 +76,11 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-2PGDG
+- Remove Fedora <= 42 support
+- Fix Fedora 44 mapped to python3.15 instead of python3.14
+- Add missing BR (python3-setuptools)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-1PGDG
 - Update to 1.43.83 per changes described at:
   https://pypi.org/project/botocore/1.43.83/

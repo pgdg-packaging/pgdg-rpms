@@ -1,12 +1,12 @@
 %global pypi_name attrs
 %global sname attr
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -29,7 +29,7 @@
 
 Name:		python%{python3_pkgversion}-attrs
 Version:	26.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Python attributes without boilerplate
 
 License:	MIT
@@ -67,6 +67,10 @@ object protocols.
 %{python3_sitelib}/%{pypi_name}-%{version}-py%{pyver}.egg-info
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-1PGDG
 - Update to 26.1.0 per changes described at:
   https://github.com/python-attrs/attrs/releases/tag/26.1.0

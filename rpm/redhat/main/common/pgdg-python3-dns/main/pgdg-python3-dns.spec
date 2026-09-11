@@ -6,10 +6,6 @@
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
@@ -30,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	49PGDG%{?dist}
+Release:	50PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -85,6 +81,9 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-50PGDG
+- Remove Fedora <= 42 support
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-49PGDG
 - Add missing BR
 

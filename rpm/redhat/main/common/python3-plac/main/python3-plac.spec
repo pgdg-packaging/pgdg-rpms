@@ -1,12 +1,12 @@
 %global sname plac
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -32,7 +32,7 @@
 
 Name:		python3-plac
 Version:	1.4.6
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	The smartest command line arguments parser in the world
 License:	BSD-2-Clause
 URL:		https://github.com/ialbert/plac
@@ -93,6 +93,10 @@ in your source code.}
 %{python3_sitelib}/__pycache__/%{sname}*pyc
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.6-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.6-1PGDG
 - Update to 1.4.6 per changes described at:
   https://github.com/ialbert/plac/releases/tag/v1.4.6

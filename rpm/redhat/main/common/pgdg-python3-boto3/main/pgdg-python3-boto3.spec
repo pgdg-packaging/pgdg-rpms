@@ -1,16 +1,12 @@
 %global modname boto3
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -34,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.43.83
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -43,6 +39,7 @@ Source:		%{url}/archive/%{version}/%{modname}-%{version}.tar.gz
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools
 
 # Save space by hardlinking duplicate JSON resource files
 BuildRequires:	hardlink
@@ -97,6 +94,11 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-2PGDG
+- Remove Fedora <= 42 support
+- Fix Fedora 44 mapped to python3.15 instead of python3.14
+- Add missing BR (python3-setuptools)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-1PGDG
 - Update to 1.43.83 per changes described at:
   https://pypi.org/project/boto3/1.43.83/

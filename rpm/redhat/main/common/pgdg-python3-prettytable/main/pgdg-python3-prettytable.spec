@@ -1,12 +1,12 @@
 %global modname prettytable
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.18.0
-Release:	1PGDG%{dist}.1
+Release:	2PGDG%{dist}.1
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -73,6 +73,10 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 %{python3_sitelib}/%{modname}/__pycache__/*.py*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.18.0-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.18.0-1PGDG.1
 - Update to 3.18.0 per changes described at:
   https://pypi.org/project/prettytable/3.18.0/

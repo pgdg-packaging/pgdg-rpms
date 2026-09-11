@@ -1,10 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -22,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-six
 Version:	1.17.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	Python 2 and 3 compatibility utilities
 
 License:	MIT
@@ -63,6 +63,10 @@ of writing Python code that is compatible on both Python versions.}
 %pycached %{python3_sitelib}/six.py
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-5PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-4PGDG
 - Add missing BR
 

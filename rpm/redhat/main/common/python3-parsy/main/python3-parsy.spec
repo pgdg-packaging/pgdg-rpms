@@ -1,16 +1,12 @@
 %global sname parsy
 
 %if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.15
+%global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -34,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.2
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -78,6 +74,10 @@ documentation and it doesn't say things like that!
 %endif
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-2PGDG
+- Remove Fedora <= 42 support
+- Fix inconsistent Fedora 44 interpreter path (__ospython pointed to python3.15 while python3_pkgversion said 3.14)
+
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2-1PGDG
 - Update to 2.2 per changes described at:
   https://github.com/python-parsy/parsy/releases/tag/v2.2

@@ -1,10 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.5
-Release:	51PGDG%{?dist}
+Release:	52PGDG%{?dist}
 Summary:	A python client library for etcd
 
 License:	MIT
@@ -41,6 +41,7 @@ URL:		http://pypi.python.org/pypi/%{srcname}
 Source0:	https://github.com/jplana/%{srcname}/archive/%{version}.tar.gz
 
 BuildArch:	noarch
+BuildRequires:	python%{python3_pkgversion}-setuptools
 
 # See https://bugzilla.redhat.com/1393497
 # Also https://fedoraproject.org/wiki/Packaging:Guidelines#Noarch_with_Unported_Dependencies
@@ -90,6 +91,11 @@ election.
 %{python3_sitelib}/*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-52PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+- Add missing BR (python3-setuptools)
+
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-51PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.

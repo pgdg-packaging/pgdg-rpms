@@ -1,12 +1,12 @@
 %global modname kazoo
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.11.0
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 Summary:	Higher level Python Zookeeper client
 
 License:	Apache-2.0
@@ -70,6 +70,10 @@ find . -name '*.py' | xargs sed -i '1s|^#!python|#!%{__python3}|'
 %{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.0-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.0-1PGDG.1
 - Update to 2.11.0 per changes described at:
   https://pypi.org/project/kazoo/2.11.0/

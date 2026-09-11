@@ -1,12 +1,12 @@
 %global sname psycopg2
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -27,7 +27,7 @@
 Summary:	A PostgreSQL database adapter for Python %{python3_pkgversion}
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.9.12
-Release:	1PGDG%{?dist}.1
+Release:	2PGDG%{?dist}.1
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -77,6 +77,10 @@ export PATH=%{pginstdir}/bin:$PATH
 
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.12-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.12-1PGDG.1
 - Update to 2.9.12 per changes described at:
   https://github.com/psycopg/psycopg2/releases/tag/2.9.12

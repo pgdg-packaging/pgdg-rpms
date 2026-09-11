@@ -1,12 +1,12 @@
 %global modname dateutil
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	4PGDG%{?dist}.1
+Release:	5PGDG%{?dist}.1
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -36,9 +36,10 @@ Patch:		relax-setuptools_scm-requires.patch
 
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
-%if 0%{?fedora} && 0%{?fedora} <= 42
-BuildRequires:	python3-pip
-%endif
+# Needed so setuptools_scm's setup_requires is already satisfied locally;
+# otherwise setup.py tries to pip-fetch it, which fails in a
+# network-isolated mock build.
+BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 %if 0%{?rhel} && 0%{?rhel} <= 9
 BuildRequires:	python%{python3_pkgversion}-pip
 %endif
@@ -90,6 +91,11 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-5PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+- Add missing BR (python3-setuptools_scm), to avoid setup.py trying to pip-fetch it during a network-isolated mock build
+
 * Fri Aug 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-4PGDG.1
 - Package the .egg-info directory itself instead of globbing only its
   contents (egg-info/*), so RHEL/Fedora's pythondist.attr generator

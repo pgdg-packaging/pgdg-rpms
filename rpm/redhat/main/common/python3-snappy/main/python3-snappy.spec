@@ -1,10 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -26,7 +26,7 @@
 
 Name:		python3-snappy
 Version:	0.7.3
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
@@ -62,6 +62,10 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.3-3PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.3-2PGDG
 - Add missing BR
 

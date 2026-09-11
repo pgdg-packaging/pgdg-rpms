@@ -16,10 +16,6 @@
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
@@ -76,7 +72,7 @@
 
 Name:		%{sname}312
 Version:	3.12.4
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -544,6 +540,9 @@ done
 %endif
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-7PGDG
+- Remove Fedora <= 42 support
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.12.4-6PGDG
 - Pin java-11/17/21-openjdk-devel BuildRequires on RHEL 8/9/10
   respectively, instead of the unversioned java-devel, which resolves

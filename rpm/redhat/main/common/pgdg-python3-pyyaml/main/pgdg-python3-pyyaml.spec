@@ -4,7 +4,11 @@
 %global __python3 %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 43
+%if 0%{?fedora} && 0%{?fedora} == 44
+%global __python3 %{_bindir}/python3.14
+%global python3_pkgversion 3.14
+%endif
+%if 0%{?fedora} && 0%{?fedora} == 43
 %global __python3 %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -26,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.0.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	HTTP library with thread-safe connection pooling, file post, and more
 
 License:	MIT
@@ -72,6 +76,10 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %{python3_sitearch}/yaml/*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0.3-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 3 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0.3-1PGDG
 - Inıtial packaging for the PostgreSQL RPM repository to support Patroni
   on Amazon Linux 2023

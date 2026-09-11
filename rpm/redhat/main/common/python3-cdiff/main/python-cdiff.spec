@@ -1,8 +1,8 @@
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	python3_pkgversion 3.12
@@ -21,7 +21,7 @@
 
 Name:		python3-%{sname}
 Version:	1.0
-Release:	46PGDG%{?dist}
+Release:	47PGDG%{?dist}
 Summary:	View colored, incremental diff in a workspace or from stdin, with side by side and auto pager support
 
 License:	BSD
@@ -67,6 +67,10 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %{python3_sitelib}/cdiff*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-47PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-46PGDG
 - Add missing BR
 

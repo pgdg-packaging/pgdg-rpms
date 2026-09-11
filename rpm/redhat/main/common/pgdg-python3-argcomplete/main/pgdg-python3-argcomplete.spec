@@ -1,12 +1,12 @@
 %global modname argcomplete
 
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%if 0%{?fedora} && 0%{?fedora} == 43
+%global __ospython %{_bindir}/python3.14
+%global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__python3 %{_bindir}/python3.12
@@ -24,7 +24,7 @@
 Name:		python%{python3_pkgversion}-%{modname}
 Summary:	Bash tab completion for argparse
 Version:	3.7.2
-Release:	1PGDG%{dist}.1
+Release:	2PGDG%{dist}.1
 License:	Apache-2.0
 URL:		https://github.com/kislyuk/%{modname}
 Source0:	https://files.pythonhosted.org/packages/source/a/%{modname}/%{modname}-%{version}.tar.gz
@@ -89,6 +89,10 @@ sed -i '/^#!/d' argcomplete/scripts/*.py
 %{python3_sitelib}/argcomplete/scripts/__pycache__/*.py*
 
 %changelog
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.2-2PGDG
+- Remove Fedora <= 42 support
+- Add missing Fedora 44 pin (python3.14)
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.2-1PGDG.1
 - Update to 3.7.2 per changes described at:
   https://pypi.org/project/argcomplete/3.7.2/
