@@ -31,11 +31,11 @@ Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
 Source0:	https://files.pythonhosted.org/packages/source/z/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
-# relax dependencies
-Patch1:		python-%{pypi_name}-deps.patch
 BuildRequires:	gcc
 BuildRequires:	libzstd-devel
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-packaging
+BuildRequires:	python%{python3_pkgversion}-cffi
 
 # https://github.com/indygreg/python-zstandard/issues/48
 Provides:	bundled(zstd) = 1.5.6
@@ -46,7 +46,7 @@ compression library. A C extension and CFFI interface are provided.
 
 
 %prep
-%autosetup -p1 -n %{pypi_name}-%{version}
+%autosetup -n %{pypi_name}-%{version}
 %{__rm} -rf %{pypi_name}.egg-info
 
 %build
@@ -76,6 +76,8 @@ compression library. A C extension and CFFI interface are provided.
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-2PGDG
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
+- Drop python-zstandard-deps.patch: it is no longer needed.
+- Add missing BRs (python3-setuptools, python3-packaging, python3-cffi)
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 
