@@ -4,13 +4,14 @@
 Summary:	Compares PostgreSQL database schemas (DDL)
 Name:		%{sname}
 Version:	0.7.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{sversion}.tar.gz
 Patch0:		%{sname}-libminipath.patch
 Patch1:		%{sname}-inccommon.patch
 URL:		https://github.com/eulerto/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel cmake pgdg-srpm-macros
+BuildRequires:	gcc
 Requires:	postgresql-libs
 
 %description
@@ -34,6 +35,7 @@ database.
 
 %build
 cmake -DPGCONFIG_PATH=/usr/pgsql-%{pgmajorversion}/bin/pg_config \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 	-DCMAKE_INSTALL_PREFIX=/usr .
 
 %install
@@ -48,6 +50,12 @@ cmake -DPGCONFIG_PATH=/usr/pgsql-%{pgmajorversion}/bin/pg_config \
 %{_libdir}/libmini.so
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.0-5PGDG
+- Add -DCMAKE_POLICY_VERSION_MINIMUM=3.5: CMakeLists.txt's
+  cmake_minimum_required is too old for CMake 4 ("Compatibility with
+  CMake < 3.5 has been removed")
+- Add missing BR (gcc)
+
 * Fri Sep 15 2023 Devrim Gunduz <devrim@gunduz.org> - 0.7.0-4PGDG
 - Bump up release number after to reflect non-common -> common move.
 
