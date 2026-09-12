@@ -1,0 +1,24 @@
+--- src/quarrel.c.old	2026-09-12 15:38:02.452220764 +0100
++++ src/quarrel.c	2026-09-12 15:38:02.462439174 +0100
+@@ -63,6 +63,7 @@
+
+ #include "quarrel.h"
+ #include "common.h"
++#include "common/string.h"		/* simple_prompt() */
+
+ #include "am.h"
+ #include "aggregate.h"
+@@ -767,7 +768,12 @@
+ 			opt.promptpassword)
+ 	{
+ 		PQfinish(conn);
+-#if PG_VERSION_NUM >= 100000
++#if PG_VERSION_NUM >= 140000
++		if (opt.istarget)
++			prompt_password = simple_prompt("Target password: ", false);
++		else
++			prompt_password = simple_prompt("Source password: ", false);
++#elif PG_VERSION_NUM >= 100000
+ 		prompt_password = (char *) malloc((MAX_PASSWORD_LEN + 1) * sizeof(char));
+ 		if (opt.istarget)
+ 			simple_prompt("Target password: ", prompt_password, MAX_PASSWORD_LEN + 1,

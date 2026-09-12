@@ -9,6 +9,7 @@ License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{sversion}.tar.gz
 Patch0:		%{sname}-libminipath.patch
 Patch1:		%{sname}-inccommon.patch
+Patch2:		%{sname}-pg14-simple-prompt.patch
 URL:		https://github.com/eulerto/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel cmake pgdg-srpm-macros
 BuildRequires:	gcc
@@ -32,6 +33,7 @@ database.
 %setup -q -n %{sname}-%{sname}_%{sversion}
 %patch -P 0 -p0
 %patch -P 1 -p0
+%patch -P 2 -p0
 
 %build
 cmake -DPGCONFIG_PATH=/usr/pgsql-%{pgmajorversion}/bin/pg_config \
@@ -55,6 +57,15 @@ cmake -DPGCONFIG_PATH=/usr/pgsql-%{pgmajorversion}/bin/pg_config \
   cmake_minimum_required is too old for CMake 4 ("Compatibility with
   CMake < 3.5 has been removed")
 - Add missing BR (gcc)
+- Add pgquarrel-pg14-simple-prompt.patch to fix builds against
+  PostgreSQL 14+: src/quarrel.c called simple_prompt() with its old
+  pre-PG14 3/4-argument signature without even including the header
+  that declares it ("implicit declaration of function
+  'simple_prompt'"). PG14+'s common/string.h declares it as
+  simple_prompt(const char *prompt, bool echo) (2 args, allocates and
+  returns the buffer itself). Add #include "common/string.h" and a
+  PG_VERSION_NUM >= 140000 branch using the modern signature, alongside
+  the existing >= 100000 and legacy branches
 
 * Fri Sep 15 2023 Devrim Gunduz <devrim@gunduz.org> - 0.7.0-4PGDG
 - Bump up release number after to reflect non-common -> common move.
