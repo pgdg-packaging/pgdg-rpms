@@ -21,7 +21,7 @@ Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel zlib-devel
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -91,6 +91,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
   dropped the llvm BuildRequires/subpackage/files while the build still
   invoked clang regardless, per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+- Add missing BR
 
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-3PGDG
 - Add Amazon Linux 2023 support.
