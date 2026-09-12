@@ -12,7 +12,7 @@
 
 Name:		%{sname}91
 Version:	9.1.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -67,7 +67,7 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{sqlite33dir}/lib" ; export SHLIB_LINK
 cmake ..\
 %endif
 %else
-cmake3 .. \
+cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX:PATH=%{proj91instdir} \
 	-DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
@@ -120,6 +120,10 @@ popd
 %{proj91instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0:9.1.1-2
+- Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
+  exists as a package; use cmake instead)
+
 * Mon Dec 5 2022 Devrim Gündüz <devrim@gunduz.org> - 0:9.1.1-1
 - Update to 9.1.1
 

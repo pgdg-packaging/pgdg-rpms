@@ -5,7 +5,7 @@
 
 Name:		%{sname}96
 Version:	9.6.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -64,7 +64,7 @@ export CXX=/usr/bin/g++-12
 %if 0%{?suse_version} >= 1500
 cmake ..\
 %else
-cmake3 .. \
+cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX:PATH=%{proj96instdir} \
 	-DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
@@ -114,6 +114,10 @@ popd
 %{proj96instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0:9.6.2-3PGDG
+- Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
+  exists as a package; use cmake instead)
+
 * Sun Oct 5 2025 Devrim Gündüz <devrim@gunduz.org> - 0:9.6.2-2PGDG
 - Add SLES 16 support
 

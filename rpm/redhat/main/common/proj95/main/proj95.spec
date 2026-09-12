@@ -5,7 +5,7 @@
 
 Name:		%{sname}95
 Version:	9.5.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -66,7 +66,7 @@ export CXX=/usr/bin/g++-12
 cmake ..\
 %endif
 %else
-cmake3 .. \
+cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX:PATH=%{proj95instdir} \
 	-DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
@@ -115,6 +115,10 @@ popd
 %{proj95instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0:9.5.1-2PGDG
+- Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
+  exists as a package; use cmake instead)
+
 * Mon Dec 2 2024 Devrim Gündüz <devrim@gunduz.org> - 0:9.5.1-1PGDG
 - Update to 9.5.1 per changes described at:
   https://github.com/OSGeo/PROJ/releases/tag/9.5.1

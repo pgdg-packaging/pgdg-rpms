@@ -12,7 +12,7 @@
 
 Name:		%{sname}92
 Version:	9.2.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -67,7 +67,7 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{sqlite33dir}/lib" ; export SHLIB_LINK
 cmake ..\
 %endif
 %else
-cmake3 .. \
+cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX:PATH=%{proj92instdir} \
 	-DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
@@ -116,6 +116,10 @@ popd
 %{proj92instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0:9.2.1-2PGDG
+- Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
+  exists as a package; use cmake instead)
+
 * Sun Jun 4 2023 Devrim Gündüz <devrim@gunduz.org> - 0:9.2.1-1PGDG
 - Update to 9.2.1
 - Add PGDG branding

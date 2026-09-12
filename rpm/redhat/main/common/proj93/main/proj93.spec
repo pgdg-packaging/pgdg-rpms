@@ -5,7 +5,7 @@
 
 Name:		%{sname}93
 Version:	9.3.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Epoch:		0
 Summary:	Cartographic projection software (PROJ)
 
@@ -53,7 +53,7 @@ SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{proj93instdir}/lib64" ; export SHLIB_LINK
 cmake ..\
 %endif
 %else
-cmake3 .. \
+cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX:PATH=%{proj93instdir} \
 	-DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
@@ -102,6 +102,10 @@ popd
 %{proj93instdir}/lib64/cmake/%{sname}4/*cmake
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0:9.3.1-3PGDG
+- Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
+  exists as a package; use cmake instead)
+
 * Thu Feb 15 2024 Devrim Gündüz <devrim@gunduz.org> - 0:9.3.1-2PGDG
 - Fix SLES 15 builds.
 

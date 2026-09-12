@@ -5,12 +5,12 @@
 
 Name:		%{pname}
 Version:	1.17.3
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	MongoDB C Driver
 License:	Apache-2.0
 URL:		https://github.com/mongodb/%{sname}
 Source0:	https://github.com/mongodb/%{sname}/releases/download/%{version}/%{sname}-%{version}.tar.gz
-BuildRequires:	make cyrus-sasl-devel libtool cmake3
+BuildRequires:	make cyrus-sasl-devel libtool cmake
 BuildRequires:	openssl-devel pkgconfig snappy-devel
 Provides:	%{sname} = %{version}
 Provides:	libmongoc-1.0 = %{version}
@@ -43,7 +43,7 @@ developing applications that use %{sname}.
 %build
 %{__install} -d build
 pushd build
-cmake3 -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DENABLE_SSL=AUTO \
+cmake -DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF -DENABLE_SSL=AUTO \
 	-DENABLE_STATIC=OFF -DENABLE_TESTS=OFF -DENABLE_MAN_PAGES=OFF \
 	-DCMAKE_INSTALL_PREFIX=%{mongocinstdir} ..
 %{__make} %{?_smp_mflags} build
@@ -87,6 +87,10 @@ popd
 %{mongocinstdir}/%{_lib}/libbson-1.0.so*
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.3-2
+- Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
+  exists as a package; use cmake instead)
+
 * Mon May 3 2021 Devrim Gündüz <devrim@gunduz.org> - 1.17.3-1
 - Initial packaging for PostgreSQL RPM repository to fix
   mongo_fdw installations on RHEL 7, per:
