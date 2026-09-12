@@ -3,7 +3,7 @@
 Summary:	Import tool for OpenStreetMap data to pgRouting database
 Name:		%{sname}
 Version:	3.0.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	GPLv2
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgRouting/%{sname}/
@@ -38,7 +38,7 @@ Import tool for OpenStreetMap data to pgRouting database.
 %if 0%{?suse_version} >= 1499
 cmake .. \
 %else
-%cmake3 .. \
+cmake .. \
 %endif
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DPOSTGRESQL_INCLUDE_DIR:PATH=%{_includedir} \
@@ -47,11 +47,11 @@ cmake .. \
 	-H. -Bbuild
 
 cd build/
-%cmake_build
+%{__make}
 
 %install
 %{__rm} -rf %{buildroot}
-%cmake_install
+%{__make} -C build install DESTDIR=%{buildroot}
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
@@ -68,6 +68,11 @@ cd build/
 %{_datadir}/%{sname}/mapconfig_for_pedestrian.xml
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-3PGDG
+- Fix the %cmake3 macro reference left over from the previous CMake 4
+  fix.
+- Revert %build/%install to plain make/make install.
+
 * Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-2PGDG
 - Fix builds against CMake 4
 
