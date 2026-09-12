@@ -29,7 +29,7 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	1.49.0
+Version:	1.39.0
 Release:	2PGDG%{?dist}
 Summary:	Easy, practical library for making terminal apps, by providing an elegant, well- documented interface to Colors, Keyboard input, and screen Positioning capabilities
 
@@ -73,7 +73,7 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 %{python3_sitelib}/%{sname}
 
 %changelog
-* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.49.0-2PGDG
+* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
 - Switch to pyproject builds
