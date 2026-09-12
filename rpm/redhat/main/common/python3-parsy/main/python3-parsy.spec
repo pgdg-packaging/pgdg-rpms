@@ -1,14 +1,13 @@
 %global sname parsy
 
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
+%endif%if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
@@ -35,7 +34,13 @@ Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
 Source:		https://github.com/python-%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
-BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-wheel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 BuildArch:	noarch
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
@@ -53,10 +58,10 @@ documentation and it doesn't say things like that!
 %setup -q -n %{sname}-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 
 # Create __pycache__ directories and their contents in SLES *too*:
 %if 0%{?suse_version}
@@ -67,7 +72,7 @@ documentation and it doesn't say things like that!
 %doc README.rst
 %license LICENSE
 
-%{python3_sitelib}/%{sname}-%{version}-py%{py3ver}.egg-info/
+%{python3_sitelib}/%{sname}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}/__init__.py
 %if 0%{?fedora} >= 41 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600
 %{python3_sitelib}/%{sname}/__pycache__/__init__*
@@ -77,6 +82,7 @@ documentation and it doesn't say things like that!
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
+- Switch to pyproject builds
 - Remove Fedora <= 42 support
 - Fix inconsistent Fedora 44 interpreter path (__ospython pointed to python3.15 while python3_pkgversion said 3.14)
 

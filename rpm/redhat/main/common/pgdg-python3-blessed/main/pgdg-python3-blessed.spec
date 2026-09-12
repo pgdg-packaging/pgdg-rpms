@@ -1,14 +1,13 @@
 %global	sname blessed
 
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
+%endif%if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
@@ -38,8 +37,14 @@ URL:		https://github.com/jquast/%{sname}
 Source0:	https://files.pythonhosted.org/packages/source/b/%{sname}/%{sname}-%{version}.tar.gz
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-flit-core
 BuildRequires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-wcwidth
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 Requires:	python%{python3_pkgversion}
 
 %description
@@ -55,21 +60,22 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 %{__rm} -rf %{sname}.egg-info
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
+%pyproject_install
 
 %files
 %license LICENSE
 %doc README.rst
+%{python3_sitelib}/%{sname}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}
-%{python3_sitelib}/%{sname}-%{version}-py%{pyver}.egg-info
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.49.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
+- Switch to pyproject builds
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

@@ -1,10 +1,10 @@
 %global pypi_name attrs
 %global sname attr
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -37,7 +37,14 @@ URL:		https://www.attrs.org/
 BuildArch:	noarch
 Source0:	https://github.com/python-attrs/%{pypi_name}/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-hatchling python%{python3_pkgversion}-hatch-vcs
+BuildRequires:	python%{python3_pkgversion}-hatch-fancy-pypi-readme
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 Requires:	python%{python3_pkgversion}
 
 
@@ -50,26 +57,27 @@ object protocols.
 %setup -q -n %{pypi_name}-%{version}
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install -O1 --skip-build --root %{buildroot}
+%pyproject_install
 
 %files
 %license LICENSE
-%doc AUTHORS.rst README.rst
+%doc README.md
+%{python3_sitelib}/%{pypi_name}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}/*.py*
 %{python3_sitelib}/%{sname}/py.typed
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 %{python3_sitelib}/%{pypi_name}/*.py*
 %{python3_sitelib}/%{pypi_name}/py.typed
 %{python3_sitelib}/%{pypi_name}/__pycache__/*.pyc
-%{python3_sitelib}/%{pypi_name}-%{version}-py%{pyver}.egg-info
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
+- Switch to pyproject builds
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 
