@@ -71,7 +71,7 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %pyproject_install
 
 %files
-%{python3_sitearch}/%{modname}-%{version}.dist-info/
+%{python3_sitearch}/pyyaml-%{version}.dist-info/
 %{python3_sitearch}/_yaml/*
 %{python3_sitearch}/yaml/*
 
