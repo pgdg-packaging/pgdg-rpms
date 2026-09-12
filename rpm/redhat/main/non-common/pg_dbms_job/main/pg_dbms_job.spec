@@ -16,7 +16,7 @@
 Summary:	PostgreSQL extension to schedules and manages jobs in a job queue similar to Oracle DBMS_JOB package
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-include.patch
@@ -66,7 +66,7 @@ This package provides JIT support for pg_dbms.job
 
 %install
 %{__rm} -rf %{buildroot}
-PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} INSTALL_PREFIX=%{buildroot} DESTDIR=%{buildroot} install
+PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} PG_CPPFLAGS=-I%{pginstdir}/include INSTALL_PREFIX=%{buildroot} DESTDIR=%{buildroot} install
 
 # Install README and howto file under PostgreSQL installation directory:
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
@@ -88,6 +88,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} INSTALL_P
 %endif
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-5PGDG
+- Pass PG_CPPFLAGS=-I%{pginstdir}/include to make to fix builds.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
