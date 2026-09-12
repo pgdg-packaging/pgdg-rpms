@@ -41,6 +41,10 @@ This package contains libproj and the appropriate header files and man pages.
 %prep
 %setup -q -n %{sname}-%{version}
 
+# uint8_t is used in these two files without including <cstdint>; newer
+# GCC/libstdc++ no longer pull it in transitively via other headers.
+sed -i '1s/^/#include <cstdint>\n/' src/apps/cs2cs.cpp src/apps/cct.cpp
+
 %build
 
 %{__install} -d build
@@ -55,6 +59,8 @@ cmake ..\
 %else
 cmake .. \
 %endif
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+	-DBUILD_TESTING=OFF \
 	-DCMAKE_INSTALL_PREFIX:PATH=%{proj93instdir} \
 	-DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
 	-DCMAKE_CXX_FLAGS="${RPM_OPT_FLAGS}"
@@ -105,6 +111,14 @@ popd
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0:9.3.1-3PGDG
 - Fix build against CMake 4 on Fedora/RHEL/AL2023 (cmake3 no longer
   exists as a package; use cmake instead)
+- Add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 and -DBUILD_TESTING=OFF: the
+  bundled CMakeLists.txt's cmake_minimum_required is too old for CMake
+  4 ("Compatibility with CMake < 3.5 has been removed"), and disabling
+  tests avoids a network-isolated googletest FetchContent during
+  configure
+- Add missing #include <cstdint> to src/apps/cs2cs.cpp and cct.cpp:
+  uint8_t is used without it, which newer GCC/libstdc++ no longer pull
+  in transitively via other headers
 
 * Thu Feb 15 2024 Devrim Gündüz <devrim@gunduz.org> - 0:9.3.1-2PGDG
 - Fix SLES 15 builds.
