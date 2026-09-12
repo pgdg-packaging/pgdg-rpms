@@ -6,6 +6,7 @@ Version:	3.0.0
 Release:	3PGDG%{dist}
 License:	GPLv2
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
+Patch0:		osm2pgrouting-libpqxx-8.patch
 URL:		https://github.com/pgRouting/%{sname}/
 BuildRequires:	gcc-c++ libpqxx-devel libpq5-devel
 %if 0%{?suse_version} == 1500
@@ -33,7 +34,7 @@ Import tool for OpenStreetMap data to pgRouting database.
 
 %prep
 %setup -q -n %{sname}-%{version}
-
+%patch -P0 -p0
 %build
 %if 0%{?suse_version} >= 1499
 cmake .. \
@@ -69,9 +70,10 @@ cd build/
 
 %changelog
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-3PGDG
-- Fix the %cmake3 macro reference left over from the previous CMake 4
+- Fix the %%cmake3 macro reference left over from the previous CMake 4
   fix.
-- Revert %build/%install to plain make/make install.
+- Revert %%build/%%install to plain make/make install.
+- Add a patch to fix builds against libpqxx 8.
 
 * Thu Mar 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-2PGDG
 - Fix builds against CMake 4
