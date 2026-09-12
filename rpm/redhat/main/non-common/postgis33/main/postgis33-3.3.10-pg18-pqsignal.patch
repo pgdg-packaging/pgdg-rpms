@@ -1,0 +1,30 @@
+--- postgis/postgis_module.c.old
++++ postgis/postgis_module.c
+@@ -80,7 +80,12 @@
+ void
+ _PG_init(void)
+ {
++#if PG_VERSION_NUM >= 180000
++  /* pqsignal() no longer returns the previous handler as of PG 18 */
++  pqsignal(SIGINT, handleInterrupt);
++#else
+   coreIntHandler = pqsignal(SIGINT, handleInterrupt);
++#endif
+ 
+ #ifdef WIN32
+   GEOS_interruptRegisterCallback(interruptCallback);
+--- sfcgal/lwgeom_sfcgal.c.old
++++ sfcgal/lwgeom_sfcgal.c
+@@ -57,7 +57,12 @@
+ _PG_init(void)
+ {
+ 
++#if PG_VERSION_NUM >= 180000
++  /* pqsignal() no longer returns the previous handler as of PG 18 */
++  pqsignal(SIGINT, handleInterrupt);
++#else
+   coreIntHandler = pqsignal(SIGINT, handleInterrupt);
++#endif
+ 
+ #ifdef WIN32
+   GEOS_interruptRegisterCallback(interruptCallback);

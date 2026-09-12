@@ -1,0 +1,19 @@
+--- libpgcommon/pgsql_compat.h.old
++++ libpgcommon/pgsql_compat.h
+@@ -3,9 +3,12 @@
+ 
+ #include "access/tupdesc.h"
+ 
+-/* TupleDescAttr was backported into 9.6.5 but we support any 9.6.X */
+-#ifndef TupleDescAttr
+-#define TupleDescAttr(tupdesc, i) ((tupdesc)->attrs[(i)])
+-#endif
++/* TupleDescAttr was backported into 9.6.5 but we support any 9.6.X.
++ * On PG 18+, TupleDescAttr is a static inline function rather than a
++ * preprocessor macro, so #ifndef TupleDescAttr can no longer detect
++ * whether it already exists; TupleDescData also no longer has a
++ * plain attrs[] array to index directly. All supported PostgreSQL
++ * versions here already provide a working TupleDescAttr of their
++ * own, so just rely on that instead of guessing via #ifndef. */
+ 
+ #endif /* _PGSQL_COMPAT_H */

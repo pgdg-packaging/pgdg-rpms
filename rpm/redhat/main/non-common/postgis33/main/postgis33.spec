@@ -63,13 +63,17 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 Patch0:		%{sname}%{postgiscurrmajorversion}-%{postgismajorversion}.0-gdalfpic.patch
 Patch1:		%{sname}%{postgiscurrmajorversion}-%{version}-gdal-minmax.patch
+Patch2:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-pqsignal.patch
+Patch3:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-vacuum-delay-point.patch
+Patch4:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-tupledescattr.patch
+Patch5:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-json-categorize-type.patch
 
 URL:		https://www.postgis.net/
 
@@ -242,6 +246,10 @@ This package provides JIT support for PostGIS 3.3
 %{__cp} -p %{SOURCE2} .
 %patch -P 0 -p0
 %patch -P 1 -p0
+%patch -P 2 -p0
+%patch -P 3 -p0
+%patch -P 4 -p0
+%patch -P 5 -p0
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
@@ -409,6 +417,9 @@ fi
 %endif
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-6PGDG
+- Add 3 patches to fix builds against PG 18.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
