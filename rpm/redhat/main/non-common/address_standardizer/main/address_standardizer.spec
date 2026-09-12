@@ -20,8 +20,13 @@ Release:	3PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/postgis/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel pcre2-devel
 Requires:	postgresql%{pgmajorversion}-server postgis3_%{pgmajorversion} >= 3.7
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+Requires:	pcre2
+%else
+Requires:	libpcre2-8-0
+%endif
 
 %description
 This is a fork of the PAGC standardizer (http://www.pagcgeo.org) and single line
@@ -88,6 +93,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
   dropped the llvm BuildRequires/subpackage/files while the build still
   invoked clang regardless, per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+- Add missing BR and Requires:
 
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-2PGDG
 - Add Amazon Linux 2023 support.
