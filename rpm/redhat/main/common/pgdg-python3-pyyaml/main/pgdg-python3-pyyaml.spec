@@ -38,6 +38,7 @@ URL:		https://github.com/yaml/pyyaml
 Source0:	https://github.com/yaml/pyyaml/archive/%{version}.tar.gz
 
 BuildRequires:	gcc libyaml-devel python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-cython
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -79,7 +80,7 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0.3-2PGDG
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
-- Add missing BR (python3-pip), needed by %%pyproject_wheel
+- Add missing BRs: python3-pip, python3-setuptools and python3-cython
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 
