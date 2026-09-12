@@ -17,13 +17,21 @@
 Summary:	SQL functions that allow capture of node OS metrics from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/CrunchyData/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/CrunchyData/%{sname}
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 
 %description
 pgnodemx includes SQL functions that allow capture of node OS metrics from
@@ -83,6 +91,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7-6PGDG
+- Add missing BR, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
