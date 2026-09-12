@@ -26,7 +26,7 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%{expand: %%global python3_sitearch %(echo `%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
+%global python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	6.0.3
@@ -37,7 +37,7 @@ License:	MIT
 URL:		https://github.com/yaml/pyyaml
 Source0:	https://github.com/yaml/pyyaml/archive/%{version}.tar.gz
 
-BuildRequires:	gcc libyaml-devel python%{python3_pkgversion}-devel
+BuildRequires:	gcc libyaml-devel python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -77,6 +77,9 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0.3-2PGDG
+- Migrate %%python3_sitearch off the removed distutils.sysconfig module
+  to sysconfig.get_path()
+- Add missing BR (python3-pip), needed by %%pyproject_wheel
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

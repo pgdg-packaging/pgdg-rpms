@@ -22,7 +22,7 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%{expand: %%global pgdg_python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
+%global pgdg_python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Summary:	A PostgreSQL database adapter for Python %{python3_pkgversion}
 Name:		python%{python3_pkgversion}-%{sname}
@@ -33,7 +33,7 @@ License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
 Source0:	https://github.com/psycopg/psycopg2/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	gcc postgresql%{pgmajorversion}-devel
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
 Requires:	libpq5 >= 10.0
@@ -78,6 +78,9 @@ export PATH=%{pginstdir}/bin:$PATH
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.12-2PGDG
+- Migrate %%pgdg_python3_sitearch off the removed distutils.sysconfig
+  module to sysconfig.get_path()
+- Add missing BR (gcc), needed to compile the psycopg2 C extension
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

@@ -26,7 +26,7 @@
 %endif
 
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.2
@@ -75,6 +75,8 @@ documentation and it doesn't say things like that!
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-2PGDG
+- Migrate %%python3_sitelib off the removed distutils.sysconfig module
+  to sysconfig.get_path()
 - Remove Fedora <= 42 support
 - Fix inconsistent Fedora 44 interpreter path (__ospython pointed to python3.15 while python3_pkgversion said 3.14)
 

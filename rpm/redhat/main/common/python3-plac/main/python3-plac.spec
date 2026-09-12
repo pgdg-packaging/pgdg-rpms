@@ -27,7 +27,7 @@
 
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 
 Name:		python3-plac
@@ -42,7 +42,7 @@ Source1:	plac_runner.py.1
 
 BuildArch:	noarch
 
-BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 Requires:	python%{python3_pkgversion}-%{name}
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
@@ -94,6 +94,9 @@ in your source code.}
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.6-2PGDG
+- Migrate %%python3_sitelib off the removed distutils.sysconfig module
+  to sysconfig.get_path()
+- Add missing BR (python3-setuptools), needed by setup.py's own build
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

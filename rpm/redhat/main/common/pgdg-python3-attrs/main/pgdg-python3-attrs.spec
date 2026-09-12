@@ -25,7 +25,7 @@
 %global	python3_pkgversion 313
 %endif
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-attrs
 Version:	26.1.0
@@ -68,6 +68,8 @@ object protocols.
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-2PGDG
+- Migrate %%python3_sitelib off the removed distutils.sysconfig module
+  to sysconfig.get_path()
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

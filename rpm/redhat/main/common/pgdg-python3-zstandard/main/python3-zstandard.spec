@@ -22,7 +22,7 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
+%global python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.25.0
@@ -74,6 +74,8 @@ compression library. A C extension and CFFI interface are provided.
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-2PGDG
+- Migrate %%python3_sitearch off the removed distutils.sysconfig module
+  to sysconfig.get_path()
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

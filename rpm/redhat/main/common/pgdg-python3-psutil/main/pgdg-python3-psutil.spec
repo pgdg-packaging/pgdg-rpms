@@ -22,7 +22,7 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
+%global python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	7.2.2
@@ -33,7 +33,7 @@ License:	BSD-3-Clause
 URL:		https://github.com/giampaolo/%{modname}
 Source:		%{url}/archive/release-%{version}/%{modname}-%{version}.tar.gz
 
-BuildRequires:	gcc sed python%{python3_pkgversion}-devel
+BuildRequires:	gcc sed python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
 Provides:	python%{python3_pkgversion}dist(psutil)
 
@@ -76,6 +76,9 @@ done
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 7.2.2-2PGDG
+- Migrate %%python3_sitearch off the removed distutils.sysconfig module
+  to sysconfig.get_path()
+- Add missing BR (python3-setuptools), needed by setup.py's own build
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 

@@ -22,7 +22,7 @@
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%{expand: %%global python3_sitearch %(echo `%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))"`)}
+%global python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.4.5
@@ -33,7 +33,12 @@ Summary:	LZ4 Bindings for Python
 License:	LicenseRef-Callaway-BSD
 Source:		https://files.pythonhosted.org/packages/source/l/%{srcname}/%{srcname}-%{version}.tar.gz
 
-BuildRequires:	gcc python%{python3_pkgversion}-devel
+BuildRequires:	gcc python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+# Needed so setup.py's setup_requires (setuptools_scm, pkgconfig) are
+# already satisfied locally; otherwise setup.py tries to pip-fetch them,
+# which fails in a network-isolated mock build.
+BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+BuildRequires:	python%{python3_pkgversion}-pkgconfig
 %if 0%{?rhel} && 0%{?rhel} >= 8
 BuildRequires:	lz4-devel
 %endif
@@ -85,6 +90,12 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-2PGDG
+- Migrate %%python3_sitearch off the removed distutils.sysconfig module
+  to sysconfig.get_path()
+- Add missing BR (python3-setuptools), needed by setup.py's own build
+- Add missing BRs (python3-setuptools_scm, python3-pkgconfig), needed
+  so setup.py's setup_requires are already satisfied locally instead of
+  trying to pip-fetch them, which fails in a network-isolated mock build
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
 
