@@ -1,7 +1,7 @@
 %global	realname Bucardo
 Name:		bucardo_%{pgmajorversion}
 Version:	5.6.0
-Release:	1%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Postgres replication system for both multi-master and multi-slave operations
 
 License:	BSD
@@ -26,7 +26,6 @@ BuildRequires:	libdbi-drivers-dbd-pgsql
 %endif
 %else
 BuildRequires:	perl(DBD::Pg)
-BuildRequires:	perl(DBIx::Safe)
 %endif
 
 Requires:	perl(ExtUtils::MakeMaker)
@@ -39,7 +38,6 @@ Requires:	libdbi-drivers-dbd-pgsql
 %endif
 %else
 Requires:	perl(DBD::Pg)
-Requires:	perl(DBIx::Safe)
 %endif
 Requires:	perl(IO::Handle)
 Requires:	perl(Sys::Hostname)
@@ -124,6 +122,10 @@ fi
 %{_bindir}/slony_migrator.pl
 
 %changelog
+* Sun Sep 13 2026 Devrim Gündüz <devrim@gunduz.org> - 5.6.0-2PGDG
+- Add PGDG branding
+- Remove obsoleted BR
+
 * Tue Mar 10 2020 Devrim Gündüz <devrim@gunduz.org> - 5.6.0-1
 - Update to 5.6.0
 
