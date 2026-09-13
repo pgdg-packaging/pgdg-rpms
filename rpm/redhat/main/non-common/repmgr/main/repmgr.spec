@@ -16,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -72,9 +72,17 @@ Requires:	postgresql%{pgmajorversion}-server
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
+%endif
+
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
 %endif
 
 %description
@@ -197,6 +205,9 @@ fi
 %endif
 
 %changelog
+* Sun Sep 13 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-12PGDG
+- Add missing BRs and Requires.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-11PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
