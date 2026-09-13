@@ -4,13 +4,9 @@
 %global __ospython %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 44
+%if 0%{?fedora} && 0%{?fedora} <= 43
 %global	__ospython %{_bindir}/python3.14
 %global	python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
@@ -32,7 +28,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.0.17
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -93,6 +89,7 @@ their datas and raw SQL queries.
 - Fix Fedora 44 pinned to python3.13 instead of python3.14
 - Add missing BR (python3-setuptools)
 - Remove Fedora <= 42 support
+- Fix Fedora 43 Python version
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-1PGDG
 - Update to 1.0.17 per changes described at:
