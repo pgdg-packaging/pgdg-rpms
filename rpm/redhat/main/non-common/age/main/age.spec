@@ -16,11 +16,17 @@
 Summary:	Graph database optimized for fast analysis and real-time data processing.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.0
-Release:	rc0_3PGDG%{?dist}
+Release:	rc0_4PGDG%{?dist}
 License:	Apache 2.0
 URL:		https://github.com/apache/%{sname}/
 Source0:	https://github.com/apache/age/archive/refs/tags/PG%{pgmajorversion}/v%{version}-rc0.tar.gz
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	bison flex postgresql%{pgmajorversion}-devel
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
+BuildRequires:	perl-FindBin perl-lib
+%endif
+%if 0%{?suse_version} >= 1500
+BuildRequires:	perl
+%endif
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -88,6 +94,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Sun Sep 13 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-4PGDG
+- Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
