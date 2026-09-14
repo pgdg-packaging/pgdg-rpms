@@ -25,15 +25,16 @@
 %endif
 
 Name:		python3-snappy
-Version:	0.7.3
-Release:	3PGDG%{dist}
+Epoch:		1
+Version:	0.6.1
+Release:	1PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
-Source:		https://files.pythonhosted.org/packages/39/66/9185fbb6605ba92716d9f77fbb13c97eb671cd13c3ad56bd154016fbf08b/python_snappy-%{version}.tar.gz
+Source:		https://files.pythonhosted.org/packages/source/p/python-snappy/python-snappy-%{version}.tar.gz
 
 BuildRequires:	gcc-c++ pkgconfig python3-packaging python3-pip
-BuildRequires:	python3-setuptools snappy-devel
+BuildRequires:	python3-setuptools snappy-devel python3-cffi python3-wheel python3-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -47,7 +48,7 @@ Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 Python library for the snappy compression library from Google.
 
 %prep
-%setup -q -n python_snappy-%{version}
+%setup -q -n python-snappy-%{version}
 sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 
 %build
@@ -62,6 +63,15 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.6.1-1PGDG
+- Pin back to 0.6.1: 0.7.x rewrote the compression backend to hard-depend
+  on cramjam (Rust-based), which isn't packaged anywhere in SLES 15/16
+  repos and would need a Rust/cargo toolchain to build from source. 0.6.1
+  is the last release using the system libsnappy via CFFI directly,
+  matching our existing BuildRequires (snappy-devel, gcc-c++). Added
+  Epoch to ensure this is treated as an upgrade over the previously
+  shipped 0.7.3.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.7.3-3PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
