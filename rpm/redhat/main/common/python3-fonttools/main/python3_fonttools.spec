@@ -6,7 +6,7 @@
 Name:		python3-%{pname}
 Summary:	Tools to manipulate font files
 Version:	4.63.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/%{version}/%{sname}-%{version}.tar.gz
 License:	MIT
@@ -19,7 +19,6 @@ BuildRequires:  python3-setuptools_scm
 BuildRequires:  python3-Cython
 BuildRequires:  gcc
 
-Requires:	python3-brotli
 Requires:	python3-munkres
 Requires:       python3-lxml
 Requires:       python3-scipy
@@ -58,6 +57,11 @@ export FONTTOOLS_WITH_CYTHON=1
 %{python3_sitearch}/%{sname}-%{version}-py%{py3ver}.egg-info
 
 %changelog
+* Mon Sep 14 2026 - Devrim Gündüz <devrim@gunduz.org> 4.63.0-2PGDG
+- Drop the hard Requires on python3-brotli: upstream only lists brotli as
+  an optional extra (WOFF2 compression support), not a core dependency,
+  and pg_statviz (this package's sole consumer) doesn't need it either.
+
 * Mon Aug 31 2026 - Devrim Gündüz <devrim@gunduz.org> 4.63.0-1PGDG
 - Update to 4.63.0 per changes described at:
   https://github.com/fonttools/fonttools/releases/tag/4.63.0
