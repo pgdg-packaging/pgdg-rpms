@@ -15,11 +15,12 @@
 Summary:	JDBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.0
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
 Patch0:		%{sname}-pgdg-rpm.patch
+Patch1:		%{sname}-0.5.0-pg18.patch
 
 %if 0%{?rhel} == 8
 BuildRequires:	java-11-openjdk-devel
@@ -88,6 +89,7 @@ This package provides JIT support for jdbc_fdw
 %prep
 %setup -q -n %{sname}-%{version}
 %patch -P 0 -p0
+%patch -P 1 -p0
 
 %build
 
@@ -113,6 +115,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/lib/*.so
 %{pginstdir}/share/extension/*.sql
 %{pginstdir}/share/extension/*.control
+%{pginstdir}/share/extension/*.class
 %{pginstdir}/doc/extension/README-%{sname}.md
 
 %if %llvm
@@ -122,6 +125,31 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-9PGDG
+- Add jdbc_fdw-0.5.0-pg18.patch, fixing three PG18 build breaks:
+  (1) commands/explain.h now only forward-declares "struct ExplainState"
+  (full definition moved to the new commands/explain_state.h), so
+  ExplainState-typed function signatures no longer compile; (2)
+  create_foreignscan_path()/create_foreign_upper_path() gained a new
+  "disabled_nodes" argument; (3) jq.c declared/defined
+  jdbc_destroy_jvm() with an empty, unprototyped parameter list, which
+  modern GCC (defaulting towards C23 semantics) now treats as "takes no
+  arguments", causing an incompatible-pointer-type error when it's
+  passed to on_proc_exit() (which expects a two-argument callback) -
+  this one isn't actually PG18-specific, just newly exposed by it.
+  Also fixes a pre-existing bug in jdbc_fdw-pgdg-rpm.patch's own
+  Makefile changes, unmasked once the above got the build past its
+  first C compile errors: that patch prefixes JAVA_SOURCES with
+  $(srcdir), but the "all:$(JAVA_CLASSES)" rule referencing it (via
+  JAVA_CLASSES) sits *before* "include $(PGXS)" in the Makefile, which
+  is what actually defines $(srcdir) - so make expanded it as empty at
+  parse time, producing a bogus "/JDBCUtils.class" prerequisite with no
+  matching rule ("No rule to make target '/JDBCUtils.class'"). Moved
+  the "all:" rule to after the include. Hacked by Claude.
+- Add the 4 compiled *.class files to %%files - they install into
+  %%{pginstdir}/share/extension/ but were never referenced, since the
+  Java build never actually succeeded before now.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-8PGDG
 - Pin java-11/17/21-openjdk(-devel) on RHEL 8/9/10 respectively (and
   java-25-amazon-corretto on Amazon Linux 2023), instead of the

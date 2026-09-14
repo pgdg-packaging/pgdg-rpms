@@ -1,0 +1,96 @@
+--- jq.c.old	2026-09-14 17:18:27.408525017 +0300
++++ jq.c	2026-09-14 17:18:39.658885502 +0300
+@@ -100,7 +100,7 @@
+ /*
+  * JVM destroy function
+  */
+-static void jdbc_destroy_jvm();
++static void jdbc_destroy_jvm(int code, Datum arg);
+ 
+ /*
+  * JVM attach function
+@@ -265,7 +265,7 @@
+  * jdbc_destroy_jvm Shuts down the JVM.
+  */
+ static void
+-jdbc_destroy_jvm()
++jdbc_destroy_jvm(int code, Datum arg)
+ {
+ 	jint res;
+ 
+--- jdbc_fdw.c.old	2026-09-14 17:18:27.411525072 +0300
++++ jdbc_fdw.c	2026-09-14 17:19:13.997965281 +0300
+@@ -20,6 +20,10 @@
+ #include "access/sysattr.h"
+ #include "commands/defrem.h"
+ #include "commands/explain.h"
++#if PG_VERSION_NUM >= 180000
++#include "commands/explain_format.h"
++#include "commands/explain_state.h"
++#endif
+ #include "commands/vacuum.h"
+ #include "foreign/fdwapi.h"
+ #include "funcapi.h"
+@@ -787,6 +791,9 @@
+ 									 NULL,	/* default pathtarget */
+ #endif
+ 									 fpinfo->rows,
++#if PG_VERSION_NUM >= 180000
++									 0,	/* disabled_nodes */
++#endif
+ 									 fpinfo->startup_cost,
+ 									 fpinfo->total_cost,
+ 									 NIL,	/* no pathkeys */
+@@ -2395,6 +2402,9 @@
+ 										  grouped_rel,
+ 										  grouped_rel->reltarget,
+ 										  rows,
++#if PG_VERSION_NUM >= 180000
++										  0,	/* disabled_nodes */
++#endif
+ 										  startup_cost,
+ 										  total_cost,
+ 										  NIL,	/* no pathkeys */
+@@ -2540,6 +2550,9 @@
+ 													   path->parent,
+ 													   path->pathtarget,
+ 													   path->rows,
++#if PG_VERSION_NUM >= 180000
++													   0,	/* disabled_nodes */
++#endif
+ 													   path->startup_cost,
+ 													   path->total_cost,
+ 													   path->pathkeys,
+@@ -2684,6 +2697,9 @@
+ 										   input_rel,
+ 										   root->upper_targets[UPPERREL_FINAL],
+ 										   rows,
++#if PG_VERSION_NUM >= 180000
++										   0,	/* disabled_nodes */
++#endif
+ 										   startup_cost,
+ 										   total_cost,
+ 										   pathkeys,
+--- Makefile.old	2026-09-14 17:25:52.283102249 +0300
++++ Makefile	2026-09-14 17:26:06.169910524 +0300
+@@ -30,9 +30,6 @@
+ 
+ PG_CPPFLAGS=-D'PKG_LIB_DIR=$(shell pg_config --sharedir)/extension' -I$(libpq_srcdir)
+ 
+-# Target to compile all Java source files
+-all:$(JAVA_CLASSES)
+-
+ # Rules for compiling each .java file into a .class
+ %.class: %.java
+ 	javac $<
+@@ -55,6 +52,10 @@
+ include $(top_srcdir)/contrib/contrib-global.mk
+ endif
+ 
++# Target to compile all Java source files (must come after the
++# include above, since that's what defines $(srcdir))
++all:$(JAVA_CLASSES)
++
+ ifdef REGRESS_PREFIX
+ REGRESS_PREFIX_SUB = $(REGRESS_PREFIX)
+ else
