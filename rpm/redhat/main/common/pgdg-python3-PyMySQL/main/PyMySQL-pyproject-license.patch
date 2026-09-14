@@ -1,8 +1,8 @@
---- pyproject.toml.old	2026-03-28 17:12:58.260565881 +0000
-+++ pyproject.toml	2026-03-28 17:13:17.272393566 +0000
+--- pyproject.toml.old	2026-09-14 16:14:46.538617228 +0300
++++ pyproject.toml	2026-09-14 16:14:46.542104652 +0300
 @@ -9,7 +9,7 @@
- 
- requires-python = ">=3.8"
+
+ requires-python = ">=3.9"
  readme = "README.md"
 -license = "MIT"
 +license = {text = "MIT"}

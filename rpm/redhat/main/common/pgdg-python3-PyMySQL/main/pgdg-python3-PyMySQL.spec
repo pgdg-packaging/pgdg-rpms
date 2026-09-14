@@ -14,7 +14,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Pure-Python MySQL client library
 
 License:	MIT
@@ -31,6 +31,11 @@ BuildArch:	noarch
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 %if !0%{?suse_version}
 BuildRequires:	python%{python3_pkgversion}-devel
+%else
+BuildRequires:	python-rpm-macros python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 
 %description
@@ -57,6 +62,10 @@ and Jython.
 %{python3_sitelib}/%{pname}/constants/__pycache__/*.py*
 
 %changelog
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-2PGDG
+- Update patch0
+- Add missing BRs
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-1PGDG
 - Update to 1.2.0 per changes described at:
   https://github.com/PyMySQL/PyMySQL/releases/tag/v1.2.0

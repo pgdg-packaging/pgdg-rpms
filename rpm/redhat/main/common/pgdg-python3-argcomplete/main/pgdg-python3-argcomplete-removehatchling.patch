@@ -1,0 +1,19 @@
+--- pyproject.toml.old	2026-09-14 16:09:16.279582027 +0300
++++ pyproject.toml	2026-09-14 16:12:30.601619836 +0300
+@@ -43,12 +43,11 @@
+ "Issue Tracker"= "https://github.com/kislyuk/argcomplete/issues"
+ "Change Log"= "https://github.com/kislyuk/argcomplete/blob/develop/Changes.rst"
+ 
+-[build-system]
+-requires = ["hatchling", "hatch-vcs"]
+-build-backend = "hatchling.build"
++[tool.setuptools.packages.find]
++include = ["argcomplete*"]
+ 
+-[tool.hatch.version]
+-source = "vcs"
++[tool.setuptools.package-data]
++argcomplete = ["py.typed"]
+ 
+ [tool.black]
+ line-length = 120
