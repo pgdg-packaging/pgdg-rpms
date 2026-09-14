@@ -2,9 +2,18 @@
 
 %global library google-auth
 
-Name:		python3-%{library}
+# Upstream requires Python >= 3.8; SLES 15's default python3 is 3.6, so
+# retarget to the python3.11 alt-stack there (matching the convention
+# used elsewhere in this repo, e.g. PyMySQL/argcomplete on SLES 15).
+%if 0%{?suse_version} == 1500
+%global __python3 %{_bindir}/python3.11
+%global python3_pkgversion 311
+%endif
+%{!?python3_pkgversion: %global python3_pkgversion 3}
+
+Name:		python%{python3_pkgversion}-%{library}
 Version:	2.48.0
-Release:	2%{?dist}
+Release:	3%{?dist}
 Epoch:		1
 Summary:	Google Auth Python Library
 License:	ASL 2.0
@@ -14,10 +23,16 @@ Source0:	https://github.com/googleapis/google-auth-library-python/archive/v%{ver
 
 BuildArch:	noarch
 
-BuildRequires:	python3-devel python3-setuptools
-Requires:	python3-cryptography
-Requires:	python3-pyasn1-modules
-Requires:	python3-rsa
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
+Requires:	python%{python3_pkgversion}-cryptography
+Requires:	python%{python3_pkgversion}-pyasn1-modules
+Requires:	python%{python3_pkgversion}-rsa
 
 %description
 Google Auth Python Library
@@ -26,20 +41,22 @@ Google Auth Python Library
 %autosetup -n google-auth-library-python-%{version}
 
 %build
-%py3_build
+%pyproject_wheel
 
 %install
-%py3_install
-
-%check
+%pyproject_install
 
 %files
 %license LICENSE
 %{python3_sitelib}/google/auth
 %{python3_sitelib}/google/oauth2
-%{python3_sitelib}/google_auth-%{version}*.egg-info
+%{python3_sitelib}/google_auth-%{version}.dist-info/
 
 %changelog
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 2.48.0-3PGDG
+- Use Python 3.11 on SLES 15
+- Switch to pyproject builds
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 2.48.0-2
 - Update to 2.48.0 per changes described at:
   https://github.com/googleapis/google-auth-library-python/releases/tag/v2.48.0
