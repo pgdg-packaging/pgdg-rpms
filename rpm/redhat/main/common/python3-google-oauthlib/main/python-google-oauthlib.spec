@@ -1,8 +1,18 @@
 %global library google-oauthlib
 
-Name:		python3-%{library}
+# Upstream requires Python >= 3.7; SLES 15's default python3 is 3.6, so
+# retarget to the python3.11 alt-stack there (matching python3-google
+# -auth's own SLES 15 retarget, since this package depends on it and
+# both need to be built against the same interpreter).
+%if 0%{?suse_version} == 1500
+%global __python3 %{_bindir}/python3.11
+%global python3_pkgversion 311
+%endif
+%{!?python3_pkgversion: %global python3_pkgversion 3}
+
+Name:		python%{python3_pkgversion}-%{library}
 Version:	1.2.4
-Release:	1PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Epoch:		1
 Summary:	oauthlib integration for Google Auth
 License:	ASL 2.0
@@ -12,37 +22,44 @@ Source0:	https://github.com/googleapis/google-auth-library-python-oauthlib/archi
 
 BuildArch:	noarch
 
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-wheel
+BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
+
+Requires:	python%{python3_pkgversion}-google-auth >= 2.15.0
+
 %description
 oauthlib integration for Google Auth
-
-BuildRequires:	python3-devel
-BuildRequires:	python3-setuptools
-
-Requires:	python3
 
 %prep
 %autosetup -n google-auth-library-python-oauthlib-%{version}
 
 %build
-%py3_build
+%pyproject_wheel
 
 %install
-%py3_install
-
-%check
+%pyproject_install
 
 %files
 %license LICENSE
 %doc README.rst
 %{_bindir}/google-oauthlib-tool
-%{python3_sitelib}/google_auth_oauthlib-%{version}-py*.egg-info/
-%{python3_sitelib}/google_auth_oauthlib/*.py
-%{python3_sitelib}/google_auth_oauthlib/__pycache__/*.py*
-%{python3_sitelib}/google_auth_oauthlib/tool/__pycache__/*.py*
-%{python3_sitelib}/google_auth_oauthlib/tool/*.py*
+%{python3_sitelib}/google_auth_oauthlib-%{version}.dist-info/
+%{python3_sitelib}/google_auth_oauthlib/
 
 %changelog
-* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.4-1PGDG
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.4-3PGDG
+- Switch to pyproject builds
+- Use Python 3.11 on SLES 15
+
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.4-2PGDG
+- Fix the structural spec bug.
 - Update to 1.2.4 per changes described at:
   https://github.com/googleapis/google-auth-library-python-oauthlib/releases/tag/v1.2.4
 
