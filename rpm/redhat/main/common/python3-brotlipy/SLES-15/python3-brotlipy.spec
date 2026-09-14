@@ -1,1 +1,0 @@
-../main/python3-brotlipy.spec
