@@ -17,7 +17,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.62.0
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -118,6 +118,14 @@ popd
 %{__cp} storedproc/pgsql/c/%{sname}.so %{buildroot}/%{pginstdir}/lib
 %{__cp} storedproc/pgsql/c/%{sname}--0.45.0.sql %{buildroot}/%{pginstdir}/share/extension/%{sname}--%{version}.sql
 
+# Install the plain (non-extension) TPC-C stored-procedure SQL scripts,
+# referenced in %%files below but never actually installed
+%{__cp} storedproc/pgsql/pgsql/stock_level.sql %{buildroot}/%{pginstdir}/share/
+%{__cp} storedproc/pgsql/pgsql/delivery.sql %{buildroot}/%{pginstdir}/share/
+%{__cp} storedproc/pgsql/pgsql/new_order.sql %{buildroot}/%{pginstdir}/share/
+%{__cp} storedproc/pgsql/pgsql/order_status.sql %{buildroot}/%{pginstdir}/share/
+%{__cp} storedproc/pgsql/pgsql/payment.sql %{buildroot}/%{pginstdir}/share/
+
 # Remove files which are installed with the common package:
 %{__rm} -f %{buildroot}/%{_bindir}/*
 %{__rm} -f %{buildroot}/%{_mandir}/man1/dbt2*
@@ -148,6 +156,11 @@ popd
 %endif
 
 %changelog
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-5PGDG
+- Actually install stock_level.sql, delivery.sql, new_order.sql,
+  order_status.sql and payment.sql in %%install  They're the plain
+  TPC-C stored-procedure SQL scripts from storedproc/pgsql/pgsql/.
+
 * Wed Sep 9 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-4PGDG
 - Re-enable debug* packages.
 
