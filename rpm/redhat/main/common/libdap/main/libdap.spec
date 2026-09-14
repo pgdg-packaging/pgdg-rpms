@@ -1,13 +1,11 @@
 Name:		libdap
 Summary:	The C++ DAP2 library from OPeNDAP
-Version:	3.20.11
+Version:	3.21.1
 Release:	1%{?dist}
 
 License:	LGPLv2+
-URL:		 http://www.opendap.org/
-Source0:	http://www.opendap.org/pub/source/libdap-%{version}.tar.gz
-#Don't run HTTP tests - builders don't have network connections
-Patch0:		libdap-offline.patch
+URL:		 https://www.opendap.org/
+Source0:	https://www.opendap.org/pub/source/libdap-%{version}.tar.gz
 
 BuildRequires:	gcc-c++
 # For autoreconf
@@ -76,7 +74,7 @@ autoreconf -f -i
 
 
 %install
-%{__make} %{?_smp_mflags} install INSTALL="%{__install} -p"
+%{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} INSTALL="%{__install} -p"
 %{__mkdir} -p %{buildroot}%{_libdir}/libdap
 %{__mv} %{buildroot}%{_libdir}/libtest-types.a %{buildroot}%{_libdir}/libdap/
 %{__rm} %{buildroot}%{_libdir}/*.la
@@ -95,10 +93,10 @@ touch -r ChangeLog __dist_docs/*
 
 %files
 %license COPYRIGHT_W3C COPYING COPYRIGHT_URI
-%doc README NEWS README.dodsrc
+%doc README.md NEWS README.dodsrc
 %{_bindir}/getdap
 %{_bindir}/getdap4
-%{_libdir}/libdap.so.25*
+%{_libdir}/libdap.so.27*
 %{_libdir}/libdapclient.so.6*
 %{_libdir}/libdapserver.so.7*
 %{_mandir}/man1/getdap.1*
@@ -121,9 +119,10 @@ touch -r ChangeLog __dist_docs/*
 
 
 %changelog
-* Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.11-1
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 3.21.1-1
 - Update to 3.20.11 per changes described at:
   https://github.com/OPENDAP/libdap4/releases/tag/3.20.11
+- Drop libdap-offline.patch
 
 * Sat Feb 15 2020 Devrim Gündüz <devrim@gunduz.org> - 3.20.5-1
 - Initial packaging for PostgreSQL RPM repository, to satisfy
