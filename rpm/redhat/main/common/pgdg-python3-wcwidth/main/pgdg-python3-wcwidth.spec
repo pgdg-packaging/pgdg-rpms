@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.8.3
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -74,10 +74,12 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %doc README.rst
 %license LICENSE
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
-%{python3_sitelib}/%{modname}/*.py*
-%{python3_sitelib}/%{modname}/__pycache__/*.py*
+%{python3_sitelib}/%{modname}/
 
 %changelog
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-4PGDG
+- Package the whole %%{modname}/ directory instead of hand-picked globs
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-3PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
