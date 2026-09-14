@@ -31,7 +31,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	%{ppg2majver}.%{ppg2midver}.%{ppg2minver}
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -103,6 +103,12 @@ done
 # This test is skipped on 3.7 and has a syntax error so brp-python-bytecompile would choke on it
 %{__rm} -f %{buildroot}%{python3_sitearch}/%{sname}/tests/test_async_keyword.py
 
+# These test modules aren't meant to be run directly (they're pytest
+# modules, not scripts), but ship an ambiguous "#!/usr/bin/env python"
+# shebang that trips brp-mangle-shebangs; strip it instead of packaging
+# a bogus interpreter tag.
+find %{buildroot}%{python3_sitearch}/%{sname}/tests -name '*.py' | xargs sed -i '1{/^#!\/usr\/bin\/env python$/d}'
+
 %files
 %defattr(-,root,root)
 %doc AUTHORS LICENSE NEWS README.rst
@@ -125,6 +131,11 @@ done
 %endif
 
 %changelog
+* Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.13-44PGDG
+- Strip the ambiguous "#!/usr/bin/env python" shebang from the packaged
+  tests/*.py files in %%install, so brp-mangle-shebangs stops failing
+  the build on Fedora.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.13-43PGDG
 - Add missing BR
 
