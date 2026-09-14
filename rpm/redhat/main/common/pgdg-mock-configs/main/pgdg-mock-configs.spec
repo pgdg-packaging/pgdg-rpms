@@ -1,5 +1,5 @@
 Name:		pgdg-mock-configs
-Version:	2.0.3
+Version:	2.0.4
 Release:	1PGDG%{?dist}
 Summary:	PGDG RPM mock core config files basic chroots
 License:	PostgreSQL
@@ -44,25 +44,30 @@ PGDG mock configuration files which allow you to create chroots for Fedora and R
 %license LICENSE.txt
 %doc README.txt
 %{_sysconfdir}/mock/pgdg-fedora-*.cfg
+%{_sysconfdir}/mock/pgdg-opensuse-leap-*.cfg
 %{_sysconfdir}/mock/pgdg-rocky-*.cfg
 %{_sysconfdir}/mock/templates/pgdg-*.tpl
 
 %changelog
+* Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.4-1PGDG
+- Update to 2.0.4 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0.4
+
 * Wed Aug 5 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.3-1PGDG
 - Update to 2.0.3 per changes described at:
-  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-config-v2.0.3
+  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0.3
 
 * Wed Mar 25 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.2-1PGDG
 - Update to 2.0.2 per changes described at:
-  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-config-v2.0.2
+  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0.2
 
 * Tue Oct 28 2025 Devrim Gündüz <devrim@gunduz.org> 2.0.1-1PGDG
 - Update to 2.0.1 per changes described at:
-  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-config-v2.0.1
+  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0.1
 
 * Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> 2.0-1PGDG
 - Update to 2.0 per changes described at:
-  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-config-v2.0
+  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0
 
 * Wed Feb 26 2025 Devrim Gündüz <devrim@gunduz.org> 1.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
