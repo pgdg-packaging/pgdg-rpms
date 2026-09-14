@@ -2,40 +2,50 @@
 # We will specify dependencies in the spec file.
 %{?python_disable_dependency_generator}
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __python3 %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
+%if 0%{?fedora} && 0%{?fedora} <= 44
+%global __python3 %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
 %if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
+%global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 313
+%endif
+
+# python3-google-auth and python3-google-oauthlib are retargeted to the
+# python3.11 alt-stack on SLES 15 specifically (their own python_requires
+# floors are newer than SLES 15's default python3.6), but keep their
+# plain "python3-" naming everywhere else, including SLES 16 (whose
+# default python3 is already new enough). This tracks their real
+# package names independently of this spec's own %%python3_pkgversion
+# above, which follows a different (Fedora dnf virtual-package) naming
+# convention. python3-google-cloud-bigquery is never retargeted anywhere.
+%global googauth_pkgversion 3
+%if 0%{?suse_version} == 1500
+%global googauth_pkgversion 311
 %endif
 
 %global debug_package %{nil}
 
-%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
@@ -54,9 +64,9 @@ BuildRequires:	pyproject-rpm-macros
 %endif
 
 Requires:	multicorn2
-Requires:	python3-google-auth = 1.14.3
-Requires:	python3-google-oauthlib = 0.4.1
-Requires:	python3-google-cloud-bigquery = 1.24
+Requires:	python%{googauth_pkgversion}-google-auth >= 2.48.0
+Requires:	python%{googauth_pkgversion}-google-oauthlib >= 1.2.4
+Requires:	python3-google-cloud-bigquery >= 1.24.0
 
 %description
 bigquery_fdw is a BigQuery foreign data wrapper for PostgreSQL using
@@ -82,13 +92,16 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %license LICENSE
 %{_bindir}/bq_client_test
 %{python3_sitelib}/%{name}/*.py
-%if 0%{?rhel} || 0%{?fedora}
 %{python3_sitelib}/%{name}/__pycache__/*.pyc
-%endif
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
-* Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-11PGDG
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-12PGDG
+- Refresh the stale, hardcoded exact-version Requires on
+  python3-google-auth (was = 1.14.3), python3-google-oauthlib (was =
+  0.4.1) and python3-google-cloud-bigquery (was = 1.24) 
+- Switch to pyproject builds.
+- Enable pycache everywhere
 - Remove Fedora <= 42 support
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-10PGDG
