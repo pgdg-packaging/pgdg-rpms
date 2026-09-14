@@ -6,6 +6,10 @@
 # distro matrix (Fedora 43/44, Rocky 9/10, openSUSE Leap 16), to catch
 # distro/GCC-specific build failures locally instead of on the buildfarm.
 #
+# Mock builds within a matrix run in parallel (each distro uses its own
+# mock config/chroot under /var/lib/mock/<config>/, so they don't collide).
+# Set MOCK_PARALLEL_JOBS to cap how many run concurrently (default: all).
+#
 # Run from anywhere inside a pgrpms checkout.
 
 set -euo pipefail
@@ -48,6 +52,7 @@ echo "Directory: $PKG_DIR"
 cd "$PKG_DIR"
 
 DISTROS=(fedora-43 fedora-44 rocky-9 rocky-10 opensuse-leap-16)
+MAX_PARALLEL="${MOCK_PARALLEL_JOBS:-${#DISTROS[@]}}"
 
 declare -A RESULTS_PG18
 declare -A RESULTS_PG16
@@ -67,15 +72,36 @@ run_matrix() {
         echo "No SRPM found for PG$pgver build." >&2
         return 1
     fi
+
+    local tmpdir
+    tmpdir="$(mktemp -d)"
+
+    local running=0
     for distro in "${DISTROS[@]}"; do
         local cfg="pgdg-${distro}-pg${pgver}-x86_64"
-        echo "=== mock -r $cfg $srpm ==="
-        if sudo mock -r "$cfg" "$srpm"; then
-            results_ref["$distro"]="PASS"
-        else
-            results_ref["$distro"]="FAIL"
+        echo "=== launching mock -r $cfg $srpm (parallel) ==="
+        (
+            if sudo mock -r "$cfg" "$srpm" > "$tmpdir/$distro.log" 2>&1; then
+                echo PASS > "$tmpdir/$distro.result"
+            else
+                echo FAIL > "$tmpdir/$distro.result"
+            fi
+        ) &
+
+        running=$((running + 1))
+        if [ "$running" -ge "$MAX_PARALLEL" ]; then
+            wait -n
+            running=$((running - 1))
         fi
     done
+
+    wait
+
+    for distro in "${DISTROS[@]}"; do
+        results_ref["$distro"]="$(cat "$tmpdir/$distro.result" 2>/dev/null || echo n/a)"
+    done
+
+    rm -rf "$tmpdir"
 }
 
 if [ "$PKG_KIND" = "common" ]; then
