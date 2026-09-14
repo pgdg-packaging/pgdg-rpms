@@ -4,7 +4,7 @@
 %global sname orafce
 %global orafcemajver 4
 %global orafcemidver 16
-%global orafceminver 8
+%global orafceminver 9
 
 %{!?llvm:%global llvm 1}
 
@@ -22,7 +22,7 @@ BuildRequires:	gcc krb5-devel meson
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -68,6 +68,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.9-1PGDG
+- Update to 4.16.9 per changes described at
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_16_9
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.8-2PGDG
 - Add missing BR
 
