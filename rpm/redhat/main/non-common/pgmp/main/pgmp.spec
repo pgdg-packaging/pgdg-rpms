@@ -17,13 +17,13 @@
 Summary:	PostgreSQL Multiple Precision Arithmetic Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.6
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	LGPL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 # Make sure that we use Python 3.
 Patch1:		%{sname}-python3.patch
 URL:		https://dvarrazzo.github.io/%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel gmp-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel gmp-devel python3-devel unzip
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
@@ -88,6 +88,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-4PGDG
+- Add missing BRs.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
