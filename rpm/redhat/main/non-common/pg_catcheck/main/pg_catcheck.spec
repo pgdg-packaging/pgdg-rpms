@@ -8,7 +8,7 @@ License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
 BuildRequires:	clang gcc make
-BuildRequires:	postgresql%{pgmajorversion}-devel numactl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devell
 Requires:	postgresql%{pgmajorversion}-server
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
@@ -41,7 +41,14 @@ BuildRequires:	krb5-devel readline-devel zlib-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
