@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgadmin-org/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 Source2:	%{sname}-%{pgmajorversion}.service
@@ -86,7 +86,11 @@ popd
 %install
 %{__rm} -rf %{buildroot}
 pushd build
+%if 0%{?suse_version}
+%{__make} install DESTDIR=%{buildroot}
+%else
 %cmake_install
+%endif
 popd
 
 # Rename pgagent binary, so that we can have parallel installations:
@@ -156,6 +160,9 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Sep 15 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-12PGDG
+- Fix installation on SLES.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-11PGDG
 - Add missing BR
 
