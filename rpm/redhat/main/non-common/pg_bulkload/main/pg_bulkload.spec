@@ -22,11 +22,11 @@
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
-BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel libselinux-devel
 BuildRequires:	libsepol-devel readline-devel krb5-devel zlib-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -36,6 +36,14 @@ Requires:	liblz4-1
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	lz4-devel
 Requires:	lz4-libs
+%endif
+
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
 %endif
 
 # OpenSSL dependency
@@ -140,7 +148,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
-* Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}-4PGDG
+* Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-4PGDG
+- Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
+* Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
   dropped the llvm BuildRequires/subpackage/files while the build still
