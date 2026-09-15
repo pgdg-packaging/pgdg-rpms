@@ -10,6 +10,11 @@
 # mock config/chroot under /var/lib/mock/<config>/, so they don't collide).
 # Set MOCK_PARALLEL_JOBS to cap how many run concurrently (default: all).
 #
+# -u/--unique-ext lets a caller (e.g. mock-build-all.sh, running several
+# packages against the SAME distro/PG version concurrently) keep those runs
+# from colliding on the identical /var/lib/mock/<config>/ chroot -- it's
+# passed straight through to mock's own --uniqueext.
+#
 # PostgreSQL major versions to test against come from PG_VERSIONS below
 # (override with -p/--pg-versions), e.g. add 19 once it's out:
 #   ./mock-build-matrix.sh -p "18 16 19" orafce
@@ -39,15 +44,19 @@ fi
 # Default PG major versions to test against; override with -p/--pg-versions.
 PG_VERSIONS=(18 16)
 DISTROS=(fedora-43 fedora-44 rocky-9 rocky-10 opensuse-leap-16)
+UNIQUE_EXT=""
 
 usage() {
     cat <<EOF >&2
-Usage: $0 [-p "18 16"] [-d "fedora-43 rocky-9"] <package-name>
+Usage: $0 [-p "18 16"] [-d "fedora-43 rocky-9"] [-u ext] <package-name>
 
   -p, --pg-versions "18 16"   PostgreSQL major versions to build/test (space-separated).
                               Default: ${PG_VERSIONS[*]}
   -d, --distros "rocky-9"     Override the distro matrix (space-separated distro tokens).
                               Default: ${DISTROS[*]}
+  -u, --unique-ext ext        Passed through to mock's --uniqueext, so a caller running
+                              several packages concurrently against the same distro/PG
+                              version doesn't collide on the same chroot.
 EOF
     exit 1
 }
@@ -60,6 +69,10 @@ while [ $# -gt 0 ]; do
             ;;
         -d|--distros)
             read -r -a DISTROS <<< "$2"
+            shift 2
+            ;;
+        -u|--unique-ext)
+            UNIQUE_EXT="$2"
             shift 2
             ;;
         -h|--help)
@@ -160,9 +173,11 @@ run_matrix() {
     local running=0
     for distro in "${DISTROS[@]}"; do
         local cfg="pgdg-${distro}-pg${pgver}-x86_64"
-        echo "=== launching mock -r $cfg $srpm (parallel) ==="
+        local mock_args=(-r "$cfg")
+        [ -n "$UNIQUE_EXT" ] && mock_args+=(--uniqueext="$UNIQUE_EXT")
+        echo "=== launching mock ${mock_args[*]} $srpm (parallel) ==="
         (
-            if sudo mock -r "$cfg" "$srpm" > "$tmpdir/$distro.log" 2>&1; then
+            if sudo mock "${mock_args[@]}" "$srpm" > "$tmpdir/$distro.log" 2>&1; then
                 echo PASS > "$tmpdir/$distro.result"
             else
                 echo FAIL > "$tmpdir/$distro.result"
