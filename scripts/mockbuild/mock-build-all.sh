@@ -139,8 +139,12 @@ wait
 
 # Pass 2: assemble the combined report and counts serially, in the original
 # order, from the logs Pass 1 produced -- avoids concurrent writers to $REPORT.
+# mock-build-matrix.sh exits 0 with no "=== Results ===" section when none of
+# the requested distros apply to the package (its own OS-marker-directory
+# check) -- that's N/A, not a pass, so it gets its own bucket.
 PASS_COUNT=0
 FAIL_COUNT=0
+NA_COUNT=0
 for pkg in "${ALL_PKGS[@]}"; do
     log_file="$LOG_DIR/${pkg}.log"
     script_status="$(cat "$log_file.status" 2>/dev/null || echo script-error)"
@@ -153,13 +157,19 @@ for pkg in "${ALL_PKGS[@]}"; do
         if [ "$script_status" = "script-error" ]; then
             echo "mock-build-matrix.sh exited non-zero before/without producing a results table."
             tail -20 "$log_file"
-        else
+        elif grep -q '^=== Results ===$' "$log_file"; then
             sed -n '/^=== Results ===$/,$p' "$log_file"
+        else
+            tail -3 "$log_file"
         fi
         echo
     } >> "$REPORT"
 
-    if [ "$script_status" = "script-error" ] || grep -q "FAIL" "$log_file"; then
+    if [ "$script_status" = "script-error" ]; then
+        FAIL_COUNT=$((FAIL_COUNT + 1))
+    elif ! grep -q '^=== Results ===$' "$log_file"; then
+        NA_COUNT=$((NA_COUNT + 1))
+    elif grep -q "FAIL" "$log_file"; then
         FAIL_COUNT=$((FAIL_COUNT + 1))
     else
         PASS_COUNT=$((PASS_COUNT + 1))
@@ -168,11 +178,11 @@ done
 
 {
     echo "=============================================="
-    echo "SUMMARY: $TOTAL packages, $PASS_COUNT clean, $FAIL_COUNT with at least one FAIL/error"
+    echo "SUMMARY: $TOTAL packages, $PASS_COUNT clean, $FAIL_COUNT with at least one FAIL/error, $NA_COUNT not applicable to the requested distro(s)"
     echo "=============================================="
 } >> "$REPORT"
 
 echo
-echo "Done. $TOTAL packages, $PASS_COUNT clean, $FAIL_COUNT with at least one FAIL/error."
+echo "Done. $TOTAL packages, $PASS_COUNT clean, $FAIL_COUNT with at least one FAIL/error, $NA_COUNT not applicable."
 echo "Combined report: $REPORT"
 echo "Per-package logs: $LOG_DIR/"
