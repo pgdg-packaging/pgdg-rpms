@@ -22,9 +22,10 @@ BuildRequires:	libboost_serialization1_66_0-devel libboost_atomic1_66_0-devel
 %endif
 %if 0%{?suse_version} == 1600
 BuildRequires:	libboost_date_time1_86_0 libboost_thread1_86_0
-BuildRequires:	libboost_system1_86_0 libboost_serialization1_86_0
+BuildRequires:	libboost_system1_86_0 libboost_serialization1_86_0 libboost_date_time1_86_0-devel
 BuildRequires:	libboost_serialization1_86_0-devel libboost_atomic1_86_0-devel
 BuildRequires:	libboost_filesystem1_86_0-devel libboost_regex1_86_0-devel
+BuildRequires:	libboost_thread1_86_0-devel libboost_system1_86_0-devel
 %endif
 %if 0%{?rhel}
 BuildRequires:	boost-thread boost-date-time boost-serialization
