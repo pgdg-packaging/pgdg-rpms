@@ -17,11 +17,11 @@ Summary:	PERIODs and SYSTEM VERSIONING for PostgreSQL
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.2
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.zip
-BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel unzip
 Requires:	postgresql%{pgmajorversion}
 
 %description
@@ -81,6 +81,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-9PGDG
+- Add missing BR, https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-8PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
