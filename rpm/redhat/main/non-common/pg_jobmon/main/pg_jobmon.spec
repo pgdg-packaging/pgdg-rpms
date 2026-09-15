@@ -7,7 +7,7 @@ Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	http://api.pgxn.org/dist/pg_jobmon/%{version}/pg_jobmon-%{version}.zip
 URL:		https://github.com/omniti-labs/%{sname}
-BuildRequires:	make
+BuildRequires:	make unzip
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 BuildArch:	noarch
