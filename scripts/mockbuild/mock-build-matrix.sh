@@ -3,7 +3,7 @@
 # mock-build-matrix.sh [-p "18 16"] [-d "fedora-43 rocky-9"] <package-name>
 #
 # Build the SRPM for a PGDG package and mock-build it across the full
-# distro matrix (Fedora 43/44, Rocky 9/10, openSUSE Leap 16), to catch
+# distro matrix (Fedora 43/44, Rocky 9/10, openSUSE Leap 15.6/16), to catch
 # distro/GCC-specific build failures locally instead of on the buildfarm.
 #
 # Mock builds within a matrix run in parallel (each distro uses its own
@@ -43,7 +43,7 @@ fi
 
 # Default PG major versions to test against; override with -p/--pg-versions.
 PG_VERSIONS=(18 16)
-DISTROS=(fedora-43 fedora-44 rocky-9 rocky-10 opensuse-leap-16)
+DISTROS=(fedora-43 fedora-44 rocky-9 rocky-10 opensuse-leap-15.6 opensuse-leap-16)
 UNIQUE_EXT=""
 
 usage() {
