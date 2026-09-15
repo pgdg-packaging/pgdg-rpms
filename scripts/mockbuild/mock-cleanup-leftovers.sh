@@ -61,12 +61,26 @@ for distro in "${DISTROS[@]}"; do
         continue
     fi
 
+    # Resolve $root defensively: check the command's own exit status (not
+    # just whether its output looks empty -- a failed/empty print-root-path
+    # would otherwise resolve via dirname/basename to "." and silently slip
+    # past a plain `-z` check), and require the result to actually look like
+    # a real PGDG mock root before it's ever used to build a glob pattern or
+    # passed to `mock --scrub`.
     root_path="$(sudo mock -r "$cfg" --print-root-path 2>/dev/null)"
-    root="$(basename "$(dirname "$root_path")")"
-    if [ -z "$root" ]; then
-        echo "Could not resolve root path for $cfg -- skipping $distro." >&2
+    rc=$?
+    if [ "$rc" -ne 0 ] || [ -z "$root_path" ]; then
+        echo "ERROR: 'mock -r $cfg --print-root-path' failed (exit $rc) or returned nothing -- skipping $distro." >&2
         continue
     fi
+    root="$(basename "$(dirname "$root_path")")"
+    case "$root" in
+        pgdg-*) ;;
+        *)
+            echo "ERROR: resolved root '$root' for $cfg doesn't look like a PGDG mock root -- skipping $distro (raw output: $root_path)." >&2
+            continue
+            ;;
+    esac
 
     exts=()
     for d in /var/lib/mock/"$root"-*; do
