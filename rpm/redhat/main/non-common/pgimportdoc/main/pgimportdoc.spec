@@ -7,7 +7,7 @@ Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
-BuildRequires:	clang gcc make numactl-devel
+BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
@@ -24,6 +24,13 @@ Requires:	liblz4-1
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	lz4-devel
 Requires:	lz4-libs
+%endif
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:  numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
 %endif
 # zstd dependency
 %if 0%{?suse_version} >= 1500
