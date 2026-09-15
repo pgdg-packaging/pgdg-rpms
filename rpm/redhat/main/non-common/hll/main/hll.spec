@@ -16,11 +16,11 @@
 Summary:	PostgreSQL extension adding HyperLogLog data structures as a native data type
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.21
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
-BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel gcc-c++ libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
 Requires(post):	%{_sbindir}/update-alternatives
 Requires(postun):	%{_sbindir}/update-alternatives
@@ -85,6 +85,9 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 2.21-4PGDG
+- Add missing BR
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.21-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
