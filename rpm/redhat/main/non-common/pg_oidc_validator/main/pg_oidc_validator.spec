@@ -22,7 +22,7 @@ License:	Apache 2.0
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	openssl-devel krb5-devel libcurl-devel
+BuildRequires:	gcc-c++ krb5-devel libcurl-devel openssl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if 0%{?suse_version} >= 1500
