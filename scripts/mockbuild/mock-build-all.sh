@@ -7,7 +7,10 @@
 # every package's pass/fail status into a single combined report file.
 #
 # Each package's full raw output (SRPM build + mock logs) is also kept
-# under logs/<kind>/<package>.log for later inspection of a FAIL.
+# under <log-dir>/<kind>/<package>.log for later inspection of a FAIL.
+# Logs and the combined report default to ~/mock-build-logs -- deliberately
+# outside the pgrpms checkout, since this script may live inside the repo
+# (scripts/mockbuild/) and we don't want build logs polluting `git status`.
 #
 # Run from anywhere inside a pgrpms checkout.
 
@@ -20,10 +23,11 @@ KIND="non-common"
 DISTROS_ARG=""
 PG_ARG=""
 REPORT=""
+LOG_ROOT="$HOME/mock-build-logs"
 
 usage() {
     cat <<EOF >&2
-Usage: $0 -d "opensuse-leap-16" [-k non-common] [-p "18 16"] [-o report.txt]
+Usage: $0 -d "opensuse-leap-16" [-k non-common] [-p "18 16"] [-o report.txt] [-l log-dir]
 
   -d, --distros "..."       Distro token(s) to mock-build against (space-separated,
                              passed through to mock-build-matrix.sh's -d). Required.
@@ -32,7 +36,9 @@ Usage: $0 -d "opensuse-leap-16" [-k non-common] [-p "18 16"] [-o report.txt]
                              Default: non-common
   -p, --pg-versions "18 16" PostgreSQL major versions (passed through to
                              mock-build-matrix.sh's -p). Default: mock-build-matrix.sh's own default.
-  -o, --output FILE         Combined report file. Default: mock-build-all-<kind>-<timestamp>.txt
+  -o, --output FILE         Combined report file. Default: <log-dir>/mock-build-all-<kind>-<timestamp>.txt
+  -l, --log-dir DIR         Root directory for per-package logs and the default report.
+                             Default: $LOG_ROOT (kept out of the git tree on purpose)
 EOF
     exit 1
 }
@@ -43,6 +49,7 @@ while [ $# -gt 0 ]; do
         -k|--kind) KIND="$2"; shift 2 ;;
         -p|--pg-versions) PG_ARG="$2"; shift 2 ;;
         -o|--output) REPORT="$2"; shift 2 ;;
+        -l|--log-dir) LOG_ROOT="$2"; shift 2 ;;
         -h|--help) usage ;;
         *) echo "Unknown option: $1" >&2; usage ;;
     esac
@@ -73,9 +80,9 @@ if [ ! -d "$KIND_ROOT" ]; then
     exit 1
 fi
 
-[ -n "$REPORT" ] || REPORT="mock-build-all-${KIND}-$(date +%Y%m%d-%H%M%S).txt"
-LOG_DIR="$SCRIPT_DIR/logs/$KIND"
+LOG_DIR="$LOG_ROOT/$KIND"
 mkdir -p "$LOG_DIR"
+[ -n "$REPORT" ] || REPORT="$LOG_ROOT/mock-build-all-${KIND}-$(date +%Y%m%d-%H%M%S).txt"
 
 : > "$REPORT"
 
