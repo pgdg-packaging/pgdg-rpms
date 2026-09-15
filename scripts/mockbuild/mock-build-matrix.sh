@@ -13,12 +13,26 @@
 # -u/--unique-ext lets a caller (e.g. mock-build-all.sh, running several
 # packages against the SAME distro/PG version concurrently) keep those runs
 # from colliding on the identical /var/lib/mock/<config>/ chroot -- it's
-# passed straight through to mock's own --uniqueext.
+# passed straight through to mock's own --uniqueext. Since a --uniqueext
+# chroot is single-use and mock doesn't clean it up on its own, a PASS is
+# followed by `mock --scrub=all` for that exact chroot so these don't just
+# accumulate on disk across a big mock-build-all.sh sweep; a FAIL's chroot
+# and result dir are left in place, since that's what the FAIL message
+# tells you to go inspect -- clean those up by hand once you're done, e.g.
+# `sudo mock --scrub-all-chroots` (which also sweeps any OTHER stale mock
+# chroots on the box, so use it thoughtfully, not just for PGDG's own).
 #
 # A requested distro is silently dropped if the package isn't actually
 # packaged for it -- see the OS-marker-directory check below (F-43, EL-9,
 # SLES-15, etc. next to main/). Saves time and avoids false positives/
 # negatives from mock-testing an OS a package was never meant to ship on.
+#
+# Likewise, for non-common/non-free packages, a requested PG version is
+# skipped if rpm/redhat/<NN>/<pkg>/ doesn't exist -- that per-PG-version
+# directory (symlinks back into main/'s OS dirs) not existing means the
+# package hasn't been ported to (or was dropped for) that PostgreSQL major
+# version yet. Doesn't apply to common/extras packages, which build once
+# regardless of PG version and have no such per-version directory at all.
 #
 # PostgreSQL major versions to test against come from PG_VERSIONS below
 # (override with -p/--pg-versions), e.g. add 19 once it's out:
@@ -239,6 +253,15 @@ run_matrix() {
         (
             if sudo mock "${mock_args[@]}" "$srpm" > "$tmpdir/$distro.log" 2>&1; then
                 echo PASS > "$tmpdir/$distro.result"
+                # A --uniqueext chroot is single-use (one specific package) and
+                # never gets reused/re-cleaned the way a shared config would be,
+                # so it just accumulates on disk forever unless scrubbed here.
+                # Only do this on PASS -- a FAIL's chroot/result dir is left in
+                # place since that's exactly what the FAIL message tells you to
+                # go inspect.
+                if [ -n "$UNIQUE_EXT" ]; then
+                    sudo mock -r "$cfg" --uniqueext="$UNIQUE_EXT" --scrub=all >> "$tmpdir/$distro.log" 2>&1
+                fi
             else
                 echo FAIL > "$tmpdir/$distro.result"
             fi
@@ -270,6 +293,17 @@ if [ "$PKG_KIND" = "common" ]; then
     BUILT_VERSIONS=("$common_pgver")
 else
     for pgver in "${PG_VERSIONS[@]}"; do
+        # non-common/non-free packages are versioned per PG major under
+        # rpm/redhat/<NN>/<pkg>/ (symlinks back into main/'s OS dirs) --
+        # that directory not existing means the package hasn't been ported
+        # to (or has been dropped for) that PG version yet, so building
+        # against it would be pointless. (extras/ packages don't use this
+        # per-PG-version layout at all, so this check doesn't apply to them.)
+        if [ "$PKG_KIND" != "extras" ] && [ ! -d "$REPO_ROOT/rpm/redhat/$pgver/$PKG" ]; then
+            echo "PG$pgver: no rpm/redhat/$pgver/$PKG directory — $PKG isn't built against PostgreSQL $pgver. Skipping."
+            continue
+        fi
+
         target="$(srpm_target "$pgver")"
         clean_srpm
         if make "$target"; then
@@ -279,6 +313,11 @@ else
             echo "PG$pgver ($target) build not supported/failed for $PKG — skipping mock matrix for this version."
         fi
     done
+
+    if [ "${#BUILT_VERSIONS[@]}" -eq 0 ]; then
+        echo "$PKG is not built against any of the requested PostgreSQL versions (${PG_VERSIONS[*]}). Nothing to do." >&2
+        exit 0
+    fi
 fi
 
 echo
