@@ -94,7 +94,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
-* Sun Sep 13 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-4PGDG
+* Sun Sep 13 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-4PGDG
 - Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-3PGDG
