@@ -10,7 +10,7 @@ Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.g
 URL:		https://github.com/dimitri/%{sname}
 BuildRequires:	gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel
-BuildRequires:	krb5-devel bison flex sqlite-devel
+BuildRequires:	bison flex krb5-devel libselinux-devel >= 2.9 sqlite-devel
 # zstd dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libzstd-devel >= 1.4.0
