@@ -24,7 +24,6 @@ Release:	5PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
-BuildRequires:	numactl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -34,6 +33,13 @@ Requires:	liblz4-1
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	lz4-devel
 Requires:	lz4-libs
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:  numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
+%endif
 # zstd dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libzstd-devel >= 1.4.0
