@@ -15,6 +15,11 @@
 # from colliding on the identical /var/lib/mock/<config>/ chroot -- it's
 # passed straight through to mock's own --uniqueext.
 #
+# A requested distro is silently dropped if the package isn't actually
+# packaged for it -- see the OS-marker-directory check below (F-43, EL-9,
+# SLES-15, etc. next to main/). Saves time and avoids false positives/
+# negatives from mock-testing an OS a package was never meant to ship on.
+#
 # PostgreSQL major versions to test against come from PG_VERSIONS below
 # (override with -p/--pg-versions), e.g. add 19 once it's out:
 #   ./mock-build-matrix.sh -p "18 16 19" orafce
@@ -129,6 +134,61 @@ done
 if [ -z "$PKG_DIR" ]; then
     echo "Could not find '$PKG/main' under common/, non-common/, non-free/, or extras/." >&2
     exit 1
+fi
+
+# The repo records which OSes a package actually ships for as sibling
+# directories of main/ (F-43, F-44, F-45, EL-8/9/10, SLES-12/15/16,
+# AL-2023), each holding a symlink to main/'s spec file -- that's how the
+# buildserver's per-host checkout path is populated. A package missing one
+# of those dirs simply isn't packaged for that OS (e.g. dbt2-extensions has
+# no SLES-* dir, pgdg-python3-PyMySQL only has SLES-15), so mock-testing it
+# there would be pointless at best and a false positive/negative at worst.
+# Map our distro tokens to those directory names and filter DISTROS down to
+# only what this package is actually packaged for -- but only once we see
+# at least one such marker dir; a package with none of them at all (not yet
+# migrated to this convention) is left unfiltered.
+PKG_ROOT="$MAIN_ROOT/$PKG_KIND/$PKG"
+declare -A DISTRO_MARKER=(
+    [fedora-43]="F-43"
+    [fedora-44]="F-44"
+    [fedora-45]="F-45"
+    [rocky-8]="EL-8"
+    [rocky-9]="EL-9"
+    [rocky-10]="EL-10"
+    [opensuse-leap-15.6]="SLES-15"
+    [opensuse-leap-16]="SLES-16"
+)
+KNOWN_MARKERS=(F-43 F-44 F-45 EL-7 EL-8 EL-9 EL-10 SLES-12 SLES-15 SLES-16 AL-2023)
+
+package_has_markers=0
+for m in "${KNOWN_MARKERS[@]}"; do
+    if [ -d "$PKG_ROOT/$m" ]; then
+        package_has_markers=1
+        break
+    fi
+done
+
+if [ "$package_has_markers" -eq 1 ]; then
+    FILTERED_DISTROS=()
+    SKIPPED_DISTROS=()
+    for distro in "${DISTROS[@]}"; do
+        marker="${DISTRO_MARKER[$distro]:-}"
+        if [ -z "$marker" ] || [ -d "$PKG_ROOT/$marker" ]; then
+            FILTERED_DISTROS+=("$distro")
+        else
+            SKIPPED_DISTROS+=("$distro")
+        fi
+    done
+    if [ "${#SKIPPED_DISTROS[@]}" -gt 0 ]; then
+        echo "Not packaged for: ${SKIPPED_DISTROS[*]} (no matching OS dir under $PKG_ROOT) — skipping those."
+    fi
+    DISTROS=("${FILTERED_DISTROS[@]}")
+fi
+
+if [ "${#DISTROS[@]}" -eq 0 ]; then
+    available="$(find "$PKG_ROOT" -maxdepth 1 -mindepth 1 -type d ! -name main -printf '%f ' 2>/dev/null)"
+    echo "$PKG is not packaged for any of the requested distros (only available for: ${available:-none}). Nothing to do." >&2
+    exit 0
 fi
 
 echo "Package: $PKG ($PKG_KIND)"
