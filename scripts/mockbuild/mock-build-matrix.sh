@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# mock-build-matrix.sh <package-name>
+# mock-build-matrix.sh [-p "18 16"] [-d "fedora-43 rocky-9"] <package-name>
 #
 # Build the SRPM for a PGDG package and mock-build it across the full
 # distro matrix (Fedora 43/44, Rocky 9/10, openSUSE Leap 16), to catch
@@ -10,14 +10,78 @@
 # mock config/chroot under /var/lib/mock/<config>/, so they don't collide).
 # Set MOCK_PARALLEL_JOBS to cap how many run concurrently (default: all).
 #
+# PostgreSQL major versions to test against come from PG_VERSIONS below
+# (override with -p/--pg-versions), e.g. add 19 once it's out:
+#   ./mock-build-matrix.sh -p "18 16 19" orafce
+#
+# global.sh (assumed to sit alongside this script once deployed) is
+# consulted only to tell whether a requested version is currently the
+# beta/alpha (pgBetaVersion/pgAlphaVersion) -- if so "make srpmNNtesting"
+# is used instead of "make srpmNN". We deliberately don't source the whole
+# file (it gates on running as the postgres user and requires
+# ~/bin/global-local.sh, which are buildserver-only prerequisites this
+# script doesn't need) -- only its PostgreSQL-version array declarations
+# are pulled in.
+#
 # Run from anywhere inside a pgrpms checkout.
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+GLOBAL_SH="$SCRIPT_DIR/global.sh"
+
+pgBetaVersion=""
+pgAlphaVersion=""
+if [ -f "$GLOBAL_SH" ]; then
+    eval "$(grep -E '^declare -a pg(StableBuilds|TestBuilds|BetaVersion|AlphaVersion)=' "$GLOBAL_SH")"
+fi
+
+# Default PG major versions to test against; override with -p/--pg-versions.
+PG_VERSIONS=(18 16)
+DISTROS=(fedora-43 fedora-44 rocky-9 rocky-10 opensuse-leap-16)
+
+usage() {
+    cat <<EOF >&2
+Usage: $0 [-p "18 16"] [-d "fedora-43 rocky-9"] <package-name>
+
+  -p, --pg-versions "18 16"   PostgreSQL major versions to build/test (space-separated).
+                              Default: ${PG_VERSIONS[*]}
+  -d, --distros "rocky-9"     Override the distro matrix (space-separated distro tokens).
+                              Default: ${DISTROS[*]}
+EOF
+    exit 1
+}
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -p|--pg-versions)
+            read -r -a PG_VERSIONS <<< "$2"
+            shift 2
+            ;;
+        -d|--distros)
+            read -r -a DISTROS <<< "$2"
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "Unknown option: $1" >&2
+            usage
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
 PKG="${1:-}"
 if [ -z "$PKG" ]; then
-    echo "Usage: $0 <package-name>" >&2
-    exit 1
+    usage
 fi
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
@@ -51,12 +115,23 @@ echo "Package: $PKG ($PKG_KIND)"
 echo "Directory: $PKG_DIR"
 cd "$PKG_DIR"
 
-DISTROS=(fedora-43 fedora-44 rocky-9 rocky-10 opensuse-leap-16)
 MAX_PARALLEL="${MOCK_PARALLEL_JOBS:-${#DISTROS[@]}}"
 
-declare -A RESULTS_PG18
-declare -A RESULTS_PG16
-HAS_PG16=0
+# make target for a given PG major version: srpmNNtesting when NN is the
+# current beta/alpha version per global.sh, srpmNN otherwise.
+srpm_target() {
+    local pgver="$1"
+    if [ -n "$pgBetaVersion" ] && [ "$pgver" = "$pgBetaVersion" ]; then
+        echo "srpm${pgver}testing"
+    elif [ -n "$pgAlphaVersion" ] && [ "$pgver" = "$pgAlphaVersion" ]; then
+        echo "srpm${pgver}testing"
+    else
+        echo "srpm${pgver}"
+    fi
+}
+
+declare -A RESULTS
+BUILT_VERSIONS=()
 
 # Only remove a leftover *.src.rpm; never touch anything else in the dir.
 clean_srpm() {
@@ -65,7 +140,6 @@ clean_srpm() {
 
 run_matrix() {
     local pgver="$1"
-    local -n results_ref="$2"
     local srpm
     srpm="$(ls -t ./*.src.rpm 2>/dev/null | head -1)"
     if [ -z "$srpm" ]; then
@@ -98,47 +172,50 @@ run_matrix() {
     wait
 
     for distro in "${DISTROS[@]}"; do
-        results_ref["$distro"]="$(cat "$tmpdir/$distro.result" 2>/dev/null || echo n/a)"
+        RESULTS["${pgver}:${distro}"]="$(cat "$tmpdir/$distro.result" 2>/dev/null || echo n/a)"
     done
 
     rm -rf "$tmpdir"
 }
 
 if [ "$PKG_KIND" = "common" ]; then
+    # Common packages aren't PG-version-specific -- build once and just need
+    # *a* valid chroot, so use the first configured PG version for that.
     clean_srpm
     make commonsrpm
-    run_matrix 18 RESULTS_PG18
+    common_pgver="${PG_VERSIONS[0]}"
+    run_matrix "$common_pgver"
+    BUILT_VERSIONS=("$common_pgver")
 else
-    clean_srpm
-    make srpm18
-    run_matrix 18 RESULTS_PG18
-
-    clean_srpm
-    if make srpm16; then
-        HAS_PG16=1
-        run_matrix 16 RESULTS_PG16
-    else
-        echo "PG16 build not supported for $PKG — skipping PG16 leg."
-    fi
+    for pgver in "${PG_VERSIONS[@]}"; do
+        target="$(srpm_target "$pgver")"
+        clean_srpm
+        if make "$target"; then
+            run_matrix "$pgver"
+            BUILT_VERSIONS+=("$pgver")
+        else
+            echo "PG$pgver ($target) build not supported/failed for $PKG — skipping mock matrix for this version."
+        fi
+    done
 fi
 
 echo
 echo "=== Results ==="
-if [ "$PKG_KIND" = "common" ]; then
-    printf "%-20s %s\n" "Distro" "PG18"
-    for distro in "${DISTROS[@]}"; do
-        printf "%-20s %s\n" "$distro" "${RESULTS_PG18[$distro]:-n/a}"
+{
+    printf "%-20s" "Distro"
+    for pgver in "${BUILT_VERSIONS[@]}"; do
+        printf " PG%-6s" "$pgver"
     done
-else
-    printf "%-20s %-6s %s\n" "Distro" "PG18" "PG16"
+    printf "\n"
+
     for distro in "${DISTROS[@]}"; do
-        pg16_result="n/a"
-        if [ "$HAS_PG16" -eq 1 ]; then
-            pg16_result="${RESULTS_PG16[$distro]:-n/a}"
-        fi
-        printf "%-20s %-6s %s\n" "$distro" "${RESULTS_PG18[$distro]:-n/a}" "$pg16_result"
+        printf "%-20s" "$distro"
+        for pgver in "${BUILT_VERSIONS[@]}"; do
+            printf " %-8s" "${RESULTS[${pgver}:${distro}]:-n/a}"
+        done
+        printf "\n"
     done
-fi
+}
 
 echo
 echo "On FAIL, check /var/lib/mock/<config>/result/{root,build}.log for the actual error."
