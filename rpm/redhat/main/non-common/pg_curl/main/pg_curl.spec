@@ -17,11 +17,12 @@
 Summary:	PostgreSQL tool for transferring data with URL syntax
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4.5
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
+BuildRequires:	unzip
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -80,6 +81,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
     %{pginstdir}/lib/bitcode/%{sname}/*.bc
 %endif
 %changelog
+* Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.5-2PGDG
+- Add missing BR
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.5-1PGDG
 - Update to 2.4.5 per changes described at:
   https://pgxn.org/dist/pg_curl/2.4.5/
