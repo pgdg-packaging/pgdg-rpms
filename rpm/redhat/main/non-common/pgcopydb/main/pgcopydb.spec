@@ -9,7 +9,7 @@ License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
 BuildRequires:	gcc make
-BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel numactl-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel
 BuildRequires:	krb5-devel bison flex sqlite-devel
 # zstd dependency
 %if 0%{?suse_version} >= 1500
@@ -34,13 +34,20 @@ Requires:	lz4-libs
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:	numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 BuildRequires:	libxml2-devel libxslt-devel pam-devel
 BuildRequires:	readline-devel zlib-devel
-%if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	gc
 %endif
 %if 0%{?suse_version} >= 1500
