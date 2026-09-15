@@ -8,11 +8,11 @@ License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
 BuildRequires:	clang gcc make
-BuildRequires:	postgresql%{pgmajorversion}-devell
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
-# SLES: SLES 15 does not have selinux-policy packageç
+# SLES: SLES 15 does not have selinux-policy package.
 # RHEL/Fedora has selinux-policy:
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	selinux-policy >= 3.9.13
