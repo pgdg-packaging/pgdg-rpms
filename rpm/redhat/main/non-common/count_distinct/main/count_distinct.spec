@@ -16,11 +16,11 @@
 Summary:	A hash-table based alternative to COUNT(DISTINCT ...) aggregate in PostgreSQL.
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/tvondra/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel unzip
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 3.0.1-2
@@ -80,6 +80,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.2-6PGDG
+- Add missing BR, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.2-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
