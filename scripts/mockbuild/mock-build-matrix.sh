@@ -84,9 +84,16 @@ if [ -z "$PKG" ]; then
     usage
 fi
 
+# Find the pgrpms checkout: use the current directory if it's inside one,
+# otherwise fall back to ~/git/pgrpms, the checkout path every buildserver
+# script in this repo assumes (see packagebuild.sh) -- needed because this
+# script is typically deployed to ~/bin and invoked from elsewhere.
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -z "$REPO_ROOT" ] && [ -d "$HOME/git/pgrpms/.git" ]; then
+    REPO_ROOT="$HOME/git/pgrpms"
+fi
 if [ -z "$REPO_ROOT" ]; then
-    echo "Not inside a git repository." >&2
+    echo "Not inside a git repository, and no checkout found at ~/git/pgrpms." >&2
     exit 1
 fi
 
