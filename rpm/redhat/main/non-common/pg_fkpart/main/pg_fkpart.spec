@@ -7,8 +7,15 @@ Release:	7PGDG%{?dist}
 License:	GPLv2
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/lemoineat/pg_fkpart
-BuildRequires:	make
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros
+BuildRequires:	make unzip
+BuildRequires:	postgresql%{pgmajorversion}-devel
+%if 0%{?rhel} || 0%{?fedora}
+BuildRequires:  numactl-devel
+Requires:	numactl-libs
+%else
+BuildRequires:	libnuma-devel
+Requires:	libnuma1
+%endif
 Requires:	postgresql%{pgmajorversion}-server
 BuildArch:	noarch
 
