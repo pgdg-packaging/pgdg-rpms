@@ -27,3 +27,57 @@ repobuild2023testing: prep
 	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
 	-bb $(SPECFILE)
 	make repobfsrpm2023testing
+
+repobfsrpm43testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild43testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm43testing
+
+repobfsrpm44testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild44testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm44testing
+
+repobfsrpm45testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild45testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm45testing
