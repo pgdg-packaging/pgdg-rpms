@@ -23,8 +23,6 @@
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-
 %global sname pglast
 
 Name:		pglast
@@ -41,14 +39,12 @@ Source0:	https://files.pythonhosted.org/packages/source/p/%{sname}/%{sname}-%{ve
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
-# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
-# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
-# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
-# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+%endif
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
-%endif
+BuildRequires:	python%{python3_pkgversion}-wheel
+
 BuildRequires:	gcc
 BuildRequires:	make
 
