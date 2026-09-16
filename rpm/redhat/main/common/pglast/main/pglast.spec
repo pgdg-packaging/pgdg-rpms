@@ -45,8 +45,7 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
-BuildRequires:	gcc
-BuildRequires:	make
+BuildRequires:	gcc libpg_query make
 
 %description
 pglast is a Python module able to parse PostgreSQL's SQL statements
