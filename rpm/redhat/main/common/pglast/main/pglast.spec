@@ -28,7 +28,7 @@
 %global sname pglast
 
 Name:		pglast
-Version:	8.4
+Version:	7.11
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Languages AST and statements prettifier
 License:	GPLv3+
@@ -79,5 +79,5 @@ code, as well as building tools such as pgspot.
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
-* Wed Sep 16 2026 Devrim Gunduz <devrim@gunduz.org> - 8.4-1PGDG
+* Wed Sep 16 2026 Devrim Gunduz <devrim@gunduz.org> - 7.11-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
