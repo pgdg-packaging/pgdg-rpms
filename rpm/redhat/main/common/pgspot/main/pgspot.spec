@@ -43,6 +43,7 @@ BuildRequires:	pyproject-rpm-macros
 # into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+BuildRequires:	python%{python3_pkgversion}
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
@@ -59,9 +60,6 @@ pgspot checks for the following vulnerabilities:
 
 %prep
 %setup -q -n %{sname}-%{version}
-# Upstream pins pglast==7.11; we ship pglast 8.4 in this repo, so bump
-# the pin to match what is actually available.
-sed -i 's/pglast==7.11/pglast==8.4/' setup.cfg
 
 %build
 %pyproject_wheel
@@ -82,7 +80,4 @@ sed -i 's/pglast==7.11/pglast==8.4/' setup.cfg
 
 %changelog
 * Wed Sep 16 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.2-1PGDG
-- Bump pinned pglast requirement to 8.4 to match the packaged pglast
-  version. Not bumping up the release number as I did not build this
-  release yet.
 - Initial packaging for the PostgreSQL RPM repository
