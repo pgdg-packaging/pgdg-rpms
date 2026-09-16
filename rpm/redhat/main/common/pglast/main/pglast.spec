@@ -59,6 +59,12 @@ code, as well as building tools such as pgspot.
 
 %prep
 %setup -q -n %{sname}-%{version}
+# Upstream declares license as a bare PEP 639 SPDX string, which the
+# setuptools shipped on RHEL 9/10 and Leap 16 is too old to validate
+# ("project.license must be valid exactly by one definition"). Rewrite
+# it to the older PEP 621 {text = ...} form, which every setuptools in
+# our build matrix accepts.
+sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/' pyproject.toml
 
 %build
 %pyproject_wheel
