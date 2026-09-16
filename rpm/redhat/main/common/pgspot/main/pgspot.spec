@@ -23,8 +23,6 @@
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-
 %global sname pgspot
 
 Name:		pgspot
@@ -47,6 +45,7 @@ BuildRequires:	python%{python3_pkgversion}
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 
 %description
