@@ -43,7 +43,6 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
-%endif
 
 %description
 pgspot checks extension scripts for PostgreSQL security best practices.
