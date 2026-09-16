@@ -16,8 +16,8 @@ setup_gpg_agent() {
 
     cat > "$GPG_AGENT_CONF" <<EOF
 # Cache settings for automated signing
-default-cache-ttl 86400
-max-cache-ttl 86400
+default-cache-ttl 345600
+max-cache-ttl 345600
 
 # Allow preset passphrases
 allow-preset-passphrase
