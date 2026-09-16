@@ -37,10 +37,7 @@ BuildArch:	noarch
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
-# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
-# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
-# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
-# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+%endif
 BuildRequires:	python%{python3_pkgversion}
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
