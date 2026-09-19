@@ -1,4 +1,3 @@
-%global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 %global	python_runtimes python3
 
 %{?python_disable_dependency_generator}
@@ -13,6 +12,7 @@ Url:		https://github.com/dbcli/%{name}
 Source0:	https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 
 BuildRequires:	python3-devel python3-pip python3-setuptools
+BuildRequires:	python3-setuptools_scm
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -77,6 +77,12 @@ This is a build of the pgcli for the debug build of Python 3.
 * Sat Sep 19 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.0-1PGDG
 - Update to 4.7.0 per changes described at:
   https://github.com/dbcli/pgcli/releases/tag/v4.7.0
+- Add BR for setuptools_scm. Upstream derives the version through it, and
+  without it the wheel is built as pgcli-0.0.0, so the %%files entry for
+  pgcli-%%{version}.dist-info does not match.
+- Drop the %%global python3_sitelib override, which used distutils
+  (removed in Python 3.12); the macro is already provided by python3-devel
+  and python-rpm-macros.
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-3PGDG
 - Add missing BR
