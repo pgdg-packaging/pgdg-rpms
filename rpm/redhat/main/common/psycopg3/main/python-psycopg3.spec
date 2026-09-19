@@ -37,10 +37,14 @@ Release:	1PGDG%{?dist}
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
 Source0:	https://github.com/psycopg/psycopg/archive/refs/tags/%{version}.tar.gz
-Patch0:		psycopg-3.3.3-pyproject-license.patch
-Patch1:		psycopg-3.3.3-_c_pyproject-license.patch
+# psycopg_c's GitHub tarball needs Cython >= 3.1 to build; use its PyPI
+# sdist instead, which ships pre-generated .c files.
+Source1:	https://pypi.io/packages/source/p/psycopg-c/psycopg_c-%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# To compile psycopg_c; the PGDG minimal buildroots don't include a
+# compiler by default.
+BuildRequires:	gcc
 %if 0%{?amzn} == 2023
 BuildRequires:	python3.13-wheel
 BuildRequires:	python3.13-devel python3.13-pip python3.13-setuptools
@@ -64,8 +68,6 @@ BuildRequires:	pyproject-rpm-macros pyproject-srpm-macros
 Requires:	libpq5 >= 10.0
 Requires:	python3-typing-extensions
 
-BuildArch:	noarch
-
 %description
 Psycopg is the most popular PostgreSQL adapter for the Python
 programming language. At its core it fully implements the Python DB
@@ -76,6 +78,7 @@ features offered by PostgreSQL.
 %if 0%{?fedora} >= 42
 %package -n python3-%{sname}-tests
 Summary:	A testsuite for Python 3
+BuildArch:	noarch
 Requires:	python3-%sname = %version-%release
 
 %description -n python3-%{sname}-tests
@@ -85,6 +88,7 @@ This sub-package delivers set of tests for the adapter.
 %if %with_docs
 %package doc
 Summary:	Documentation for psycopg python PostgreSQL database adapter
+BuildArch:	noarch
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	python-%{sname}-doc >= 2.0.0
 Provides:	python-%{sname}-doc = %{version}-%{release}
@@ -102,9 +106,71 @@ Requires:	libpq5
 This package contains the C extensions for enhanced performance in Psycopg 3.
 
 %prep
-%setup -q -n psycopg-%{version}
-%patch -P 0 -p0
-%patch -P 1 -p0
+%setup -q -n psycopg-%{version} -a 1
+# Use psycopg_c's PyPI sdist (Source1) instead of the GitHub tarball's
+# copy, which needs a newer Cython than we have everywhere.
+rm -rf psycopg_c
+mv psycopg_c-%{version} psycopg_c
+
+# Rewrite upstream's bare PEP 639 SPDX license string to the older PEP
+# 621 {text = ...} form, which every setuptools in our build matrix can
+# parse, and drop the SPDX-only license-files key.
+for f in psycopg/pyproject.toml psycopg_c/pyproject.toml; do
+	sed -i 's/^license = "LGPL-3.0-only"$/license = {text = "LGPL-3.0-only"}/' $f
+	sed -i '/^license-files = \["LICENSE.txt"\]$/d' $f
+done
+
+# RHEL 9's setuptools (53.0.0) predates pyproject.toml [project]/
+# [tool.setuptools] support entirely, so give it psycopg's metadata via
+# setup.py instead.
+cat > psycopg/setup.py <<SETUP_PY_EOF
+from setuptools import find_packages, setup
+
+setup(
+    name="psycopg",
+    version="%{version}",
+    packages=find_packages(),
+    package_data={"psycopg": ["py.typed"]},
+)
+SETUP_PY_EOF
+
+# RHEL 10's setuptools (69.0.3) rejects the declarative
+# [[tool.setuptools.ext-modules]] table in pyproject.toml. Move the
+# Extension declarations (and cmdclass, which depends on the same
+# backend-path removed below) into a plain setup.py instead.
+sed -i '/^# Note: these ext modules/,$d' psycopg_c/pyproject.toml
+
+# The custom cython_backend needs tomli on Python < 3.11 (RHEL 9),
+# just to decide whether Cython is needed -- moot here since this
+# sdist has no .pyx to cythonize. Use plain setuptools.build_meta.
+sed -i 's/^build-backend = "cython_backend"$/build-backend = "setuptools.build_meta"/;/^backend-path = \["build_backend"\]$/d' psycopg_c/pyproject.toml
+
+# Same setuptools-53 problem as psycopg's setup.py above.
+cat > psycopg_c/setup.py <<SETUP_PY_EOF
+import sys
+
+sys.path.insert(0, "build_backend")
+from psycopg_build_ext import psycopg_build_ext  # noqa: E402
+from setuptools import Extension, setup  # noqa: E402
+
+setup(
+    name="psycopg-c",
+    version="%{version}",
+    include_package_data=True,
+    packages=["psycopg_c", "psycopg_c.pq", "psycopg_c._psycopg", "psycopg_c.types"],
+    package_data={
+        "psycopg_c": ["py.typed", "*.pyi", "*.pxd", "_psycopg/*.pxd", "pq/*.pxd"],
+    },
+    ext_modules=[
+        Extension(
+            "psycopg_c._psycopg",
+            sources=["psycopg_c/_psycopg.c", "psycopg_c/types/numutils.c"],
+        ),
+        Extension("psycopg_c.pq", sources=["psycopg_c/pq.c"]),
+    ],
+    cmdclass={"build_ext": psycopg_build_ext},
+)
+SETUP_PY_EOF
 
 %build
 # Change Python path in the scripts:
@@ -184,18 +250,37 @@ fi
 %endif
 
 %files c
-%{python3_sitelib}/psycopg_c-%{version}.dist-info/
-%{python3_sitelib}/psycopg_c/*.py*
-%{python3_sitelib}/psycopg_c/__pycache__/*py*
-%{python3_sitelib}/psycopg_c/_psycopg/*
-%{python3_sitelib}/psycopg_c/pq.pxd
-%{python3_sitelib}/psycopg_c/pq/*
-%{python3_sitelib}/psycopg_c/py.typed
+%{python3_sitearch}/psycopg_c-%{version}.dist-info/
+%{python3_sitearch}/psycopg_c/*.py*
+%{python3_sitearch}/psycopg_c/*.c
+%{python3_sitearch}/psycopg_c/*.so
+%{python3_sitearch}/psycopg_c/__pycache__/*py*
+%{python3_sitearch}/psycopg_c/_psycopg/*
+%{python3_sitearch}/psycopg_c/pq.pxd
+%{python3_sitearch}/psycopg_c/pq/*
+%{python3_sitearch}/psycopg_c/py.typed
+%{python3_sitearch}/psycopg_c/types/*
 
 %changelog
 * Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.6-1PGDG
 - Update to 3.3.6 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.3.6
+- Fix RHEL 9 and 10 build failures.
+- Switch psycopg_c to its PyPI sdist (new Source1) instead of the
+  GitHub tarball: the tarball's .pyx sources need a newer Cython than
+  RHEL 10 (and others) ship, while the sdist has pre-built .c files.
+- Add missing BuildRequires: gcc, needed now that psycopg_c actually
+  compiles on the PGDG minimal buildroots.
+- Fix %%files c: it never matched real paths for psycopg_c's compiled
+  .so/.c files, since the subpackage wasn't actually building before.
+- psycopg_c now ships real per-arch binaries, so drop the top-level
+  "BuildArch: noarch" and mark -tests/-doc noarch explicitly instead;
+  the main package now builds per-arch too.
+- Replace the static pyproject.toml license patches with an inline sed
+  in %prep (same approach used in pglast.spec), which rewrites upstream's
+  bare PEP 639 SPDX license string to the older PEP 621 {text = ...}
+  form and drops the license-files key. Avoids needing to regenerate a
+  literal-diff patch against pyproject.toml on every version bump.
 
 * Tue Sep 1 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.5-1PGDG
 - Update to 3.3.5 per changes described at:
