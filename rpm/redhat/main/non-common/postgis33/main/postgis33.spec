@@ -63,7 +63,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -119,8 +119,13 @@ Requires:	libprotobuf-c1
 BuildRequires:	libprotobuf-c-devel
 %else
 # Fedora/RHEL:
+%if 0%{?fedora} >= 45
+Requires:	protobuf3-c >= 1.1.0
+BuildRequires:	protobuf3-c-devel >= 1.1.0
+%else
 Requires:	protobuf-c >= 1.1.0
 BuildRequires:	protobuf-c-devel >= 1.1.0
+%endif
 %endif
 
 Requires:	postgresql%{pgmajorversion} geos%{geosmajorversion} >= %{geosfullversion}
@@ -417,6 +422,9 @@ fi
 %endif
 
 %changelog
+* Sat Sep 19 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-7PGDG
+- Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
+
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-6PGDG
 - Add 3 patches to fix builds against PG 18.
 

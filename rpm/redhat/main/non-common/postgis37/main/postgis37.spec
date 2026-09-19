@@ -42,7 +42,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc1_2PGDG%{?dist}
+Release:	rc1_3PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc1.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc1-en.pdf
@@ -97,8 +97,13 @@ Requires:	libprotobuf-c1
 BuildRequires:	libprotobuf-c-devel
 %else
 # Fedora/RHEL:
+%if 0%{?fedora} >= 45
+Requires:	protobuf3-c >= 1.1.0
+BuildRequires:	protobuf3-c-devel >= 1.1.0
+%else
 Requires:	protobuf-c >= 1.1.0
 BuildRequires:	protobuf-c-devel >= 1.1.0
+%endif
 %endif
 
 Requires:	postgresql%{pgmajorversion} geos%{geosmajorversion} >= %{geosfullversion}
@@ -386,6 +391,9 @@ fi
 %endif
 
 %changelog
+* Sat Sep 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-3PGDG
+- Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-2PGDG
 - Add missing BR
 

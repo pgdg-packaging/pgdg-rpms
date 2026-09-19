@@ -15,7 +15,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.6.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL Protocol Buffers logical decoder plugin
 
 License:	MIT
@@ -29,8 +29,13 @@ BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	libprotobuf-c-devel
 Requires:	libprotobuf-c1
 %else
+%if 0%{?fedora} >= 45
+BuildRequires:	protobuf3-c-devel
+Requires:	protobuf3-c
+%else
 BuildRequires:	protobuf-c-devel
 Requires:	protobuf-c
+%endif
 %endif
 
 %description
@@ -84,6 +89,9 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Sat Sep 19 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.1-2PGDG
+- Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.1-1PGDG
 - Update to 3.6.1 per changes described at:
   https://github.com/debezium/postgres-decoderbufs/releases/tag/v3.6.1.Final
