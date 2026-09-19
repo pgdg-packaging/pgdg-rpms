@@ -20,7 +20,7 @@ BuildRequires:	python3-setuptools
 BuildRequires:	python3-wheel
 
 Requires:	python3-configobj >= 5.0.5
-Requires:	python3-tabulate
+Requires:	python3-tabulate >= 0.10
 Requires:	python3-wcwidth
 
 %description
@@ -49,6 +49,7 @@ command-line interfaces.
 * Sat Sep 19 2026 Devrim Gündüz <devrim@gunduz.org> - 2.15.1-2
 - Modernise the spec file and switch to pyproject builds
 - Drop obsoleted BRs
+- Require python3-tabulate >= 0.10, matching upstream's ~= 0.10.0 pin.
 - Fix the License tag to use the SPDX identifier, and stop the
   %%description text from ending in stray backslashes.
 - Remove the unneeded egg-info cleanup in %%prep, and use %%autosetup.
