@@ -114,10 +114,13 @@ mv psycopg_c-%{version} psycopg_c
 
 # Rewrite upstream's bare PEP 639 SPDX license string to the older PEP
 # 621 {text = ...} form, which every setuptools in our build matrix can
-# parse, and drop the SPDX-only license-files key.
+# parse, and drop the SPDX-only license-files key. Also drop classifiers
+# for Python versions not yet registered on PyPI (e.g. 3.15), which
+# newer setuptools rejects as an invalid trove classifier.
 for f in psycopg/pyproject.toml psycopg_c/pyproject.toml; do
 	sed -i 's/^license = "LGPL-3.0-only"$/license = {text = "LGPL-3.0-only"}/' $f
 	sed -i '/^license-files = \["LICENSE.txt"\]$/d' $f
+	sed -i '/^    "Programming Language :: Python :: 3.15",$/d' $f
 done
 
 # RHEL 9's setuptools (53.0.0) predates pyproject.toml [project]/
@@ -265,7 +268,7 @@ fi
 * Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.6-1PGDG
 - Update to 3.3.6 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.3.6
-- Fix RHEL 9 and 10 build failures.
+- Fix RHEL 9,10 and SLES 16 build failures.
 - Switch psycopg_c to its PyPI sdist (new Source1) instead of the
   GitHub tarball: the tarball's .pyx sources need a newer Cython than
   RHEL 10 (and others) ship, while the sdist has pre-built .c files.
