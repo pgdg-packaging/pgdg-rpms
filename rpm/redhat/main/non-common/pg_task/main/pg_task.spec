@@ -21,7 +21,7 @@ License:	MIT
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 BuildRequires:	openssl-devel krb5-devel
-BuildRequires:	postgresql%{pgmajorversion}-devel wget pcre-tools
+BuildRequires:	postgresql%{pgmajorversion}-devel wget pcre2-tools
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -55,6 +55,8 @@ This package provides JIT support for pg_task
 
 %prep
 %setup -q -n %{sname}-%{version}
+# The shell scripts call pcregrep, which is called pcre2grep on most distros.
+sed -i "s:pcregrep:pcre2grep:g" *.sh
 
 %build
 %{__make} PG_CONFIG=%{pginstdir}/bin/pg_config PATH=%{pginstdir}/bin/:$PATH USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
@@ -83,6 +85,7 @@ This package provides JIT support for pg_task
 %changelog
 * Sat Sep 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-1PGDG
 - Update to 3.0.0
+- Use pcre2grep (pcre2-tools) instead of pcregrep in the shell scripts.
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.29-2PGDG
 - Add missing BR
