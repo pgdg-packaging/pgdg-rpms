@@ -20,8 +20,17 @@ Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
-BuildRequires:	openssl-devel krb5-devel
+BuildRequires:	krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel wget pcre2-tools
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
+
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
