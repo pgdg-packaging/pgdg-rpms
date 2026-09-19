@@ -15,8 +15,8 @@
 
 Summary:	PostgreSQL and Greenplum job scheduler
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.29
-Release:	2PGDG%{?dist}
+Version:	3.0.0
+Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
@@ -81,6 +81,9 @@ This package provides JIT support for pg_task
 %endif
 
 %changelog
+* Sat Sep 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-1PGDG
+- Update to 3.0.0
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.29-2PGDG
 - Add missing BR
 
