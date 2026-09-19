@@ -51,6 +51,12 @@ This is a build of the pgcli for the debug build of Python 3.
 
 %prep
 %setup -q
+# Upstream declares license as a bare PEP 639 SPDX string, which the
+# setuptools shipped on RHEL 9/10 and Leap 16 is too old to validate
+# ("project.license must be valid exactly by one definition"). Rewrite
+# it to the older PEP 621 {text = ...} form, which every setuptools in
+# our build matrix accepts.
+sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproject.toml
 
 %build
 %pyproject_wheel
@@ -83,6 +89,9 @@ This is a build of the pgcli for the debug build of Python 3.
 - Drop the %%global python3_sitelib override, which used distutils
   (removed in Python 3.12); the macro is already provided by python3-devel
   and python-rpm-macros.
+- Rewrite the bare PEP 639 SPDX license string in pyproject.toml to the
+  older PEP 621 {text = ...} form in %%prep, because the setuptools on RHEL
+  10 (and others) rejects it.
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-3PGDG
 - Add missing BR
