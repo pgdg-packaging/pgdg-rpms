@@ -4,14 +4,14 @@
 %global sname orafce
 %global orafcemajver 4
 %global orafcemidver 16
-%global orafceminver 9
+%global orafceminver 10
 
 %{!?llvm:%global llvm 1}
 
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -68,6 +68,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Fri Spe 18 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.10-1PGDG
+- Update to 4.16.10 per changes described at
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_16_10
+
 * Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.9-1PGDG
 - Update to 4.16.9 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_16_9
