@@ -13,6 +13,7 @@ Source0:	https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{vers
 
 BuildRequires:	python3-devel python3-pip python3-setuptools
 BuildRequires:	python3-setuptools_scm
+BuildRequires:	python3-wheel
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -58,6 +59,30 @@ This is a build of the pgcli for the debug build of Python 3.
 # our build matrix accepts.
 sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproject.toml
 
+%if 0%{?rhel} == 9
+# RHEL 9's setuptools (53.0.0) predates pyproject.toml [project] and
+# [tool.setuptools] support entirely: it ignores them and builds an empty
+# "UNKNOWN-0.0.0" package, so nothing (including %%{_bindir}/pgcli) gets
+# installed. Give it pgcli's metadata via setup.py instead, and keep only a
+# [build-system] table in pyproject.toml.
+cat > setup.py <<'SETUP_PY_EOF'
+from setuptools import find_packages, setup
+
+setup(
+    name="pgcli",
+    version="%{version}",
+    packages=find_packages(exclude=["tests", "tests.*"]),
+    package_data={"pgcli": ["pgclirc", "packages/pgliterals/pgliterals.json"]},
+    entry_points={"console_scripts": ["pgcli=pgcli.main:cli"]},
+)
+SETUP_PY_EOF
+cat > pyproject.toml <<'PYPROJECT_EOF'
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+PYPROJECT_EOF
+%endif
+
 %build
 %pyproject_wheel
 
@@ -92,6 +117,7 @@ sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproje
 - Rewrite the bare PEP 639 SPDX license string in pyproject.toml to the
   older PEP 621 {text = ...} form in %%prep, because the setuptools on RHEL
   10 (and others) rejects it.
+- Fix the RHEL 9 build and add the missing python3-wheel BR.
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-3PGDG
 - Add missing BR
