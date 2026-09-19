@@ -32,7 +32,7 @@
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
 Version:	3.3.6
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -101,6 +101,13 @@ database adapter.
 %package c
 Summary:	C extensions for Psycopg 3
 Requires:	libpq5
+# The OS's own native psycopg3 package (where it exists, e.g. Fedora)
+# names this same subpackage python3-psycopg3_c (underscore, from the
+# PyPI distribution name), which rpm doesn't treat as the same package
+# as our python3-psycopg3-c (hyphen) -- so both can end up installed at
+# once, fighting over the same site-packages/psycopg_c files.
+Obsoletes:	python3-%{sname}_c <= 99.0
+Provides:	python3-%{sname}_c = %{version}-%{release}
 
 %description c
 This package contains the C extensions for enhanced performance in Psycopg 3.
@@ -154,8 +161,8 @@ cat > psycopg_c/setup.py <<SETUP_PY_EOF
 import sys
 
 sys.path.insert(0, "build_backend")
-from psycopg_build_ext import psycopg_build_ext  # noqa: E402
-from setuptools import Extension, setup  # noqa: E402
+from psycopg_build_ext import psycopg_build_ext # noqa: E402
+from setuptools import Extension, setup # noqa: E402
 
 setup(
     name="psycopg-c",
@@ -163,7 +170,7 @@ setup(
     include_package_data=True,
     packages=["psycopg_c", "psycopg_c.pq", "psycopg_c._psycopg", "psycopg_c.types"],
     package_data={
-        "psycopg_c": ["py.typed", "*.pyi", "*.pxd", "_psycopg/*.pxd", "pq/*.pxd"],
+	"psycopg_c": ["py.typed", "*.pyi", "*.pxd", "_psycopg/*.pxd", "pq/*.pxd"],
     },
     ext_modules=[
         Extension(
@@ -266,7 +273,7 @@ fi
 %{python3_sitearch}/psycopg_c/types/*
 
 %changelog
-* Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.6-1PGDG
+* Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.6-42PGDG
 - Update to 3.3.6 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.3.6
 - Fix RHEL 9,10 and SLES 16 build failures.
@@ -281,7 +288,7 @@ fi
   "BuildArch: noarch" and mark -tests/-doc noarch explicitly instead;
   the main package now builds per-arch too.
 - Replace the static pyproject.toml license patches with an inline sed
-  in %prep (same approach used in pglast.spec), which rewrites upstream's
+  in %%prep (same approach used in pglast.spec), which rewrites upstream's
   bare PEP 639 SPDX license string to the older PEP 621 {text = ...}
   form and drops the license-files key. Avoids needing to regenerate a
   literal-diff patch against pyproject.toml on every version bump.
