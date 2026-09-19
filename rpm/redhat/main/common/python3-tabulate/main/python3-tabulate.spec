@@ -2,7 +2,7 @@
 
 Name:		python3-%{sname}
 Version:	0.10.0
-Release:        2%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Pretty-print tabular data in Python, a library and a command-line utility
 
 License:	MIT
@@ -79,19 +79,17 @@ EOF
 %{python3_sitelib}/%{sname}/
 
 %changelog
-* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-2
+* Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-2PGDG
 - Update to 0.10.0 per changes described at:
   https://pypi.org/project/tabulate/0.10.0/
-
 - Fix the same structural spec bug found in several other python3-*
   packages: BuildRequires/Recommends/the widechars extras-subpkg call
   sat *after* %%description with no section marker, so rpm's parser
   swallowed them as literal description prose instead of real tags.
-
 - Switch to pyproject builds.
-
 - Drop the unused "Test deps" BuildRequires (pytest, numpy, pandas,
   wcwidth) - there is no %%check section in this spec file
+- Add PGDG branding
 
 * Tue Jan 4 2022 Devrim Gündüz <devrim@gunduz.org> - 0.8.9-1
 - Initial packaging to provide pg_chameleon dependency on SLES 15.
