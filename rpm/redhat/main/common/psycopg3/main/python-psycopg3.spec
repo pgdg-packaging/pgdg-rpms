@@ -120,6 +120,7 @@ mv psycopg_c-%{version} psycopg_c
 for f in psycopg/pyproject.toml psycopg_c/pyproject.toml; do
 	sed -i 's/^license = "LGPL-3.0-only"$/license = {text = "LGPL-3.0-only"}/' $f
 	sed -i '/^license-files = \["LICENSE.txt"\]$/d' $f
+	sed -i '/^    "Programming Language :: Python :: 3.14",$/d' $f
 	sed -i '/^    "Programming Language :: Python :: 3.15",$/d' $f
 done
 
