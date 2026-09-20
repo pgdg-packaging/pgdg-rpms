@@ -19,7 +19,7 @@ VALID_ARCH_amzn=("x86_64" "aarch64")
 
 # Valid versions per OS
 VALID_VER_redhat=("10.2" "10.1" "10.0" "9.8" "9.7" "9.6" "8.10")
-VALID_VER_fedora=("44" "43")
+VALID_VER_fedora=("45" "44" "43")
 VALID_VER_sles=("15.6" "15.7" "16.0")
 VALID_VER_opensuse=("16.0")
 VALID_VER_amzn=("2023")
