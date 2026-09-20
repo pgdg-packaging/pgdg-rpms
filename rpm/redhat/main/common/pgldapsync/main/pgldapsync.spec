@@ -1,10 +1,10 @@
 %global sname pgldapsync
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -35,7 +35,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	16PGDG%{?dist}
+Release:	17PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -98,6 +98,9 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-17PGDG
+- Add Fedora 45 support
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-16PGDG
 - Remove Fedora <= 42 support
 
