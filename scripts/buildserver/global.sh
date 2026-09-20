@@ -189,6 +189,17 @@ list_unsigned_rpms() {
 	} | awk -F'\t' '$1 == "S" { signed[$2]; next } !($2 in signed) { print $3 }'
 }
 
+# Check that a gpg-agent is running to sign with. The build scripts call this
+# at the start, so that a long build is not wasted on packages which then
+# cannot be signed.
+check_gpg_agent() {
+	if ! pgrep -x gpg-agent > /dev/null; then
+		echo "${red}ERROR:${reset} GPG agent is not running. Start it with: gpg-agent --daemon"
+		return 1
+	fi
+	return 0
+}
+
 # Common function to sign packages using GPG agent.
 # Packages which already carry a signature are skipped. Set FORCE_RESIGN=1
 # to run rpmsign on all of them anyway.
@@ -205,11 +216,7 @@ sign_package() {
 	# The first parameter refers to the location of the RPMs:
 	local rpm_location="$1"
 
-	# Check if GPG agent is running
-	if ! pgrep -x gpg-agent > /dev/null; then
-		echo "${red}ERROR:${reset} GPG agent is not running. Start it with: gpg-agent --daemon"
-		return 1
-	fi
+	check_gpg_agent || return 1
 
 	echo "${green}Signing packages in ${rpm_location}...${reset}"
 
@@ -222,19 +229,47 @@ sign_package() {
 		echo "Already signed, skipping: $(( $(echo "$all_packages" | grep -c .) - $(echo "$to_sign" | grep -c .) ))"
 	fi
 
-	# Use rpmsign with gpg-agent (passphrase should be preset in agent cache)
+	# Use rpmsign with gpg-agent (passphrase should be preset in agent cache).
+	# A package that cannot be signed does not stop the others from being
+	# signed. The ones that failed are listed at the end.
+	local failed_list=""
 	for signpackagelist in $to_sign; do
 		echo "Signing: $signpackagelist"
-		rpmsign --addsign "$signpackagelist"
-
-		if [ $? -ne 0 ]; then
+		if ! rpmsign --addsign "$signpackagelist"; then
 			echo "${red}ERROR:${reset} Failed to sign $signpackagelist"
-			return 1
+			failed_list="$failed_list $signpackagelist"
 		fi
 	done
 
+	if [ -n "$failed_list" ]; then
+		echo "${red}ERROR:${reset} These packages are NOT signed:"
+		for signpackagelist in $failed_list; do
+			echo "  $signpackagelist"
+		done
+		return 1
+	fi
+
 	echo "${green}Package signing completed${reset}"
 	return 0
+}
+
+# Sign the packages of a package which is built already, and so skipped by the
+# build scripts. A package that was left unsigned by a failed signing earlier
+# gets signed this way. sign_package skips the RPMs that are signed already,
+# so this is cheap when everything is signed. Must be called from inside the
+# package's build directory, as the version comes from its spec file.
+# Usage: sign_built_package <rpm_location> [pgmajorversion]
+sign_built_package() {
+	local rpm_location="$1"
+	local pg_version="$2"
+	local -a pg_define=()
+
+	if [ -n "$pg_version" ]; then
+		pg_define=(--define "pgmajorversion ${pg_version}")
+	fi
+
+	packageVersion=$(rpmspec "${pg_define[@]}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null | head -n 1 | awk -F ': ' '{print $2}')
+	sign_package "$rpm_location"
 }
 
 # Function to preset GPG passphrase in agent (call this once per session)

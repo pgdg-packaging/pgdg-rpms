@@ -32,6 +32,9 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
+# Stop now if packages cannot be signed, instead of after the build:
+check_gpg_agent || exit 1
+
 packagename="pgdg-yum"
 
 # Fedora and Amazon Linux have no minor version (osminversion is left empty

@@ -34,6 +34,9 @@ then
 	exit 1
 fi
 
+# Stop now if packages cannot be signed, instead of after a long build:
+check_gpg_agent || exit 1
+
 # The name of the package in the git tree (pgpool-II-41, postgresql-16, etc)
 packagename=$1
 # Actual package name to sign (postgresql16, pgpool-II, postgis34, etc).
@@ -77,6 +80,7 @@ then
 			cd ~/git/pgrpms/rpm/redhat/$packageBuildVersion/$packagename/$git_os
 			if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}/RPMS $packageBuildVersion; then
 				echo "${yellow}$packagename is already built ($already_built_version) against PostgreSQL $packageBuildVersion. Skipping (use --force to rebuild).${reset}"
+				sign_built_package rpm${packageBuildVersion} $packageBuildVersion
 				cd
 				continue
 			fi

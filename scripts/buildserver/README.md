@@ -111,6 +111,32 @@ Set `FORCE_RESIGN=1` to run `rpmsign` on every RPM anyway:
 FORCE_RESIGN=1 ~/bin/signallpackages.sh
 ```
 
+A package that cannot be signed does not stop the others from being
+signed. Each failure is reported as it happens, and at the end the function
+lists every package that is NOT signed and returns 1. Note that when the
+failure affects every package (for example when the passphrase is not
+preset in the agent), `rpmsign` is tried on each of them, and may prompt
+for the passphrase for each one, instead of giving up at the first failure.
+
+### `check_gpg_agent`
+
+Returns 1 with an error message if no `gpg-agent` is running. `sign_package`
+uses it, and `packagebuild.sh`, `packagebuildnonfree.sh` and `reporpmbuild.sh`
+call it right at the start, so that a long build is not wasted on packages
+that could not be signed afterwards. It only checks that an agent runs, not
+that the passphrase is preset.
+
+### `sign_built_package <rpm_location> [pgmajorversion]`
+
+Signs the RPMs of a package that is built already. The build scripts call
+it where they skip a package because it is "already built" (see
+"Already-built check" below), so a package that was left unsigned by an
+earlier failed signing gets signed on the next run. It reads the version
+from the spec file in the current directory, so it must be called from
+inside the package's build directory, and then calls `sign_package`, which
+skips the RPMs that are signed already. Its errors are printed, but they do
+not change the calling script's exit status.
+
 ### `preset_gpg_passphrase <keygrip>`
 
 Feeds `GPG_PASSWORD` into `/usr/libexec/gpg-preset-passphrase` so the
@@ -276,6 +302,10 @@ The script checks three locations in order and stops at the first match:
 On any build failure, `log_build_failure` (from `global.sh`) writes a
 timestamped log to `~/bin/logs/` and the script exits immediately.
 
+Right after the argument check, before anything is built, the script runs
+`check_gpg_agent` and exits with an error if no `gpg-agent` is running. This
+applies even when the package turns out to be built already.
+
 ### Already-built check
 
 Before running `make`, the script asks `rpmspec` (via `is_already_built` in
@@ -283,11 +313,16 @@ Before running `make`, the script asks `rpmspec` (via `is_already_built` in
 PostgreSQL version/repo, and checks whether all of them already exist in
 the corresponding `RPMS` directory (e.g. `~/rpm18/RPMS`, `~/rpmcommon/RPMS`,
 `~/pgdg.extras/RPMS`, or their `testing`-suffixed counterparts). If they're
-all present, the build (and sign) is skipped with a warning instead of
+all present, the build is skipped with a warning instead of
 re-running `make` — re-running an unchanged build just re-stamps RPMs that
 are already published, which breaks timestamp-based mirror syncing. In the
 non-common loop this only skips that one PostgreSQL version, not the whole
 package. Pass `--force` to rebuild anyway.
+
+Skipping the build does not skip signing: the script calls
+`sign_built_package` first, which signs any RPM of that package that is
+still unsigned (for example after a failed signing during the original
+build), and leaves the signed ones alone.
 
 ---
 
@@ -321,6 +356,11 @@ same as `packagebuild.sh`.
 set (e.g. `10.1`), or just `<osmajorversion>` for OSes with no minor
 version, such as Fedora or Amazon Linux (e.g. `2023`).
 
+Like the other build scripts, it runs `check_gpg_agent` at the start and
+exits with an error if no `gpg-agent` is running. Unlike
+`packagebuild.sh`, it does not sign an already built package when it skips
+the build.
+
 ---
 
 ## packagebuildnonfree.sh
@@ -334,7 +374,9 @@ logged via the same shared `log_build_failure` function in `global.sh`.
 
 Supports `--force` the same way `packagebuild.sh` does: by default each
 PostgreSQL version is skipped (with a warning) if its RPMs already exist
-in `~/rpm<version>/RPMS`, via the shared `is_already_built` check.
+in `~/rpm<version>/RPMS`, via the shared `is_already_built` check. As in
+`packagebuild.sh`, a skipped version's RPMs are still signed if they are
+not (`sign_built_package`), and `check_gpg_agent` runs at the start.
 
 ---
 

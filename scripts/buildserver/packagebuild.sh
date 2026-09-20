@@ -44,6 +44,9 @@ done
 	exit 1
 	fi
 
+# Stop now if packages cannot be signed, instead of after a long build:
+check_gpg_agent || exit 1
+
 # The name of the package in the git tree (pgpool-II-41, postgresql-16, etc)
 packagename=$1
 # Actual package name to sign (postgresql16, pgpool-II, postgis34, etc).
@@ -74,6 +77,7 @@ then
 		cd ~/git/pgrpms/rpm/redhat/$pgBetaVersion/$packagename/$git_os
 		if [ $force_mode -eq 0 ] && is_already_built ~/rpm${pgBetaVersion}testing/RPMS $pgBetaVersion; then
 			echo "${yellow}$packagename is already built ($already_built_version) for PostgreSQL $pgBetaVersion beta. Skipping (use --force to rebuild).${reset}"
+			sign_built_package "rpm${pgBetaVersion}testing" $pgBetaVersion
 			cd
 			exit 0
 		fi
@@ -120,6 +124,7 @@ then
 		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommontesting/RPMS $pgAlphaVersion; then
 			echo "${yellow}$packagename is already built ($already_built_version) for the common testing repo. Skipping (use --force to rebuild).${reset}"
+			sign_built_package rpmcommontesting $pgAlphaVersion
 			cd
 			exit 0
 		fi
@@ -135,6 +140,7 @@ then
 		cd ~/git/pgrpms/rpm/redhat/main/common/$packagename/$git_os
 		if [ $force_mode -eq 0 ] && is_already_built ~/rpmcommon/RPMS $pgAlphaVersion; then
 			echo "${yellow}$packagename is already built ($already_built_version) for the common repo. Skipping (use --force to rebuild).${reset}"
+			sign_built_package rpmcommon $pgAlphaVersion
 			cd
 			exit 0
 		fi
@@ -200,6 +206,7 @@ then
 			then
 				if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}testing/RPMS $packageBuildVersion; then
 					echo "${yellow}$packagename is already built ($already_built_version) against PostgreSQL $packageBuildVersion testing. Skipping (use --force to rebuild).${reset}"
+					sign_built_package rpm${packageBuildVersion} $packageBuildVersion
 					cd
 					continue
 				fi
@@ -214,6 +221,7 @@ then
 			else
 				if [ $force_mode -eq 0 ] && is_already_built ~/rpm${packageBuildVersion}/RPMS $packageBuildVersion; then
 					echo "${yellow}$packagename is already built ($already_built_version) against PostgreSQL $packageBuildVersion. Skipping (use --force to rebuild).${reset}"
+					sign_built_package rpm${packageBuildVersion} $packageBuildVersion
 					cd
 					continue
 				fi
@@ -253,6 +261,7 @@ then
 			cd ~/git/pgrpms/rpm/redhat/main/extras/$packagename/$git_os
 			if [ $force_mode -eq 0 ] && is_already_built ~/pgdg.extrastesting/RPMS $pgAlphaVersion; then
 				echo "${yellow}$packagename is already built ($already_built_version) for the extras testing repo. Skipping (use --force to rebuild).${reset}"
+				sign_built_package pgdg
 				cd
 				exit 0
 			fi
@@ -268,6 +277,7 @@ then
 			cd ~/git/pgrpms/rpm/redhat/main/extras/$packagename/$git_os
 			if [ $force_mode -eq 0 ] && is_already_built ~/pgdg.extras/RPMS $pgAlphaVersion; then
 				echo "${yellow}$packagename is already built ($already_built_version) for the extras repo. Skipping (use --force to rebuild).${reset}"
+				sign_built_package pgdg
 				cd
 				exit 0
 			fi
