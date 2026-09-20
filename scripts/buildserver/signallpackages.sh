@@ -17,7 +17,7 @@ packageVersion="*"
 
 overall_status=0
 
-for rpm_dir_prefix in rpmcommon pgdg rpm1; do
+for rpm_dir_prefix in rpmcommon pgdg rpm1 rpm2; do
 	# Only attempt signing if at least one matching directory exists:
 	if compgen -G ~/"${rpm_dir_prefix}"* > /dev/null 2>&1; then
 		sign_package "${rpm_dir_prefix}" || overall_status=1
