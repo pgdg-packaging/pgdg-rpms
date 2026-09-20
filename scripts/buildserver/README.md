@@ -91,14 +91,20 @@ computed the same way `packagesync.sh` derives its `sync_base`. Set
 
 ### `sign_package <rpm_location>`
 
-Finds all RPMs under `~/<rpm_location>*/` and signs them with `rpmsign
---addsign`. Before signing it purges any leftover `.sig` files and
-`buildreqs.nosrc` packages that would otherwise break the signing process.
+Signs RPMs under `~/<rpm_location>*/` with `rpmsign --addsign`. Before
+signing it purges any leftover `.sig` files and `buildreqs.nosrc` packages
+that would otherwise break the signing process (`clean_signing_leftovers`).
 Requires `gpg-agent` to be running with the passphrase already preset.
 
-RPMs that already carry a signature are skipped (the number is printed as
-`Already signed, skipping: N`), so `rpmsign` is not started for each of them.
-Reading the signature from the header is much cheaper: with RPM 6.0.2,
+It signs the RPMs that match `*$signPackageName*$packageVersion*.rpm`;
+`signallpackages.sh` sets both to `*` to sign everything, and
+`dailybuildalpha.sh` leaves them empty. The build scripts do not use it: they
+use `sign_built_rpms`, which needs no name.
+
+The signing itself is done by `sign_rpm_files`, which reads RPM paths from
+stdin. RPMs that already carry a signature are skipped (the number is printed
+as `Already signed, skipping: N`), so `rpmsign` is not started for each of
+them. Reading the signature from the header is much cheaper: with RPM 6.0.2,
 `rpmsign --addsign` took about 44 ms per already signed RPM (it then skips
 the RPM itself, as it "already contains an identical signature"), while
 `list_unsigned_rpms` queries the RPMs in batches at about 0.4 ms per RPM.
@@ -126,16 +132,51 @@ call it right at the start, so that a long build is not wasted on packages
 that could not be signed afterwards. It only checks that an agent runs, not
 that the passphrase is preset.
 
-### `sign_built_package <rpm_location> [pgmajorversion]`
+### `spec_rpm_files <pgmajorversion>`
 
-Signs the RPMs of a package that is built already. The build scripts call
-it where they skip a package because it is "already built" (see
-"Already-built check" below), so a package that was left unsigned by an
-earlier failed signing gets signed on the next run. It reads the version
-from the spec file in the current directory, so it must be called from
-inside the package's build directory, and then calls `sign_package`, which
-skips the RPMs that are signed already. Its errors are printed, but they do
-not change the calling script's exit status.
+Prints the file names of the binary RPMs that the spec file in the current
+directory produces, named the way `rpmbuild` names them
+(`NAME-VERSION-RELEASE.ARCH.rpm`), one per line. `is_already_built` and
+`verify_built_rpms` use it.
+
+### `spec_rpm_patterns <pgmajorversion>`
+
+Prints the file name patterns of every RPM that the spec file in the current
+directory can produce, one per line. For the name of each binary package and
+of the source package, that is the RPM itself plus its `-debuginfo` and
+`-debugsource` RPMs, combined with the version and release from the spec
+file, e.g. `foo-libs-1.0-1PGDG.f45.*.rpm`. It all comes from the spec file, so
+nothing has to be typed, and only the RPMs of this package match, even when
+other packages are built into the same directory at the same time (a package
+with the same version and release has a different name).
+
+### `verify_built_rpms <rpm_location> <pgmajorversion>`
+
+Checks that the RPMs of the spec file in the current directory (every binary
+RPM from `spec_rpm_files`, plus the source RPM) exist under
+`~/<rpm_location>*/` and are signed, and lists what is missing or NOT
+signed. It works from the spec file, not from any name typed by a human, so
+it catches a package that was left unsigned for any reason. Returns 1 if
+anything is wrong. The debuginfo/debugsource RPMs are not checked, as their
+names vary; they are signed with the rest, and `packagesync.sh` checks them
+before syncing.
+
+### `sign_built_rpms <rpm_location> <pgmajorversion>`
+
+What the build scripts call, from inside the package's build directory: after
+a successful build, and where they skip a package because it is "already
+built" (see "Already-built check" below). It signs the RPMs that
+`spec_rpm_patterns` gives (skipping the ones that are signed already) and then
+runs `verify_built_rpms`, so a package that was left unsigned by an earlier
+failed signing gets signed on the next run. It returns 1 if anything is
+not signed. After a build the build scripts then exit with status 1 once they
+have finished (all PostgreSQL versions of a non-common package are still
+built and signed first); on the "already built" path the errors are only
+printed.
+
+An RPM whose name cannot be derived from the spec file (which would be an
+unusual debuginfo naming) is not signed by this. `packagesync.sh` refuses to
+sync it, and `signallpackages.sh` signs it.
 
 ### `preset_gpg_passphrase <keygrip>`
 
@@ -260,7 +301,7 @@ extras repository and acts accordingly.
 ### Usage
 
 ```
-packagebuild.sh [--beta] [--testing] [--force] <git-package-name> <sign-package-name> [pg-version]
+packagebuild.sh [--beta] [--testing] [--force] <git-package-name> [sign-name] [pg-version]
 ```
 
 - `--beta` — build against the current beta PostgreSQL version
@@ -273,13 +314,16 @@ packagebuild.sh [--beta] [--testing] [--force] <git-package-name> <sign-package-
   check" below).
 - `<git-package-name>` — the directory name in the git tree (e.g.
   `postgresql-16`, `pgpool-II-41`).
-- `<sign-package-name>` — the prefix used by `rpmsign` to locate built
-  RPMs (e.g. `postgresql16`, `pgpool-II`). These differ because upstream
-  names don't always match packaging conventions (e.g. `check_pgactivity`
-  is packaged as `nagios-check_pgactivity`).
+- `[sign-name]` — not used any more. It used to be the name that `rpmsign`
+  searched for to find the built RPMs (e.g. `postgresql16`), and a mistyped
+  one left the package unsigned without any error. The RPMs to sign come
+  from the spec file now, so nothing needs to be typed. It is only accepted
+  so that existing commands (`packagebuild.sh psycopg3 python3-psycopg3`)
+  keep working. Give `-` for it when you need `pg-version`.
 - `[pg-version]` — optional; restricts the build to a single PostgreSQL
   major version. If omitted, all versions in the active build array are
-  built.
+  built. A version that is not in the build array is an error for non-common
+  packages.
 
 ### Build logic
 
@@ -287,7 +331,7 @@ The script checks three locations in order and stops at the first match:
 
 1. **Common** (`~/git/pgrpms/rpm/redhat/main/common/<pkg>/<git_os>`) —
    builds once with `make commonbuild` (or `commonbuildtesting`), signs
-   against `rpmcommon`, and exits. The `pgdg-yum` repo RPM lives in this
+   the RPMs in `rpmcommon`, and exits. The `pgdg-yum` repo RPM lives in this
    same directory on disk but is *not* buildable here: it builds against
    an OS release, not a PostgreSQL version, so the script detects it and
    exits with an error pointing to `reporpmbuild.sh` instead.
@@ -297,14 +341,18 @@ The script checks three locations in order and stops at the first match:
    each version's directory separately.
 3. **Extras** (`~/git/pgrpms/rpm/redhat/main/extras/<pkg>/<git_os>`) —
    builds once with `make extrasbuild` (or `extrasbuildtesting`), signs
-   against `pgdg`, and exits. Only available when `extrasrepoenabled=1`.
+   the RPMs in `pgdg*`, and exits. Only available when `extrasrepoenabled=1`.
 
 On any build failure, `log_build_failure` (from `global.sh`) writes a
 timestamped log to `~/bin/logs/` and the script exits immediately.
 
 Right after the argument check, before anything is built, the script runs
 `check_gpg_agent` and exits with an error if no `gpg-agent` is running. This
-applies even when the package turns out to be built already.
+applies even when the package turns out to be built already. After each
+successful build `sign_built_rpms` signs the RPMs of the spec file and checks
+that all of them are there and signed. If not, the problem is listed, and the
+script exits with status 1 after it has finished the remaining PostgreSQL
+versions, so an unsigned package is never reported as a success.
 
 ### Already-built check
 
@@ -320,9 +368,10 @@ non-common loop this only skips that one PostgreSQL version, not the whole
 package. Pass `--force` to rebuild anyway.
 
 Skipping the build does not skip signing: the script calls
-`sign_built_package` first, which signs any RPM of that package that is
-still unsigned (for example after a failed signing during the original
-build), and leaves the signed ones alone.
+`sign_built_rpms` first, which signs any RPM of that package that is still
+unsigned (for example after a failed signing during the original build), and
+leaves the signed ones alone. Signing problems on this path are printed but
+do not change the exit status.
 
 ---
 
@@ -348,7 +397,7 @@ reporpmbuild.sh [--testing] [--force]
   skips the build (and sign) with a warning when it's already there.
 
 With no arguments it runs `make repobuild<osrelease>` and signs the
-result against `rpmcommon`, using `sign_package` from `global.sh`. On
+result with `sign_built_rpms` from `global.sh`. On
 failure, `log_build_failure` writes a timestamped log to `~/bin/logs/`,
 same as `packagebuild.sh`.
 
@@ -356,10 +405,11 @@ same as `packagebuild.sh`.
 set (e.g. `10.1`), or just `<osmajorversion>` for OSes with no minor
 version, such as Fedora or Amazon Linux (e.g. `2023`).
 
-Like the other build scripts, it runs `check_gpg_agent` at the start and
-exits with an error if no `gpg-agent` is running. Unlike
-`packagebuild.sh`, it does not sign an already built package when it skips
-the build.
+Like `packagebuild.sh`, it runs `check_gpg_agent` at the start and exits
+with an error if no `gpg-agent` is running, signs the RPMs with
+`sign_built_rpms`, and exits with status 1 if they are not all signed.
+Unlike `packagebuild.sh`, it does not sign an already built package when it
+skips the build.
 
 ---
 
@@ -375,8 +425,11 @@ logged via the same shared `log_build_failure` function in `global.sh`.
 Supports `--force` the same way `packagebuild.sh` does: by default each
 PostgreSQL version is skipped (with a warning) if its RPMs already exist
 in `~/rpm<version>/RPMS`, via the shared `is_already_built` check. As in
-`packagebuild.sh`, a skipped version's RPMs are still signed if they are
-not (`sign_built_package`), and `check_gpg_agent` runs at the start.
+`packagebuild.sh`, `check_gpg_agent` runs at the start, the RPMs of a build
+are signed and checked (`sign_built_rpms`, exit status 1 if they are not all
+signed), a skipped version's RPMs are still signed if they are not (the same
+function), and the second parameter is not used any more:
+`packagebuildnonfree.sh <git-package-name> [sign-name] [pg-version]`.
 
 ---
 
@@ -597,11 +650,12 @@ gpg --with-keygrip -K         # Note the keygrip
 ### Build and publish a single package
 
 ```bash
-# Build postgis34 for all stable versions:
-~/bin/packagebuild.sh postgis34 postgis34
+# Build postgis34 for all stable versions. The RPMs are signed and checked;
+# no sign name needs to be given:
+~/bin/packagebuild.sh postgis34
 
-# Build only against PostgreSQL 17:
-~/bin/packagebuild.sh postgis34 postgis34 17
+# Build only against PostgreSQL 17 ("-" stands for the unused sign-name):
+~/bin/packagebuild.sh postgis34 - 17
 
 # Sync version 17 to production:
 ~/bin/packagesync.sh --sync=17
@@ -610,7 +664,7 @@ gpg --with-keygrip -K         # Note the keygrip
 ### Publish a new common package
 
 ```bash
-~/bin/packagebuild.sh pg_activity pg_activity
+~/bin/packagebuild.sh pg_activity
 ~/bin/packagesync.sh --sync=common
 ```
 

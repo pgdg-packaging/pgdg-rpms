@@ -87,14 +87,15 @@ then
 
 	# Get the package version after building the package so that we get the latest version:
 	packageVersion=`rpmspec -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
-	cd
+	sign_failed=0
 	if [ $testing_mode -eq 1 ]
 	then
-		sign_package rpmcommontesting
+		sign_built_rpms rpmcommontesting $pgAlphaVersion || sign_failed=1
 	else
-		sign_package rpmcommon
+		sign_built_rpms rpmcommon $pgAlphaVersion || sign_failed=1
 	fi
-	exit 0
+	cd
+	exit $sign_failed
 else
 	echo "${red}ERROR:${reset} $packagename does not exist for $git_os"
 	exit 1

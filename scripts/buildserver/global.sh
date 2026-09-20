@@ -120,6 +120,23 @@ log_build_failure() {
 	echo "${red}Build failed. Log written to: $log_file${reset}"
 }
 
+# Print the file names of the binary RPMs that the spec file in the current
+# directory produces, named exactly the way rpmbuild names them, one per
+# line (e.g. "foo-1.0-1PGDG.f45.x86_64.rpm").
+# Usage: spec_rpm_files <pgmajorversion>
+spec_rpm_files() {
+	local pg_version="$1"
+	local specfile
+	specfile=$(ls *.spec 2>/dev/null | head -n 1)
+
+	[ -z "$specfile" ] && return 1
+
+	rpmspec --define "pgmajorversion ${pg_version}" \
+		--define "pginstdir /usr/pgsql-${pg_version}" \
+		--define "pgpackageversion ${pg_version}" \
+		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null
+}
+
 # Check whether every binary RPM a spec file would produce already exists
 # in the given RPMS directory, so that packagebuild.sh (and friends) can
 # skip a rebuild that would otherwise just re-stamp already-published RPMs
@@ -143,10 +160,7 @@ is_already_built() {
 	# Ask rpmspec for every binary RPM this spec would produce, named
 	# exactly the way rpmbuild would name them:
 	local expected_rpms
-	expected_rpms=$(rpmspec --define "pgmajorversion ${pg_version}" \
-		--define "pginstdir /usr/pgsql-${pg_version}" \
-		--define "pgpackageversion ${pg_version}" \
-		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null)
+	expected_rpms=$(spec_rpm_files "$pg_version")
 
 	if [ -z "$expected_rpms" ]; then
 		return 1
@@ -200,10 +214,8 @@ check_gpg_agent() {
 	return 0
 }
 
-# Common function to sign packages using GPG agent.
-# Packages which already carry a signature are skipped. Set FORCE_RESIGN=1
-# to run rpmsign on all of them anyway.
-sign_package() {
+# Remove the leftovers which get in the way of signing.
+clean_signing_leftovers() {
 	# Remove all files with .sig suffix. They are leftovers which appear
 	# when signing process is not completed. Signing will be broken when
 	# they exist.
@@ -211,17 +223,18 @@ sign_package() {
 
 	# Remove all buildreqs.nosrc packages:
 	find ~/rpm* pgdg* -iname "*buildreqs.nosrc*" -print0 | xargs -0 /bin/rm -v -rf
+}
 
-	# Find the packages and sign them using rpmsign with gpg-agent
-	# The first parameter refers to the location of the RPMs:
-	local rpm_location="$1"
+# Read RPM paths from stdin (one per line) and sign the ones that are not
+# signed yet with rpmsign, using gpg-agent (the passphrase should be preset in
+# the agent cache). Packages which already carry a signature are skipped. Set
+# FORCE_RESIGN=1 to run rpmsign on all of them anyway.
+# A package that cannot be signed does not stop the others from being signed.
+# The ones that failed are listed at the end, and the function returns 1.
+sign_rpm_files() {
+	local all_packages to_sign failed_list="" rpm_path
 
-	check_gpg_agent || return 1
-
-	echo "${green}Signing packages in ${rpm_location}...${reset}"
-
-	local all_packages to_sign
-	all_packages=$(find ~/"${rpm_location}"* -iname "*${signPackageName}*${packageVersion}*.rpm" | grep -v ALL)
+	all_packages=$(grep -v '^$')
 	if [ "${FORCE_RESIGN:-0}" == 1 ]; then
 		to_sign="$all_packages"
 	else
@@ -229,22 +242,18 @@ sign_package() {
 		echo "Already signed, skipping: $(( $(echo "$all_packages" | grep -c .) - $(echo "$to_sign" | grep -c .) ))"
 	fi
 
-	# Use rpmsign with gpg-agent (passphrase should be preset in agent cache).
-	# A package that cannot be signed does not stop the others from being
-	# signed. The ones that failed are listed at the end.
-	local failed_list=""
-	for signpackagelist in $to_sign; do
-		echo "Signing: $signpackagelist"
-		if ! rpmsign --addsign "$signpackagelist"; then
-			echo "${red}ERROR:${reset} Failed to sign $signpackagelist"
-			failed_list="$failed_list $signpackagelist"
+	for rpm_path in $to_sign; do
+		echo "Signing: $rpm_path"
+		if ! rpmsign --addsign "$rpm_path"; then
+			echo "${red}ERROR:${reset} Failed to sign $rpm_path"
+			failed_list="$failed_list $rpm_path"
 		fi
 	done
 
 	if [ -n "$failed_list" ]; then
 		echo "${red}ERROR:${reset} These packages are NOT signed:"
-		for signpackagelist in $failed_list; do
-			echo "  $signpackagelist"
+		for rpm_path in $failed_list; do
+			echo "  $rpm_path"
 		done
 		return 1
 	fi
@@ -253,23 +262,136 @@ sign_package() {
 	return 0
 }
 
-# Sign the packages of a package which is built already, and so skipped by the
-# build scripts. A package that was left unsigned by a failed signing earlier
-# gets signed this way. sign_package skips the RPMs that are signed already,
-# so this is cheap when everything is signed. Must be called from inside the
-# package's build directory, as the version comes from its spec file.
-# Usage: sign_built_package <rpm_location> [pgmajorversion]
-sign_built_package() {
+# Common function to sign packages using GPG agent.
+# Usage: sign_package <rpm_location>
+# Signs the RPMs under ~/<rpm_location>*/ that match the $signPackageName and
+# $packageVersion patterns (signallpackages.sh sets both to "*" to sign
+# everything). The build scripts do not use this: they use sign_built_rpms.
+sign_package() {
+	# The first parameter refers to the location of the RPMs:
+	local rpm_location="$1"
+
+	clean_signing_leftovers
+
+	check_gpg_agent || return 1
+
+	echo "${green}Signing packages in ${rpm_location}...${reset}"
+
+	find ~/"${rpm_location}"* -iname "*${signPackageName}*${packageVersion}*.rpm" | grep -v ALL | sign_rpm_files
+}
+
+# Print the file name patterns of every RPM that the spec file in the current
+# directory can produce, one per line: for the name of each binary package and
+# of the source package, the RPM itself plus its -debuginfo and -debugsource
+# RPMs, each with the version and release from the spec file, e.g.
+# "foo-libs-1.0-1PGDG.f45.*.rpm". Everything comes from the spec file, so
+# nothing has to be typed by a human, and only the RPMs of this package match,
+# even if other packages are built into the same directory at the same time.
+# Usage: spec_rpm_patterns <pgmajorversion>
+spec_rpm_patterns() {
+	local pg_version="$1"
+	local specfile version_release name suffix
+	local -a defines=(--define "pgmajorversion ${pg_version}" \
+		--define "pginstdir /usr/pgsql-${pg_version}" \
+		--define "pgpackageversion ${pg_version}")
+
+	specfile=$(ls *.spec 2>/dev/null | head -n 1)
+	[ -z "$specfile" ] && return 1
+
+	version_release=$(rpmspec "${defines[@]}" -q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
+	[ -z "$version_release" ] && return 1
+
+	{
+		rpmspec "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
+		rpmspec --srpm "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
+	} | sort -u | while IFS= read -r name; do
+		[ -z "$name" ] && continue
+		for suffix in "" "-debuginfo" "-debugsource"; do
+			echo "${name}${suffix}-${version_release}.*.rpm"
+		done
+	done
+}
+
+# Check that the RPMs of the spec file in the current directory (every binary
+# RPM from spec_rpm_files, plus the source RPM) exist below ~/<rpm_location>*/
+# and are signed. This does not depend on any name typed by a human, so it
+# catches a package which was left unsigned for any reason. Lists what is
+# missing or NOT signed, and returns 1 if there is anything.
+# Usage: verify_built_rpms <rpm_location> <pgmajorversion>
+verify_built_rpms() {
 	local rpm_location="$1"
 	local pg_version="$2"
-	local -a pg_define=()
+	local specfile expected rpm_file matches found_list="" unsigned bad=0
 
-	if [ -n "$pg_version" ]; then
-		pg_define=(--define "pgmajorversion ${pg_version}")
+	specfile=$(ls *.spec 2>/dev/null | head -n 1)
+	expected=$(spec_rpm_files "$pg_version")
+	if [ -z "$expected" ]; then
+		echo "${red}ERROR:${reset} Cannot tell which RPMs ${specfile:-the spec file} produces, so cannot check that they are signed."
+		return 1
+	fi
+	expected="$expected"$'\n'$(rpmspec --srpm --define "pgmajorversion ${pg_version}" \
+		--define "pginstdir /usr/pgsql-${pg_version}" \
+		--define "pgpackageversion ${pg_version}" \
+		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.src.rpm\n" "$specfile" 2>/dev/null)
+
+	while IFS= read -r rpm_file; do
+		[ -z "$rpm_file" ] && continue
+		matches=$(find ~/"${rpm_location}"* -name "$rpm_file" -not -path '*/ALL*' 2>/dev/null)
+		if [ -z "$matches" ]; then
+			echo "${red}ERROR:${reset} $rpm_file was not found in ~/${rpm_location}*"
+			bad=1
+		else
+			found_list="$found_list$matches"$'\n'
+		fi
+	done <<< "$expected"
+
+	unsigned=$(echo "$found_list" | list_unsigned_rpms)
+	if [ -n "$unsigned" ]; then
+		echo "${red}ERROR:${reset} These RPMs are NOT signed:"
+		echo "$unsigned" | sed 's/^/  /'
+		bad=1
 	fi
 
-	packageVersion=$(rpmspec "${pg_define[@]}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null | head -n 1 | awk -F ': ' '{print $2}')
-	sign_package "$rpm_location"
+	if [ $bad -ne 0 ]; then
+		return 1
+	fi
+
+	echo "${green}All RPMs of this package are signed.${reset}"
+	return 0
+}
+
+# Sign the RPMs of the spec file in the current directory (found with
+# spec_rpm_patterns, so no name is needed), and then check that all of them
+# are there and signed. The build scripts call it after a successful build,
+# and where they skip a package because it is "already built", so an RPM that
+# was left unsigned by a failed signing earlier gets signed on the next run.
+# Must be called from inside the package's build directory. Returns 1 if
+# something is not signed.
+# Usage: sign_built_rpms <rpm_location> <pgmajorversion>
+sign_built_rpms() {
+	local rpm_location="$1"
+	local pg_version="$2"
+	local pattern rc=0
+	local -a find_args=()
+
+	while IFS= read -r pattern; do
+		if [ ${#find_args[@]} -gt 0 ]; then find_args+=(-o); fi
+		find_args+=(-name "$pattern")
+	done < <(spec_rpm_patterns "$pg_version")
+
+	if [ ${#find_args[@]} -eq 0 ]; then
+		echo "${red}ERROR:${reset} Cannot tell which RPMs the spec file produces, so cannot sign them."
+		return 1
+	fi
+
+	clean_signing_leftovers
+	check_gpg_agent || return 1
+
+	echo "${green}Signing packages in ${rpm_location}...${reset}"
+	find ~/"${rpm_location}"* \( "${find_args[@]}" \) -not -path '*/ALL*' | sign_rpm_files || rc=1
+	verify_built_rpms "$rpm_location" "$pg_version" || rc=1
+
+	return $rc
 }
 
 # Function to preset GPG passphrase in agent (call this once per session)
