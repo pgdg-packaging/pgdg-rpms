@@ -1,8 +1,8 @@
 %global sname pg_statviz
 
 %if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
@@ -29,7 +29,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -98,6 +98,9 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-6PGDG
+- Fix F-45 support
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-5PGDG
 - Add missing BR
 
