@@ -371,13 +371,17 @@ verify_built_rpms() {
 sign_built_rpms() {
 	local rpm_location="$1"
 	local pg_version="$2"
-	local pattern rc=0
+	local patterns pattern rc=0
 	local -a find_args=()
 
+	# A here-string, not process substitution, as the scripts also run under
+	# "sh" (POSIX mode), where process substitution does not exist in bash 4.4:
+	patterns=$(spec_rpm_patterns "$pg_version")
 	while IFS= read -r pattern; do
+		[ -z "$pattern" ] && continue
 		if [ ${#find_args[@]} -gt 0 ]; then find_args+=(-o); fi
 		find_args+=(-name "$pattern")
-	done < <(spec_rpm_patterns "$pg_version")
+	done <<< "$patterns"
 
 	if [ ${#find_args[@]} -eq 0 ]; then
 		echo "${red}ERROR:${reset} Cannot tell which RPMs the spec file produces, so cannot sign them."

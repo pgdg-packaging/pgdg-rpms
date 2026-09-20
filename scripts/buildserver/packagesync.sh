@@ -84,14 +84,20 @@ usage() {
 # that a PGP signature is present, not who made it or whether it is valid.
 # Returns 1 if any RPM is unsigned or cannot be read.
 verify_signed() {
-	local line total=0 bad=0
+	local line output total=0 bad=0
 	local qf='%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{(none)}|}| %{NAME}-%{VERSION}-%{RELEASE}.%|SOURCERPM?{%{ARCH}}:{src}|.rpm\n'
 
 	# Both stdout and stderr are read, so that an RPM which cannot be read
-	# is reported (rpm prints "error: ..." for it) and not skipped:
+	# is reported (rpm prints "error: ..." for it) and not skipped. A here-string,
+	# not process substitution, as the scripts also run under "sh" (POSIX mode),
+	# where process substitution does not exist in bash 4.4:
+	output=$(xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>&1)
 	while IFS= read -r line
 	do
 		case "$line" in
+			"")
+				continue
+				;;
 			"(none) "*)
 				echo "${red}UNSIGNED:${reset} ${line#"(none) "}"
 				total=$((total + 1))
@@ -106,7 +112,7 @@ verify_signed() {
 				total=$((total + 1))
 				;;
 		esac
-	done < <(xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>&1)
+	done <<< "$output"
 
 	if [ $bad -gt 0 ]; then
 		echo "${red}ERROR:${reset} $bad of $total new RPMs are unsigned or unreadable."

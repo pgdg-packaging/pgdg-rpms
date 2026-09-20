@@ -153,28 +153,34 @@ clean_old_packages() {
 	log INFO "Cleaning old packages (>1 day old)..."
 
 	local deleted_count=0
+	local old_files
 
-	# Delete old files (>1 day old)
+	# Delete old files (>1 day old). A here-string, not process substitution, as
+	# the scripts also run under "sh" (POSIX mode), where process substitution
+	# does not exist in bash 4.4:
+	old_files=$(find "${RPM_BASE_DIR}"* -maxdepth 3 -mtime +1 -type f 2>/dev/null || true)
 	while IFS= read -r file; do
 		if [ -f "$file" ]; then
 			rm -f "$file"
 			deleted_count=$((deleted_count + 1))
 			[ "$VERBOSE" = true ] && log INFO "Deleted: $file"
 		fi
-	done < <(find "${RPM_BASE_DIR}"* -maxdepth 3 -mtime +1 -type f 2>/dev/null || true)
+	done <<< "$old_files"
 
 	log INFO "Deleted $deleted_count old file(s)"
 
 	# Remove signature files
 	log INFO "Removing old signature files..."
 	local sig_count=0
+	local sig_files
 
+	sig_files=$(find "${RPM_BASE_DIR}"* -iname "*.sig" 2>/dev/null || true)
 	while IFS= read -r sig_file; do
 		if [ -f "$sig_file" ]; then
 			rm -vf "$sig_file"
 			sig_count=$((sig_count + 1))
 		fi
-	done < <(find "${RPM_BASE_DIR}"* -iname "*.sig" 2>/dev/null || true)
+	done <<< "$sig_files"
 
 	log INFO "Removed $sig_count signature file(s)"
 	log SUCCESS "Old package cleanup completed"
