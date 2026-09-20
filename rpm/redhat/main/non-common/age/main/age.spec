@@ -13,21 +13,27 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# 1.8.0-rc0 only exists for PostgreSQL 18 and 19. PostgreSQL 17 stays on 1.7.0,
+# so it keeps its own Release to not go backwards.
 %if %{pgmajorversion} == 17
 %global ageversion 1.7.0
-%elif %{pgmajorversion} == 18
+%global agerelease rc0_4
+%elif %{pgmajorversion} == 18 || %{pgmajorversion} == 19
 %global ageversion 1.8.0
-%elif %{pgmajorversion} == 19
-%global ageversion 1.8.0
+%global agerelease rc0_1
+%else
+%{error:age is not available for PostgreSQL %{pgmajorversion}}
 %endif
 
 Summary:	Graph database optimized for fast analysis and real-time data processing.
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ageversion}
-Release:	rc0_1PGDG%{?dist}
+Release:	%{agerelease}PGDG%{?dist}
 License:	Apache 2.0
 URL:		https://github.com/apache/%{sname}/
-Source0:	https://github.com/apache/age/archive/refs/tags/PG%{pgmajorversion}/v%{version}-rc0.tar.gz
+# The tag tarballs of different PostgreSQL versions have the same file name, so
+# save each one under a per-version name to not reuse another version's source.
+Source0:	https://github.com/apache/age/archive/refs/tags/PG%{pgmajorversion}/v%{version}-rc0.tar.gz#/%{name}-%{version}-rc0.tar.gz
 BuildRequires:	bison flex postgresql%{pgmajorversion}-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 BuildRequires:	perl-FindBin perl-lib
@@ -102,10 +108,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
-* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-rc0-1PGDG
+* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-1PGDG
 - Update to 1.8.0-rc0 on PostgreSQL 18 and 19 per changes described at:
   PostgreSQL 18: https://github.com/apache/age/releases/tag/PG18%2Fv1.8.0-rc0
   PostgreSQL 19: https://github.com/apache/age/releases/tag/PG19%2Fv1.8.0-rc0
+  PostgreSQL 17 stays on 1.7.0-rc0 (1.7.0-4PGDG), as there is no 1.8.0 for it.
+- Save the source tarball under a per-PostgreSQL-version name, as the tag
+  tarballs of PostgreSQL 18 and 19 have the same file name.
+- Error out on PostgreSQL versions that age is not packaged for.
 
 * Sun Sep 13 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-4PGDG
 - Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
