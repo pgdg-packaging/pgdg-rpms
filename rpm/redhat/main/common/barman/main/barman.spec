@@ -21,7 +21,7 @@
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
-%global python_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python_sitelib %(%{__ospython} -c "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
@@ -34,11 +34,20 @@ Source1:	%{name}.logrotate
 Source2:	%{name}.cron
 Source3:	%{name}-sysusers.conf
 Source4:	%{name}-tmpfiles.d
+Patch0:		barman-use-setuptools-build-backend.patch
+# Only applied on RHEL, where setuptools is older than 77 and does not know the
+# SPDX license expression and license-files of pyproject.toml. It is listed on
+# every distro, so that the SRPM always carries it.
+Patch1:		barman-use-legacy-license-metadata.patch
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?rhel}
+# setuptools before 70.1 (68 on RHEL 8/9, 69 on RHEL 10) has no bdist_wheel of its own
+BuildRequires:	python%{python3_pkgversion}-wheel
+%endif
 BuildRequires:	systemd-rpm-macros
 %if 0%{?suse_version} >= 1600
 BuildRequires:	python-rpm-macros
@@ -76,7 +85,6 @@ Requires:	python%{python3_pkgversion}-zstandard
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} >= 43
-BuildRequires:	python3-uv-build
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
 Requires:	python3-lz4 python3-zstandard
@@ -102,6 +110,10 @@ Python libraries used by Barman.
 
 %prep
 %setup -q -n barman-release-%{version}
+%patch -P0 -p0
+%if 0%{?rhel}
+%patch -P1 -p0
+%endif
 
 %build
 %pyproject_wheel
@@ -169,6 +181,19 @@ touch %{buildroot}/var/log/barman/barman.log
 %changelog
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.0-43PGDG
 - Add missing BR
+- Build with setuptools instead of uv_build, using a patch that switches the
+  build backend in pyproject.toml, so that python3-uv-build is not needed as a
+  BR on any distro. The same patch fixes the "Operating System :: BSD ::
+  FreeBSD" classifier (the valid one is "Operating System :: POSIX :: BSD ::
+  FreeBSD"), which setuptools rejects when python3-trove-classifiers is
+  installed, while uv_build did not check it.
+- On RHEL, use the older license metadata form of pyproject.toml with a second
+  patch, as the setuptools there (68 on RHEL 8/9, 69 on RHEL 10) is older than
+  77 and rejects the SPDX license expression. Also add the wheel BR there, as
+  those setuptools versions cannot build a wheel without it.
+- Find the site-packages directory with sysconfig instead of distutils, which
+  Python 3.12+ does not have (it only worked through the setuptools shim).
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/231
 
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.0-42PGDG
 - Update to 3.20.0, per changes described at:
