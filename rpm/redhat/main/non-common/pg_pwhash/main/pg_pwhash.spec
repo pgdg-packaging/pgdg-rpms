@@ -3,11 +3,11 @@
 Summary:	A PostgreSQL extension which provides advanced password hashing methods based on adaptive implementations.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel libxcrypt-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel libxcrypt-devel meson
 Requires:	postgresql%{pgmajorversion}-server libxcrypt
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
@@ -65,6 +65,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/lib/%{sname}.so
 
 %changelog
+* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-3PGDG
+- Add missing meson BR, as the spec uses %%meson and %%meson_build.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
