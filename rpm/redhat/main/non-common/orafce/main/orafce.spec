@@ -4,7 +4,7 @@
 %global sname orafce
 %global orafcemajver 4
 %global orafcemidver 16
-%global orafceminver 10
+%global orafceminver 11
 
 %{!?llvm:%global llvm 1}
 
@@ -68,6 +68,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.11-1PGDG
+- Update to 4.16.11 per changes described at
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_16_11
+
 * Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.10-1PGDG
 - Update to 4.16.10 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_16_10
