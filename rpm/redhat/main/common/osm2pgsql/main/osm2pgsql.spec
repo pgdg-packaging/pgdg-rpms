@@ -18,7 +18,7 @@
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
 Version:	2.3.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
@@ -31,7 +31,7 @@ BuildRequires:	zlib-devel
 # These packages are have been deprecated as of RHEL 8.7,
 # so enable these features on Fedora only:
 # https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/8.7_release_notes/deprecated_functionality#deprecated-packages
-%if 0%{?fedora} >= 42
+%if 0%{?fedora} >= 43
 BuildRequires:	protozero-devel libosmium-devel
 %endif
 
@@ -49,9 +49,13 @@ BuildRequires:	libexpat-devel nlohmann_json-devel
 BuildRequires:	lua54-devel
 %endif
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 BuildRequires:	boost-devel bzip2-devel catch2-devel
 BuildRequires:	clang-tools-extra expat-devel json-devel lua-devel
+%endif
+
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 10
+BuildRequires:	opencv-devel potrace-devel
 %endif
 
 Requires:	libpq5
@@ -89,7 +93,7 @@ popd
 
 %install
 %{__rm} -rf %{buildroot}
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 pushd build
 %cmake_install
 popd
@@ -104,11 +108,17 @@ popd
 %defattr(755,root,root,755)
 %{_bindir}/%{sname}
 %{_bindir}/%{sname}-expire
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 10
+%{_bindir}/%{sname}-gen
+%endif
 %{_bindir}/%{sname}-replication
 %{_mandir}/man1/%{sname}*
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.1-2PGDG
+- Install osm2pgsql-gen on RHEL 10 and Fedora.
+
 * Tue Jul 7 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.1-1PGDG
 - Update to 2.3.1 per changes described at:
   https://github.com/osm2pgsql-dev/osm2pgsql/releases/tag/2.3.1
