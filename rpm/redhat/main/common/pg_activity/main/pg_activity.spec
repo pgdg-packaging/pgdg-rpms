@@ -1,6 +1,6 @@
 %if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.16
-%global python3_pkgversion 3.16
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
