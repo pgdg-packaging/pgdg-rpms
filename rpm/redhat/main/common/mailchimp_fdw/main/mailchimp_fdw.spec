@@ -1,11 +1,11 @@
 %global sname mailchimp_fdw
 %global packagesoversion 0.3.0
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -33,7 +33,7 @@
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
@@ -79,6 +79,9 @@ This is a PostgreSQL FDW for Mailchimp
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3.1-12PGDG
+- Add Fedora 45 support
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3.1-11PGDG
 - Remove Fedora <= 42 support
 
