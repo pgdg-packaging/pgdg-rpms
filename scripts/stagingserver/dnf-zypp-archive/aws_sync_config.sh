@@ -3,7 +3,7 @@
 # Source this file from other scripts: source "$(dirname "$0")/aws_sync_config.sh"
 
 VALID_ARCH=("aarch64" "ppc64le" "x86_64")
-VALID_OS=("redhat" "fedora" "sles" "opensuse")
+VALID_OS=("redhat" "fedora" "sles" "opensuse" "amzn")
 
 # Usage: is_valid <value> <array_element>...
 # Example: is_valid "$arch" "${VALID_ARCH[@]}"
@@ -17,15 +17,17 @@ is_valid() {
 }
 VALID_PG_VERSIONS=(13 14 15 16 17 18)
 VALID_REDHAT_OS_VERSIONS=(7 8.10 9.6 9.7 10.0 10.1)
-VALID_FEDORA_OS_VERSIONS=(41 42 43)
+VALID_FEDORA_OS_VERSIONS=(41 42 43 44 45)
 VALID_SLES_OS_VERSIONS=(12.5 15.6 15.7 16.0)
 VALID_OPENSUSE_OS_VERSIONS=(16.0)
+VALID_AMZN_OS_VERSIONS=(2023)
 
 # Base directories per OS distro
 BASE_DIR_redhat="/srv/yum/yum"
 BASE_DIR_fedora="/srv/yum/yum"
 BASE_DIR_suse="/srv/zypp/zypp"
 BASE_DIR_opensuse="/srv/zypp/zypp"
+BASE_DIR_amzn="/srv/yum/yum"
 
 # Non-free repo base directory (redhat only)
 BASE_DIR_non_free="/srv/yum/yum/non-free"
@@ -35,3 +37,4 @@ S3_BUCKET_redhat="s3://yum-archive.postgresql.org"
 S3_BUCKET_fedora="s3://yum-archive.postgresql.org"
 S3_BUCKET_suse="s3://zypp-archive.postgresql.org"
 S3_BUCKET_opensuse="s3://zypp-archive.postgresql.org"
+S3_BUCKET_amzn="s3://yum-archive.postgresql.org"

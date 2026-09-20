@@ -20,7 +20,7 @@ usage() {
 Usage: $0 --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver>] [--pg-version <pg>] [--dry-run] [--debug]
 
 Required:
-  --os-name        fedora, redhat, sles, or opensuse
+  --os-name        fedora, redhat, sles, opensuse, or amzn
 
 Optional:
   --arch           aarch64, ppc64le, x86_64 (default: all)
@@ -59,7 +59,7 @@ if [[ -z "$OS_NAME" ]]; then
   usage
 fi
 
-if [[ "$OS_NAME" != "fedora" && "$OS_NAME" != "redhat" && "$OS_NAME" != "sles" && "$OS_NAME" != "opensuse" ]]; then
+if [[ "$OS_NAME" != "fedora" && "$OS_NAME" != "redhat" && "$OS_NAME" != "sles" && "$OS_NAME" != "opensuse" && "$OS_NAME" != "amzn" ]]; then
   echo "Invalid OS name: $OS_NAME"
   exit 1
 fi
@@ -77,6 +77,10 @@ elif [[ "$OS_NAME" == "opensuse" ]]; then
   osdistro="opensuse"
   os="opensuse"
   VALID_OS_VERSIONS=("${VALID_OPENSUSE_OS_VERSIONS[@]}")
+elif [[ "$OS_NAME" == "amzn" ]]; then
+  osdistro="amzn"
+  os="amzn"
+  VALID_OS_VERSIONS=("${VALID_AMZN_OS_VERSIONS[@]}")
 else
   osdistro="fedora"
   os="fedora"

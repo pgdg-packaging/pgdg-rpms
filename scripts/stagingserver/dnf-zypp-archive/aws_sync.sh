@@ -27,8 +27,8 @@ usage() {
 Usage: $0 --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [options]
 
 Required:
-  --os         OS name (rhel, fedora, or sles)
-  --ver        OS version (e.g., 8, 9, 10, 41, 42, 43)
+  --os         OS name (rhel, fedora, sles, opensuse, or amzn)
+  --ver        OS version (e.g., 8, 9, 10, 41, 42, 43, 2023)
 
 Optional:
   --arch       Architecture (${VALID_ARCH[*]})
@@ -93,6 +93,7 @@ case "$os" in
   fedora)   osdistro="fedora";  osname="fedora" ;;
   sles)     osdistro="suse";    osname="sles" ;;
   opensuse) osdistro="opensuse"; osname="leap" ;;
+  amzn)     osdistro="amzn";    osname="amzn" ;;
   *) echo "Unsupported OS: $os"; exit 1 ;;
 esac
 

@@ -26,12 +26,14 @@ VALID_REDHAT_OS_VERSIONS=(7 8.10 9.6 9.7 10.0 10.1)
 VALID_FEDORA_OS_VERSIONS=(41 42 43)
 VALID_SLES_OS_VERSIONS=(12.5 15.6 15.7 16.0)
 VALID_OPENSUSE_OS_VERSIONS=(16.0)
+VALID_AMZN_OS_VERSIONS=(2023)
 
 # Base directories per OS distro
 BASE_DIR_redhat="/srv/yum/yum"
 BASE_DIR_fedora="/srv/yum/yum"
 BASE_DIR_suse="/srv/zypp/zypp"
 BASE_DIR_opensuse="/srv/zypp/zypp"
+BASE_DIR_amzn="/srv/yum/yum"
 
 # Non-free repo base directory (redhat only)
 BASE_DIR_non_free="/srv/yum/yum/non-free"
@@ -41,6 +43,7 @@ S3_BUCKET_redhat="s3://yum-archive.postgresql.org"
 S3_BUCKET_fedora="s3://yum-archive.postgresql.org"
 S3_BUCKET_suse="s3://zypp-archive.postgresql.org"
 S3_BUCKET_opensuse="s3://zypp-archive.postgresql.org"
+S3_BUCKET_amzn="s3://yum-archive.postgresql.org"
 ```
 
 Also defines `is_valid()`, a helper used by other scripts for safe exact-match validation (avoids regex dot-wildcard issues with dotted version strings like `9.6`).
@@ -82,8 +85,8 @@ aws_sync.sh --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [optio
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--os` | Yes | OS type: `rhel`, `fedora`, `sles`, or `opensuse` |
-| `--ver` | Yes | OS version, e.g. `9.6`, `10.0`, `42` |
+| `--os` | Yes | OS type: `rhel`, `fedora`, `sles`, `opensuse`, or `amzn` |
+| `--ver` | Yes | OS version, e.g. `9.6`, `10.0`, `42`, `2023` |
 | `--arch` | No | Architecture: `aarch64`, `ppc64le`, `x86_64`. If omitted, all three are synced. |
 | `--pg` | No | PostgreSQL major version, e.g. `16`. If omitted, the common repo is synced instead. |
 | `--extras=1` | No | Also sync the extras repo (redhat only). |
@@ -132,6 +135,11 @@ Sync PG 16 for openSUSE Leap 16.0, all architectures:
 aws_sync.sh --os opensuse --ver 16.0 --pg 16
 ```
 
+Sync PG 16 for Amazon Linux 2023, all architectures:
+```bash
+aws_sync.sh --os amzn --ver 2023 --pg 16
+```
+
 ### What it does, step by step
 
 1. Validates `--os`, `--arch` (if given), and `--pg` (if given) against the config arrays.
@@ -161,7 +169,7 @@ aws_sync_archive.sh --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `--os-name` | Yes | `redhat`, `fedora`, `sles`, or `opensuse` |
+| `--os-name` | Yes | `redhat`, `fedora`, `sles`, `opensuse`, or `amzn` |
 | `--arch` | No | Pin to one architecture. If omitted, all architectures are synced (via `aws_sync.sh`). |
 | `--os-version` | No | Pin to one OS version. If omitted, all valid versions for the OS are used. |
 | `--pg-version` | No | Pin to one PG major version. If omitted, all versions in `VALID_PG_VERSIONS` are used. |
@@ -211,6 +219,11 @@ Sync all PG versions for openSUSE Leap 16.0, all architectures:
 aws_sync_archive.sh --os-name opensuse --os-version 16.0
 ```
 
+Sync all PG versions for Amazon Linux 2023, all architectures:
+```bash
+aws_sync_archive.sh --os-name amzn --os-version 2023
+```
+
 Sync all PG versions for RHEL 9.6 including non-free repos:
 ```bash
 aws_sync_archive.sh --os-name redhat --os-version 9.6 --non-free
@@ -239,7 +252,7 @@ cp aws_sync_archive_completion.sh /etc/bash_completion.d/
 
 ### Behaviour
 
-- `--os-name` completes to `fedora`, `redhat`, `sles`, or `opensuse`.
+- `--os-name` completes to `fedora`, `redhat`, `sles`, `opensuse`, or `amzn`.
 - `--arch` completes from `VALID_ARCH`.
 - `--os-version` completes from the appropriate version list based on whatever `--os-name` has already been typed; if `--os-name` hasn't been set yet, all OS versions are offered.
 - `--pg-version` completes from `VALID_PG_VERSIONS`.
@@ -258,6 +271,7 @@ VALID_REDHAT_OS_VERSIONS=(7 8.10 9.6 9.7 10.0 10.1 10.2)
 VALID_PG_VERSIONS=(13 14 15 16 17 18 19)
 VALID_SLES_OS_VERSIONS=(12.5 15.6 15.7 15.8 16.0)
 VALID_OPENSUSE_OS_VERSIONS=(16.0 16.1)
+VALID_AMZN_OS_VERSIONS=(2023)
 ```
 
 > **Note on dotted version strings:** validation uses exact string matching (not regex), so versions like `9.6` or `10.0` are handled safely.
