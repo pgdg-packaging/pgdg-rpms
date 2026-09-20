@@ -27,7 +27,13 @@
 %global	projinstdir %proj98instdir
 %endif
 
+# clang 23 on Fedora 45 crashes in ThinLTOBitcodeWriterPass while building the
+# JIT bitcode (lwgeom_ogc.bc), so build without llvmjit there for now.
+%if 0%{?fedora} >= 45
+%{!?llvm:%global llvm 0}
+%else
 %{!?llvm:%global llvm 1}
+%endif
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -409,6 +415,7 @@ fi
 %changelog
 * Sat Sep 19 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.6-6PGDG
 - Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
+- Fedora 45: build without llvmjit for now, as clang 23 crashes building the JIT bitcode.
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.6-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
