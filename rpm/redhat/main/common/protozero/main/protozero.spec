@@ -2,7 +2,7 @@
 
 Name:		protozero
 Version:	1.8.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Minimalistic protocol buffer decoder and encoder in C++
 
 License:	BSD-2-Clause
@@ -65,10 +65,12 @@ Protobufs protoc program.
 %{_includedir}/protozero
 
 %changelog
+* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.2-2PGDG
+- Fedora 45: Add zlib-ng-compat-static BR, which protobuf's CMake config needs.
+
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.2-1PGDG
 - Update to 1.8.2 per changes described at:
   https://github.com/mapbox/protozero/releases/tag/v1.8.2
-- Fedora 45: Add zlib-ng-compat-static BR, which protobuf's CMake config needs.
 
 * Tue Dec 5 2023 Devrim Gündüz <devrim@gunduz.org> - 1.7.1-42PGDG
 - Initial packaging to support libosmium builds on EL-*
