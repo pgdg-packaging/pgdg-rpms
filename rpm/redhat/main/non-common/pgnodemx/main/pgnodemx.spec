@@ -16,19 +16,19 @@
 
 Summary:	SQL functions that allow capture of node OS metrics from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.7
-Release:	6PGDG%{?dist}
+Version:	2.0.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
-Source0:	https://github.com/CrunchyData/%{sname}/archive/v%{version}.tar.gz
-URL:		https://github.com/CrunchyData/%{sname}
+Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
+URL:		https://github.com/%{sname}/%{sname}
 
-BuildRequires:	postgresql%{pgmajorversion}-devel
+BuildRequires:	krb5-devel postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -91,6 +91,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7-6PGDG
+- Update to 2.0.1 per changes described at:
+  https://github.com/pgnodemx/pgnodemx/releases/tag/v2.0.1
+  https://github.com/pgnodemx/pgnodemx/releases/tag/v2.0.0
+- Use new URL, per https://github.com/pgdg-packaging/pgdg-rpms/issues/234
+
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7-6PGDG
 - Add missing BR, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
 
