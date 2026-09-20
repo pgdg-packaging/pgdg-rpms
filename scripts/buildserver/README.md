@@ -96,6 +96,21 @@ Finds all RPMs under `~/<rpm_location>*/` and signs them with `rpmsign
 `buildreqs.nosrc` packages that would otherwise break the signing process.
 Requires `gpg-agent` to be running with the passphrase already preset.
 
+RPMs that already carry a signature are skipped (the number is printed as
+`Already signed, skipping: N`), so `rpmsign` is not started for each of them.
+Reading the signature from the header is much cheaper: with RPM 6.0.2,
+`rpmsign --addsign` took about 44 ms per already signed RPM (it then skips
+the RPM itself, as it "already contains an identical signature"), while
+`list_unsigned_rpms` queries the RPMs in batches at about 0.4 ms per RPM.
+Other RPM versions were not measured. `list_unsigned_rpms` also passes on
+anything it cannot confirm as signed (unreadable RPMs, or file names that
+are not `NAME-VERSION-RELEASE.ARCH.rpm`), so those still reach `rpmsign`.
+Set `FORCE_RESIGN=1` to run `rpmsign` on every RPM anyway:
+
+```bash
+FORCE_RESIGN=1 ~/bin/signallpackages.sh
+```
+
 ### `preset_gpg_passphrase <keygrip>`
 
 Feeds `GPG_PASSWORD` into `/usr/libexec/gpg-preset-passphrase` so the
@@ -352,6 +367,34 @@ packagesync.sh --sync="pg common extras"
 packagesync.sh --testing --sync=18           # version 18 in testing repos
 packagesync.sh --testing --sync=pg           # all versions in testing repos
 ```
+
+### Signature check
+
+Before anything is synced, the script checks that the RPMs it is about to
+add are signed. "New" means an RPM (binary, debuginfo/debugsource or source)
+under `RPMS/<arch>`, `RPMS/noarch` or `SRPMS` of a requested target whose
+file name is not yet in that target's `ALLRPMS`, `ALLDEBUGRPMS` or
+`ALLSRPMS` staging directories. `ALLDEBUGRPMS` is compared as well because
+the debuginfo/debugsource RPMs are moved there after every sync. RPMs which
+are staged already were checked when they were staged, and are not checked
+again. This is by file name only, so it assumes an RPM is not rebuilt under
+the same name after it was staged, unless it is signed before the next sync.
+
+This runs for all requested targets up front, so a single unsigned package
+blocks the whole run: nothing is copied to the `ALL*` directories, no repo
+metadata is created and nothing goes to S3. The script prints each
+`UNSIGNED:` (or `UNREADABLE:`) package and exits with status 1. Because the
+staging directories stay untouched, the same packages are checked again on
+the next run.
+
+The repo files set `pkg_gpgcheck=1`, so clients would refuse an unsigned
+package anyway. Sign the listed packages (see `signallpackages.sh`) and run
+the sync again. RPMs that were already staged before this check existed are
+not covered; `signallpackages.sh` covers every RPM in the build directories.
+
+The check only looks for the presence of a signature (`rpm -qp` reports
+`(none)` for an unsigned package); it does not verify who signed it or that
+the signature is valid.
 
 ### What each sync does
 

@@ -169,7 +169,29 @@ is_already_built() {
 	return 0
 }
 
-# Common function to sign packages using GPG agent
+# Read RPM paths from stdin (one per line) and print the ones which are not
+# signed yet, so that rpmsign only runs for those. Starting rpmsign for every
+# RPM is much slower than this, as the RPMs are queried in batches and only
+# the header of each RPM is read. Anything that cannot be confirmed as signed (unsigned,
+# unreadable, or a file name that is not NAME-VERSION-RELEASE.ARCH.rpm) is
+# printed as well, so it goes to rpmsign, which then signs it or reports why not.
+list_unsigned_rpms() {
+	local paths
+	local qf='%|RSAHEADER?{s}:{%|DSAHEADER?{s}:{n}|}| %{NAME}-%{VERSION}-%{RELEASE}.%|SOURCERPM?{%{ARCH}}:{src}|.rpm\n'
+
+	paths=$(grep -v '^$')
+	[ -z "$paths" ] && return 0
+
+	# One stream for awk: the names of the signed RPMs ("S") first, then the paths ("P").
+	{
+		echo "$paths" | xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>/dev/null | sed -n 's/^s /S\t/p'
+		echo "$paths" | awk -F/ '{ print "P\t" $NF "\t" $0 }'
+	} | awk -F'\t' '$1 == "S" { signed[$2]; next } !($2 in signed) { print $3 }'
+}
+
+# Common function to sign packages using GPG agent.
+# Packages which already carry a signature are skipped. Set FORCE_RESIGN=1
+# to run rpmsign on all of them anyway.
 sign_package() {
 	# Remove all files with .sig suffix. They are leftovers which appear
 	# when signing process is not completed. Signing will be broken when
@@ -191,8 +213,17 @@ sign_package() {
 
 	echo "${green}Signing packages in ${rpm_location}...${reset}"
 
+	local all_packages to_sign
+	all_packages=$(find ~/"${rpm_location}"* -iname "*${signPackageName}*${packageVersion}*.rpm" | grep -v ALL)
+	if [ "${FORCE_RESIGN:-0}" == 1 ]; then
+		to_sign="$all_packages"
+	else
+		to_sign=$(echo "$all_packages" | list_unsigned_rpms)
+		echo "Already signed, skipping: $(( $(echo "$all_packages" | grep -c .) - $(echo "$to_sign" | grep -c .) ))"
+	fi
+
 	# Use rpmsign with gpg-agent (passphrase should be preset in agent cache)
-	for signpackagelist in $(find ~/"${rpm_location}"* -iname "*${signPackageName}*${packageVersion}*.rpm" | grep -v ALL); do
+	for signpackagelist in $to_sign; do
 		echo "Signing: $signpackagelist"
 		rpmsign --addsign "$signpackagelist"
 
