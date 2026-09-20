@@ -26,7 +26,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
@@ -46,7 +46,7 @@ Requires:	java
 %endif
 %endif
 
-BuildRequires:	maven krb5-devel
+BuildRequires:	maven krb5-devel postgresql%{pgmajorversion}-devel
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
@@ -132,6 +132,9 @@ done
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-7PGDG
+- Add missig BR, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-6PGDG
 - Ship one-hop ALTER EXTENSION UPDATE paths (pljava--<old>--1.6.10.sql,
   symlinked to the plain install script) from every pljava version PGDG
