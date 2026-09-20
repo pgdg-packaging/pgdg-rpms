@@ -1,8 +1,8 @@
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.16
+%global python3_pkgversion 3.16
 %endif
-%if 0%{?fedora} && 0%{?fedora} == 43
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -32,7 +32,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.2
-Release:	46PGDG%{?dist}
+Release:	47PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -117,6 +117,9 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-47PGDG
+- Add Fedora 45 support
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-46PGDG
 - Remove Fedora <= 42 support
 
@@ -126,18 +129,18 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
   (which is anchored on the .dist-info directory entry) actually fires
   and emits the correct runtime Requires. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
-- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+- Add back python%%{python3_pkgversion}-devel as a BuildRequires on the
   non-SLES branch, needed to pull python3-rpm-generators into the
   buildroot for this pyproject build. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-44PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
-  %pyproject_wheel/%pyproject_install actually build against python3.13
+  %%pyproject_wheel/%%pyproject_install actually build against python3.13
   instead of silently falling back to the system default python3.
   This one already had its own local sitelib override, so the
   mismatch was active (not just cosmetic): pip would install via 3.9
-  while %files looked for files under python3.13's site-packages.
+  while %%files looked for files under python3.13's site-packages.
 
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.2-43PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
