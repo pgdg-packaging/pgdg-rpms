@@ -1,0 +1,1 @@
+../main/postgresql_anonymizer.spec
