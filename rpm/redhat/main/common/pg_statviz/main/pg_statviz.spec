@@ -69,7 +69,7 @@ Requires:	python3-openai
 Requires:	python3-google-genai
 %endif
 
-%if 0%{?rhel} && 0%{?rhel} <= 10
+%if 0%{?rhel} && 0%{?rhel} == 10
 # Local:
 Requires:	python3-ollama
 # OpenAI:
