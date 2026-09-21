@@ -1,6 +1,10 @@
 %global pypi_name openai
 
-Name:		python-%{pypi_name}
+%if 0%{?rhel} && 0%{?rhel} == 10
+%global python3_pkgversion 3.12
+%endif
+
+Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	1.39.0
 Release:	1PGDG%{?dist}
 Summary:	The official Python library for the OpenAI API
@@ -14,18 +18,13 @@ Source0:	%{pypi_source %{pypi_name}}
 Patch0:		openai-httpx-0.28-proxies.patch
 
 BuildArch:	noarch
-BuildRequires:	python3-devel pyproject-rpm-macros
+BuildRequires:	python%{python3_pkgversion}-devel pyproject-rpm-macros
 
 %description
 The OpenAI Python library provides convenient access to the OpenAI REST API
 from any Python 3.7+ application. The library includes type definitions for
 all request params and response fields, and offers both synchronous and
 asynchronous clients powered by httpx.
-
-%package -n python3-%{pypi_name}
-Summary:	%{summary}
-
-%description -n python3-%{pypi_name} %_description
 
 %prep
 %autosetup -p0 -n %{pypi_name}-%{version}
@@ -44,7 +43,7 @@ Summary:	%{summary}
 # Only the import tests: the full test suite needs network access and API keys.
 %pyproject_check_import
 
-%files -n python3-%{pypi_name} -f %{pyproject_files}
+%files -f %{pyproject_files}
 %license LICENSE
 %doc README.md CHANGELOG.md CONTRIBUTING.md
 %{_bindir}/openai
