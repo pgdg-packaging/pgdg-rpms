@@ -1,0 +1,9 @@
+--- pyproject.toml.old	2026-09-20 21:55:02.447994693 -0500
++++ pyproject.toml	2026-09-20 21:55:02.466172942 -0500
+@@ -1,5 +1,6 @@
+ [build-system]
+ requires = ["setuptools", "wheel"]
++build-backend = "setuptools.build_meta"
+ 
+ [project]
+ name = "google-genai"
