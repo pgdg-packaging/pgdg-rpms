@@ -32,13 +32,25 @@ Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
 License:	LicenseRef-Callaway-BSD
 Source:		https://files.pythonhosted.org/packages/source/l/%{srcname}/%{srcname}-%{version}.tar.gz
+# Only applied on RHEL 8, RHEL 9 and AL 2023, where there is no pkgconfig module
+# for the Python stack used here. It is listed on every distro, so that the SRPM
+# always carries it.
+Patch0:		lz4-drop-pkgconfig-setup-requires.patch
 
 BuildRequires:	gcc python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 # Needed so setup.py's setup_requires (setuptools_scm, pkgconfig) are
 # already satisfied locally; otherwise setup.py tries to pip-fetch them,
 # which fails in a network-isolated mock build.
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023
+# There is no pkgconfig module for the Python stack used here. setup.py only uses
+# it to find a system liblz4, and falls back to the bundled lz4 without it, so
+# the patch drops it from setup_requires (which would pip-fetch it from PyPI).
+# This is what the published packages effectively were: built with the bundled lz4.
+Provides:	bundled(lz4) = 1.9.4
+%else
 BuildRequires:	python%{python3_pkgversion}-pkgconfig
+%endif
 %if 0%{?rhel} && 0%{?rhel} >= 8
 BuildRequires:	lz4-devel
 %endif
@@ -54,6 +66,9 @@ Python 3 bindings for the lz4 compression library.
 
 %prep
 %setup -q -n %{srcname}-%{version}
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023
+%patch -P0 -p0
+%endif
 
 #rm lz4libs/lz4*.[ch]
 
@@ -90,6 +105,12 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-2PGDG
+- On RHEL 8, RHEL 9 and AL 2023, drop pkgconfig from setup_requires with a patch, and
+  do not BuildRequire python3.12-pkgconfig / python3.13-pkgconfig there: they do not
+  exist. Without the module lz4 is built with its bundled lz4 1.9.4, as the published
+  packages were (they got pkgconfig from PyPI at build time, which does not work in a
+  network-isolated build). Add Provides: bundled(lz4).
+- Add AL 2023 support (the AL-2023 directory).
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
 - Add missing BR (python3-setuptools), needed by setup.py's own build

@@ -1,0 +1,10 @@
+--- setup.py.old	2026-09-20 19:49:51.899904839 -0500
++++ setup.py	2026-09-20 19:49:51.915248650 -0500
+@@ -174,7 +174,6 @@
+     python_requires=">=3.9",
+     setup_requires=[
+         'setuptools_scm',
+-        'pkgconfig',
+     ] + pytest_runner,
+     description="LZ4 Bindings for Python",
+     long_description=open('README.rst', 'r').read(),
