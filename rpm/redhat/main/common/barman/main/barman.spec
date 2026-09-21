@@ -7,16 +7,21 @@
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
+%global __ospython %{_bindir}/python3.12
+%global python3_pkgversion 3.12
 %endif
 %if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
+%global __ospython %{_bindir}/python3.13
+%global __python3 %{_bindir}/python3.13
+%global python3_pkgversion 3.13
+%endif
+%if 0%{?suse_version} == 1500
+%global __ospython %{_bindir}/python3.11
+%global python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
+%global __ospython %{_bindir}/python3.13
+%global python3_pkgversion 313
 %endif
 
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -35,7 +40,7 @@ Source2:	%{name}.cron
 Source3:	%{name}-sysusers.conf
 Source4:	%{name}-tmpfiles.d
 Patch0:		barman-use-setuptools-build-backend.patch
-# Only applied on RHEL, where setuptools is older than 77 and does not know the
+# Only applied on RHEL and AL 2023, where setuptools is older than 77 and does not know the
 # SPDX license expression and license-files of pyproject.toml. It is listed on
 # every distro, so that the SRPM always carries it.
 Patch1:		barman-use-legacy-license-metadata.patch
@@ -44,8 +49,8 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
-%if 0%{?rhel}
-# setuptools before 70.1 (68 on RHEL 8/9, 69 on RHEL 10) has no bdist_wheel of its own
+%if 0%{?rhel} || 0%{?amzn}
+# setuptools before 70.1 (68 on RHEL 8/9, 69 on RHEL 10 and AL 2023) has no bdist_wheel of its own
 BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 BuildRequires:	systemd-rpm-macros
@@ -84,6 +89,14 @@ Requires:	python%{python3_pkgversion}-six
 Requires:	python%{python3_pkgversion}-zstandard
 %endif
 
+%if 0%{?amzn}
+Requires:	python%{python3_pkgversion}-dateutil
+Requires:	python%{python3_pkgversion}-lz4
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.9
+Requires:	python%{python3_pkgversion}-six
+Requires:	python%{python3_pkgversion}-zstandard
+%endif
+
 %if 0%{?fedora} && 0%{?fedora} >= 43
 Requires:	python3-argcomplete python3-dateutil
 Requires:	python3-psycopg2 >= 2.9.9 python3-six
@@ -111,7 +124,7 @@ Python libraries used by Barman.
 %prep
 %setup -q -n barman-release-%{version}
 %patch -P0 -p0
-%if 0%{?rhel}
+%if 0%{?rhel} || 0%{?amzn}
 %patch -P1 -p0
 %endif
 
@@ -187,7 +200,7 @@ touch %{buildroot}/var/log/barman/barman.log
   FreeBSD" classifier (the valid one is "Operating System :: POSIX :: BSD ::
   FreeBSD"), which setuptools rejects when python3-trove-classifiers is
   installed, while uv_build did not check it.
-- On RHEL, use the older license metadata form of pyproject.toml with a second
+- On RHEL and AL 2023, use the older license metadata form of pyproject.toml with a second
   patch, as the setuptools there (68 on RHEL 8/9, 69 on RHEL 10) is older than
   77 and rejects the SPDX license expression. Also add the wheel BR there, as
   those setuptools versions cannot build a wheel without it.
