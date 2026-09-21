@@ -1,0 +1,11 @@
+--- pyproject.toml.old	2026-09-20 19:19:58.539654176 -0500
++++ pyproject.toml	2026-09-20 19:19:58.557754855 -0500
+@@ -6,7 +6,7 @@
+ authors = [
+     { name = "Gregory Szorc", email = "gregory.szorc@gmail.com" },
+ ]
+-license = "BSD-3-Clause"
++license = {text = "BSD-3-Clause"}
+ requires-python = ">=3.9"
+ classifiers = [
+     "Development Status :: 5 - Production/Stable",

@@ -31,6 +31,10 @@ Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
 Source0:	https://files.pythonhosted.org/packages/source/z/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
+# Only applied on RHEL, AL 2023 and SLES 15, where setuptools is older than 77 and
+# does not know the SPDX license expression of pyproject.toml. It is listed on
+# every distro, so that the SRPM always carries it.
+Patch0:		zstandard-use-legacy-license-metadata.patch
 BuildRequires:	gcc
 BuildRequires:	libzstd-devel
 BuildRequires:	python%{python3_pkgversion}-devel
@@ -46,7 +50,10 @@ compression library. A C extension and CFFI interface are provided.
 
 
 %prep
-%autosetup -n %{pypi_name}-%{version}
+%setup -q -n %{pypi_name}-%{version}
+%if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version} == 1500
+%patch -P0 -p0
+%endif
 %{__rm} -rf %{pypi_name}.egg-info
 
 %build
@@ -74,6 +81,11 @@ compression library. A C extension and CFFI interface are provided.
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-2PGDG
+- Use the older license metadata form of pyproject.toml with a patch on RHEL,
+  AL 2023 and SLES 15, as the setuptools there (68 on RHEL 8/9, 69 on RHEL 10
+  and AL 2023) is older than 77, which 0.25.0 requires for the SPDX license
+  expression.
+- Add AL 2023 support (the AL-2023 directory).
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
 - Drop python-zstandard-deps.patch: it is no longer needed.
