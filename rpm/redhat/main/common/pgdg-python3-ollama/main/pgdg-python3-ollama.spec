@@ -1,6 +1,10 @@
 %global pypi_name ollama
 
-Name:		python-%{pypi_name}
+%if 0%{?rhel} && 0%{?rhel} == 10
+%global python3_pkgversion 3.12
+%endif
+
+Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.6.2
 Release:	1PGDG%{?dist}
 Summary:	The official Python client for Ollama
@@ -10,18 +14,11 @@ URL:		https://ollama.com
 Source0:	%{pypi_source %{pypi_name}}
 
 BuildArch:	noarch
-BuildRequires:	python3-devel pyproject-rpm-macros
+BuildRequires:	python%{python3_pkgversion}-devel pyproject-rpm-macros
 
-%global _description %{expand:
+%description
 The Ollama Python library provides the easiest way to integrate Python 3.8+
 projects with Ollama.}
-
-%description %_description
-
-%package -n python3-%{pypi_name}
-Summary:	%{summary}
-
-%description -n python3-%{pypi_name} %_description
 
 %prep
 %autosetup -n %{pypi_name}-%{version}
@@ -39,7 +36,7 @@ Summary:	%{summary}
 %check
 %pyproject_check_import
 
-%files -n python3-%{pypi_name} -f %{pyproject_files}
+%files -f %{pyproject_files}
 %license LICENSE
 %doc README.md
 
