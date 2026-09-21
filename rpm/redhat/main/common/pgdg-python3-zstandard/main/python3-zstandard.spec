@@ -32,8 +32,9 @@ License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
 Source0:	https://files.pythonhosted.org/packages/source/z/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
 # Only applied on RHEL, AL 2023 and SLES 15, where setuptools is older than 77 and
-# does not know the SPDX license expression of pyproject.toml. It is listed on
-# every distro, so that the SRPM always carries it.
+# does not know the SPDX license expression of pyproject.toml, and where an older
+# python3-trove-classifiers (2025.3.13 on AL 2023) rejects the free-threading
+# classifier. It is listed on every distro, so that the SRPM always carries it.
 Patch0:		zstandard-use-legacy-license-metadata.patch
 BuildRequires:	gcc
 BuildRequires:	libzstd-devel
@@ -84,7 +85,10 @@ compression library. A C extension and CFFI interface are provided.
 - Use the older license metadata form of pyproject.toml with a patch on RHEL,
   AL 2023 and SLES 15, as the setuptools there (68 on RHEL 8/9, 69 on RHEL 10
   and AL 2023) is older than 77, which 0.25.0 requires for the SPDX license
-  expression.
+  expression. The same patch drops the "Programming Language :: Python ::
+  Free Threading :: 1 - Unstable" classifier, which the older
+  python3-trove-classifiers of AL 2023 (2025.3.13) does not know, and setuptools
+  rejects the whole pyproject.toml when it is installed.
 - Add AL 2023 support (the AL-2023 directory).
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()

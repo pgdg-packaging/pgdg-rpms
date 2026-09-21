@@ -1,5 +1,5 @@
---- pyproject.toml.old	2026-09-20 19:19:58.539654176 -0500
-+++ pyproject.toml	2026-09-20 19:19:58.557754855 -0500
+--- pyproject.toml.old	2026-09-20 20:20:12.912660990 -0500
++++ pyproject.toml	2026-09-20 20:20:12.933597644 -0500
 @@ -6,7 +6,7 @@
  authors = [
      { name = "Gregory Szorc", email = "gregory.szorc@gmail.com" },
@@ -9,3 +9,11 @@
  requires-python = ">=3.9"
  classifiers = [
      "Development Status :: 5 - Production/Stable",
+@@ -18,7 +18,6 @@
+     "Programming Language :: Python :: 3.12",
+     "Programming Language :: Python :: 3.13",
+     "Programming Language :: Python :: 3.14",
+-    "Programming Language :: Python :: Free Threading :: 1 - Unstable",
+ ]
+ keywords = ["zstandard", "zstd", "compression"]
+ dependencies = []
