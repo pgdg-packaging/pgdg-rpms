@@ -29,7 +29,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	6PGDG%{dist}
+Release:	7PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -57,10 +57,19 @@ Requires:	python%{python3_pkgversion}-Pillow python%{python3_pkgversion}-FontToo
 
 BuildArch:	noarch
 
-# AI deps. Currently only for Fedora:
+# AI deps. Currently only for Fedora and RHEL 10:
 %if 0%{?fedora} >= 43
 # Claude:
 Requires:	python3-anthropic
+# Local:
+Requires:	python3-ollama
+# OpenAI:
+Requires:	python3-openai
+# Gemini:
+Requires:	python3-google-genai
+%endif
+
+%if 0%{?rhel} && 0%{?rhel} <= 10
 # Local:
 Requires:	python3-ollama
 # OpenAI:
@@ -78,6 +87,10 @@ performing time series analysis on them. The accompanying utility can produce
 visualizations for selected time ranges on the stored stats snapshots,
 enabling the user to track PostgreSQL performance over time and potentially
 perform tuning or troubleshooting.
+
+Optionally, an AI analysis mode can produce per-module HTML reports with chart
+commentary from a cloud LLM (Claude, Gemini, or OpenAI), any OpenAI-compatible
+endpoint, or a local model via Ollama.
 
 Best served with pg_statviz extensions package, which includes the extension files.
 
@@ -98,6 +111,9 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Mon Sep 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-7PGDG
+- Support AI features also on RHEL 10.
+
 * Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-6PGDG
 - Fix F-45 support
 
