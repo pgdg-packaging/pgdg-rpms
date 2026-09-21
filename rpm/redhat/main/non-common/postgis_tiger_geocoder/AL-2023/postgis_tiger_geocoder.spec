@@ -1,1 +1,0 @@
-../main/postgis_tiger_geocoder.spec

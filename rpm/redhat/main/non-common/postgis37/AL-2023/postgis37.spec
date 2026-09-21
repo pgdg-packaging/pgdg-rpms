@@ -1,1 +1,0 @@
-../main/postgis37.spec

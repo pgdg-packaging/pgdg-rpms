@@ -1,1 +1,0 @@
-../main/gdal310.spec

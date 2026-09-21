@@ -1,1 +1,0 @@
-../main/gdal39.spec
