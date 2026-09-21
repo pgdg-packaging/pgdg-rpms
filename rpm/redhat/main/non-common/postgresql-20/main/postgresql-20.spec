@@ -190,7 +190,7 @@ BuildRequires:	libselinux-devel >= 2.9
 BuildRequires:	selinux-policy >= 3.4.3
 %endif
 # EL-10 and Fedora >= 44 ship a local policy module to work around a
-# search/read denial for sshd_session_t on postgresql_db_t (see %post server):
+# search/read denial for sshd_session_t on postgresql_db_t (see %%post server):
 %if 0%{?rhel} >= 10 || 0%{?fedora} >= 44
 BuildRequires:	selinux-policy-devel
 %endif
@@ -204,7 +204,7 @@ BuildRequires:	libopenssl-3-devel
 BuildRequires:	openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
-BuildRequires:  openssl-devel-engine
+BuildRequires:	openssl-devel-engine
 %endif
 %endif
 
@@ -874,6 +874,12 @@ cat ecpg-%{pgmajorversion}.lang ecpglib6-%{pgmajorversion}.lang > ecpg.lst
 cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorversion}.lang pg_dump-%{pgmajorversion}.lang pg_basebackup-%{pgmajorversion}.lang pgscripts-%{pgmajorversion}.lang pg_combinebackup-%{pgmajorversion}.lang pg_walsummary-%{pgmajorversion}.lang > pg_main.lst
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
 cat postgresql-regress-%{pgmajorversion}.lang > pg_test.lst
+
+# find_lang lists only the .mo files; own the locale directory tree, too.
+# -libs is the base of the dependency chain. -ecpg-libs does not require it.
+find %{buildroot}%{pgbaseinstdir}/share/locale -type d | sed "s|^%{buildroot}|%%dir |" > pg_localedirs.lst
+cat pg_localedirs.lst >> pg_libpq5.lst
+cat pg_localedirs.lst >> ecpg.lst
 %endif
 
 %pre server
@@ -1004,6 +1010,9 @@ fi
 # so that extensions can use this dir.
 %dir %{pgbaseinstdir}/lib/bitcode
 %endif
+%dir %{pgbaseinstdir}/bin
+%dir %{pgbaseinstdir}/share/man
+%dir %{pgbaseinstdir}/share/man/man1
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES
 %doc COPYRIGHT
 %doc README.rpm-dist
@@ -1049,11 +1058,13 @@ fi
 %{pgbaseinstdir}/share/man/man1/psql.*
 %{pgbaseinstdir}/share/man/man1/reindexdb.*
 %{pgbaseinstdir}/share/man/man1/vacuumdb.*
-%{pgbaseinstdir}/share/man/man3/*
-%{pgbaseinstdir}/share/man/man7/*
+%{pgbaseinstdir}/share/man/man3
+%{pgbaseinstdir}/share/man/man7
 
 %files contrib -f pg_contrib.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/doc
+%dir %{pgbaseinstdir}/doc/extension
 %doc %{pgbaseinstdir}/doc/extension/*.example
 %{pgbaseinstdir}/lib/_int.so
 %{pgbaseinstdir}/lib/amcheck.so
@@ -1114,6 +1125,7 @@ fi
 %endif
 %if %selinux
 %{pgbaseinstdir}/lib/sepgsql.so
+%dir %{pgbaseinstdir}/share/contrib
 %{pgbaseinstdir}/share/contrib/sepgsql.sql
 %endif
 %{pgbaseinstdir}/lib/tablefunc.so
@@ -1197,15 +1209,17 @@ fi
 
 %files devel -f pg_devel.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/include
 %{pgbaseinstdir}/include/libpq*.h
 %{pgbaseinstdir}/include/pg_config*.h
 %{pgbaseinstdir}/include/postgres_ext.h
-%{pgbaseinstdir}/include/internal/*
-%{pgbaseinstdir}/include/libpq/*
-%{pgbaseinstdir}/include/server/*
+%{pgbaseinstdir}/include/internal
+%{pgbaseinstdir}/include/libpq
+%{pgbaseinstdir}/include/server
 
 %{pgbaseinstdir}/lib/libpq.so
-%{pgbaseinstdir}/lib/pgxs/*
+%{pgbaseinstdir}/lib/pgxs
+%dir %{pgbaseinstdir}/lib/pkgconfig
 %{pgbaseinstdir}/lib/pkgconfig/libpq.pc
 
 %files docs
@@ -1217,6 +1231,11 @@ fi
 
 %files ecpg-libs -f ecpg.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}
+%dir %{pgbaseinstdir}/lib
+%dir %{pgbaseinstdir}/share
+%dir %{pgbaseinstdir}/share/man
+%dir %{pgbaseinstdir}/share/man/man1
 %{pgbaseinstdir}/lib/libecpg.so*
 %{pgbaseinstdir}/lib/libecpg_compat.so*
 %{pgbaseinstdir}/lib/libecpg.a
@@ -1227,18 +1246,24 @@ fi
 
 %files ecpg-devel
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/bin
 %{pgbaseinstdir}/bin/ecpg
-%{pgbaseinstdir}/include/informix/*
+%dir %{pgbaseinstdir}/include
+%{pgbaseinstdir}/include/informix
 %{pgbaseinstdir}/include/pgtypes*h
 %{pgbaseinstdir}/include/ecpg*.h
 %{pgbaseinstdir}/include/sql3types.h
 %{pgbaseinstdir}/include/sqlca.h
 %{pgbaseinstdir}/include/sqlda*.h
+%dir %{pgbaseinstdir}/lib/pkgconfig
 %{pgbaseinstdir}/lib/pkgconfig/libecpg*.pc
 %{pgbaseinstdir}/lib/pkgconfig/libpgtypes.pc
 
 %files libs -f pg_libpq5.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}
+%dir %{pgbaseinstdir}/lib
+%dir %{pgbaseinstdir}/share
 %{pgbaseinstdir}/lib/libpq.so.*
 %{pgbaseinstdir}/lib/libpqwalreceiver.so
 %config(noreplace) %attr (644,root,root) %{pgbaseinstdir}/share/%{sname}-%{pgmajorversion}-libs.conf
@@ -1323,7 +1348,8 @@ fi
 %{pgbaseinstdir}/share/system_functions.sql
 %{pgbaseinstdir}/share/system_views.sql
 %{pgbaseinstdir}/share/*.sample
-%{pgbaseinstdir}/share/timezonesets/*
+%{pgbaseinstdir}/share/timezonesets
+%dir %{pgbaseinstdir}/share/tsearch_data
 %{pgbaseinstdir}/share/tsearch_data/*.affix
 %{pgbaseinstdir}/share/tsearch_data/*.dict
 %{pgbaseinstdir}/share/tsearch_data/*.ths
@@ -1340,8 +1366,6 @@ fi
 %dir %{pgbaseinstdir}/share/extension
 %{pgbaseinstdir}/share/extension/plpgsql*
 
-%dir %{pgbaseinstdir}/lib
-%dir %{pgbaseinstdir}/share
 %attr(700,postgres,postgres) %dir /var/lib/pgsql
 %attr(700,postgres,postgres) %dir /var/lib/pgsql/%{pgmajorversion}
 %attr(700,postgres,postgres) %dir /var/lib/pgsql/%{pgmajorversion}/data
@@ -1371,6 +1395,14 @@ fi
 %endif
 
 %changelog
+* Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-7PGDG
+- Own the directories under %%{pgbaseinstdir} that were left unowned
+  (base dir, bin, doc, include, share/man*, share/locale, share/contrib,
+  share/tsearch_data, share/timezonesets, lib/pgxs, lib/pkgconfig), so that
+  removing all packages leaves nothing behind. Move the ownership of lib and
+  share from -server to -libs.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/235
+
 * Sun Aug 30 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-6PGDG
 - Fix %%pre server's %%sysusers_create_package call.
 
@@ -1380,7 +1412,7 @@ fi
   indefinitely. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/191
 
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-4PGDG
-- EL-10 and Fedora 44: Ship a local SELinux policy module (loaded in %post server) that
+- EL-10 and Fedora 44: Ship a local SELinux policy module (loaded in %%post server) that
   allows sshd_session_t to search/read postgresql_db_t, fixing SSH pubkey
   auth for the postgres user via ~/.ssh/authorized_keys under EL-10's
   SELinux policy. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/229
