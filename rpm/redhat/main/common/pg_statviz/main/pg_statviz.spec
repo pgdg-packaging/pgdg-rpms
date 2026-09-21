@@ -129,7 +129,7 @@ Best served with pg_statviz extensions package, which includes the extension fil
 
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-3PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
-  %pyproject_wheel/%pyproject_install actually build against python3.13
+  %%pyproject_wheel/%%pyproject_install actually build against python3.13
   instead of silently falling back to the system default python3
   (__ospython only affects this repo's own macro computations, not
   RPM's own pyproject/site-packages macros).
