@@ -1,0 +1,18 @@
+--- setup.py.old	2026-09-20 21:11:51.661394798 -0500
++++ setup.py	2026-09-20 21:11:51.681508234 -0500
+@@ -168,13 +168,9 @@
+ # Finally call setup with the extension modules as defined above.
+ setup(
+     name='lz4',
+-    use_scm_version={
+-        'write_to': "lz4/version.py",
+-    },
++    version="4.4.5",
+     python_requires=">=3.9",
+-    setup_requires=[
+-        'setuptools_scm',
+-    ] + pytest_runner,
++    setup_requires=pytest_runner,
+     description="LZ4 Bindings for Python",
+     long_description=open('README.rst', 'r').read(),
+     author='Jonathan Underwood',

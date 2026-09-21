@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.4.5
-Release:	2PGDG%{?dist}.1
+Release:	3PGDG%{?dist}
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
@@ -36,12 +36,19 @@ Source:		https://files.pythonhosted.org/packages/source/l/%{srcname}/%{srcname}-
 # for the Python stack used here. It is listed on every distro, so that the SRPM
 # always carries it.
 Patch0:		lz4-drop-pkgconfig-setup-requires.patch
+# Only applied on RHEL 8, which has no python3.12-setuptools_scm: setup.py is given
+# the version directly instead of asking setuptools_scm for it (the sdist already has
+# lz4/version.py). The version is in the patch, so update it with every version bump.
+# It is listed on every distro, so that the SRPM always carries it.
+Patch1:		lz4-use-static-version.patch
 
 BuildRequires:	gcc python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 # Needed so setup.py's setup_requires (setuptools_scm, pkgconfig) are
 # already satisfied locally; otherwise setup.py tries to pip-fetch them,
 # which fails in a network-isolated mock build.
+%if 0%{?rhel} != 8
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+%endif
 %if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023
 # There is no pkgconfig module for the Python stack used here. setup.py only uses
 # it to find a system liblz4, and falls back to the bundled lz4 without it, so
@@ -68,6 +75,9 @@ Python 3 bindings for the lz4 compression library.
 %setup -q -n %{srcname}-%{version}
 %if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023
 %patch -P0 -p0
+%endif
+%if 0%{?rhel} == 8
+%patch -P1 -p0
 %endif
 
 #rm lz4libs/lz4*.[ch]
@@ -104,6 +114,11 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-3PGDG
+- On RHEL 8, there is no python3.12-setuptools_scm, so do not BuildRequire it, and
+  give setup.py the version directly with a second patch. The sdist already
+  contains lz4/version.py, which setuptools_scm would only regenerate.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-2PGDG
 - On RHEL 8, RHEL 9 and AL 2023, drop pkgconfig from setup_requires with a patch, and
   do not BuildRequire python3.12-pkgconfig / python3.13-pkgconfig there: they do not
