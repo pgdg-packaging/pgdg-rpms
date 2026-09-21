@@ -43,6 +43,7 @@ PGDG mock configuration files which allow you to create chroots for Fedora and R
 %defattr(644,root,root)
 %license LICENSE.txt
 %doc README.txt
+%{_sysconfdir}/mock/pgdg-amazonlinux-*.cfg
 %{_sysconfdir}/mock/pgdg-fedora-*.cfg
 %{_sysconfdir}/mock/pgdg-opensuse-leap-*.cfg
 %{_sysconfdir}/mock/pgdg-rocky-*.cfg
