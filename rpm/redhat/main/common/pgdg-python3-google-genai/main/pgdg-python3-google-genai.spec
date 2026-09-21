@@ -1,6 +1,10 @@
 %global pypi_name google_genai
 
-Name:		python-google-genai
+%if 0%{?rhel} && 0%{?rhel} == 10
+%global python3_pkgversion 3.12
+%endif
+
+Name:		python%{python3_pkgversion}-google-genai
 Version:	1.0.0
 Release:	1PGDG%{?dist}
 Summary:	Google GenAI Python SDK
@@ -13,19 +17,12 @@ Source0:	%{pypi_source %{pypi_name}}
 Patch0:		google-genai-add-build-backend.patch
 
 BuildArch:	noarch
-BuildRequires:	python3-devel pyproject-rpm-macros
+BuildRequires:	python%{python3_pkgversion}-devel pyproject-rpm-macros
 
-%global _description %{expand:
+%description
 Google Gen AI Python SDK provides an interface for developers to integrate
 generative models of Google into their Python applications. It supports the
 Gemini Developer API and Vertex AI APIs.}
-
-%description %_description
-
-%package -n python3-google-genai
-Summary:	%{summary}
-
-%description -n python3-google-genai %_description
 
 %prep
 %autosetup -p0 -n %{pypi_name}-%{version}
@@ -43,7 +40,7 @@ Summary:	%{summary}
 %check
 %pyproject_check_import
 
-%files -n python3-google-genai -f %{pyproject_files}
+%files -f %{pyproject_files}
 %doc README.md
 
 %changelog
