@@ -34,7 +34,17 @@ BuildRequires:	rust1.98
 BuildRequires:	cargo-pgrx019 = 0.19.1
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # pgrx-pg-sys generates the bindings of the PostgreSQL headers with bindgen:
-BuildRequires:	clang clang-devel gcc
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+%endif
+
+BuildRequires:	gcc
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
