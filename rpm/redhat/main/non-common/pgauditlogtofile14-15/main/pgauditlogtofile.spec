@@ -6,9 +6,6 @@
 %if %{pgmajorversion} == 14
 %global pgauditversion 16
 %endif
-%if %{pgmajorversion} == 13
-%global pgauditversion 15
-%endif
 
 %{!?llvm:%global llvm 1}
 
@@ -25,7 +22,7 @@
 
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.8.5
+Version:	1.8.7
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
@@ -36,7 +33,7 @@ BuildRequires:	krb5-devel zlib-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
@@ -126,6 +123,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Sep 22 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.7-1PGDG
+- Update to 1.8.7 per changes described at:
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.7
+  https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.6
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.5-1PGDG
 - Update to 1.8.5 per changes described at:
   https://github.com/fmbiete/pgauditlogtofile/releases/tag/v1.8.5
