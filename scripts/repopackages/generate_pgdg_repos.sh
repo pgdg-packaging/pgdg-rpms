@@ -246,8 +246,9 @@ write_comment() {
 }
 
 # Append a blank line + a DNF/YUM stanza (RHEL/Fedora style)
-# 7th arg (type): "rhel" (default) or "fedora"
+# 7th arg (type): "rhel" (default), "rhel10", or "fedora"
 #   rhel:   gpgcheck=1
+#   rhel10: gpgcheck=1 + priority=1 (no dnf modularity to gate AppStream)
 #   fedora: pkg_gpgcheck=1 + priority=1
 write_stanza() {
 	local f="$1" id="$2" name="$3" baseurl="$4" enabled="$5" gpgkey="$6"
@@ -264,7 +265,7 @@ write_stanza() {
 		fi
 		printf 'gpgkey=file:///etc/pki/rpm-gpg/%s\n' "$gpgkey"
 		printf 'repo_gpgcheck = 1\n'
-		[[ "$type" == "fedora" ]] && printf 'priority=1\n'
+		[[ "$type" == "fedora" || "$type" == "rhel10" ]] && printf 'priority=1\n'
 	} >> "$f"
 }
 
@@ -296,6 +297,14 @@ generate_redhat_repo() {
 
 	local osmajor="${osver%%.*}"
 	local gpgkey; gpgkey=$(get_rhel_gpgkey "$arch")
+
+	# RHEL 10 dropped dnf modularity, so the "disable the appstream postgresql
+	# module" trick no longer exists to keep AppStream's postgresqlNN-* builds
+	# out of resolution. Give pgdgNN repos priority over AppStream/BaseOS
+	# (lower number = higher precedence; unset repos default to 99) so ours
+	# always wins regardless of which build has the higher EVR.
+	local wtype="rhel"
+	[[ "$osmajor" == "10" ]] && wtype="rhel10"
 
 	# x86_64 is the default — no arch suffix in the filename
 	local archsuffix=""
@@ -333,7 +342,7 @@ generate_redhat_repo() {
 		"pgdg-common" \
 		"PostgreSQL common RPMs for ${osdesc} - \$basearch" \
 		"${YUM_BASE}/common/${OSURL}" \
-		1 "$gpgkey"
+		1 "$gpgkey" "$wtype"
 
 	# ── Extras ───────────────────────────────────────────────────────
 	if [[ "${EXTRASREPOSENABLED_redhat}" -eq 1 ]]; then
@@ -344,12 +353,12 @@ generate_redhat_repo() {
 			"pgdg-rhel${osmajor}-extras" \
 			"Extra packages to support some RPMs in the PostgreSQL RPM repo for ${osdesc} - \$basearch" \
 			"${YUM_BASE}/extras/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 		write_stanza "$outfile" \
 			"pgdg-rhel${osmajor}-extras-testing" \
 			"Extra packages to support some RPMs in the PostgreSQL RPM repo for ${osdesc} - \$basearch - Updates testing" \
 			"${YUM_BASE}/testing/extras/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 	fi
 
 	# ── Stable per-version repos ──────────────────────────────────────
@@ -362,7 +371,7 @@ generate_redhat_repo() {
 			"pgdg${pgver}" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch" \
 			"${YUM_BASE}/${pgver}/${OSURL}" \
-			1 "$gpgkey"
+			1 "$gpgkey" "$wtype"
 	done
 
 	# ── Testing repos ─────────────────────────────────────────────────
@@ -373,7 +382,7 @@ generate_redhat_repo() {
 			"pgdg-common-testing" \
 			"PostgreSQL common testing RPMs for ${osdesc} - \$basearch" \
 			"${YUM_BASE}/testing/common/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 
 		write_comment "$outfile" \
 			"PGDG RHEL / Rocky Linux / AlmaLinux Updates Testing repositories. (These packages should not be used in production)" \
@@ -384,7 +393,7 @@ generate_redhat_repo() {
 				"pgdg${pgver}-updates-testing" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Updates testing" \
 				"${YUM_BASE}/testing/${pgver}/${OSURL}" \
-				0 "$gpgkey"
+				0 "$gpgkey" "$wtype"
 		done
 	fi
 
@@ -395,7 +404,7 @@ generate_redhat_repo() {
 		"pgdg-common-source" \
 		"PostgreSQL common SRPMs for ${osdesc} - \$basearch - Source" \
 		"${SRPM_BASE}/common/${OSURL}" \
-		0 "$gpgkey"
+		0 "$gpgkey" "$wtype"
 
 	if [[ "${EXTRASREPOSENABLED_redhat}" -eq 1 ]]; then
 		write_comment "$outfile" \
@@ -404,7 +413,7 @@ generate_redhat_repo() {
 			"pgdg-rhel${osmajor}-extras-source" \
 			"SRPMs of the Extras packages to support some RPMs in the PostgreSQL RPM repo ${osdesc} - \$basearch" \
 			"${SRPM_BASE}/extras/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 	fi
 
 	if [[ "${SYNCTESTINGREPOS_redhat}" -eq 1 ]]; then
@@ -414,7 +423,7 @@ generate_redhat_repo() {
 			"pgdg-common-testing-source" \
 			"PostgreSQL common testing SRPMs for ${osdesc} - \$basearch" \
 			"${SRPM_BASE}/testing/common/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 
 		if [[ "${EXTRASREPOSENABLED_redhat}" -eq 1 ]]; then
 			write_comment "$outfile" \
@@ -423,7 +432,7 @@ generate_redhat_repo() {
 				"pgdg-rhel${osmajor}-extras-testing-source" \
 				"SRPMs of the Extras packages to support some RPMs in the PostgreSQL RPM repo ${osdesc} - \$basearch" \
 				"${SRPM_BASE}/testing/extras/${OSURL}" \
-				0 "$gpgkey"
+				0 "$gpgkey" "$wtype"
 		fi
 	fi
 
@@ -438,7 +447,7 @@ generate_redhat_repo() {
 					"pgdg${pgver}-updates-testing-source" \
 					"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Source updates testing" \
 					"${SRPM_BASE}/testing/${pgver}/${OSURL}" \
-					0 "$gpgkey"
+					0 "$gpgkey" "$wtype"
 			fi
 		done
 	fi
@@ -449,13 +458,13 @@ generate_redhat_repo() {
 			"pgdg${pgver}-source" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Source" \
 			"${SRPM_BASE}/${pgver}/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 		if [[ "${SYNCTESTINGREPOS_redhat}" -eq 1 ]]; then
 			write_stanza "$outfile" \
 				"pgdg${pgver}-updates-testing-source" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Source updates testing" \
 				"${SRPM_BASE}/testing/${pgver}/${OSURL}" \
-				0 "$gpgkey"
+				0 "$gpgkey" "$wtype"
 		fi
 	done
 
@@ -466,7 +475,7 @@ generate_redhat_repo() {
 		"pgdg-common-debuginfo" \
 		"PostgreSQL common RPMs for ${osdesc} - \$basearch - Debuginfo" \
 		"${DBG_BASE}/debug/common/${OSURL}" \
-		0 "$gpgkey"
+		0 "$gpgkey" "$wtype"
 
 	write_comment "$outfile" \
 		"Debuginfo / debugsource packages for stable repos"
@@ -476,7 +485,7 @@ generate_redhat_repo() {
 			"pgdg${pgver}-debuginfo" \
 			"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Debuginfo" \
 			"${DBG_BASE}/debug/${pgver}/${OSURL}" \
-			0 "$gpgkey"
+			0 "$gpgkey" "$wtype"
 	done
 
 	if [[ "${SYNCTESTINGREPOS_redhat}" -eq 1 ]]; then
@@ -489,7 +498,7 @@ generate_redhat_repo() {
 				"pgdg${pgver}-updates-testing-debuginfo" \
 				"PostgreSQL ${pgver} for ${osdesc} - \$basearch - Debuginfo" \
 				"${DBG_BASE}/testing/debug/${pgver}/${OSURL}" \
-				0 "$gpgkey"
+				0 "$gpgkey" "$wtype"
 		done
 	fi
 

@@ -12,6 +12,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # We provide extra packages to support some of the RPMs in the PostgreSQL RPM
 # repo, like consul, etcd, haproxy, etc.
@@ -23,6 +24,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg-rhel10-extras-testing]
 name=Extra packages to support some RPMs in the PostgreSQL RPM repo for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -31,6 +33,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable repositories:
 
@@ -41,6 +44,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg17]
 name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch
@@ -49,6 +53,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg16]
 name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch
@@ -57,6 +62,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg15]
 name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch
@@ -65,6 +71,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg14]
 name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch
@@ -73,6 +80,7 @@ enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG RHEL / Rocky Linux / AlmaLinux Updates Testing common repositories.
 
@@ -83,6 +91,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG RHEL / Rocky Linux / AlmaLinux Updates Testing repositories. (These packages should not be used in production)
 # Available for PostgreSQL 14 and above.
@@ -94,6 +103,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg19-updates-testing]
 name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -102,6 +112,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg18-updates-testing]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -110,6 +121,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg17-updates-testing]
 name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -118,6 +130,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg16-updates-testing]
 name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -126,6 +139,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg15-updates-testing]
 name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -134,6 +148,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg14-updates-testing]
 name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Updates testing
@@ -142,6 +157,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux SRPM testing common repository
 
@@ -152,6 +168,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG RHEL / Rocky Linux / AlmaLinux Extras SRPM repository
 
@@ -162,6 +179,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG RHEL / Rocky Linux / AlmaLinux testing common SRPM repository for all PostgreSQL versions
 
@@ -172,6 +190,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG RHEL / Rocky Linux / AlmaLinux Extras Testing SRPM repository
 
@@ -182,6 +201,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # PGDG Source RPMs (SRPMS) and their testing repositories:
 
@@ -192,6 +212,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg19-updates-testing-source]
 name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source updates testing
@@ -200,6 +221,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg18-source]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source
@@ -208,6 +230,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg18-updates-testing-source]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source updates testing
@@ -216,6 +239,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg17-source]
 name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source
@@ -224,6 +248,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg17-updates-testing-source]
 name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source updates testing
@@ -232,6 +257,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg16-source]
 name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source
@@ -240,6 +266,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg16-updates-testing-source]
 name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source updates testing
@@ -248,6 +275,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg15-source]
 name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source
@@ -256,6 +284,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg15-updates-testing-source]
 name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source updates testing
@@ -264,6 +293,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg14-source]
 name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source
@@ -272,6 +302,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg14-updates-testing-source]
 name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Source updates testing
@@ -280,6 +311,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # Debuginfo / debugsource repositories for the common repo
 
@@ -290,6 +322,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # Debuginfo / debugsource packages for stable repos
 
@@ -300,6 +333,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg17-debuginfo]
 name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -308,6 +342,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg16-debuginfo]
 name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -316,6 +351,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg15-debuginfo]
 name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -324,6 +360,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg14-debuginfo]
 name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -332,6 +369,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 # Debuginfo / debugsource packages for testing repos
 # Available for PostgreSQL 14 and above.
@@ -343,6 +381,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg19-updates-testing-debuginfo]
 name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -351,6 +390,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg18-updates-testing-debuginfo]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -359,6 +399,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg17-updates-testing-debuginfo]
 name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -367,6 +408,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg16-updates-testing-debuginfo]
 name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -375,6 +417,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg15-updates-testing-debuginfo]
 name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -383,6 +426,7 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
 
 [pgdg14-updates-testing-debuginfo]
 name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux 10 - $basearch - Debuginfo
@@ -391,3 +435,4 @@ enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL
 repo_gpgcheck = 1
+priority=1
