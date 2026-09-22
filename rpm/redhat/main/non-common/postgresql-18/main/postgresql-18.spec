@@ -45,9 +45,9 @@ Version:	18.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200004PGDG%{?dist}
+Release:	4200005PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -869,6 +869,12 @@ cat pg_amcheck-%{pgmajorversion}.lang > pg_contrib.lst
 cat libpq5-%{pgmajorversion}.lang > pg_libpq5.lst
 cat pg_config-%{pgmajorversion}.lang > pg_devel.lst
 cat ecpg-%{pgmajorversion}.lang ecpglib6-%{pgmajorversion}.lang > ecpg.lst
+
+# find_lang lists only the .mo files; own the locale directory tree, too.
+# -libs is the base of the dependency chain. -ecpg-libs does not require it.
+find %{buildroot}%{pgbaseinstdir}/share/locale -type d | sed "s|^%{buildroot}|%%dir |" > pg_localedirs.lst
+cat pg_localedirs.lst >> pg_libpq5.lst
+cat pg_localedirs.lst >> ecpg.lst
 cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorversion}.lang pg_dump-%{pgmajorversion}.lang pg_basebackup-%{pgmajorversion}.lang pgscripts-%{pgmajorversion}.lang pg_combinebackup-%{pgmajorversion}.lang pg_walsummary-%{pgmajorversion}.lang > pg_main.lst
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
 %endif
@@ -1014,6 +1020,9 @@ fi
 # so that extensions can use this dir.
 %dir %{pgbaseinstdir}/lib/bitcode
 %endif
+%dir %{pgbaseinstdir}/bin
+%dir %{pgbaseinstdir}/share/man
+%dir %{pgbaseinstdir}/share/man/man1
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES
 %doc COPYRIGHT
 %doc README.rpm-dist
@@ -1058,11 +1067,13 @@ fi
 %{pgbaseinstdir}/share/man/man1/psql.*
 %{pgbaseinstdir}/share/man/man1/reindexdb.*
 %{pgbaseinstdir}/share/man/man1/vacuumdb.*
-%{pgbaseinstdir}/share/man/man3/*
-%{pgbaseinstdir}/share/man/man7/*
+%{pgbaseinstdir}/share/man/man3
+%{pgbaseinstdir}/share/man/man7
 
 %files contrib -f pg_contrib.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/doc
+%dir %{pgbaseinstdir}/doc/extension
 %doc %{pgbaseinstdir}/doc/extension/*.example
 %{pgbaseinstdir}/lib/_int.so
 %{pgbaseinstdir}/lib/amcheck.so
@@ -1122,6 +1133,7 @@ fi
 %endif
 %if %selinux
 %{pgbaseinstdir}/lib/sepgsql.so
+%dir %{pgbaseinstdir}/share/contrib
 %{pgbaseinstdir}/share/contrib/sepgsql.sql
 %endif
 %{pgbaseinstdir}/lib/tablefunc.so
@@ -1205,12 +1217,13 @@ fi
 
 %files devel -f pg_devel.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/include
 %{pgbaseinstdir}/include/libpq*.h
 %{pgbaseinstdir}/include/pg_config*.h
 %{pgbaseinstdir}/include/postgres_ext.h
-%{pgbaseinstdir}/include/internal/*
-%{pgbaseinstdir}/include/libpq/*
-%{pgbaseinstdir}/include/server/*
+%{pgbaseinstdir}/include/internal
+%{pgbaseinstdir}/include/libpq
+%{pgbaseinstdir}/include/server
 
 %{pgbaseinstdir}/lib/libpq.so
 %{pgbaseinstdir}/lib/libpq.a
@@ -1219,7 +1232,8 @@ fi
 %{pgbaseinstdir}/lib/libpgcommon_shlib.a
 %{pgbaseinstdir}/lib/libpgport.a
 %{pgbaseinstdir}/lib/libpgport_shlib.a
-%{pgbaseinstdir}/lib/pgxs/*
+%{pgbaseinstdir}/lib/pgxs
+%dir %{pgbaseinstdir}/lib/pkgconfig
 %{pgbaseinstdir}/lib/pkgconfig/libpq.pc
 
 %files docs
@@ -1231,6 +1245,11 @@ fi
 
 %files ecpg-libs -f ecpg.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}
+%dir %{pgbaseinstdir}/lib
+%dir %{pgbaseinstdir}/share
+%dir %{pgbaseinstdir}/share/man
+%dir %{pgbaseinstdir}/share/man/man1
 %{pgbaseinstdir}/lib/libecpg.so*
 %{pgbaseinstdir}/lib/libecpg_compat.so*
 %{pgbaseinstdir}/lib/libecpg.a
@@ -1241,18 +1260,24 @@ fi
 
 %files ecpg-devel
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/bin
 %{pgbaseinstdir}/bin/ecpg
-%{pgbaseinstdir}/include/informix/*
+%dir %{pgbaseinstdir}/include
+%{pgbaseinstdir}/include/informix
 %{pgbaseinstdir}/include/pgtypes*h
 %{pgbaseinstdir}/include/ecpg*.h
 %{pgbaseinstdir}/include/sql3types.h
 %{pgbaseinstdir}/include/sqlca.h
 %{pgbaseinstdir}/include/sqlda*.h
+%dir %{pgbaseinstdir}/lib/pkgconfig
 %{pgbaseinstdir}/lib/pkgconfig/libecpg*.pc
 %{pgbaseinstdir}/lib/pkgconfig/libpgtypes.pc
 
 %files libs -f pg_libpq5.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}
+%dir %{pgbaseinstdir}/lib
+%dir %{pgbaseinstdir}/share
 %{pgbaseinstdir}/lib/libpq.so.*
 %{pgbaseinstdir}/lib/libpqwalreceiver.so
 %config(noreplace) %attr (644,root,root) %{pgbaseinstdir}/share/%{sname}-%{pgmajorversion}-libs.conf
@@ -1337,7 +1362,8 @@ fi
 %{pgbaseinstdir}/share/system_functions.sql
 %{pgbaseinstdir}/share/system_views.sql
 %{pgbaseinstdir}/share/*.sample
-%{pgbaseinstdir}/share/timezonesets/*
+%{pgbaseinstdir}/share/timezonesets
+%dir %{pgbaseinstdir}/share/tsearch_data
 %{pgbaseinstdir}/share/tsearch_data/*.affix
 %{pgbaseinstdir}/share/tsearch_data/*.dict
 %{pgbaseinstdir}/share/tsearch_data/*.ths
@@ -1353,8 +1379,6 @@ fi
 %dir %{pgbaseinstdir}/share/extension
 %{pgbaseinstdir}/share/extension/plpgsql*
 
-%dir %{pgbaseinstdir}/lib
-%dir %{pgbaseinstdir}/share
 %attr(700,postgres,postgres) %dir /var/lib/pgsql
 %attr(700,postgres,postgres) %dir /var/lib/pgsql/%{pgmajorversion}
 %attr(700,postgres,postgres) %dir /var/lib/pgsql/%{pgmajorversion}/data
@@ -1374,6 +1398,14 @@ fi
 %endif
 
 %changelog
+* Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-5PGDG
+- Own the directories under %%{pgbaseinstdir} that were left unowned
+  (base dir, bin, doc, include, share/man*, share/locale, share/contrib,
+  share/tsearch_data, share/timezonesets, lib/pgxs, lib/pkgconfig), so that
+  removing all packages leaves nothing behind. Move the ownership of lib and
+  share from -server to -libs.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/235
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-4PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop
