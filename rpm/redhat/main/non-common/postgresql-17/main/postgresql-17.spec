@@ -48,9 +48,9 @@ Version:	17.11
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420004PGDG%{?dist}
+Release:	420005PGDG%{?dist}
 %else
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -804,6 +804,12 @@ cat pltcl-%{pgmajorversion}.lang > pg_pltcl.lst
 
 cat pg_amcheck-%{pgmajorversion}.lang > pg_contrib.lst
 cat libpq5-%{pgmajorversion}.lang > pg_libpq5.lst
+
+# find_lang lists only the .mo files; own the locale directory tree, too.
+# -libs is the base of the dependency chain (ecpg's runtime libs live there
+# too, but its own .mo files are shipped in -devel; -devel Requires -libs).
+find %{buildroot}%{pgbaseinstdir}/share/locale -type d | sed "s|^%{buildroot}|%%dir |" > pg_localedirs.lst
+cat pg_localedirs.lst >> pg_libpq5.lst
 cat pg_config-%{pgmajorversion}.lang ecpg-%{pgmajorversion}.lang ecpglib6-%{pgmajorversion}.lang > pg_devel.lst
 cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorversion}.lang pg_dump-%{pgmajorversion}.lang pg_basebackup-%{pgmajorversion}.lang pgscripts-%{pgmajorversion}.lang pg_combinebackup-%{pgmajorversion}.lang pg_walsummary-%{pgmajorversion}.lang > pg_main.lst
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
@@ -959,6 +965,9 @@ fi
 # so that extensions can use this dir.
 %dir %{pgbaseinstdir}/lib/bitcode
 %endif
+%dir %{pgbaseinstdir}/bin
+%dir %{pgbaseinstdir}/share/man
+%dir %{pgbaseinstdir}/share/man/man1
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES
 %doc COPYRIGHT
 %doc README.rpm-dist
@@ -1003,8 +1012,8 @@ fi
 %{pgbaseinstdir}/share/man/man1/psql.*
 %{pgbaseinstdir}/share/man/man1/reindexdb.*
 %{pgbaseinstdir}/share/man/man1/vacuumdb.*
-%{pgbaseinstdir}/share/man/man3/*
-%{pgbaseinstdir}/share/man/man7/*
+%{pgbaseinstdir}/share/man/man3
+%{pgbaseinstdir}/share/man/man7
 
 %files docs
 %defattr(-,root,root)
@@ -1015,6 +1024,8 @@ fi
 
 %files contrib -f pg_contrib.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}/doc
+%dir %{pgbaseinstdir}/doc/extension
 %doc %{pgbaseinstdir}/doc/extension/*.example
 %{pgbaseinstdir}/lib/_int.so
 %{pgbaseinstdir}/lib/amcheck.so
@@ -1072,6 +1083,7 @@ fi
 %endif
 %if %selinux
 %{pgbaseinstdir}/lib/sepgsql.so
+%dir %{pgbaseinstdir}/share/contrib
 %{pgbaseinstdir}/share/contrib/sepgsql.sql
 %endif
 %{pgbaseinstdir}/lib/tablefunc.so
@@ -1154,6 +1166,9 @@ fi
 
 %files libs -f pg_libpq5.lst
 %defattr(-,root,root)
+%dir %{pgbaseinstdir}
+%dir %{pgbaseinstdir}/lib
+%dir %{pgbaseinstdir}/share
 %{pgbaseinstdir}/lib/libpq.so.*
 %{pgbaseinstdir}/lib/libecpg.so*
 %{pgbaseinstdir}/lib/libpgtypes.so.*
@@ -1207,7 +1222,8 @@ fi
 %{pgbaseinstdir}/share/system_functions.sql
 %{pgbaseinstdir}/share/system_views.sql
 %{pgbaseinstdir}/share/*.sample
-%{pgbaseinstdir}/share/timezonesets/*
+%{pgbaseinstdir}/share/timezonesets
+%dir %{pgbaseinstdir}/share/tsearch_data
 %{pgbaseinstdir}/share/tsearch_data/*.affix
 %{pgbaseinstdir}/share/tsearch_data/*.dict
 %{pgbaseinstdir}/share/tsearch_data/*.ths
@@ -1223,8 +1239,6 @@ fi
 %dir %{pgbaseinstdir}/share/extension
 %{pgbaseinstdir}/share/extension/plpgsql*
 
-%dir %{pgbaseinstdir}/lib
-%dir %{pgbaseinstdir}/share
 %attr(700,postgres,postgres) %dir /var/lib/pgsql
 %attr(700,postgres,postgres) %dir /var/lib/pgsql/%{pgmajorversion}
 %attr(700,postgres,postgres) %dir /var/lib/pgsql/%{pgmajorversion}/data
@@ -1238,7 +1252,7 @@ fi
 
 %files devel -f pg_devel.lst
 %defattr(-,root,root)
-%{pgbaseinstdir}/include/*
+%{pgbaseinstdir}/include
 %{pgbaseinstdir}/bin/ecpg
 %{pgbaseinstdir}/lib/libpq.so
 %{pgbaseinstdir}/lib/libecpg.so
@@ -1252,8 +1266,8 @@ fi
 %{pgbaseinstdir}/lib/libpgport_shlib.a
 %{pgbaseinstdir}/lib/libpgtypes.so
 %{pgbaseinstdir}/lib/libpgtypes.a
-%{pgbaseinstdir}/lib/pgxs/*
-%{pgbaseinstdir}/lib/pkgconfig/*
+%{pgbaseinstdir}/lib/pgxs
+%{pgbaseinstdir}/lib/pkgconfig
 %{pgbaseinstdir}/share/man/man1/ecpg.*
 
 %if %llvm
@@ -1296,6 +1310,14 @@ fi
 %endif
 
 %changelog
+* Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 17.11-5PGDG
+- Own the directories under %%{pgbaseinstdir} that were left unowned
+  (base dir, bin, doc, include, share/man*, share/locale, share/contrib,
+  share/tsearch_data, share/timezonesets), so that removing all packages
+  leaves nothing behind. Move the ownership of lib and share from -server
+  to -libs.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/235
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 17.11-4PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
   service file, so that Restart=on-failure cannot crash-loop
