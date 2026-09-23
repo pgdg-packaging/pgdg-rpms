@@ -177,7 +177,7 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
-* Sat May 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-42PGDG
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-42PGDG
 - Update to 1.26.0, per changes described at:
   https://github.com/pgbouncer/pgbouncer/releases/tag/pgbouncer_1_26_0
   Fixes: CVE-2026-19888, CVE-2026-6668 and CVE-2026-6669
