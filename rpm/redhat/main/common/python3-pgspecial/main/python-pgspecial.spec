@@ -16,7 +16,12 @@ URL:		https://pypi.python.org/pypi/pgspecial
 Source0:	https://files.pythonhosted.org/packages/source/%(n=%{srcname}; echo ${n:0:1})/%{srcname}/%{srcname}-%{version}.tar.gz
 
 BuildRequires:	python3-devel python3-pip python3-setuptools
-BuildRequires:	python3-setuptools_scm pyproject-rpm-macros
+BuildRequires:	python3-setuptools_scm
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 BuildArch:	noarch
 
@@ -45,6 +50,7 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
   sysconfig.get_path() (distutils is gone on Python 3.12+, e.g. Fedora's
   default python3.14)
 - Switch to pyproject builds.
+- Add SLES 16 support.
 
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.2.1-1PGDG
 - Update to 2.2.1 per changes described at:
