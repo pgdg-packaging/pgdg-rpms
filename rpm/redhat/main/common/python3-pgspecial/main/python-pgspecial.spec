@@ -2,12 +2,16 @@
 %global __ospython3 %{_bindir}/python3
 %global python3_sitelib %(%{__ospython3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+
 %global sname pgspecial
 %global srcname pgspecial
 
 Name:		python3-%{sname}
 Version:	2.2.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Epoch:		1
 Summary:	Meta-commands handler for Postgres Database.
 
@@ -17,6 +21,7 @@ Source0:	https://files.pythonhosted.org/packages/source/%(n=%{srcname}; echo ${n
 
 BuildRequires:	python3-devel python3-pip python3-setuptools
 BuildRequires:	python3-setuptools_scm
+BuildRequires:	python3-wheel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -45,6 +50,11 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.2.1-4PGDG
+- Enable the Python dependency generator, so that the runtime Requires
+  (click, sqlparse, psycopg) are also generated on SUSE.
+- Add missing python3-wheel BR, needed by the setuptools on RHEL 10.
+
 * Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.2.1-3PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module to
   sysconfig.get_path() (distutils is gone on Python 3.12+, e.g. Fedora's
