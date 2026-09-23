@@ -3,8 +3,8 @@
 %endif
 
 Name:		pgbouncer
-Version:	1.25.2
-Release:	47PGDG%{?dist}
+Version:	1.26.0
+Release:	42PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -177,6 +177,11 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Sat May 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-42PGDG
+- Update to 1.26.0, per changes described at:
+  https://github.com/pgbouncer/pgbouncer/releases/tag/pgbouncer_1_26_0
+  Fixes: CVE-2026-19888, CVE-2026-6668 and CVE-2026-6669
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.25.2-47PGDG
 - Add missing BR
 
