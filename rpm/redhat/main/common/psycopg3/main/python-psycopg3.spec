@@ -3,11 +3,6 @@
 
 %{!?with_docs:%global with_docs 0}
 
-%if 0%{?rhel} == 8
-%global python3_runtimes python3.9
-%global __ospython %{_bindir}/python3.9
-%global python3_sitearch %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
-%else
 %if 0%{?amzn} == 2023
 # AL2023's default python3 is 3.9, but psycopg requires >= 3.10, so build
 # against the python3.13 alt-stack (also the only one with a Cython package).
@@ -18,7 +13,6 @@
 %else
 %global python3_runtimes python3
 %global __ospython %{_bindir}/python3
-%endif
 %endif
 
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
@@ -31,8 +25,17 @@
 
 Summary:	A PostgreSQL database adapter for Python 3
 Name:		python3-%{sname}
+%if 0%{?rhel} == 9
+# psycopg 3.3 requires Python >= 3.10, but RHEL 9's python3 is 3.9. Stay
+# on the 3.2 branch there. The Epoch is needed to replace the broken
+# 3.3.6-42PGDG packages that were already published for RHEL 9.
+Epoch:		1
+Version:	3.2.13
+Release:	1PGDG%{?dist}
+%else
 Version:	3.3.6
 Release:	42PGDG%{?dist}
+%endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://psycopg.org
@@ -79,7 +82,7 @@ features offered by PostgreSQL.
 %package -n python3-%{sname}-tests
 Summary:	A testsuite for Python 3
 BuildArch:	noarch
-Requires:	python3-%sname = %version-%release
+Requires:	python3-%sname = %{?epoch:%{epoch}:}%version-%release
 
 %description -n python3-%{sname}-tests
 This sub-package delivers set of tests for the adapter.
@@ -89,9 +92,9 @@ This sub-package delivers set of tests for the adapter.
 %package doc
 Summary:	Documentation for psycopg python PostgreSQL database adapter
 BuildArch:	noarch
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes:	python-%{sname}-doc >= 2.0.0
-Provides:	python-%{sname}-doc = %{version}-%{release}
+Provides:	python-%{sname}-doc = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description doc
 Documentation and example files for the psycopg python PostgreSQL
@@ -107,7 +110,7 @@ Requires:	libpq5
 # as our python3-psycopg3-c (hyphen) -- so both can end up installed at
 # once, fighting over the same site-packages/psycopg_c files.
 Obsoletes:	python3-%{sname}_c <= 99.0
-Provides:	python3-%{sname}_c = %{version}-%{release}
+Provides:	python3-%{sname}_c = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description c
 This package contains the C extensions for enhanced performance in Psycopg 3.
@@ -119,6 +122,7 @@ This package contains the C extensions for enhanced performance in Psycopg 3.
 rm -rf psycopg_c
 mv psycopg_c-%{version} psycopg_c
 
+%if 0%{?rhel} != 9
 # Rewrite upstream's bare PEP 639 SPDX license string to the older PEP
 # 621 {text = ...} form, which every setuptools in our build matrix can
 # parse, and drop the SPDX-only license-files key. Also drop classifiers
@@ -150,12 +154,14 @@ SETUP_PY_EOF
 # Extension declarations (and cmdclass, which depends on the same
 # backend-path removed below) into a plain setup.py instead.
 sed -i '/^# Note: these ext modules/,$d' psycopg_c/pyproject.toml
+%endif
 
 # The custom cython_backend needs tomli on Python < 3.11 (RHEL 9),
 # just to decide whether Cython is needed -- moot here since this
 # sdist has no .pyx to cythonize. Use plain setuptools.build_meta.
 sed -i 's/^build-backend = "cython_backend"$/build-backend = "setuptools.build_meta"/;/^backend-path = \["build_backend"\]$/d' psycopg_c/pyproject.toml
 
+%if 0%{?rhel} != 9
 # Same setuptools-53 problem as psycopg's setup.py above.
 cat > psycopg_c/setup.py <<SETUP_PY_EOF
 import sys
@@ -182,6 +188,7 @@ setup(
     cmdclass={"build_ext": psycopg_build_ext},
 )
 SETUP_PY_EOF
+%endif
 
 %build
 # Change Python path in the scripts:
@@ -241,7 +248,7 @@ fi
 %{python3_sitelib}/psycopg/types/*.py*
 %{python3_sitelib}/psycopg/py.typed
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
 %{python3_sitelib}/psycopg/__pycache__/*.pyc
 %{python3_sitelib}/psycopg/crdb/__pycache__/*.py*
 %{python3_sitelib}/psycopg/pq/__pycache__/*.py*
@@ -263,16 +270,27 @@ fi
 %files c
 %{python3_sitearch}/psycopg_c-%{version}.dist-info/
 %{python3_sitearch}/psycopg_c/*.py*
+%if 0%{?rhel} != 9
 %{python3_sitearch}/psycopg_c/*.c
+%endif
 %{python3_sitearch}/psycopg_c/*.so
 %{python3_sitearch}/psycopg_c/__pycache__/*py*
 %{python3_sitearch}/psycopg_c/_psycopg/*
 %{python3_sitearch}/psycopg_c/pq.pxd
 %{python3_sitearch}/psycopg_c/pq/*
 %{python3_sitearch}/psycopg_c/py.typed
+%if 0%{?rhel} != 9
 %{python3_sitearch}/psycopg_c/types/*
+%endif
 
 %changelog
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1:3.2.13-1PGDG
+- RHEL 9 only: Go back to psycopg 3.2.13, as psycopg 3.3 requires
+  Python >= 3.10 and RHEL 9's python3 is 3.9 ("import psycopg" fails
+  with "cannot import name 'TypeAlias' from 'typing'"). Add Epoch: 1 so
+  that it replaces 3.3.6-42PGDG.
+- Remove RHEL 8 bits, it is not supported since 3.3.3-1PGDG.
+
 * Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.6-42PGDG
 - Update to 3.3.6 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.3.6
