@@ -54,6 +54,9 @@ Requires:	python(abi) = %{pybasever}
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
@@ -100,6 +103,8 @@ sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
   on SLES 16 rejects.
 - Require python(abi) explicitly, as the dependency generator does not
   run for this package on SUSE.
+- BuildRequire python-rpm-packaging on SUSE, which python313-devel does
+  not pull in, so that the Python dependency generators run there.
 
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-4PGDG
 - Package the whole %%{modname}/ directory instead of hand-picked globs
