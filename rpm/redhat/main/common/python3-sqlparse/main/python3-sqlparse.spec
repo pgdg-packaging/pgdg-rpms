@@ -22,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	0.6.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Non-validating SQL parser module for Python
 
 License:	BSD-3-Clause
@@ -38,6 +38,9 @@ Obsoletes:	python3-%{sname} < 0.6.0-2
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
@@ -67,6 +70,10 @@ support for parsing, splitting and formatting SQL statements.
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-3PGDG
+- BuildRequire python-rpm-packaging on SUSE, which python313-devel does
+  not pull in, so that the Python dependency generators run there.
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-2PGDG
 - Obsolete python3-sqlparse on RHEL 10, so that upgrades from 0.5.5
   replace the old package instead of conflicting with it.
