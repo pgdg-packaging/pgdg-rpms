@@ -1,36 +1,68 @@
-%global	python_runtimes python3
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global python3_pkgversion 3.15
+%global pybasever 3.15
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44
+%global python3_pkgversion 3.14
+%global pybasever 3.14
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 10
+%global	python3_pkgversion 3.12
+%global	pybasever 3.12
+%endif
+%if 0%{?amzn} == 2023
+%global	__python3 %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%global	pybasever 3.13
+%endif
+%if 0%{?suse_version} == 1500
+%global	python3_pkgversion 311
+%global	pybasever 3.11
+%endif
+%if 0%{?suse_version} == 1600
+%global	python3_pkgversion 313
+%global	pybasever 3.13
+%endif
+# pybasever is used for the pythonX.Ydist() Requires below, whose names are
+# the same on every distro (package names are not: e.g. SUSE's
+# python313-Pygments vs. python3-pygments elsewhere). It is set statically
+# because the interpreter is not yet installed when mock first parses the spec.
 
 %{?python_disable_dependency_generator}
 
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
 Version:	4.7.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/dbcli/%{name}
 Source0:	https://files.pythonhosted.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
-
-BuildRequires:	python3-devel python3-pip python3-setuptools
-BuildRequires:	python3-setuptools_scm
-BuildRequires:	python3-wheel
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+BuildRequires:	python%{python3_pkgversion}-wheel
 
-BuildRequires:	python3-pytest python3-sqlparse python3-cli-helpers
-BuildRequires:	python3-pexpect python3-pgspecial python3-psycopg3
-BuildRequires:	python3-setproctitle python3-sshtunnel python3-tzlocal
-
-Requires:	python3-click >= 3.2, python3-pygments >= 2.0
-Requires:	python3-sqlparse >= 0.1.14, python3-%{name}
-Requires:	python3-jedi >= 0.8.1 python3-setproctitle >= 1.1.9
-Requires:	python3-wcwidth >= 0.1.6 python3-humanize >= 0.5.1
-Requires:	python3-configobj >= 5.0.6
-Requires:	python3-cli-helpers python3-cli-helpers+styles
+Requires:	python3-%{name} = %{version}-%{release}
+Requires:	python%{pybasever}dist(cli-helpers) >= 2.4.0
+Requires:	python%{pybasever}dist(click) >= 4.1
+Requires:	python%{pybasever}dist(configobj) >= 5.0.6
+Requires:	python%{pybasever}dist(pgspecial) >= 2.0.0
+Requires:	python%{pybasever}dist(prompt-toolkit) >= 2.0.6
+Requires:	python%{pybasever}dist(psycopg) >= 3.0.14
+Requires:	python%{pybasever}dist(pygments) >= 2.0
+Requires:	python%{pybasever}dist(setproctitle) >= 1.1.9
+Requires:	python%{pybasever}dist(sqlparse) >= 0.3.0
+# Upstream asks for tzlocal >= 5.2, but pgcli only uses get_localzone_name(),
+# which is available since 4.0. Leap 16 ships 4.3.
+Requires:	python%{pybasever}dist(tzlocal)
 BuildArch:	noarch
 
 %description
@@ -59,30 +91,6 @@ This is a build of the pgcli for the debug build of Python 3.
 # our build matrix accepts.
 sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproject.toml
 
-%if 0%{?rhel} == 9
-# RHEL 9's setuptools (53.0.0) predates pyproject.toml [project] and
-# [tool.setuptools] support entirely: it ignores them and builds an empty
-# "UNKNOWN-0.0.0" package, so nothing (including %%{_bindir}/pgcli) gets
-# installed. Give it pgcli's metadata via setup.py instead, and keep only a
-# [build-system] table in pyproject.toml.
-cat > setup.py <<'SETUP_PY_EOF'
-from setuptools import find_packages, setup
-
-setup(
-    name="pgcli",
-    version="%{version}",
-    packages=find_packages(exclude=["tests", "tests.*"]),
-    package_data={"pgcli": ["pgclirc", "packages/pgliterals/pgliterals.json"]},
-    entry_points={"console_scripts": ["pgcli=pgcli.main:cli"]},
-)
-SETUP_PY_EOF
-cat > pyproject.toml <<'PYPROJECT_EOF'
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-PYPROJECT_EOF
-%endif
-
 %build
 %pyproject_wheel
 
@@ -105,6 +113,18 @@ PYPROJECT_EOF
 %doc LICENSE.txt
 
 %changelog
+* Tue Sep 22 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-2PGDG
+- Sync runtime Requires with upstream's pyproject.toml. Add the missing
+  pgspecial, prompt-toolkit, psycopg3 and tzlocal dependencies, and drop
+  jedi, humanize and wcwidth, which pgcli no longer uses. Fixes BUG #19562.
+  Per report and patch from Pritt Balagopal.
+- Use the same Python version mapping as pglast. pgcli 4.7 requires
+  Python >= 3.10.
+- Remove the RHEL 9 setup.py workaround. It was only needed for the old
+  setuptools of RHEL 9's system python3.9.
+- Express Requires as pythonX.Ydist() names, which are the same on all
+  distros, and drop the unused test BuildRequires (there is no %%check).
+
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-1PGDG
 - Update to 4.7.1 per changes described at:
   https://github.com/dbcli/pgcli/releases/tag/v4.7.1
