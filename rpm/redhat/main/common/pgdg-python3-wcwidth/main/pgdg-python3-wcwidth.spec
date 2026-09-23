@@ -48,6 +48,9 @@ BuildArch:	noarch
 # The dist() name takes the dotted Python version (python3.13dist), which is
 # not python3_pkgversion on SUSE (313).
 Provides:	python%{pybasever}dist(wcwidth) = %{version}
+# The dependency generator does not run for this package on SUSE, so add the
+# interpreter dependency by hand. wcwidth has no other runtime dependencies.
+Requires:	python(abi) = %{pybasever}
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -95,6 +98,8 @@ sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
   Python dependency generators run there as well.
 - Drop the Python 3.15 classifier from pyproject.toml, which the hatchling
   on SLES 16 rejects.
+- Require python(abi) explicitly, as the dependency generator does not
+  run for this package on SUSE.
 
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-4PGDG
 - Package the whole %%{modname}/ directory instead of hand-picked globs
