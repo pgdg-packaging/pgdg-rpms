@@ -29,7 +29,7 @@
 Summary:	Python helpers for common CLI tasks
 Name:		python%{python3_pkgversion}-cli-helpers
 Version:	2.15.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD-3-Clause
 URL:		https://github.com/dbcli/cli_helpers
 Source0:	https://github.com/dbcli/cli_helpers/archive/refs/tags/v%{version}.tar.gz
@@ -45,6 +45,9 @@ Obsoletes:	python3-cli-helpers+styles < 2.15.1-3
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
@@ -84,6 +87,10 @@ command-line interfaces.
 %{python3_sitelib}/%{pypi_name}-%{version}.dist-info/
 
 %changelog
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.15.1-4PGDG
+- BuildRequire python-rpm-packaging on SUSE, which python313-devel does
+  not pull in, so that the Python dependency generators run there.
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.15.1-3PGDG
 - Rename package to python%%{python3_pkgversion}-cli-helpers, using the same
   Python version mapping as pgcli, and obsolete python3-cli-helpers where
