@@ -3,34 +3,40 @@
 %if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
+%global pybasever 3.14
 %endif
 %if 0%{?fedora} && 0%{?fedora} == 43
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
+%global pybasever 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
+%global	pybasever 3.12
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
+%global	pybasever 3.13
 %endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+%global	pybasever 3.11
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
+%global	pybasever 3.13
 %endif
 
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.8.3
-Release:	4PGDG%{dist}
+Release:	5PGDG%{?dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -39,20 +45,22 @@ URL:		https://github.com/jquast/%{modname}
 Source:		https://files.pythonhosted.org/packages/source/w/%{modname}/%{modname}-%{version}.tar.gz
 BuildArch:	noarch
 
-Provides:	python%{python3_pkgversion}dist(wcwidth)
+# The dist() name takes the dotted Python version (python3.13dist), which is
+# not python3_pkgversion on SUSE (313).
+Provides:	python%{pybasever}dist(wcwidth) = %{version}
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
-# python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
-# into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
-# Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
-# get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+%endif
+# python%%{python3_pkgversion}-devel is what pulls the Python RPM dependency
+# generators into the buildroot; the macros packages alone do not. Without
+# it, neither python(abi) nor pythonX.Ydist(...) get generated. Per
+# https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-hatchling
 BuildRequires:	python%{python3_pkgversion}-pip
-%endif
 
 %description
 This API is mainly for Terminal Emulator implementors, or those writing programs
@@ -63,6 +71,9 @@ printable width of a string on a Terminal.
 %setup -q -n %{modname}-%{version}
 # skip coverage checks
 sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
+# The hatchling on SLES 16 does not know the Python 3.15 trove classifier
+# yet, and refuses to build with it. Classifiers are informational only.
+sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
 
 %build
 %pyproject_wheel
@@ -77,6 +88,14 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Wed Sep 23 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-5PGDG
+- Fix the explicit dist() Provides, which was python313dist(wcwidth) on
+  SLES 16 instead of python3.13dist(wcwidth).
+- Also BuildRequire python-devel, hatchling and pip on SUSE, so that the
+  Python dependency generators run there as well.
+- Drop the Python 3.15 classifier from pyproject.toml, which the hatchling
+  on SLES 16 rejects.
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-4PGDG
 - Package the whole %%{modname}/ directory instead of hand-picked globs
 
@@ -97,18 +116,18 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
   (which is anchored on the .dist-info directory entry) actually fires
   and emits the correct runtime Requires. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
-- Add back python%{python3_pkgversion}-devel as a BuildRequires on the
+- Add back python.5%%{python3_pkgversion}-devel as a BuildRequires on the
   non-SLES branch, needed to pull python3-rpm-generators into the
   buildroot for this pyproject build. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-5PGDG
 - Also set __python3 (not just __ospython) for Amazon Linux 2023, so
-  %pyproject_wheel/%pyproject_install actually build against python3.13
+  %%pyproject_wheel/%%pyproject_install actually build against python3.13
   instead of silently falling back to the system default python3.
   This one already had its own local sitelib override, so the
   mismatch was active (not just cosmetic): pip would install via 3.9
-  while %files looked for files under python3.13's site-packages.
+  while %%files looked for files under python3.13's site-packages.
 
 * Tue Aug 25 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2.13-4PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
