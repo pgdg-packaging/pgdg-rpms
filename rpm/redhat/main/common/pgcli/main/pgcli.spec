@@ -33,7 +33,7 @@
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
 Version:	4.7.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/dbcli/%{name}
@@ -57,6 +57,7 @@ Requires:	python%{pybasever}dist(configobj) >= 5.0.6
 Requires:	python%{pybasever}dist(pgspecial) >= 2.0.0
 Requires:	python%{pybasever}dist(prompt-toolkit) >= 2.0.6
 Requires:	python%{pybasever}dist(psycopg) >= 3.0.14
+Requires:	python%{pybasever}dist(psycopg-c) >= 3.0.14
 Requires:	python%{pybasever}dist(pygments) >= 2.0
 Requires:	python%{pybasever}dist(setproctitle) >= 1.1.9
 Requires:	python%{pybasever}dist(sqlparse) >= 0.3.0
@@ -113,6 +114,9 @@ sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproje
 %doc LICENSE.txt
 
 %changelog
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-3PGDG
+- Add missing Requires. Needed at least on RHEL 10.
+
 * Tue Sep 22 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-2PGDG
 - Sync runtime Requires with upstream's pyproject.toml. Add the missing
   pgspecial, prompt-toolkit, psycopg3 and tzlocal dependencies, and drop
