@@ -22,13 +22,19 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	0.6.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Non-validating SQL parser module for Python
 
 License:	BSD-3-Clause
 URL:		https://github.com/andialbrecht/%{sname}
 Source0:	https://files.pythonhosted.org/packages/source/s/%{sname}/%{sname}-%{version}.tar.gz
 BuildArch:	noarch
+
+%if 0%{?rhel} == 10
+# Up to 0.5.5 this package was named python3-sqlparse. On RHEL 10 python3 is
+# python3.12, so the old package installs the same files; replace it on upgrade.
+Obsoletes:	python3-%{sname} < 0.6.0-2
+%endif
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -61,6 +67,10 @@ support for parsing, splitting and formatting SQL statements.
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-2PGDG
+- Obsolete python3-sqlparse on RHEL 10, so that upgrades from 0.5.5
+  replace the old package instead of conflicting with it.
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-1PGDG
 - Update to 0.6.0
 - Rename package as pgcli is looking for some specific Python versions.
