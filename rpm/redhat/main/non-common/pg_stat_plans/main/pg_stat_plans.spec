@@ -15,8 +15,8 @@
 
 Summary:	Track per-plan call counts, execution times and EXPLAIN texts in Postgres
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.0
-Release:	4PGDG%{?dist}
+Version:	2.1.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pganalyze/%{sname}
 Source0:	https://github.com/pganalyze/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -96,6 +96,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Thu Sep 24 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
+- Update to 2.1.1 per changes described at:
+  https://github.com/pganalyze/pg_stat_plans/releases/tag/v2.1.1
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-4PGDG
 - Add missing BR
 
