@@ -4,7 +4,7 @@
 
 Summary:	Anonymization & Data Masking for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.2.2
+Version:	3.2.3
 Release:	1PGDG%{?dist}
 # The extension itself, and the licenses of the Rust crates that are compiled into
 # it (236 crates), checked with "cargo metadata --filter-platform
@@ -108,6 +108,11 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 %{pginstdir}/share/extension/anon/
 
 %changelog
+* Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-1PGDG
+- Update to 3.2.3 per changes described at:
+  https://gitlab.com/dalibo/postgresql_anonymizer/-/blob/3.2.3/CHANGELOG.md
+  This is a security release, fixing CVE-2026-97469.
+
 * Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 3.2.2-1PGDG
 - Initial packaging of the Rust version of PostgreSQL Anonymizer for the
   PostgreSQL RPM repository. The C versions (1.x) were removed from the
