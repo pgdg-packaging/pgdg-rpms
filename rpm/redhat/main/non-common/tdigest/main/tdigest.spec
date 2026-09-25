@@ -15,7 +15,7 @@
 
 Summary:	t-digest implementation for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.6
+Version:	1.4.7
 Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/tvondra/%{sname}/archive/v%{version}.tar.gz
@@ -85,6 +85,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-1PGDG
+- Update to 1.4.7 per changes described at:
+  https://github.com/tvondra/tdigest/releases/tag/v1.4.7
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.6-1PGDG
 - Update to 1.4.6 per changes described at:
   https://github.com/tvondra/tdigest/releases/tag/v1.4.6
