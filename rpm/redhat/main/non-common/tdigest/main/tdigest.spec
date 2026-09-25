@@ -85,7 +85,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
-* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-1PGDG
+* Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-1PGDG
 - Update to 1.4.7 per changes described at:
   https://github.com/tvondra/tdigest/releases/tag/v1.4.7
 
