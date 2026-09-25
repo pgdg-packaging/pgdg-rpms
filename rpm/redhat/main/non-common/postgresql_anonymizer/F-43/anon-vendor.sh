@@ -1,0 +1,1 @@
+../main/anon-vendor.sh
