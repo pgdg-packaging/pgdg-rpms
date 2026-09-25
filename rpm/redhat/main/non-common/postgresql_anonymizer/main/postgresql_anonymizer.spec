@@ -12,13 +12,12 @@ Release:	1PGDG%{?dist}
 License:	PostgreSQL AND MIT AND Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND Unicode-3.0 AND ISC AND Zlib AND 0BSD AND Unlicense AND CC0-1.0
 URL:		https://labs.dalibo.com/postgresql_anonymizer
 Source0:	https://gitlab.com/dalibo/%{sname}/-/archive/%{version}/%{sname}-%{version}.tar.gz
-# The dependencies of the crate, for building without network access. Made with:
-#   tar xf postgresql_anonymizer-%%{version}.tar.gz && cd postgresql_anonymizer-%%{version}
-#   cargo vendor vendor
-#   tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - vendor | xz -T0 -6 > ../postgresql_anonymizer-%%{version}-vendor.tar.xz
-# It is not "cargo vendor --locked", as Cargo.lock of upstream has the wrong version
-# of the crate itself. It has to be made again for every new version.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}-%{version}-vendor.tar.xz
+# The dependencies of the crate, for building without network access. Made with
+# "./anon-vendor.sh %%{version}", which runs cargo-vendor-filterer for the Linux
+# architectures that we build on, without the dev dependencies. It is not run with
+# --locked, as Cargo.lock of upstream has the wrong version of the crate itself.
+# It has to be made again for every new version.
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-vendor.tar.xz
 
 # pgrx 0.19 and edition 2024 need Rust 1.96:
 BuildRequires:	rust >= 1.96
