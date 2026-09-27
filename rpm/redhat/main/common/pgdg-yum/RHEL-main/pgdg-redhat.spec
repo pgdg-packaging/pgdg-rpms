@@ -56,6 +56,26 @@ if [ $1 -gt 1 ] && [ -f %{_sysconfdir}/yum.repos.d/pgdg-redhat-all.repo ] && \
 		%{_sysconfdir}/yum.repos.d/pgdg-redhat-all.repo
 fi
 
+# dnf in EL 9.6 (4.14.0-25) and older does not set $releasever_major and
+# $releasever_minor, so the repo file URLs are not expanded and return 404.
+# For such dnf versions, set them from the OS release. dnf in EL 9.7 and later
+# (and in all EL 10 releases) detects them itself and ignores these files, so
+# the repos still follow later OS minor version updates.
+. /etc/os-release
+case "${VERSION_ID}" in
+	8*|*[!0-9.]*|"") ;;
+	*.*)
+		if ! /usr/libexec/platform-python -c 'import dnf.rpm; dnf.rpm.detect_releasevers' >/dev/null 2>&1; then
+			%{__mkdir} -p %{_sysconfdir}/dnf/vars
+			[ -e %{_sysconfdir}/dnf/vars/releasever_major ] || \
+				echo "${VERSION_ID%%%%.*}" > %{_sysconfdir}/dnf/vars/releasever_major
+			[ -e %{_sysconfdir}/dnf/vars/releasever_minor ] || \
+				echo "${VERSION_ID#*.}" > %{_sysconfdir}/dnf/vars/releasever_minor
+		fi
+		;;
+esac
+exit 0
+
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/yum.repos.d/*
@@ -66,6 +86,10 @@ fi
 * Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-70PGDG
 - Fix the pinning advice in the RHEL / Rocky Linux / AlmaLinux 9 and 10 repo
   file comments.
+- dnf in EL 9.6 does not set $releasever_major and $releasever_minor, so the
+  42.0-69 repo file URLs returned 404 there. Set them in /etc/dnf/vars from
+  the OS release when the installed dnf cannot detect them. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/215
 
 * Sat Sep 26 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-69PGDG
 - Build one repo RPM per OS major version, and use
