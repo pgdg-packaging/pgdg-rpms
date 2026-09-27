@@ -120,6 +120,12 @@ log_build_failure() {
 	echo "${red}Build failed. Log written to: $log_file${reset}"
 }
 
+# Extra arguments for every rpmspec call below, for builds that rpmbuild with
+# more than the default macros, so that the RPM names match what was built.
+# reporpmbuild.sh sets it to (--load ~/.rpmmacros-<OS major version>), the
+# same file its make targets load.
+rpmspec_extra_args=()
+
 # Print the file names of the binary RPMs that the spec file in the current
 # directory produces, named exactly the way rpmbuild names them, one per
 # line (e.g. "foo-1.0-1PGDG.f45.x86_64.rpm").
@@ -131,7 +137,7 @@ spec_rpm_files() {
 
 	[ -z "$specfile" ] && return 1
 
-	rpmspec --define "pgmajorversion ${pg_version}" \
+	rpmspec "${rpmspec_extra_args[@]}" --define "pgmajorversion ${pg_version}" \
 		--define "pginstdir /usr/pgsql-${pg_version}" \
 		--define "pgpackageversion ${pg_version}" \
 		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null
@@ -175,7 +181,7 @@ is_already_built() {
 		fi
 	done <<< "$expected_rpms"
 
-	already_built_version=$(rpmspec --define "pgmajorversion ${pg_version}" \
+	already_built_version=$(rpmspec "${rpmspec_extra_args[@]}" --define "pgmajorversion ${pg_version}" \
 		--define "pginstdir /usr/pgsql-${pg_version}" \
 		--define "pgpackageversion ${pg_version}" \
 		-q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
@@ -298,12 +304,12 @@ spec_rpm_patterns() {
 	specfile=$(ls *.spec 2>/dev/null | head -n 1)
 	[ -z "$specfile" ] && return 1
 
-	version_release=$(rpmspec "${defines[@]}" -q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
+	version_release=$(rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" -q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
 	[ -z "$version_release" ] && return 1
 
 	{
-		rpmspec "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
-		rpmspec --srpm "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
+		rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
+		rpmspec "${rpmspec_extra_args[@]}" --srpm "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
 	} | sort -u | while IFS= read -r name; do
 		[ -z "$name" ] && continue
 		for suffix in "" "-debuginfo" "-debugsource"; do
@@ -329,7 +335,7 @@ verify_built_rpms() {
 		echo "${red}ERROR:${reset} Cannot tell which RPMs ${specfile:-the spec file} produces, so cannot check that they are signed."
 		return 1
 	fi
-	expected="$expected"$'\n'$(rpmspec --srpm --define "pgmajorversion ${pg_version}" \
+	expected="$expected"$'\n'$(rpmspec "${rpmspec_extra_args[@]}" --srpm --define "pgmajorversion ${pg_version}" \
 		--define "pginstdir /usr/pgsql-${pg_version}" \
 		--define "pgpackageversion ${pg_version}" \
 		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.src.rpm\n" "$specfile" 2>/dev/null)

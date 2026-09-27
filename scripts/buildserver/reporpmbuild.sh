@@ -47,6 +47,14 @@ packagename="pgdg-yum"
 
 osrelease="${osmajorversion}"
 
+# The repobuild<major> make targets load ~/.rpmmacros-<major> (RHEL / Rocky Linux /
+# AlmaLinux only), which sets the dist used in Release. Load it for the rpmspec
+# calls in global.sh as well, or they expect different RPM names than the ones
+# built, and then nothing is signed or detected as already built:
+if [ -f ~/.rpmmacros-"${osmajorversion}" ]; then
+	rpmspec_extra_args=(--load ~/.rpmmacros-"${osmajorversion}")
+fi
+
 #################################
 #	Repo RPM (pgdg-yum)	#
 #################################
