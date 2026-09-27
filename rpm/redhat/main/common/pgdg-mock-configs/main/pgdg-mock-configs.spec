@@ -1,5 +1,5 @@
 Name:		pgdg-mock-configs
-Version:	2.0.8
+Version:	2.0.9
 Release:	1PGDG%{?dist}
 Summary:	PGDG RPM mock core config files basic chroots
 License:	PostgreSQL
@@ -50,6 +50,10 @@ PGDG mock configuration files which allow you to create chroots for Fedora and R
 %{_sysconfdir}/mock/templates/pgdg-*.tpl
 
 %changelog
+* Sun Sep 27 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.9-1PGDG
+- Update to 2.0.9 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0.9
+
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> 2.0.8-1PGDG
 - Update to 2.0.8 per changes described at:
   https://github.com/pgdg-packaging/pgdg-mock-configs/releases/tag/pgdg-mock-configs-v2.0.8
