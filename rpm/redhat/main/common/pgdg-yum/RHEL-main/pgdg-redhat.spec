@@ -1,6 +1,6 @@
 Name:		pgdg-redhat-repo
 Version:	42.0
-Release:	68.rhel%{dist}PGDG
+Release:	69.rhel%{dist}PGDG
 Summary:	PostgreSQL PGDG RPMs - Yum Repository Configuration for Red Hat / Rocky Linux / AlmaLinux
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
@@ -43,6 +43,19 @@ Rocky Linux, AlmaLinux and also the GPG key for PGDG RPMs.
 %{__install} -pm 644 %{SOURCE2} \
 	%{buildroot}%{_sysconfdir}/yum.repos.d/pgdg-redhat-all.repo
 
+%post
+# 42.0-63 to 42.0-67 shipped repo files tied to one OS minor version
+# (rhel-9.8-$basearch, etc.). If the admin changed that file, rpm kept it
+# (%%config(noreplace)), so point it to the dnf variables, keeping the other
+# changes. The new file is still available as pgdg-redhat-all.repo.rpmnew.
+if [ $1 -gt 1 ] && [ -f %{_sysconfdir}/yum.repos.d/pgdg-redhat-all.repo ] && \
+	grep -Eq 'rhel-(9|10)\.[0-9]+-\$basearch' %{_sysconfdir}/yum.repos.d/pgdg-redhat-all.repo; then
+	sed -i -E \
+		-e 's#rhel-(9|10)\.[0-9]+-\$basearch#rhel-$releasever_major.$releasever_minor-$basearch#g' \
+		-e 's#AlmaLinux (9|10)\.[0-9]+( |$)#AlmaLinux $releasever_major.$releasever_minor\2#g' \
+		%{_sysconfdir}/yum.repos.d/pgdg-redhat-all.repo
+fi
+
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/yum.repos.d/*
@@ -50,6 +63,15 @@ Rocky Linux, AlmaLinux and also the GPG key for PGDG RPMs.
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Sat Sep 26 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-69PGDG
+- Build one repo RPM per OS major version, and use
+  $releasever_major.$releasever_minor in the RHEL / Rocky Linux / AlmaLinux 9
+  and 10 repo files, so that the repos follow OS minor version updates.
+  Per minor version repo RPMs used to replace the major version one and then
+  stayed on that minor version forever. Also update locally modified repo
+  files that point to a minor version. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/215
+
 * Tue Sep 22 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-68PGDG
 - Set priority=1 on RHEL 10 repos to prefer PGDG over AppStream
 

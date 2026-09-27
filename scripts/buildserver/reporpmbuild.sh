@@ -9,9 +9,17 @@
 # Include common values:
 source ~/bin/global.sh
 
-# reporpmbuild.sh builds the pgdg-yum repo RPM against the OS release defined in
-# global.sh (osmajorversion.osminversion), instead of against a PostgreSQL major
-# version like packagebuild.sh does for regular packages.
+# reporpmbuild.sh builds the pgdg-yum repo RPM against the OS major version defined
+# in global.sh, instead of against a PostgreSQL major version like packagebuild.sh
+# does for regular packages.
+#
+# There is one repo RPM per OS major version, built on every minor version builder:
+# the RHEL / Rocky Linux / AlmaLinux repo files use $releasever_major.$releasever_minor,
+# so the same package works on all minor versions and follows OS minor updates. Per
+# minor version repo RPMs are gone: all minor versions of the OS share the latest
+# minor version's common repo (rhel-9 is a symlink to rhel-9.8, etc.), where the
+# pinned build always sorted higher than the major version one. Per
+# https://github.com/pgdg-packaging/pgdg-rpms/issues/215
 
 # Parse command line arguments
 testing_mode=0
@@ -37,14 +45,7 @@ check_gpg_agent || exit 1
 
 packagename="pgdg-yum"
 
-# Fedora and Amazon Linux have no minor version (osminversion is left empty
-# in global-local.sh for those); append it only when set, same convention as
-# osfullversion in packagesync.sh.
-if [ -n "${osminversion}" ]; then
-	osrelease="${osmajorversion}.${osminversion}"
-else
-	osrelease="${osmajorversion}"
-fi
+osrelease="${osmajorversion}"
 
 #################################
 #	Repo RPM (pgdg-yum)	#
