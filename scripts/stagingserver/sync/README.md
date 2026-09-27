@@ -276,7 +276,7 @@ After a sync, the `pgdg-redhat-repo`, `pgdg-fedora-repo`, and `pgdg-amazonlinux-
 | Option | Required | Description |
 |---|---|---|
 | `--os` | No | Restrict to one OS: `redhat`, `fedora`, or `amzn` (default: all three) |
-| `--ver` | No | Restrict to one OS version (must be valid for `--os`) |
+| `--ver` | No | Restrict to one OS version (must be valid for `--os`), or to one RHEL major version (e.g. `9`) |
 | `--arch` | No | Restrict to one architecture (must be valid for `--os`) |
 | `--dry-run` | No | Show what would change without touching any files |
 | `--debug` | No | Show detailed debug output |
@@ -292,6 +292,8 @@ For every `os`/`ver`/`arch` combination:
 3. Re-points the `<reponame>-latest.noarch.rpm` symlink at the new RPM.
 4. Removes any other file or symlink in the destination matching `<reponame>-*` (older versioned RPMs, stray symlinks, etc.), so the destination only ever holds the current RPM plus the `-latest` symlink.
 5. Skips a combination cleanly (no error) if the source `common` directory doesn't exist yet; warns and flags an error if the destination `reporpms` directory is missing.
+
+For `redhat`, the OS major version directories get the same treatment after the minor versions: `reporpms/EL-<major>-<arch>` (e.g. `EL-9-x86_64`) is updated from `common/redhat/rhel-<major>-<arch>`, which is a symlink to the latest minor version's directory. The major versions are derived from `VALID_VER_redhat`, and the architectures are those of each major version's latest minor version. `--ver 9` restricts the run to the `EL-9-*` directories.
 
 Like the main sync script, failures are collected rather than aborting the run: it exits `1` with a warning if any update failed, `0` if everything is up to date.
 

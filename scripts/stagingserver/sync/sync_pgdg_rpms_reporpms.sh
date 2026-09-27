@@ -31,11 +31,14 @@ Finds the latest pgdg-redhat-repo / pgdg-fedora-repo / pgdg-amazonlinux-repo
 RPM under each common/<os>/<osname>-<ver>-<arch> directory and republishes it
 under reporpms/EL-<ver>-<arch> (redhat), reporpms/F-<ver>-<arch> (fedora), or
 reporpms/AL-<ver>-<arch> (amzn), removing the previous repo RPM and
-re-pointing the "*-repo-latest.noarch.rpm" symlink at the new one.
+re-pointing the "*-repo-latest.noarch.rpm" symlink at the new one. For RHEL,
+it also updates reporpms/EL-<major>-<arch> from common/redhat/rhel-<major>-<arch>
+(a symlink to the latest minor version's directory).
 
 Optional:
   --os           Restrict to one OS: redhat, fedora, amzn (default: all three)
-  --ver          Restrict to one OS version (must be valid for --os)
+  --ver          Restrict to one OS version (must be valid for --os), or to one
+                 RHEL major version (e.g. 9)
   --arch         Restrict to one architecture (must be valid for --os)
   --dry-run      Show what would change without touching any files
   --debug        Show detailed debug output
@@ -120,7 +123,10 @@ update_repo_rpm() {
 	fi
 
 	local latest
-	latest="$(find "$src_dir" -maxdepth 1 -type f -name "${reponame}-*.rpm" -printf '%f\n' | sort -V | tail -n1)"
+	# Trailing slash: common/redhat/rhel-<major>-<arch> is a symlink to the latest
+	# minor version's directory, and find does not descend into a symlinked
+	# starting point without it:
+	latest="$(find "$src_dir/" -maxdepth 1 -type f -name "${reponame}-*.rpm" -printf '%f\n' | sort -V | tail -n1)"
 
 	if [[ -z "$latest" ]]; then
 		echo "  [WARN] No ${reponame} RPM found in $src_dir" >&2
@@ -181,6 +187,35 @@ update_repo_rpm() {
 	done
 }
 
+# Update the repo RPMs of one OS version (a VALID_VER_<os> entry, or an OS
+# major version, see process_os) on the given architectures.
+process_ver() {
+	local os="$1"
+	local osname="$2"
+	local reponame="$3"
+	local destprefix="$4"
+	local base_dir="$5"
+	local ver="$6"
+	shift 6
+	local -a ver_valid_arch=("$@")
+
+	local -a arch_list=("${ver_valid_arch[@]}")
+	if [[ -n "$ARCH" ]]; then
+		if ! contains "$ARCH" "${ver_valid_arch[@]}"; then
+			$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $os $ver, skipping $os $ver"
+			return 0
+		fi
+		arch_list=("$ARCH")
+	fi
+
+	local arch
+	for arch in "${arch_list[@]}"; do
+		local src_dir="${base_dir}/common/${os}/${osname}-${ver}-${arch}"
+		local dest_dir="${base_dir}/reporpms/${destprefix}-${ver}-${arch}"
+		update_repo_rpm "$os" "$ver" "$arch" "$reponame" "$src_dir" "$dest_dir"
+	done
+}
+
 process_os() {
 	local os="$1"
 	local osname="$2"
@@ -193,12 +228,29 @@ process_os() {
 	local -n ver_ref="VALID_VER_${os}"
 	local -a ver_list=("${ver_ref[@]}")
 
+	# OSes with minor versions (RHEL: 9.8, 10.2, ...) also have OS major version
+	# directories (common/redhat/rhel-9-<arch> is a symlink to the latest minor
+	# version's one), and reporpms/EL-9-<arch> needs the same repo RPM. Collect
+	# the major versions, newest first, same as VALID_VER_<os>:
+	local -a major_list=()
+	local ver major
+	for ver in "${ver_list[@]}"; do
+		[[ "$ver" == *.* ]] || continue
+		major="${ver%%.*}"
+		contains "$major" "${major_list[@]}" || major_list+=("$major")
+	done
+
 	if [[ -n "$VER" ]]; then
-		if ! contains "$VER" "${ver_list[@]}"; then
+		if contains "$VER" "${ver_list[@]}"; then
+			ver_list=("$VER")
+			major_list=()
+		elif contains "$VER" "${major_list[@]}"; then
+			ver_list=()
+			major_list=("$VER")
+		else
 			$DEBUG && echo "[DEBUG] Version $VER not valid for $os, skipping $os"
 			return 0
 		fi
-		ver_list=("$VER")
 	fi
 
 	echo ""
@@ -211,21 +263,22 @@ process_os() {
 		# VALID_ARCH_OVERRIDES in sync_pgdg_rpms_config.sh
 		local -a ver_valid_arch
 		get_valid_arch_for "$os" "$ver" ver_valid_arch
+		process_ver "$os" "$osname" "$reponame" "$destprefix" "$base_dir" "$ver" "${ver_valid_arch[@]}"
+	done
 
-		local -a arch_list=("${ver_valid_arch[@]}")
-		if [[ -n "$ARCH" ]]; then
-			if ! contains "$ARCH" "${ver_valid_arch[@]}"; then
-				$DEBUG && echo "[DEBUG] Arch $ARCH not valid for $os $ver, skipping $os $ver"
-				continue
+	for major in "${major_list[@]}"; do
+		# The major version directory holds the latest minor version's
+		# packages, so use that version's architectures:
+		local latest_minor=""
+		for ver in "${ver_ref[@]}"; do
+			if [[ "$ver" == "${major}."* ]]; then
+				latest_minor="$ver"
+				break
 			fi
-			arch_list=("$ARCH")
-		fi
-
-		for arch in "${arch_list[@]}"; do
-			local src_dir="${base_dir}/common/${os}/${osname}-${ver}-${arch}"
-			local dest_dir="${base_dir}/reporpms/${destprefix}-${ver}-${arch}"
-			update_repo_rpm "$os" "$ver" "$arch" "$reponame" "$src_dir" "$dest_dir"
 		done
+		local -a major_valid_arch
+		get_valid_arch_for "$os" "$latest_minor" major_valid_arch
+		process_ver "$os" "$osname" "$reponame" "$destprefix" "$base_dir" "$major" "${major_valid_arch[@]}"
 	done
 }
 
