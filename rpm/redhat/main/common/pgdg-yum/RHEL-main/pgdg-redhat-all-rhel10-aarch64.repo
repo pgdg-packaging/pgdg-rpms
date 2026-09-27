@@ -3,9 +3,11 @@
 #########################################################################
 
 # $releasever_major and $releasever_minor come from the installed OS release
-# (e.g. 9.8), so these repositories follow OS minor version updates. To pin
-# to an older minor version, use "subscription-manager release --set=9.6" on
-# RHEL, or put the minor version in /etc/dnf/vars/releasever_minor.
+# (e.g. 9.8), so these repositories follow OS minor version updates. A system
+# tied to one minor version with "subscription-manager release --set=9.6" on
+# RHEL, or with "9.6" in /etc/dnf/vars/releasever on Rocky Linux / AlmaLinux,
+# stays on that minor version. For a single command, use dnf's
+# --releasever-minor option. /etc/dnf/vars/releasever_minor is ignored.
 
 # PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable common
 # repository for all PostgreSQL versions
