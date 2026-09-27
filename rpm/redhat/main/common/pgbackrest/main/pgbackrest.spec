@@ -3,8 +3,8 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.59.1
-Release:	3PGDG%{?dist}
+Version:	2.59.2
+Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -126,6 +126,10 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Sun Sep 27 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.2-1PGDG
+- Update to 2.59.2 per changes described at:
+  https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.59.2
+
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.1-3PGDG
 - Fix the service file's restart safeguards: StartLimitIntervalSec=0
   disabled systemd's start-rate limiting entirely (the opposite of a
