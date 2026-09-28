@@ -1,7 +1,7 @@
 %global sname nominatim_fdw
 
 %{!?llvm:%global llvm 1}
-%{!?runselftest:%global runselftest 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -126,6 +126,7 @@ fi
 - Add a patch to fix builds against curl < 7.66 (EL-8), which lacks
   nghttp2_version in curl_version_info_data.
 - Add %%check, running the regression tests that need no network access.
+  It is disabled by default; enable it with --define 'runselftest 1'.
   Add a patch to the version test, so that it does not expect the
   optional libcurl components (ssl, zlib, libSSH, nghttp2).
 
