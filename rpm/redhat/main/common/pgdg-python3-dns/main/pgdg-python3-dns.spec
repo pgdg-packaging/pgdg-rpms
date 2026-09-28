@@ -63,6 +63,9 @@ manipulation of DNS zones, messages, names, and records.
 %prep
 %setup -q -n dnspython-%{version}
 %patch -P 0 -p0
+# Patch0 removes hatchling, so setuptools can't read the dynamic version from
+# dns/version.py and falls back to 0.0.0. Set the version statically instead.
+sed -i 's/^dynamic = \["version"\]/version = "%{version}"/' pyproject.toml
 
 # strip exec permissions so that we don't pick up dependencies from docs
 find examples -type f | xargs chmod a-x
