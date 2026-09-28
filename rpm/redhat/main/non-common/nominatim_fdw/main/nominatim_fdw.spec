@@ -1,6 +1,7 @@
 %global sname nominatim_fdw
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 1}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -20,9 +21,14 @@ Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/jimjonesbr/%{sname}
 Source0:	https://github.com/jimjonesbr/%{sname}/archive/v%{version}.tar.gz
+Patch0:		%{sname}-curl-nghttp2-version.patch
+Patch1:		%{sname}-version-test-optional-components.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server
+%endif
 
 %description
 The nominatim_fdw is a PostgreSQL Foreign Data Wrapper to access data from
@@ -55,6 +61,8 @@ This package provides JIT support for nominatim_fdw
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
+%patch -P 1 -p1
 
 %build
 PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -65,6 +73,37 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{build
 
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension/
 %{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
+
+%check
+%if %runselftest
+# The extension cannot be installed into %%{pginstdir} at build time, so run
+# the regression tests against a copy of the PostgreSQL installation, with
+# this package's files on top. PostgreSQL is relocatable, so pg_config and the
+# server both pick up the copy. The expected output assumes the superuser is
+# called postgres, hence a server of our own instead of pg_regress's
+# --temp-instance. Only the tests that need no network access run by default.
+# initdb refuses to run as root, so skip them then.
+if [ x"`id -u`" = x0 ]; then
+	echo "Skipping the regression tests, as initdb cannot be run as root."
+else
+	%{__rm} -rf tmp_pginst tmp_check
+	%{__cp} -a %{pginstdir} tmp_pginst
+	%{__cp} -a %{buildroot}%{pginstdir}/. tmp_pginst/
+	sockdir=`mktemp -d`
+	tmp_pginst/bin/initdb -D tmp_check/data -U postgres -A trust --no-sync >/dev/null
+	tmp_pginst/bin/pg_ctl -D tmp_check/data -l tmp_check/postmaster.log -w \
+		-o "-c listen_addresses='' -k $sockdir -p 54321" start
+	rc=0
+	PGHOST=$sockdir PGPORT=54321 PGUSER=postgres %{__make} installcheck USE_PGXS=1 \
+		PG_CONFIG=$(pwd)/tmp_pginst/bin/pg_config %{with_llvm_arg} || rc=$?
+	tmp_pginst/bin/pg_ctl -D tmp_check/data -m fast -w stop
+	%{__rm} -rf $sockdir
+	if [ $rc -ne 0 ]; then
+		%{__cat} regression.diffs
+		exit $rc
+	fi
+fi
+%endif
 
 %files
 %defattr(644,root,root,755)
@@ -84,6 +123,11 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{build
 * Mon Sep 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3-1PGDG
 - Update to 2.3 per changes described at:
   https://github.com/jimjonesbr/nominatim_fdw/releases/tag/v2.3
+- Add a patch to fix builds against curl < 7.66 (EL-8), which lacks
+  nghttp2_version in curl_version_info_data.
+- Add %%check, running the regression tests that need no network access.
+  Add a patch to the version test, so that it does not expect the
+  optional libcurl components (ssl, zlib, libSSH, nghttp2).
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-1PGDG
 - Update to 2.2 per changes described at:
