@@ -1,7 +1,7 @@
 %global _vpath_builddir build
 %global _vpath_srcdir .
 
-%{!?runselftest:%global runselftest 1}
+%{!?runselftest:%global runselftest 0}
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
@@ -143,7 +143,8 @@ fi
 %changelog
 * Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.2-2PGDG
 - Add %%check, running upstream's smoke test (a backup/restore cycle
-  against PostgreSQL 18).
+  against PostgreSQL 18). It is disabled by default; enable it with
+  --define 'runselftest 1'.
 
 * Sun Sep 27 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.2-1PGDG
 - Update to 2.59.2 per changes described at:
