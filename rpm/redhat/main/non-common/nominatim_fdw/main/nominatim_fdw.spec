@@ -15,7 +15,7 @@
 
 Summary:	Nominatim Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.2
+Version:	2.3
 Release:	1PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/jimjonesbr/%{sname}
@@ -81,6 +81,10 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Sep 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3-1PGDG
+- Update to 2.3 per changes described at:
+  https://github.com/jimjonesbr/nominatim_fdw/releases/tag/v2.3
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-1PGDG
 - Update to 2.2 per changes described at:
   https://github.com/jimjonesbr/nominatim_fdw/releases/tag/v2.2
