@@ -27,7 +27,7 @@ Patch1:		%{sname}-version-test-optional-components.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
-BuildRequires:	postgresql%{pgmajorversion}-server
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros
 %endif
 
 %description
