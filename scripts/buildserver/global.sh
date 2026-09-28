@@ -79,9 +79,10 @@ else
 	export awsdebuginfourl="s3://dnf-debuginfo.postgresql.org20250312201116649700000001"
 fi
 
-# PostgreSQL Build Versions
-declare -a pgStableBuilds=("18 17 16 15 14")
-declare -a pgTestBuilds=("19 18 17 16 15 14")
+# PostgreSQL Build Versions. One array element per version: quoted expansions
+# ("${pgStableBuilds[@]}") must see each version separately.
+declare -a pgStableBuilds=(18 17 16 15 14)
+declare -a pgTestBuilds=(19 18 17 16 15 14)
 declare -a pgBetaVersion=(19)
 declare -a pgAlphaVersion=(20)
 

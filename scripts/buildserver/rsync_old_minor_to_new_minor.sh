@@ -18,10 +18,7 @@ TARGET_IP="192.168.122.160"
 TARGET_USER=""				# empty = same as local user
 SSH_PORT=22
 ARCH="${osarch}"			# from global.sh (osarch); override with --arch
-# pgStableBuilds in global.sh is ("18 17 16 15 14") — a single-element array
-# containing a space-separated string. Unquoted expansion intentionally lets
-# word splitting flatten it into proper individual array elements here.
-PG_VERSIONS=(${pgStableBuilds[@]})	# from global.sh; override with --versions
+PG_VERSIONS=("${pgStableBuilds[@]}")	# from global.sh; override with --versions
 LOCAL_BASE="${HOME}"
 REMOTE_BASE="~"
 RPM_DIR_PREFIX="rpm"			# directories are rpm18, rpm17, …
