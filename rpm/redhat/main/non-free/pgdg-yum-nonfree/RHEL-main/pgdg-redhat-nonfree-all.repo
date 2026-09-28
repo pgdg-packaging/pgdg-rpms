@@ -2,43 +2,50 @@
 #   PGDG Red Hat Enterprise Linux / Rocky / AlmaLinux non-free repositories	#
 #################################################################################
 
+# $releasever_major and $releasever_minor come from the installed OS release
+# (e.g. 9.8), so these repositories follow OS minor version updates. A system
+# tied to one minor version with "subscription-manager release --set=9.6" on
+# RHEL, or with "9.6" in /etc/dnf/vars/releasever on Rocky Linux / AlmaLinux,
+# stays on that minor version. For a single command, use dnf's
+# --releasever-minor option. /etc/dnf/vars/releasever_minor is ignored.
+
 # PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux non-free stable repositories:
 
 [pgdg18-nonfree]
-name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/18/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg17-nonfree]
-name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/17/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/17/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg16-nonfree]
-name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/16/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/16/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg15-nonfree]
-name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/15/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/15/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg14-nonfree]
-name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/14/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/14/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
@@ -48,56 +55,56 @@ repo_gpgcheck = 1
 # Available for 14 and above.
 
 [pgdg20-updates-testing-nonfree]
-name=PostgreSQL 20 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/20/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 20 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/20/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg19-updates-testing-nonfree]
-name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/19/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/19/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg18-updates-testing-nonfree]
-name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/18/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg17-updates-testing-nonfree]
-name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/17/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/17/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg16-updates-testing-nonfree]
-name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/16/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/16/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg15-updates-testing-nonfree]
-name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/15/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/15/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg14-updates-testing-nonfree]
-name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Updates testing
-baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/14/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Updates testing
+baseurl=https://download.postgresql.org/pub/repos/yum/non-free/testing/14/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
@@ -106,96 +113,96 @@ repo_gpgcheck = 1
 # Source RPMs (SRPM), and their testing repositories:
 
 [pgdg20-nonfree-updates-testing-source]
-name=PostgreSQL 20 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/20/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 20 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/20/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg19-nonfree-updates-testing-source]
-name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/19/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/19/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg18-nonfree-source]
-name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/18/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg18-nonfree-updates-testing-source]
-name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/18/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg17-nonfree-source]
-name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/17/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/17/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg17-nonfree-updates-testing-source]
-name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/17/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 17 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/17/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg16-nonfree-source]
-name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/16/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/16/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg16-nonfree-updates-testing-source]
-name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/16/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 16 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/16/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg15-nonfree-source]
-name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/15/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/15/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg15-nonfree-updates-testing-source]
-name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/15/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 15 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/15/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg14-nonfree-source]
-name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/14/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/14/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg14-nonfree-updates-testing-source]
-name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever - $basearch - NonFree - Source update testing
-baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/14/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 14 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Source update testing
+baseurl=https://dnf-srpms.postgresql.org/srpms/non-free/testing/14/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
@@ -204,40 +211,40 @@ repo_gpgcheck = 1
 # Debuginfo/debugsource packages for non-free repos
 
 [pgdg18-nonfree-debuginfo]
-name=PostgreSQL 18 for RHEL / Rocky / AlmaLinux $releasever - $basearch - NonFree - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/18/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 18 for RHEL / Rocky / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg17-nonfree-debuginfo]
-name=PostgreSQL 17 for RHEL / Rocky / AlmaLinux $releasever - $basearch - NonFree - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/17/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 17 for RHEL / Rocky / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/17/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg16-nonfree-debuginfo]
-name=PostgreSQL 16 for RHEL / Rocky / AlmaLinux $releasever - $basearch - NonFree - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/16/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 16 for RHEL / Rocky / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/16/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg15-nonfree-debuginfo]
-name=PostgreSQL 15 for RHEL / Rocky / AlmaLinux $releasever - $basearch - NonFree - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/15/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 15 for RHEL / Rocky / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/15/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree
 repo_gpgcheck = 1
 
 [pgdg14-nonfree-debuginfo]
-name=PostgreSQL 14 for RHEL / Rocky / AlmaLinux $releasever - $basearch - NonFree - Debuginfo
-baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/14/redhat/rhel-$releasever-$basearch
+name=PostgreSQL 14 for RHEL / Rocky / AlmaLinux $releasever_major.$releasever_minor - $basearch - NonFree - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/non-free/14/redhat/rhel-$releasever_major.$releasever_minor-$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-RHEL-nonfree

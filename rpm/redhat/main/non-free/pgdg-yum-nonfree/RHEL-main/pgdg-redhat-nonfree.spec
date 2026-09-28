@@ -31,6 +31,39 @@ AlmaLinux non-free repository, and also the GPG key for PGDG RPMs.
 %{__install} -pm 644 %{SOURCE2} \
 	%{buildroot}%{_sysconfdir}/yum.repos.d/pgdg-redhat-nonfree-all.repo
 
+%post
+# 42.0-21 and older shipped a repo file with rhel-$releasever-$basearch. If the
+# admin changed that file, rpm kept it (%%config(noreplace)), so point it to the
+# dnf variables, keeping the other changes. The new file is still available as
+# pgdg-redhat-nonfree-all.repo.rpmnew.
+if [ $1 -gt 1 ] && [ -f %{_sysconfdir}/yum.repos.d/pgdg-redhat-nonfree-all.repo ] && \
+	grep -q 'rhel-\$releasever-\$basearch' %{_sysconfdir}/yum.repos.d/pgdg-redhat-nonfree-all.repo; then
+	sed -i \
+		-e 's#rhel-\$releasever-\$basearch#rhel-$releasever_major.$releasever_minor-$basearch#g' \
+		-e 's#AlmaLinux \$releasever #AlmaLinux $releasever_major.$releasever_minor #g' \
+		%{_sysconfdir}/yum.repos.d/pgdg-redhat-nonfree-all.repo
+fi
+
+# dnf in EL 8 and EL 9.6 does not set $releasever_major and $releasever_minor,
+# so the repo file URLs are not expanded and return 404. For such dnf versions,
+# set them from the OS release. dnf in EL 9.7 and later (and in all EL 10
+# releases) detects them itself and ignores these files, so the repos still
+# follow later OS minor version updates.
+. /etc/os-release
+case "${VERSION_ID}" in
+	*[!0-9.]*|"") ;;
+	*.*)
+		if ! /usr/libexec/platform-python -c 'import dnf.rpm; dnf.rpm.detect_releasevers' >/dev/null 2>&1; then
+			%{__mkdir} -p %{_sysconfdir}/dnf/vars
+			[ -e %{_sysconfdir}/dnf/vars/releasever_major ] || \
+				echo "${VERSION_ID%%%%.*}" > %{_sysconfdir}/dnf/vars/releasever_major
+			[ -e %{_sysconfdir}/dnf/vars/releasever_minor ] || \
+				echo "${VERSION_ID#*.}" > %{_sysconfdir}/dnf/vars/releasever_minor
+		fi
+		;;
+esac
+exit 0
+
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/yum.repos.d/*
@@ -40,6 +73,11 @@ AlmaLinux non-free repository, and also the GPG key for PGDG RPMs.
 %changelog
 * Thu Jul 16 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-22PGDG
 - Add v19 and v20 testing repos
+- Use $releasever_major.$releasever_minor in the repo file, so that the repos
+  follow the OS minor version, like the main repository RPM. Set them in
+  /etc/dnf/vars from the OS release when the installed dnf cannot detect them
+  (EL 8 and 9.6), and update locally modified repo files. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/215
 
 * Fri Jan 9 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-21PGDG
 - Remove v13 repos
