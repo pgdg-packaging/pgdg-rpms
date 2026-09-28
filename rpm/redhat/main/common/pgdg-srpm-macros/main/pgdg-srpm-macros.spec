@@ -7,7 +7,7 @@ BuildArch:	noarch
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	1.0.56
+Version:	2.0.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -27,13 +27,21 @@ echo no build stage needed
 
 %install
 %{__install} -p -D -m 0644 macros.pgdg-postgresql %{buildroot}/%{macros_dir}/macros.pgdg-postgresql
+%{__install} -p -D -m 0644 pgdg-check-functions.sh %{buildroot}%{_rpmconfigdir}/pgdg-check-functions.sh
 
 %files
 %doc README.md
 %license LICENSE.txt
 %{macros_dir}/macros.pgdg-postgresql
+%{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
+- Update to 2.0.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.0.0
+- Install pgdg-check-functions.sh, the shell functions behind the new
+  %%pgdg_check_init and %%pgdg_check_installcheck macros.
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.56-1PGDG
 - Update to 1.0.56 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/1.0.56
