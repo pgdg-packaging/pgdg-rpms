@@ -1,6 +1,7 @@
 %global sname bgw_replstatus
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -15,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.8
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	PostgreSQL background worker to report wether a node is a replication master or standby
 License:	PostgreSQL
 URL:		https://github.com/mhagander/%{sname}
@@ -23,6 +24,9 @@ Source0:	https://github.com/mhagander/%{sname}/archive/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros >= 1.0.12
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server
+%endif
 
 %description
 bgw_replstatus is a tiny background worker to cheaply report the
@@ -75,6 +79,64 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg}
 
+%check
+%if %runselftest
+# Start a primary and a standby with bgw_replstatus preloaded, and check that
+# the worker answers MASTER and STANDBY respectively. The module cannot be
+# installed into %%{pginstdir} at build time, so run them from a copy of the
+# PostgreSQL installation, with this package's files on top. The TCP ports
+# depend on the PostgreSQL version, so that builds for different versions can
+# run side by side. initdb refuses to run as root, so skip the tests then.
+if [ x"`id -u`" = x0 ]; then
+	echo "Skipping the tests, as initdb cannot be run as root."
+else
+	%{__rm} -rf tmp_pginst tmp_check
+	%{__cp} -a %{pginstdir} tmp_pginst
+	%{__cp} -a %{buildroot}%{pginstdir}/. tmp_pginst/
+	bindir=$(pwd)/tmp_pginst/bin
+	sockdir=`mktemp -d`
+	bgwport=$((25000 + %{pgmajorversion} * 10))
+
+	# Print what the worker on the given port answers, waiting for it to start
+	replstatus() {
+		for i in $(seq 30); do
+			resp=$(timeout 5 bash -c "cat < /dev/tcp/127.0.0.1/$1" 2>/dev/null) && [ -n "$resp" ] && break
+			sleep 1
+		done
+		echo "$resp"
+	}
+
+	$bindir/initdb -D tmp_check/primary -U postgres -A trust --no-sync >/dev/null
+	cat >> tmp_check/primary/postgresql.conf <<EOF
+listen_addresses = ''
+unix_socket_directories = '$sockdir'
+port = 54321
+shared_preload_libraries = 'bgw_replstatus'
+bgw_replstatus.bind = '127.0.0.1'
+bgw_replstatus.port = $bgwport
+EOF
+	$bindir/pg_ctl -D tmp_check/primary -l tmp_check/primary.log -w start
+	$bindir/pg_basebackup -D tmp_check/standby -R -X stream -h $sockdir -p 54321 -U postgres
+	cat >> tmp_check/standby/postgresql.conf <<EOF
+port = 54322
+bgw_replstatus.port = $((bgwport + 1))
+EOF
+	$bindir/pg_ctl -D tmp_check/standby -l tmp_check/standby.log -w start
+
+	primary=$(replstatus $bgwport)
+	standby=$(replstatus $((bgwport + 1)))
+	echo "primary: $primary, standby: $standby"
+
+	$bindir/pg_ctl -D tmp_check/standby -m fast -w stop
+	$bindir/pg_ctl -D tmp_check/primary -m fast -w stop
+	%{__rm} -rf $sockdir
+	if [ "$primary" != MASTER ] || [ "$standby" != STANDBY ]; then
+		%{__cat} tmp_check/primary.log tmp_check/standby.log
+		exit 1
+	fi
+fi
+%endif
+
 %files
 %doc README.md
 %license LICENSE
@@ -86,6 +148,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-6PGDG
+- Add %%check: start a primary and a standby with bgw_replstatus
+  preloaded, and check that the worker reports MASTER and STANDBY.
+  It is disabled by default; enable it with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.8-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
