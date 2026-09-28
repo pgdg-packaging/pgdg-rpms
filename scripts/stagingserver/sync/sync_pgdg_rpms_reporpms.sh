@@ -33,7 +33,8 @@ under reporpms/EL-<ver>-<arch> (redhat), reporpms/F-<ver>-<arch> (fedora), or
 reporpms/AL-<ver>-<arch> (amzn), removing the previous repo RPM and
 re-pointing the "*-repo-latest.noarch.rpm" symlink at the new one. For RHEL,
 it also updates reporpms/EL-<major>-<arch> from common/redhat/rhel-<major>-<arch>
-(a symlink to the latest minor version's directory).
+(a symlink to the latest minor version's directory), and the non-free repo RPM
+in reporpms/non-free/EL-<major>-<arch> from non-free/<newest PG>/redhat/rhel-<major>-<arch>.
 
 Optional:
   --os           Restrict to one OS: redhat, fedora, amzn (default: all three)
@@ -282,8 +283,81 @@ process_os() {
 	done
 }
 
+# Non-free repo RPMs, for OSes with SYNCNONFREEREPOS_<os>=1. There is no common
+# non-free repo: the repo RPM is in every PostgreSQL version's non-free repo, so
+# take it from the newest one (PG_ALL_VERSIONS) that has the directory. As for
+# the main repo RPM, the OS major version directory (a symlink to the latest
+# minor version's one) is used, and reporpms/non-free only has major version
+# directories: reporpms/non-free/EL-<major>-<arch>.
+process_nonfree() {
+	local os="$1"
+	local osname="$2"
+	local reponame="$3"
+	local destprefix="$4"
+
+	local tmp_var="SYNCNONFREEREPOS_${os}"
+	[[ "${!tmp_var:-0}" == 1 ]] || return 0
+
+	tmp_var="BASE_DIR_${os}"
+	local base_dir="${!tmp_var}"
+	local -n nonfree_ver_ref="VALID_NONFREE_VER_${os}"
+	local -n nonfree_arch_ref="VALID_NONFREE_ARCH_${os}"
+
+	local -a major_list=()
+	local ver major
+	for ver in "${nonfree_ver_ref[@]}"; do
+		major="${ver%%.*}"
+		contains "$major" "${major_list[@]}" || major_list+=("$major")
+	done
+
+	# --ver restricts to one OS major version; a minor version has no
+	# reporpms/non-free directory of its own:
+	if [[ -n "$VER" ]]; then
+		if contains "$VER" "${major_list[@]}"; then
+			major_list=("$VER")
+		else
+			$DEBUG && echo "[DEBUG] No non-free repo RPM directory for $os $VER, skipping $os non-free"
+			return 0
+		fi
+	fi
+
+	local -a arch_list=("${nonfree_arch_ref[@]}")
+	if [[ -n "$ARCH" ]]; then
+		if ! contains "$ARCH" "${nonfree_arch_ref[@]}"; then
+			$DEBUG && echo "[DEBUG] Arch $ARCH has no non-free repos for $os, skipping $os non-free"
+			return 0
+		fi
+		arch_list=("$ARCH")
+	fi
+
+	echo ""
+	echo "================================================"
+	echo "Processing $os non-free repo RPMs"
+	echo "================================================"
+
+	local arch pg src_dir
+	for major in "${major_list[@]}"; do
+		for arch in "${arch_list[@]}"; do
+			src_dir=""
+			for pg in "${PG_ALL_VERSIONS[@]}"; do
+				if [[ -d "${base_dir}/non-free/${pg}/${os}/${osname}-${major}-${arch}/" ]]; then
+					src_dir="${base_dir}/non-free/${pg}/${os}/${osname}-${major}-${arch}"
+					break
+				fi
+			done
+			if [[ -z "$src_dir" ]]; then
+				$DEBUG && echo "  [DEBUG] No non-free repo for $os $major $arch in any of: ${PG_ALL_VERSIONS[*]}"
+				continue
+			fi
+			update_repo_rpm "$os" "$major non-free" "$arch" "$reponame" "$src_dir" \
+				"${base_dir}/reporpms/non-free/${destprefix}-${major}-${arch}"
+		done
+	done
+}
+
 if [[ -z "$OS" || "$OS" == "redhat" ]]; then
 	process_os "redhat" "rhel" "pgdg-redhat-repo" "EL"
+	process_nonfree "redhat" "rhel" "pgdg-redhat-nonfree-repo" "EL"
 fi
 
 if [[ -z "$OS" || "$OS" == "fedora" ]]; then

@@ -295,6 +295,8 @@ For every `os`/`ver`/`arch` combination:
 
 For `redhat`, the OS major version directories get the same treatment after the minor versions: `reporpms/EL-<major>-<arch>` (e.g. `EL-9-x86_64`) is updated from `common/redhat/rhel-<major>-<arch>`, which is a symlink to the latest minor version's directory. The major versions are derived from `VALID_VER_redhat`, and the architectures are those of each major version's latest minor version. `--ver 9` restricts the run to the `EL-9-*` directories.
 
+For OSes with `SYNCNONFREEREPOS_<os>=1` (RHEL), the non-free repo RPM (`pgdg-redhat-nonfree-repo`) is republished the same way into `reporpms/non-free/EL-<major>-<arch>`, for the major versions and architectures in `VALID_NONFREE_VER_<os>` / `VALID_NONFREE_ARCH_<os>`. There is no common non-free repo, so it is taken from `non-free/<version>/redhat/rhel-<major>-<arch>` of the newest version in `PG_ALL_VERSIONS` that has that directory. `--ver` with a minor version skips non-free, as `reporpms/non-free` only has major version directories.
+
 Like the main sync script, failures are collected rather than aborting the run: it exits `1` with a warning if any update failed, `0` if everything is up to date.
 
 ### Suggested Crontab Entry
