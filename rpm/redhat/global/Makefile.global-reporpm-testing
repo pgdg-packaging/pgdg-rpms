@@ -10,6 +10,60 @@
 
 ## PostgreSQL repo rpm testing build targets
 
+repobfsrpm8testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros-8 \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild8testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros-8 \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm8testing
+
+repobfsrpm9testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros-9 \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild9testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros-9 \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm9testing
+
+repobfsrpm10testing: prep
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros-10 \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+repobuild10testing: prep
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" --load ~/.rpmmacros-10 \
+	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
+	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	-bb $(SPECFILE)
+	make repobfsrpm10testing
+
 repobfsrpm2023testing: prep
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
