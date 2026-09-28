@@ -54,6 +54,26 @@ do
 done
 unset _required_var
 
+# Refuse to run with the placeholder values of global-local.sh.example (and of
+# the Ansible setup playbook), e.g. a forgotten GPG_PASSWORD only shows up
+# later as "gpg: signing failed: Operation cancelled".
+_placeholder_found=0
+if [ "$GPG_PASSWORD" == "foobar" ]; then
+	echo "${red}ERROR:${reset} GPG_PASSWORD in ~/bin/global-local.sh is still the placeholder (foobar)" 1>&2
+	_placeholder_found=1
+fi
+for _cf_var in CF_DEBUG_DISTRO_ID CF_SRPM_DISTRO_ID
+do
+	if [[ "${!_cf_var}" =~ ^X+$ ]]; then
+		echo "${red}ERROR:${reset} ${_cf_var} in ~/bin/global-local.sh is still the placeholder (${!_cf_var})" 1>&2
+		_placeholder_found=1
+	fi
+done
+if [ $_placeholder_found -ne 0 ]; then
+	exit 1
+fi
+unset _placeholder_found _cf_var
+
 export osmajorversion osminversion osislatest osarch osdistro git_os extrasrepoenabled CF_DEBUG_DISTRO_ID CF_SRPM_DISTRO_ID GPG_PASSWORD
 
 # GPG Configuration
