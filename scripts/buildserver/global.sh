@@ -164,6 +164,18 @@ spec_rpm_files() {
 		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null
 }
 
+# rpmspec lists a -debuginfo RPM for every arch dependent (sub)package and a
+# -debugsource one, but rpmbuild skips the ones that would be empty (e.g.
+# python3-psycopg3-debuginfo on EL 9, as only python3-psycopg3-c has binaries),
+# so these may be missing.
+# Usage: is_optional_rpm <rpm file name>
+is_optional_rpm() {
+	case "$1" in
+		*-debuginfo-*|*-debugsource-*) return 0 ;;
+	esac
+	return 1
+}
+
 # Check whether every binary RPM a spec file would produce already exists
 # in the given RPMS directory, so that packagebuild.sh (and friends) can
 # skip a rebuild that would otherwise just re-stamp already-published RPMs
@@ -197,7 +209,7 @@ is_already_built() {
 	while IFS= read -r rpm_file; do
 		arch="${rpm_file%.rpm}"
 		arch="${arch##*.}"
-		if [ ! -f "${rpms_dir}/${arch}/${rpm_file}" ]; then
+		if [ ! -f "${rpms_dir}/${arch}/${rpm_file}" ] && ! is_optional_rpm "$rpm_file"; then
 			return 1
 		fi
 	done <<< "$expected_rpms"
@@ -365,6 +377,7 @@ verify_built_rpms() {
 		[ -z "$rpm_file" ] && continue
 		matches=$(find ~/"${rpm_location}"* -name "$rpm_file" -not -path '*/ALL*' 2>/dev/null)
 		if [ -z "$matches" ]; then
+			is_optional_rpm "$rpm_file" && continue
 			echo "${red}ERROR:${reset} $rpm_file was not found in ~/${rpm_location}*"
 			bad=1
 		else
