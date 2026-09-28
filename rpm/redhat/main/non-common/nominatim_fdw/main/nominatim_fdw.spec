@@ -17,7 +17,7 @@
 Summary:	Nominatim Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/jimjonesbr/%{sname}
 Source0:	https://github.com/jimjonesbr/%{sname}/archive/v%{version}.tar.gz
@@ -27,7 +27,7 @@ Patch1:		%{sname}-version-test-optional-components.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
-BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 %endif
 
 %description
@@ -76,33 +76,8 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{build
 
 %check
 %if %runselftest
-# The extension cannot be installed into %%{pginstdir} at build time, so run
-# the regression tests against a copy of the PostgreSQL installation, with
-# this package's files on top. PostgreSQL is relocatable, so pg_config and the
-# server both pick up the copy. The expected output assumes the superuser is
-# called postgres, hence a server of our own instead of pg_regress's
-# --temp-instance. Only the tests that need no network access run by default.
-# initdb refuses to run as root, so skip them then.
-if [ x"`id -u`" = x0 ]; then
-	echo "Skipping the regression tests, as initdb cannot be run as root."
-else
-	%{__rm} -rf tmp_pginst tmp_check
-	%{__cp} -a %{pginstdir} tmp_pginst
-	%{__cp} -a %{buildroot}%{pginstdir}/. tmp_pginst/
-	sockdir=`mktemp -d`
-	tmp_pginst/bin/initdb -D tmp_check/data -U postgres -A trust --no-sync >/dev/null
-	tmp_pginst/bin/pg_ctl -D tmp_check/data -l tmp_check/postmaster.log -w \
-		-o "-c listen_addresses='' -k $sockdir -p 54321" start
-	rc=0
-	PGHOST=$sockdir PGPORT=54321 PGUSER=postgres %{__make} installcheck USE_PGXS=1 \
-		PG_CONFIG=$(pwd)/tmp_pginst/bin/pg_config %{with_llvm_arg} || rc=$?
-	tmp_pginst/bin/pg_ctl -D tmp_check/data -m fast -w stop
-	%{__rm} -rf $sockdir
-	if [ $rc -ne 0 ]; then
-		%{__cat} regression.diffs
-		exit $rc
-	fi
-fi
+# Only the tests that need no network access run by default
+%pgdg_check_installcheck %{with_llvm_arg}
 %endif
 
 %files
@@ -120,6 +95,10 @@ fi
 %endif
 
 %changelog
+* Mon Sep 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3-2PGDG
+- Run the regression tests with the %%check helpers from
+  pgdg-srpm-macros 2.0.0.
+
 * Mon Sep 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3-1PGDG
 - Update to 2.3 per changes described at:
   https://github.com/jimjonesbr/nominatim_fdw/releases/tag/v2.3
