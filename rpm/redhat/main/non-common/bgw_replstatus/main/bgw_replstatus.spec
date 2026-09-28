@@ -22,7 +22,7 @@ License:	PostgreSQL
 URL:		https://github.com/mhagander/%{sname}
 Source0:	https://github.com/mhagander/%{sname}/archive/%{version}.tar.gz
 
-BuildRequires:	postgresql%{pgmajorversion}-devel pgdg-srpm-macros >= 1.0.12
+BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
