@@ -1,7 +1,6 @@
 
 %if 0%{?fedora} || 0%{?rhel}
 %global macros_dir %{_rpmconfigdir}/macros.d
-BuildArch:	noarch
 %else
 %global macros_dir %{_sysconfdir}/rpm
 %endif
@@ -14,6 +13,7 @@ Summary:	SRPM macros for building PostgreSQL PGDG Packages
 License:	PostgreSQL
 URL:		https://github.com/pgdg-packaging/%{name}
 Source0:	https://github.com/pgdg-packaging/%{name}/archive/refs/tags/%{version}.tar.gz
+BuildArch:	noarch
 
 %description
 A set of macros for building PostgreSQL PGDG packages. 3rd party packagers can
