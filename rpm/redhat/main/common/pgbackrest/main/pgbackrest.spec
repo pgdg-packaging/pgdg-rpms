@@ -1,10 +1,12 @@
 %global _vpath_builddir build
 %global _vpath_srcdir .
 
+%{!?runselftest:%global runselftest 1}
+
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.59.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -16,6 +18,10 @@ Source7:	%{name}-tmpfiles.d
 
 BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel
 BuildRequires:	libzstd-devel meson zlib-devel
+%if %runselftest
+# The smoke test runs a backup/restore cycle against the PostgreSQL it finds
+BuildRequires:	postgresql%{pgmajorversion}-server python3
+%endif
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3 libsystemd0
@@ -84,6 +90,15 @@ are required to perform a backup which increases security.
 %{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
 %{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
 
+%check
+%if %runselftest
+# Upstream's smoke test for packagers: initdb, stanza-create, check, full and
+# incremental backups, then a restore of the latter, against every supported
+# PostgreSQL found on the system. When run as root, it drops to the postgres
+# user.
+%meson_test --suite smoke -v
+%endif
+
 %pre
 %sysusers_create_package %{name} %SOURCE6
 
@@ -126,6 +141,10 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.2-2PGDG
+- Add %%check, running upstream's smoke test (a backup/restore cycle
+  against PostgreSQL 18).
+
 * Sun Sep 27 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.2-1PGDG
 - Update to 2.59.2 per changes described at:
   https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.59.2
