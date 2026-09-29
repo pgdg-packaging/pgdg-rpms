@@ -16,8 +16,8 @@
 
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.3
-Release:	2PGDG%{?dist}
+Version:	2.0.4
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/vibhorkum/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vibhorkum/%{sname}
@@ -92,6 +92,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-1PGDG
+- Update to 2.0.4 per changes described at:
+  https://github.com/vibhorkum/pg_background/releases/tag/v2.0.4
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.3-2PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
