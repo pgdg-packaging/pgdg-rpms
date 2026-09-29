@@ -2,13 +2,13 @@
 
 Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.30.1
+Version:	2.30.2
 Release:	1PGDG%{?dist}
 License:	Apache
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/timescale/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	cmake >= 3.4
+BuildRequires:	cmake >= 3.4 gcc
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
@@ -55,6 +55,12 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.30.2-1PGDG
+- Update to 2.30.2, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.30.2
+- Add gcc to BuildRequires. Nothing else pulls it in, so the build
+  failed in a minimal build root (mock).
+
 * Thu Sep 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.30.1-1PGDG
 - Update to 2.30.1, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.30.1
