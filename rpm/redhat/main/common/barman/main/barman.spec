@@ -30,8 +30,8 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.20.0
-Release:	43PGDG%{?dist}
+Version:	3.20.1
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -192,6 +192,17 @@ touch %{buildroot}/var/log/barman/barman.log
 %{python_sitelib}/%{name}/
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-42PGDG
+- Update to 3.20.1, per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.20.1
+  This release fixes CVE-2026-93853: Barman trusted the snapshot
+  identifiers in the backup catalog, so anyone able to overwrite it could
+  make Barman delete unrelated cloud snapshots with its own credentials.
+- Drop the FreeBSD classifier fix from the build backend patch, as
+  upstream fixed it.
+- Refresh the legacy license metadata patch for 3.20.1, with less
+  context, so that it no longer includes the version line.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.0-43PGDG
 - Add missing BR
 - Build with setuptools instead of uv_build, using a patch that switches the

@@ -1,5 +1,5 @@
---- pyproject.toml.old	2026-09-20 18:11:41.839423986 -0500
-+++ pyproject.toml	2026-09-20 18:11:41.862718638 -0500
+--- pyproject.toml.old
++++ pyproject.toml
 @@ -1,10 +1,6 @@
  [build-system]
 -# Upper bound on uv_build is intentional: uv's versioning policy reserves
@@ -13,12 +13,3 @@
  
  [project]
  name = "barman"
-@@ -25,7 +21,7 @@
-   "Topic :: System :: Recovery Tools",
-   "Intended Audience :: System Administrators",
-   "Operating System :: POSIX :: Linux",
--  "Operating System :: BSD :: FreeBSD",
-+  "Operating System :: POSIX :: BSD :: FreeBSD",
-   "Operating System :: Unix",
-   "Programming Language :: Python",
-   "Programming Language :: Python :: 3 :: Only",
