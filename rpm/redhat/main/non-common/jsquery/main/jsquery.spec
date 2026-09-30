@@ -1,6 +1,7 @@
 %global sname	jsquery
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,7 +17,7 @@
 Summary:	PostgreSQL json query language with GIN indexing support
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/ver_%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}/
@@ -24,6 +25,9 @@ URL:		https://github.com/postgrespro/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 BuildRequires:	bison flex
 Requires:	postgresql%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 JsQuery – is a language to query jsonb data type.
@@ -84,6 +88,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -102,6 +111,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-8PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
