@@ -15,8 +15,8 @@
 
 Summary:	PostgreSQL extension for sampling active session history
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5.0
-Release:	2PGDG%{?dist}
+Version:	1.5.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -80,6 +80,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Wed Sep 30 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-1PGDG
+- Update to 1.5.1 per changes described at:
+  https://github.com/pgsentinel/pgsentinel/releases/tag/v1.5.1
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-2PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
