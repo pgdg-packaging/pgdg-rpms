@@ -1,12 +1,14 @@
 %global _vpath_builddir .
 %global sname	h3-pg
 
+%{!?runselftest:%global runselftest 0}
+
 %{!?llvm:%global llvm 1}
 
 Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.5.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	Apache
 URL:		https://github.com/postgis/%{sname}
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -15,6 +17,9 @@ BuildRequires:	cmake >= 3.20 h3-devel >= 4.5.0-2
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
 Requires:	postgresql%{pgmajorversion} h3 >= 4.5.0-2
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 This library provides PostgreSQL bindings for the H3 Core Library.
@@ -70,6 +75,23 @@ pushd build
 %cmake_install
 popd
 
+%check
+%if %runselftest
+%pgdg_check_init
+# h3-pg runs its tests with ctest, in a temporary instance of its own. Build
+# them against the copy of the PostgreSQL installation, which has this
+# package's files, so that they also work before PostgreSQL 18, which has no
+# extension_control_path. Like upstream's installcheck, skip the h3_postgis
+# tests, which need PostGIS.
+%if 0%{?fedora}
+CFLAGS="$CFLAGS -I%{_includedir}/h3"; export CFLAGS
+%endif
+cmake -S . -B build-check -DCMAKE_BUILD_TYPE=Release \
+	-DPostgreSQL_CONFIG=$PGDG_CHECK_BINDIR/pg_config
+cmake --build build-check %{?_smp_mflags}
+ctest --test-dir build-check --output-on-failure --exclude-regex '^h3_postgis_regress$'
+%endif
+
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
@@ -92,6 +114,12 @@ popd
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.5.0-3PGDG
+- Add %%check, running the regression tests with ctest against the copy
+  of the PostgreSQL installation from the %%check helpers of
+  pgdg-srpm-macros 2.0.0. It is disabled by default; enable it with
+  --define 'runselftest 1'.
+
 * Fri Aug 7 2026 Devrim Gunduz <devrim@gunduz.org> - 4.5.0-2PGDG
 - Add Amazon Linux 2023 support.
 
