@@ -1,6 +1,7 @@
 %global sname	pg_background
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,7 +18,7 @@
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/vibhorkum/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vibhorkum/%{sname}
@@ -32,6 +33,9 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 This extension allows you to execute arbitrary SQL commands in background
@@ -78,6 +82,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -92,6 +101,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-1PGDG
 - Update to 2.0.4 per changes described at:
   https://github.com/vibhorkum/pg_background/releases/tag/v2.0.4
