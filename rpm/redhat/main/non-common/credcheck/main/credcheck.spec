@@ -1,6 +1,7 @@
 %global sname credcheck
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -15,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/HexaCluster/%{sname}
@@ -32,6 +33,11 @@ BuildRequires:	openssl-devel
 %endif
 
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# prove and IPC::Run, for the TAP test
+BuildRequires:	perl(Test::Harness) perl(IPC::Run)
+%endif
 
 %description
 The credcheck PostgreSQL extension provides few general credential checks,
@@ -76,6 +82,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg}
 
+%check
+%if %runselftest
+# Some of the tests need credcheck in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'credcheck'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %doc README.md
 %license LICENSE
@@ -89,6 +103,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} install DESTDIR
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0-5PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
