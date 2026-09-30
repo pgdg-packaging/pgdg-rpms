@@ -1,6 +1,7 @@
 %global sname	pg_dbms_errlog
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,15 @@
 Summary:	PostgreSQL extension which enables DML error logging
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/HexaCluster/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel make
 Requires:	postgresql%{pgmajorversion}-server pg_statement_rollback_%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 The pg_dbms_errlog extension provides the infrastructure that enables you to
@@ -71,6 +75,14 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} INSTALL_P
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 
+%check
+%if %runselftest
+# The tests need pg_dbms_errlog in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_dbms_errlog'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -84,6 +96,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} INSTALL_P
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4-1PGDG
 - Update to 2.4 per changes described at:
   https://github.com/HexaCluster/pg_dbms_errlog/releases/tag/v2.4
