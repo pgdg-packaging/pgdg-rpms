@@ -1,6 +1,7 @@
 %global sname pgmp
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,13 +18,16 @@
 Summary:	PostgreSQL Multiple Precision Arithmetic Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.6
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	LGPL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 # Make sure that we use Python 3.
 Patch1:		%{sname}-python3.patch
 URL:		https://dvarrazzo.github.io/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel gmp-devel python3-devel unzip
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libgmp10
 %else
@@ -73,6 +77,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot}
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc README.rst
@@ -88,6 +97,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-5PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-4PGDG
 - Add missing BRs.
 
