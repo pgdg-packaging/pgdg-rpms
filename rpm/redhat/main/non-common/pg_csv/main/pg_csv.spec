@@ -1,6 +1,7 @@
 %global sname	pg_csv
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,12 +18,15 @@
 Summary:	Flexible CSV processing as a solution for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/PostgREST/%{sname}/
 Source0:	https://github.com/PostgREST/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_csv offers flexible CSV processing as a solution.
@@ -66,6 +70,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} INSTALL_PREFIX=%{buildroot} DESTDIR=%{buildroot} install
 
+%check
+%if %runselftest
+# The Makefile takes the tests from $(wildcard ...), which make on EL-8
+# does not sort, so 00_init would not run first. Pass them sorted.
+%pgdg_check_installcheck %{with_llvm_arg} REGRESS="$(ls test/sql | sed 's/\.sql$//' | sort | tr '\n' ' ')"
+%endif
+
 %files
 %defattr(-,root,root,-)
 %{pginstdir}/lib/%{sname}.so
@@ -78,6 +89,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.2-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.2-1PGDG
 - Update to 1.0.2 per changes described at:
   https://github.com/PostgREST/pg_csv/releases/tag/v1.0.2
