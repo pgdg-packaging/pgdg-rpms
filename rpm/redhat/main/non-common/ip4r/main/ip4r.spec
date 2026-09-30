@@ -1,6 +1,7 @@
 %global sname ip4r
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,13 +17,16 @@
 Name:		%{sname}_%{pgmajorversion}
 Summary:	IPv4/v6 and IPv4/v6 range index type for PostgreSQL
 Version:	2.4.3
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/RhodiumToad/%{sname}/archive/%{version}.tar.gz
 
 URL:		https://github.com/RhodiumToad/ip4r
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 Provides:	postgresql-ip4r = %{version}-%{release}
 Obsoletes:	%{sname}%{pgmajorversion} < 2.4.1-2
@@ -70,6 +74,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 
 %{__rm} -f %{buildroot}%{pginstdir}/include/server/extension/ip4r/ipr.h
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc %{pginstdir}/doc/extension/README.ip4r
@@ -83,6 +92,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.3-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.3-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
