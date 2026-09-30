@@ -2,6 +2,7 @@
 %global pgbigmver 1.2
 %global sname pg_bigm
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -18,12 +19,15 @@
 Summary:	2-gram (bigram) index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbigmver}_%{pgbigmpackagever}
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 URL:		https://github.com/pgbigm/%{sname}
 Source0:	https://github.com/pgbigm/%{sname}/archive/refs/tags/v%{pgbigmver}-%{pgbigmpackagever}.tar.gz
 License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 The pg_bigm module provides full text search capability in PostgreSQL.
@@ -72,6 +76,14 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The Japanese test needs a UTF-8 database, but the build environment may run
+# with LANG=C (EL-8), which would make the test cluster SQL_ASCII.
+export LC_ALL=C.UTF-8
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root)
 %license LICENSE
@@ -87,6 +99,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2_20250903-6PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pgbigmver}_%{pgbigmpackagever}-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
