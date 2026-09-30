@@ -1,6 +1,7 @@
 %global sname	pgaudit
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,9 +17,9 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	19.0
-Release:	beta1_4PGDG%{?dist}
+Release:	beta4_1PGDG%{?dist}
 License:	BSD
-Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/19beta1.tar.gz
+Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/19beta4.tar.gz
 URL:		https://www.pgaudit.org
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	krb5-devel
@@ -31,6 +32,11 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The tests use pg_stat_statements and postgres_fdw from contrib
+BuildRequires:	postgresql%{pgmajorversion}-contrib
+%endif
 
 %description
 The PostgreSQL Audit extension (pgaudit) provides detailed session
@@ -72,7 +78,7 @@ This package provides JIT support for pgaudit
 %endif
 
 %prep
-%setup -q -n %{sname}-19beta1
+%setup -q -n %{sname}-19beta4
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -84,6 +90,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
+
+%check
+%if %runselftest
+# The tests need pgaudit in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pgaudit'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -99,6 +113,15 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Wed Sep 30 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-beta4_1PGDG
+- Update to 19beta4 per changes described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/19beta4
+  This fixes the build against the current PostgreSQL 19, which no longer
+  has RELKIND_PROPGRAPH.
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 19.0-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
