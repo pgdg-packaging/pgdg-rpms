@@ -1,6 +1,7 @@
 %global sname extra_window_functions
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,15 @@
 Summary:	Extra Window Functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 This extension provides additional window functions to PostgreSQL. Some of
@@ -67,6 +71,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %{__mv} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.%{sname}
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -81,6 +90,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-1PGDG
 - Update to 2.0 per changes described at:
   https://github.com/xocolatl/extra_window_functions/releases/tag/v2.0
