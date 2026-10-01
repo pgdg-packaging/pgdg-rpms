@@ -9,6 +9,11 @@ URL:		https://github.com/credativ/%{sname}
 Source0:	https://github.com/credativ/%{sname}/archive/%{version}.tar.gz
 BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.0-2
@@ -49,6 +54,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %changelog
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-2PGDG
 - Add missing BR
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-1PGDGG
 - Update to 1.4 per changes described at:
