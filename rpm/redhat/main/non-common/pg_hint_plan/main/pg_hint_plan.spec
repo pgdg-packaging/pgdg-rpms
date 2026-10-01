@@ -26,6 +26,7 @@
 %endif
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -42,12 +43,17 @@
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel flex
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The tests use btree_gist and btree_gin from contrib
+BuildRequires:	postgresql%{pgmajorversion}-contrib
+%endif
 
 %description
 pg_hint_plan makes it possible to tweak PostgreSQL execution plans using
@@ -101,6 +107,26 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 %endif
 
+%check
+%if %runselftest
+%pgdg_check_init
+# The tests run egrep, and newer GNU grep prints an obsolescence warning to
+# the test output, so use a wrapper.
+mkdir -p $PGDG_CHECK_DIR/bin
+printf '#!/bin/sh\nexec grep -E "$@"\n' > $PGDG_CHECK_DIR/bin/egrep
+chmod +x $PGDG_CHECK_DIR/bin/egrep
+export PATH=$PGDG_CHECK_DIR/bin:$PATH
+# Up to PostgreSQL 16, the tests need pg_stat_statements in
+# shared_preload_libraries. Preloading it changes the output of the later
+# versions.
+%if %{pgmajorversion} <= 16
+pgdg_check_start main "shared_preload_libraries = 'pg_stat_statements'"
+%else
+pgdg_check_start main
+%endif
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %if %{pgmajorversion} >= 14
@@ -117,6 +143,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-8PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
