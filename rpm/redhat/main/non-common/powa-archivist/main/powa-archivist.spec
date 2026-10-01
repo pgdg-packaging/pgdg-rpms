@@ -6,6 +6,7 @@
 %global powaminorversion 0
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -21,11 +22,16 @@
 Summary:	PostgreSQL Workload Analyzer Archivist
 Name:		%{sname}-archivist_%{pgmajorversion}
 Version:	%{powamajorversion}.%{powamidversion}.%{powaminorversion}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/powa-archivist/archive/REL_%{powamajorversion}_%{powamidversion}_%{powaminorversion}.tar.gz
 URL:		https://powa.readthedocs.io/
 BuildRequires:	postgresql%{pgmajorversion}-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# pg_stat_statements and btree_gist
+BuildRequires:	postgresql%{pgmajorversion}-contrib
+%endif
 
 %description
 PoWA is PostgreSQL Workload Analyzer that gathers performance stats and
@@ -76,6 +82,15 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install 
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension/%{sname}
 %{__install} INSTALL.md LICENSE.md PL_funcs.md README.md %{buildroot}%{pginstdir}/doc/extension/%{sname}
 
+%check
+%if %runselftest
+# The Makefile expects the tests in test/, but the release tarball has them
+# at the top level. They need pg_stat_statements and powa preloaded.
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_stat_statements,powa'"
+pgdg_installcheck REGRESS_OPTS=--inputdir=. %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %dir %{pginstdir}/doc/extension/%{sname}
@@ -94,6 +109,11 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install 
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-2PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
