@@ -1,6 +1,7 @@
 %global sname pg_qualstats
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,15 @@
 Summary:	A PostgreSQL extension collecting statistics about predicates
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/powa-team/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/powa-team/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_qualstats is a PostgreSQL extension keeping statistics on
@@ -79,6 +83,16 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests need pg_qualstats in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_qualstats'"
+# The Makefile takes the tests from $(wildcard ...), which make on EL-8
+# does not sort, so 00_setup would not run first. Pass them sorted.
+pgdg_installcheck %{with_llvm_arg} REGRESS="$(ls test/sql | sed 's/\.sql$//' | sort | tr '\n' ' ')"
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -94,6 +108,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.4-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.4-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
