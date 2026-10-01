@@ -1,11 +1,13 @@
 
 %global sname plpgsql_check
 
+%{!?runselftest:%global runselftest 0}
+
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.10.11
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -14,6 +16,11 @@ Source0:	https://github.com/okbob/%{sname}/archive/v%{version}.tar.gz
 BuildRequires:	gcc
 BuildRequires:	postgresql%{pgmajorversion}-devel meson
 Requires:	postgresql%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The package is built with meson, but the tests are run with make
+BuildRequires:	make
+%endif
 
 # llvmjit package is not built with meson:
 Obsoletes:	%{sname}_%{pgmajorversion} < 2.8.5-2
@@ -62,6 +69,11 @@ export PATH=%{pginstdir}/bin:$PATH
 export PATH=%{pginstdir}/bin:$PATH
 %meson_install
 
+%check
+%if %runselftest
+%pgdg_check_installcheck
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc README.md
@@ -77,6 +89,11 @@ export PATH=%{pginstdir}/bin:$PATH
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.11-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Sep 27 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.11-1PGDG
 - Update to 2.10.11 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.10.11
