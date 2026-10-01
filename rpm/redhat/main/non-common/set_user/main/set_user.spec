@@ -5,6 +5,7 @@
 %global setuserminver 0
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -20,12 +21,15 @@
 Summary:	PostgreSQL extension allowing privilege escalation with enhanced logging and control
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{setusermajver}.%{setusermidver}.%{setuserminver}
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgaudit/%{sname}
 Source0:	https://github.com/pgaudit/%{sname}/archive/refs/tags/REL%{setusermajver}_%{setusermidver}_%{setuserminver}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 This PostgreSQL extension allows switching users and optional privilege
@@ -75,6 +79,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 # Remove header file, we don't need to ship it:
 %{__rm} -f %{buildroot}%{pginstdir}/include/%{sname}.h
 
+%check
+%if %runselftest
+# The tests need set_user in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'set_user'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -89,6 +101,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.0-6PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.0-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
