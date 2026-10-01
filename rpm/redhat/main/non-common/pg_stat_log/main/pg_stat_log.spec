@@ -1,6 +1,7 @@
 %global sname pg_stat_log
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,13 +17,18 @@
 Summary:	PostgreSQL extension that uses the Custom Cumulative Stats API to track log messages
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/fabriziomello/%{sname}
 Source0:	https://github.com/fabriziomello/%{sname}/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# prove and IPC::Run, for the TAP tests
+BuildRequires:	perl(Test::Harness) perl(IPC::Run)
+%endif
 
 %description
 Cumulative statistics about PostgreSQL log messages, built on the Custom
@@ -71,6 +77,14 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# pg_stat_log's installcheck runs the tests in a temporary instance of its
+# own, so there is no need to start a server here.
+%pgdg_check_init
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %license LICENSE
@@ -86,6 +100,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2-2PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
