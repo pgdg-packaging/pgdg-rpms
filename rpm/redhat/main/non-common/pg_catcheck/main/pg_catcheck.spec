@@ -9,6 +9,11 @@ Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
 BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 Requires:	postgresql%{pgmajorversion}-server
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
@@ -92,6 +97,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %changelog
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-6PGDG
 - Add missing BR
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-5PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
