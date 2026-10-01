@@ -2,6 +2,7 @@
 %global unitname	%{sname}-%{pgmajorversion}
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -67,6 +68,9 @@ BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 BuildRequires:	libxslt-devel pam-devel readline-devel
 BuildRequires:	libmemcached-devel libicu-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
@@ -158,6 +162,14 @@ cat > %{buildroot}%{_tmpfilesdir}/%{name}.conf <<EOF
 d %{_rundir}/%{sname} 0755 postgres postgres -
 EOF
 
+%check
+%if %runselftest
+# The tests need repmgr in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'repmgr'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %pre
 if [ ! -x /var/log/repmgr ]
 then
@@ -207,6 +219,9 @@ fi
 %changelog
 * Sun Sep 13 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-12PGDG
 - Add missing BRs and Requires.
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-11PGDG
 - Make %%llvm actually control the build, not just packaging: pass
