@@ -1,6 +1,7 @@
 %global sname pg_textsearch
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,11 +17,14 @@
 Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 * Simple syntax: ORDER BY content <@> 'search terms'
@@ -70,6 +74,16 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} DESTDIR=%{buildroot} install
 
+%check
+%if %runselftest
+# The tests need pg_textsearch in shared_preload_libraries, and a UTF8
+# database: without a locale the cluster would be SQL_ASCII.
+export LC_ALL=C.UTF-8
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_textsearch'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root)
 %{pginstdir}/lib/%{sname}.so
@@ -84,6 +98,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-2PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
