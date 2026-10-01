@@ -7,11 +7,12 @@
 %global orafceminver 12
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -27,6 +28,11 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 Requires:	postgresql%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The build uses meson; installcheck needs the PGXS Makefile
+BuildRequires:	make
+%endif
 
 # llvmjit package is not built with meson:
 Obsoletes:	%{sname}_%{pgmajorversion} < 4.14.3
@@ -58,6 +64,11 @@ export PATH=%{pginstdir}/bin:$PATH
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension/
 %{__cp} -p INSTALL.%{sname} README.asciidoc %{buildroot}%{pginstdir}/doc/extension/
 
+%check
+%if %runselftest
+%pgdg_check_installcheck
+%endif
+
 %files
 %defattr(644,root,root,755)
 %license COPYRIGHT.%{sname}
@@ -68,6 +79,11 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 4.16.12-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> 4.16.12-1PGDG
 - Update to 4.16.12 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_16_12
