@@ -3,6 +3,7 @@
 %global packageminver 0
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -18,13 +19,16 @@
 Summary:	Set of functions and operators for executing similarity queries for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{packagemajorver}.%{packageminver}
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 URL:		https://github.com/eulerto/%{sname}
 Source0:	https://github.com/eulerto/%{sname}/archive/refs/tags/%{sname}_%{packagemajorver}_%{packageminver}.tar.gz
 Patch0:		%{sname}-hamming.patch
 License:	BSD
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_similarity is an extension to support similarity queries on PostgreSQL.
@@ -78,6 +82,16 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests set pg_similarity's parameters before anything loads the library,
+# and the expected output has the float8 values with extra_float_digits = 0
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_similarity'" \
+	"extra_float_digits = 0"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root)
 %config %{pginstdir}/share/extension/%{sname}.conf.sample
@@ -93,6 +107,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-8PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{packagemajorver}.%{packageminver}-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
