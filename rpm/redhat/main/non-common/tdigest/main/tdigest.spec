@@ -1,6 +1,7 @@
 %global sname tdigest
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,15 @@
 Summary:	t-digest implementation for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.7
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/tvondra/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/tvondra/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 This PostgreSQL extension implements t-digest, a data structure for on-line
@@ -70,6 +74,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc README.md
@@ -85,6 +94,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-1PGDG
 - Update to 1.4.7 per changes described at:
   https://github.com/tvondra/tdigest/releases/tag/v1.4.7
