@@ -6,6 +6,7 @@
 %global	pgbulkloadpackagever %{pgbulkloadmajver}_%{pgbulkloadmidver}_%{pgbulkloadminver}
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -28,6 +29,9 @@ Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagev
 License:	BSD
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel libselinux-devel
 BuildRequires:	libsepol-devel readline-devel krb5-devel zlib-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
@@ -121,6 +125,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 # Strip .so files to produce -debug* packages properly on SLES.
 %{__strip} %{buildroot}%{pginstdir}/lib/*.so
 
+%check
+%if %runselftest
+%pgdg_check_init
+pgdg_check_start main
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
@@ -148,8 +159,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
-* Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-4PGDG
+* Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-5PGDG
 - Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
 
 * Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
