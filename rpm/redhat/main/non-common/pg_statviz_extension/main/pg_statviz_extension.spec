@@ -1,9 +1,11 @@
 %global sname pg_statviz
 
+%{!?runselftest:%global runselftest 0}
+
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}_extension_%{pgmajorversion}
 Version:	1.2
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -12,6 +14,9 @@ BuildArch:	noarch
 
 BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_statviz is a minimalist extension and utility pair for time series analysis
@@ -37,6 +42,11 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 # README is already installed with the main package:
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 
+%check
+%if %runselftest
+%pgdg_check_installcheck
+%endif
+
 %files
 %defattr(644,root,root,755)
 %license LICENSE
@@ -44,6 +54,11 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildro
 %{pginstdir}/share/extension/*.sql
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2-2PGDG
 - Add missing BR
 
