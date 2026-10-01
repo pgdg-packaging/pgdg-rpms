@@ -1,6 +1,7 @@
 %global sname icu_ext
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -15,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.11.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	PostgreSQL extension to expose functionality from ICU to PostgreSQL applications
 License:	PostgreSQL
 URL:		https://github.com/dverite/%{sname}
@@ -23,6 +24,9 @@ Source0:	https://github.com/dverite/%{sname}/archive/refs/tags/v%{version}.tar.g
 
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 Requires:	postgresql%{pgmajorversion} libicu
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 icu_ext is a PostgreSQL extension to expose functionality from ICU to
@@ -63,6 +67,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install %{with_llvm_arg}
 
+%check
+%if %runselftest
+# ICU needs a UTF-8 database, but the build environment may run with LANG=C
+# (EL-8), which would make the test cluster SQL_ASCII.
+export LC_ALL=C.UTF-8
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc README.md
@@ -78,6 +90,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} DESTDIR=%{buildroot} install %{
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
