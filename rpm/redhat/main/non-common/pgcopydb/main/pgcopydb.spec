@@ -10,6 +10,11 @@ Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.g
 URL:		https://github.com/dimitri/%{sname}
 BuildRequires:	gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 BuildRequires:	bison flex krb5-devel libselinux-devel >= 2.9 sqlite-devel
 # zstd dependency
 %if 0%{?suse_version} >= 1500
@@ -84,6 +89,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %changelog
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-3PGDG
 - Add missing BR
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
