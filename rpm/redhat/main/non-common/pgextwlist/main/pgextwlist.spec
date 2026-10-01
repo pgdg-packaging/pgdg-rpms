@@ -1,6 +1,7 @@
 %global sname pgextwlist
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.20
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	PostgreSQL Extension Whitelist
 License:	PostgreSQL
 URL:		https://github.com/dimitri/%{sname}
@@ -25,6 +26,11 @@ Source1:	LICENSE.txt
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The tests use citext and pg_trgm from contrib
+BuildRequires:	postgresql%{pgmajorversion}-contrib
+%endif
 
 %description
 This extension implements extension whitelisting, and will actively prevent
@@ -82,6 +88,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__mv} -f %{buildroot}%{pginstdir}/doc/contrib/README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 %license LICENSE.txt
@@ -93,6 +104,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.20-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.20-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
