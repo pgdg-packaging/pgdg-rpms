@@ -164,9 +164,9 @@ EOF
 
 %check
 %if %runselftest
-# The tests need repmgr in shared_preload_libraries
+# The expected output is for a server that does not preload repmgr
 %pgdg_check_init
-pgdg_check_start main "shared_preload_libraries = 'repmgr'"
+pgdg_check_start main
 pgdg_installcheck %{with_llvm_arg}
 %endif
 
