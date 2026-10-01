@@ -1,0 +1,139 @@
+commit 293096b42894a7e3196470c10ccd8171375adc3a
+Author: Artem Gavrilov <artem.gavrilov@percona.com>
+Date:   Mon Sep 14 15:44:19 2026 +0200
+
+    Revert "PG-2424 Mark property graphs with *"
+    
+    This reverts commit 266f19c0a9012565d4d4ad7a384277732757bbc1.
+    
+    Property graphs support was reverted in PostgreSQL.
+
+diff --git a/Makefile b/Makefile
+index c65761f..484efb3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -21,7 +21,6 @@ REGRESS = basic \
+ 	functions \
+ 	counters \
+ 	relations \
+-	relations_propgraph \
+ 	database \
+ 	error_insert \
+ 	application_name \
+diff --git a/regression/expected/relations_propgraph.out b/regression/expected/relations_propgraph.out
+deleted file mode 100644
+index d9c9f0a..0000000
+--- a/regression/expected/relations_propgraph.out
++++ /dev/null
+@@ -1,6 +0,0 @@
+---
+--- Property graph relations (PostgreSQL 19+)
+---
+-SELECT setting::int < 190000 AS skip_test FROM pg_settings where name = 'server_version_num' \gset
+-\if :skip_test
+-\quit
+diff --git a/regression/expected/relations_propgraph_1.out b/regression/expected/relations_propgraph_1.out
+deleted file mode 100644
+index 5a60d0a..0000000
+--- a/regression/expected/relations_propgraph_1.out
++++ /dev/null
+@@ -1,45 +0,0 @@
+---
+--- Property graph relations (PostgreSQL 19+)
+---
+-SELECT setting::int < 190000 AS skip_test FROM pg_settings where name = 'server_version_num' \gset
+-\if :skip_test
+-\quit
+-\endif
+-CREATE EXTENSION pg_stat_monitor;
+-CREATE TABLE people (id int PRIMARY KEY, name text);
+-CREATE TABLE knows (a int REFERENCES people (id), b int REFERENCES people (id));
+-CREATE PROPERTY GRAPH social
+-  VERTEX TABLES ( people KEY (id) )
+-  EDGE TABLES ( knows KEY (a, b)
+-                SOURCE KEY (a) REFERENCES people (id)
+-                DESTINATION KEY (b) REFERENCES people (id) );
+--- A property graph must be marked with a trailing '*' in the relations column,
+--- and its underlying element tables must be listed alongside it.
+-SELECT pg_stat_monitor_reset();
+- pg_stat_monitor_reset 
+------------------------
+- 
+-(1 row)
+-
+-SELECT * FROM GRAPH_TABLE (social MATCH (p IS people) COLUMNS (p.name)) AS g;
+- name 
+-------
+-(0 rows)
+-
+-SELECT query, relations FROM pg_stat_monitor ORDER BY query COLLATE "C";
+-                                    query                                     |           relations            
+-------------------------------------------------------------------------------+--------------------------------
+- SELECT * FROM GRAPH_TABLE (social MATCH (p IS people) COLUMNS (p.name)) AS g | {public.social*,public.people}
+- SELECT pg_stat_monitor_reset()                                               | 
+-(2 rows)
+-
+-SELECT pg_stat_monitor_reset();
+- pg_stat_monitor_reset 
+------------------------
+- 
+-(1 row)
+-
+-DROP PROPERTY GRAPH social;
+-DROP TABLE knows;
+-DROP TABLE people;
+-DROP EXTENSION pg_stat_monitor;
+diff --git a/regression/sql/relations_propgraph.sql b/regression/sql/relations_propgraph.sql
+deleted file mode 100644
+index fca7dc5..0000000
+--- a/regression/sql/relations_propgraph.sql
++++ /dev/null
+@@ -1,31 +0,0 @@
+---
+--- Property graph relations (PostgreSQL 19+)
+---
+-SELECT setting::int < 190000 AS skip_test FROM pg_settings where name = 'server_version_num' \gset
+-\if :skip_test
+-\quit
+-\endif
+-
+-CREATE EXTENSION pg_stat_monitor;
+-
+-CREATE TABLE people (id int PRIMARY KEY, name text);
+-CREATE TABLE knows (a int REFERENCES people (id), b int REFERENCES people (id));
+-
+-CREATE PROPERTY GRAPH social
+-  VERTEX TABLES ( people KEY (id) )
+-  EDGE TABLES ( knows KEY (a, b)
+-                SOURCE KEY (a) REFERENCES people (id)
+-                DESTINATION KEY (b) REFERENCES people (id) );
+-
+--- A property graph must be marked with a trailing '*' in the relations column,
+--- and its underlying element tables must be listed alongside it.
+-SELECT pg_stat_monitor_reset();
+-SELECT * FROM GRAPH_TABLE (social MATCH (p IS people) COLUMNS (p.name)) AS g;
+-SELECT query, relations FROM pg_stat_monitor ORDER BY query COLLATE "C";
+-SELECT pg_stat_monitor_reset();
+-
+-DROP PROPERTY GRAPH social;
+-DROP TABLE knows;
+-DROP TABLE people;
+-
+-DROP EXTENSION pg_stat_monitor;
+diff --git a/src/pg_stat_monitor.c b/src/pg_stat_monitor.c
+index 34527b7..e73141c 100644
+--- a/src/pg_stat_monitor.c
++++ b/src/pg_stat_monitor.c
+@@ -862,11 +862,7 @@ pgsm_ExecutorCheckPerms(List *rangeTable, bool ereport_on_violation)
+ 		namespace_name = get_namespace_name(get_rel_namespace(rte->relid));
+ 		relation_name = get_rel_name(rte->relid);
+ 
+-		if (rte->relkind == RELKIND_VIEW
+-#if PG_VERSION_NUM >= 190000
+-			|| rte->relkind == RELKIND_PROPGRAPH
+-#endif
+-			)
++		if (rte->relkind == RELKIND_VIEW)
+ 			snprintf(relations[num_relations], REL_LEN, "%s.%s*", namespace_name, relation_name);
+ 		else
+ 			snprintf(relations[num_relations], REL_LEN, "%s.%s", namespace_name, relation_name);

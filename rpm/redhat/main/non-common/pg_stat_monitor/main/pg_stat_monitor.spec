@@ -1,6 +1,7 @@
 %global sname pg_stat_monitor
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,14 +17,23 @@
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
+# Remove this patch in next release. Only needed for PostgreSQL 19:
+%if %{pgmajorversion} == 19
+Patch0:		pg_stat_monitor-pg19-beta4-293096b.patch
+%endif
 
 BuildRequires:	openssl-devel krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# prove, IPC::Run and Text::Trim, for the TAP tests
+BuildRequires:	perl(Test::Harness) perl(IPC::Run) perl(Text::Trim)
+%endif
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.1.3-2
 
@@ -71,6 +81,9 @@ This packages provides JIT support for pg_stat_monitor
 
 %prep
 %setup -q -n %{sname}-%{version}
+%if %{pgmajorversion} == 19
+%patch -P0 -p1
+%endif
 
 %build
 PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
@@ -87,6 +100,15 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests need pg_stat_monitor in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_stat_monitor'" \
+	"max_prepared_transactions = 5"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %license LICENSE
@@ -102,6 +124,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+- Add a patch from upstream to fix builds against PostgreSQL 19 beta 4.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-2PGDG
 - Add missing BR
 
