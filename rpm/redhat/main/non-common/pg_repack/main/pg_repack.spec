@@ -30,6 +30,11 @@ BuildRequires:	libnuma-devel
 Requires:	libnuma1
 %endif
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 BuildRequires:	readline-devel zlib-devel
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -142,6 +147,8 @@ pgdg_installcheck %{with_llvm_arg}
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
   with --define 'runselftest 1'.
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-7PGDG
 - Add missing BR
