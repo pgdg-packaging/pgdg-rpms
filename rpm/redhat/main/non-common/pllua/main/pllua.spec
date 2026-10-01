@@ -5,6 +5,7 @@
 %global plluangminver 12
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -20,13 +21,16 @@
 Summary:	Procedural language interface between PostgreSQL and Lua
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plluangmajver}.%{plluangmidver}.%{plluangminver}
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/REL_%{plluangmajver}_%{plluangmidver}_%{plluangminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	lua54-devel
 Requires:	liblua5_4-5
@@ -95,6 +99,14 @@ LUALIB="-L%{libdir} -l lua" LUAC="%{_bindir}/luac" LUA="%{_bindir}/lua" \
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension/
 %{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
+%check
+%if %runselftest
+# The Makefile needs to know the name of the Lua interpreter, as in %%build
+%pgdg_check_init
+pgdg_check_start main
+pgdg_installcheck %{with_llvm_arg} LUA="%{_bindir}/lua" LUAC="%{_bindir}/luac"
+%endif
+
 %files
 %license LICENSE
 %defattr(644,root,root,755)
@@ -117,6 +129,11 @@ LUALIB="-L%{libdir} -l lua" LUAC="%{_bindir}/luac" LUA="%{_bindir}/lua" \
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.12-9PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.12-8PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
