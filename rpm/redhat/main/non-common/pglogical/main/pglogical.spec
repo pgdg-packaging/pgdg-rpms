@@ -25,6 +25,11 @@ License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
@@ -134,6 +139,8 @@ PATH=%{pginstdir}/bin:$PATH %make_install %{with_llvm_arg}
 %changelog
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.8-5PGDG
 - Add missing BR
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.8-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
