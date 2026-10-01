@@ -1411,6 +1411,7 @@ fi
 - Move the regression tests from %%build to %%check. They are still
   disabled by default; enable them with --define 'runselftest 1'. Fail
   the build when a test suite fails: the failures were ignored so far.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/165
 
 * Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-7PGDG
 - Own the directories under %%{pgbaseinstdir} that were left unowned
