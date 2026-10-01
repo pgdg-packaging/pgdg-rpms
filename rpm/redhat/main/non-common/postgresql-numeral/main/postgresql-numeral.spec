@@ -1,6 +1,7 @@
 %global sname postgresql-numeral
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,15 @@
 Summary:	Numeric data types for PostgreSQL that use numerals
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/df7cb/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/df7cb//%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel bison flex
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 postgresql-numeral provides numeric data types for PostgreSQL that use
@@ -59,14 +63,28 @@ This package provides JIT support for postgresql-numeral
 %setup -q -n %{sname}-%{version}
 
 %build
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
+# No parallel build: the bitcode of the lexers can be compiled before bison
+# generated the parser headers they include.
+# The Makefile greps SIZEOF_VOID_P from pg_config.h to decide whether the
+# types are passed by value, but that is the multilib wrapper header on some
+# distros, so the types were created without passedbyvalue, and CREATE
+# EXTENSION failed. All our platforms are 64-bit, so set it here.
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} PASSEDBYVALUE="passedbyvalue,"
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} PASSEDBYVALUE="passedbyvalue," install DESTDIR=%{buildroot}
 # Install README and howto file under PostgreSQL installation directory:
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
+
+%check
+%if %runselftest
+# The tests need a UTF8 database: without a locale the cluster would be
+# SQL_ASCII.
+export LC_ALL=C.UTF-8
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
 
 %files
 %defattr(644,root,root,755)
@@ -82,6 +100,15 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3-8PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+- Fix CREATE EXTENSION on distros where pg_config.h is the multilib
+  wrapper: the types were created without passedbyvalue, so the casts
+  to bigint failed with "source and target data types are not physically
+  compatible". Also build without parallel make, which failed randomly.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
