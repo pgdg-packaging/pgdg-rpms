@@ -17,6 +17,11 @@ Patch0:		%{sname}-makefile-rpm-gcc.patch
 License:	GPLv2+
 BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 %endif
@@ -68,6 +73,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
   with --define 'runselftest 1'.
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-3PGDG
 - Add missing BR
