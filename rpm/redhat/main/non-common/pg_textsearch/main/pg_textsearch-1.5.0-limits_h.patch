@@ -1,0 +1,10 @@
+--- src/planner/hooks.c.old	2026-10-01 15:23:16.501899251 -0400
++++ src/planner/hooks.c	2026-10-01 15:23:16.505870830 -0400
+@@ -24,6 +24,7 @@
+ #include <catalog/pg_type.h>
+ #include <catalog/pg_type_d.h>
+ #include <commands/defrem.h>
++#include <limits.h>
+ #include <nodes/makefuncs.h>
+ #include <nodes/nodeFuncs.h>
+ #include <nodes/plannodes.h>

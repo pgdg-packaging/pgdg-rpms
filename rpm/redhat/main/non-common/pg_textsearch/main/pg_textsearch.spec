@@ -16,10 +16,11 @@
 
 Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.0
-Release:	3PGDG%{?dist}
+Version:	1.5.0
+Release:	1PGDG%{?dist}
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
+Patch0:		%{sname}-%{version}-limits_h.patch
 License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel
 %if %runselftest
@@ -65,6 +66,7 @@ This package provides JIT support for pg_textsearch
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p0
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -81,7 +83,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 export LC_ALL=C.UTF-8
 %pgdg_check_init
 pgdg_check_start main "shared_preload_libraries = 'pg_textsearch'"
+%if 0%{?rhel} && 0%{?rhel} <= 8
+# Two tests of the benchmark scripts need bash 5.1 or later ("wait -p") and
+# Python 3.7 or later, so skip them. They do not test the extension.
+pgdg_installcheck %{with_llvm_arg} -o test-mixed-update-query-benchmark \
+	-o test-build-memory-benchmark
+%else
 pgdg_installcheck %{with_llvm_arg}
+%endif
 %endif
 
 %files
@@ -98,6 +107,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Oct 1 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-1PGDG
+- Update to 1.5.0 per changes described at:
+  https://github.com/timescale/pg_textsearch/releases/tag/v1.5.0
+- Add a patch to include limits.h for INT_MAX, to fix the build against
+  PostgreSQL 19.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
