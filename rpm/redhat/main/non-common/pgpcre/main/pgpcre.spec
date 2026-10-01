@@ -1,6 +1,7 @@
 %global sname pgpcre
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20190509
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 Summary:	PostgreSQL extension that exposes PCRE functionality as functions and operators
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -25,26 +26,16 @@ Patch0:		%{sname}-pcre2.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
-%if 0%{?rhel} && 0%{?rhel} == 10
+# The pcre2 patch is applied on every distro, so always build against PCRE2
 BuildRequires:	pcre2-devel
-Requires:	pcre2
-%endif
-%if 0%{?fedora} && 0%{?fedora} >= 43
-BuildRequires:	pcre2-devel
-Requires:	pcre2
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 42
-BuildRequires:	pcre-devel
-Requires:	pcre
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 9
-BuildRequires:	pcre-devel
-Requires:	pcre
-%endif
 %if 0%{?suse_version} >= 1500
-BuildRequires:	pcre2-devel
 Requires:	libpcre2-32-0
+%else
+Requires:	pcre2
 %endif
 
 %description
@@ -91,6 +82,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %{__mv} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -106,6 +102,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20190509-9PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+- Build against PCRE2 on all distros. The pcre2 patch is applied
+  everywhere, but EL-8/EL-9 only had pcre-devel as BR and AL2023 had
+  none, so the build failed in a clean build root.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20190509-8PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
