@@ -1,6 +1,7 @@
 %global sname	pg_incremental
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,13 +18,17 @@
 Summary:	Incremental Data Processing in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Group:		Applications/Databases
 URL:		https://github.com/CrunchyData/%{sname}
 Source0:	https://github.com/CrunchyData/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server pg_cron_%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+BuildRequires:	pg_cron_%{pgmajorversion}
+%endif
 
 %description
 pg_incremental is a simple extension that helps you do fast, reliable,
@@ -69,6 +74,16 @@ This package provides JIT support for pg_incremental
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# pg_incremental needs pg_cron, which has to be preloaded and can only be
+# created in cron.database_name.
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_cron'" \
+	"cron.database_name = 'contrib_regression'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 %license LICENSE
@@ -84,6 +99,11 @@ This package provides JIT support for pg_incremental
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-1PGDG
 - Update to 1.5.0 per changes described at:
   https://github.com/CrunchyData/pg_incremental/releases/tag/v1.5.0
