@@ -1,5 +1,7 @@
 %global sname pg_filedump
 
+%{!?runselftest:%global runselftest 0}
+
 %global pg_fdmajorver 19
 %global pg_fdminorver 0
 
@@ -8,13 +10,16 @@
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pg_fdmajorver}.%{pg_fdminorver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
 Patch0:		%{sname}-makefile-rpm-gcc.patch
 License:	GPLv2+
 BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
@@ -46,12 +51,24 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %{__mkdir} -p %{buildroot}%{pginstdir}/bin
 %{__install} -m 755 pg_filedump %{buildroot}%{pginstdir}/bin
 
+%check
+%if %runselftest
+# Only the regression tests: the TAP test (t/001_basic.pl) dies halfway
+# through (exit 29, no failed test) in the build environment.
+%pgdg_check_installcheck TAP_TESTS=
+%endif
+
 %files
 %defattr(-,root,root)
 %{pginstdir}/bin/pg_filedump
 %doc README.pg_filedump.md
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-3PGDG
 - Add missing BR
 
