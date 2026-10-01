@@ -2,6 +2,7 @@
 %global wal2json_rel 2_6
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,12 +18,17 @@
 Summary:	JSON output plugin for changeset extraction
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.6
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{wal2json_rel}.tar.gz
 URL:		https://github.com/eulerto/wal2json
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The tests also use test_decoding
+BuildRequires:	postgresql%{pgmajorversion}-contrib
+%endif
 
 %description
 wal2json is an output plugin for logical decoding. It means that the
@@ -76,6 +82,23 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg} DESTDIR=%
 %postun -p /sbin/ldconfig
 %post -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests create logical replication slots. Recent PostgreSQL minor
+# releases only allow the output plugins listed in output_plugin_libraries,
+# so add wal2json there when it exists. The tests also need a UTF8
+# database: without a locale the cluster would be SQL_ASCII.
+export LC_ALL=C.UTF-8
+%pgdg_check_init
+opl=
+if postgres --describe-config | grep -q '^output_plugin_libraries'; then
+	opl="output_plugin_libraries = 'pgoutput, test_decoding, wal2json'"
+fi
+pgdg_check_start main "wal_level = logical" "max_replication_slots = 10" \
+	${opl:+"$opl"}
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 %{pginstdir}/lib/%{sname}.so
@@ -87,6 +110,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg} DESTDIR=%
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6-8PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
