@@ -9,6 +9,11 @@ Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
 BuildRequires:	clang gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
 # SLES: SLES 15 does not have selinux-policy packageç
@@ -80,6 +85,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %changelog
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-7PGDG
 - Add missing BR
+- Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
+  and libpgport static libraries are in that subpackage now.
 
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-6PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
