@@ -1,0 +1,10 @@
+--- pg_gzip.c.old	2026-10-01 08:21:30.977088541 -0400
++++ pg_gzip.c	2026-10-01 08:21:30.978800125 -0400
+@@ -32,6 +32,7 @@
+ 
+ /* System */
+ #include <assert.h>
++#include <limits.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>

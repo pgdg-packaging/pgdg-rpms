@@ -2,6 +2,7 @@
 %global sname pgsql-gzip
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,9 +18,12 @@
 Summary:	PostgreSQL gzip/gunzip functions
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.1.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
+# INT_MAX is used without including limits.h, which fails against
+# PostgreSQL 19
+Patch0:		%{pname}-%{version}-limits_h.patch
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
@@ -41,6 +45,9 @@ Requires:	libz1
 %endif
 
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 Sometimes you just need to compress your bytea object before you return it to
@@ -82,6 +89,7 @@ This package provides JIT support for pgsql_gzip
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p0
 
 %build
 PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
@@ -92,6 +100,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
+
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
 
 %files
 %defattr(-,root,root)
@@ -106,6 +119,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.1-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+- Add a patch to include limits.h for INT_MAX, to fix the build against
+  PostgreSQL 19.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.1-2PGDG
 - Add missing BR
 
