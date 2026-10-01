@@ -1,5 +1,7 @@
 %global sname	age
 
+%{!?runselftest:%global runselftest 0}
+
 %{!?llvm:%global llvm 1}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
@@ -15,14 +17,17 @@
 
 # 1.8.0-rc0 only exists for PostgreSQL 18 and 19. PostgreSQL 17 stays on 1.7.0,
 # so it keeps its own Release to not go backwards.
+# rpm on EL-8 (4.14) does not support %%elif, so use nested %%if blocks.
 %if %{pgmajorversion} == 17
 %global ageversion 1.7.0
-%global agerelease rc0_4
-%elif %{pgmajorversion} == 18 || %{pgmajorversion} == 19
+%global agerelease rc0_5
+%else
+%if %{pgmajorversion} == 18 || %{pgmajorversion} == 19
 %global ageversion 1.8.0
-%global agerelease rc0_1
+%global agerelease rc0_2
 %else
 %{error:age is not available for PostgreSQL %{pgmajorversion}}
+%endif
 %endif
 
 Summary:	Graph database optimized for fast analysis and real-time data processing.
@@ -42,6 +47,9 @@ BuildRequires:	perl-FindBin perl-lib
 BuildRequires:	perl
 %endif
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 Apache AGE is an extension for PostgreSQL that enables users to leverage a
@@ -94,6 +102,14 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
+%check
+%if %runselftest
+# AGE's installcheck runs the tests in a temporary instance of its own, so
+# there is no need to start a server here.
+%pgdg_check_init
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -108,6 +124,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} INSTALL_PREFIX=
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-rc0_2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'. PostgreSQL 17 is now 1.7.0-rc0_5PGDG.
+- Replace %%elif with nested %%if blocks: rpm on EL-8 does not support
+  %%elif, so the spec failed with "age is not available" on PostgreSQL 18.
+
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-1PGDG
 - Update to 1.8.0-rc0 on PostgreSQL 18 and 19 per changes described at:
   PostgreSQL 18: https://github.com/apache/age/releases/tag/PG18%2Fv1.8.0-rc0
