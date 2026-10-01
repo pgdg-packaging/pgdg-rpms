@@ -1,11 +1,11 @@
 
 Summary:	C library for accessing the PostgreSQL parser outside of the server
 Name:		libpg_query
-Version:	6.2.4
+Version:	18.1.0
 Release:	1PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/pganalyze/%{name}
-Source0:	https://github.com/pganalyze/%{name}/archive/refs/tags/17-%{version}.tar.gz
+Source0:	https://github.com/pganalyze/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		libpg_query-makefile-rpm.patch
 
 BuildRequires:	gcc make
@@ -19,7 +19,7 @@ pg_query.go (Go), pgsql-parser (Node), psqlparse (Python) and pglast
 (Python 3).
 
 %prep
-%setup -q -n %{name}-17-%{version}
+%setup -q -n %{name}-%{version}
 %patch -P 0 -p0
 
 %build
@@ -34,10 +34,19 @@ pg_query.go (Go), pgsql-parser (Node), psqlparse (Python) and pglast
 %{_includedir}/pg_query.h
 %{_includedir}/pg_query/pg_query.proto
 %{_includedir}/postgres_deparse.h
+%{_includedir}/pg_query_scan_tokens.h
 %{_libdir}/libpg_query.a
 %{_libdir}/libpg_query.so*
 
 %changelog
+* Wed Sep 30 2026 - Devrim Gündüz <devrim@gunduz.org> 18.1.0-1PGDG
+- Update to 18.1.0 per changes described at:
+  https://github.com/pganalyze/libpg_query/releases/tag/18.1.0
+  This release fixes a heap out-of-bounds write and read in
+  pg_query_normalize (GHSA-6ggm-xmc9-8ffg).
+- Regenerate the Makefile patch, and package the new
+  pg_query_scan_tokens.h header.
+
 * Wed Sep 30 2026 - Devrim Gündüz <devrim@gunduz.org> 6.2.4-1PGDG
 - Update to 6.2.4 per changes described at:
   https://github.com/pganalyze/libpg_query/releases/tag/17-6.2.4

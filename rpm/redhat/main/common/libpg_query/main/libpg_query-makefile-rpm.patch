@@ -1,8 +1,8 @@
---- Makefile.old	2022-03-11 14:09:32.935829354 +0000
-+++ Makefile	2022-03-11 14:09:46.656867963 +0000
-@@ -274,8 +274,8 @@
- test/split: test/split.c test/split_tests.c $(ARLIB)
- 	$(CC) $(TEST_CFLAGS) -o $@ test/split.c $(ARLIB) $(TEST_LDFLAGS)
+--- Makefile.old	2026-09-30 21:45:00.706051219 -0400
++++ Makefile	2026-09-30 21:45:00.708713254 -0400
+@@ -385,8 +385,8 @@
+ test/stack_depth: test/stack_depth.c $(ARLIB)
+ 	$(CC) $(TEST_CFLAGS) -o $@ test/stack_depth.c $(ARLIB) $(TEST_LDFLAGS)
  
 -prefix = /usr/local
 -libdir = $(prefix)/lib
