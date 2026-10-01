@@ -1,6 +1,7 @@
 %global sname pg_stat_plans
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,7 +17,7 @@
 Summary:	Track per-plan call counts, execution times and EXPLAIN texts in Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pganalyze/%{sname}
 Source0:	https://github.com/pganalyze/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -24,6 +25,9 @@ Source0:	https://github.com/pganalyze/%{sname}/archive/refs/tags/v%{version}.tar
 BuildRequires:	openssl-devel krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_stat_plans is designed for low overhead tracking of aggregate plan
@@ -78,6 +82,14 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests need pg_stat_plans in shared_preload_libraries
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pg_stat_plans'"
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root,755)
 %license LICENSE
@@ -96,6 +108,11 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.1.1-2PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Thu Sep 24 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.1.1-1PGDG
 - Update to 2.1.1 per changes described at:
   https://github.com/pganalyze/pg_stat_plans/releases/tag/v2.1.1
