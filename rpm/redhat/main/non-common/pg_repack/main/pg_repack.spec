@@ -1,6 +1,7 @@
 %global sname	pg_repack
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,7 +17,7 @@
 Summary:	Reorganize tables in PostgreSQL databases without any locks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/reorg/%{sname}/archive/refs/tags/ver_%{version}.tar.gz
 URL:		https://github.com/reorg/%{sname}/
@@ -58,6 +59,9 @@ BuildRequires:	openssl-devel
 %endif
 
 Requires:	postgresql%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 Obsoletes:	%{sname}%{pgmajorversion} < 1.4.6-2
 
@@ -103,6 +107,21 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buildroot} install
 
+%check
+%if %runselftest
+# The regression tests are in regress/
+%pgdg_check_init
+pgdg_check_start main
+# The tablespace test expects these tablespaces to exist, see
+# regress/create_tablespaces.sh
+for ts in testts 1testts 'test ts' 'test"ts'; do
+	mkdir -p "$PGDG_CHECK_DIR/$ts"
+	psql -d postgres -c "CREATE TABLESPACE \"${ts//\"/\"\"}\" LOCATION '$PGDG_CHECK_DIR/$ts'"
+done
+cd regress
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(644,root,root)
 %doc COPYRIGHT doc/%{sname}.rst
@@ -119,6 +138,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{bui
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-8PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-7PGDG
 - Add missing BR
 
