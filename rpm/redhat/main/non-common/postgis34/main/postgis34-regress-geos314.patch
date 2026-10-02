@@ -1,0 +1,32 @@
+--- regress/core/coverage_expected.old	2026-04-14 18:15:06.000000000 -0400
++++ regress/core/coverage_expected	2026-10-02 14:58:20.541903454 -0400
+@@ -15,7 +15,6 @@
+ three partition b|1|200
+ three partition b|2|200
+ three partition b|3|
+-union 2|2.05|ST_MultiPolygon
+ union 3|2|ST_Polygon
+ grid lanes|0|110000
+ grid lanes|1|110000
+--- regress/core/coverage.sql.old	2026-04-14 18:15:06.000000000 -0400
++++ regress/core/coverage.sql	2026-10-02 14:58:20.541845386 -0400
+@@ -55,19 +55,6 @@
+ 
+ TRUNCATE coverage;
+ INSERT INTO coverage VALUES
+-(4, 1, 'POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))'),
+-(4, 2, 'POLYGON ((1 0, 0.9 1, 2 1, 2 0, 1 0))');
+-
+-WITH u AS (
+-  SELECT ST_CoverageUnion(geom) AS geom FROM coverage
+-)
+-SELECT 'union 2' AS test,
+-  ST_Area(geom), ST_GeometryType(geom)
+-FROM u;
+-
+-
+-TRUNCATE coverage;
+-INSERT INTO coverage VALUES
+ (5, 1, 'POLYGON ((0 0, 0 1, 1 1, 1 0, 0 0))'),
+ (5, 2, 'POLYGON ((1 0, 1 1, 2 1, 2 0, 1 0))');
+ 
