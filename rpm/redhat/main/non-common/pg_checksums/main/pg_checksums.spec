@@ -3,11 +3,23 @@
 Summary:	Activate/deactivate/verify checksums in offline Postgres clusters
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/credativ/%{sname}
 Source0:	https://github.com/credativ/%{sname}/archive/%{version}.tar.gz
-BuildRequires:	clang gcc make
+BuildRequires:	gcc make
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # The static libraries (libpgcommon, libpgport) are in the -static subpackage
 # as of PostgreSQL 19:
@@ -52,6 +64,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %attr (755,root,root) %{pginstdir}/bin/%{sname}_ext
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-3PGDG
+- Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
+  not work on SLES. Use the versioned packages per distro, as the other
+  packages do.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-2PGDG
 - Add missing BR
 - Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
