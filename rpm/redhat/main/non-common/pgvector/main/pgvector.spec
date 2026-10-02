@@ -16,8 +16,8 @@
 %endif
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.8.6
-Release:	4PGDG%{?dist}
+Version:	0.8.7
+Release:	1PGDG%{?dist}
 Summary:	Open-source vector similarity search for Postgres
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}/
@@ -104,6 +104,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.7-1PGDG
+- Update to 0.8.7 per changes described at:
+  https://github.com/pgvector/pgvector/blob/v0.8.7/CHANGELOG.md
+  Fixes CVE-2026-103484 (buffer overflow with IVFFlat index build), per
+  https://github.com/pgvector/pgvector/issues/1036
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.6-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
