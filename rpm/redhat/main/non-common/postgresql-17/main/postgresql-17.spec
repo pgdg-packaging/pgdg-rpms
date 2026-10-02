@@ -578,38 +578,6 @@ MAKELEVEL=0 %{__make} %{?_smp_mflags} all
 %{__make} %{?_smp_mflags} -C contrib/uuid-ossp all
 %endif
 
-# run_testsuite WHERE
-# -------------------
-# Run 'make check' in WHERE path. When that command fails, return the logs
-# given by PostgreSQL build system and set 'test_failure=1'.
-
-run_testsuite()
-{
-	%{__make} -C "$1" MAX_CONNECTIONS=5 check && return 0
-
-	test_failure=1
-
-	(
-		set +x
-		echo "=== trying to find all regression.diffs files in build directory ==="
-		find -name 'regression.diffs' | \
-		while read line; do
-			echo "=== make failure: $line ==="
-			cat "$line"
-		done
-	)
-}
-
-%if %runselftest
-	run_testsuite "src/test/regress"
-	%{__make} clean -C "src/test/regress"
-	run_testsuite "src/pl"
-%if %plpython3
-	run_testsuite "src/pl/plpython"
-%endif
-	run_testsuite "contrib"
-%endif
-
 %if %test
 	pushd src/test/regress
 	%{__make} all
@@ -813,6 +781,50 @@ cat pg_localedirs.lst >> pg_libpq5.lst
 cat pg_config-%{pgmajorversion}.lang ecpg-%{pgmajorversion}.lang ecpglib6-%{pgmajorversion}.lang > pg_devel.lst
 cat initdb-%{pgmajorversion}.lang pg_ctl-%{pgmajorversion}.lang psql-%{pgmajorversion}.lang pg_dump-%{pgmajorversion}.lang pg_basebackup-%{pgmajorversion}.lang pgscripts-%{pgmajorversion}.lang pg_combinebackup-%{pgmajorversion}.lang pg_walsummary-%{pgmajorversion}.lang > pg_main.lst
 cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checksums-%{pgmajorversion}.lang pg_verifybackup-%{pgmajorversion}.lang pg_controldata-%{pgmajorversion}.lang plpgsql-%{pgmajorversion}.lang pg_test_timing-%{pgmajorversion}.lang pg_test_fsync-%{pgmajorversion}.lang pg_archivecleanup-%{pgmajorversion}.lang pg_waldump-%{pgmajorversion}.lang pg_rewind-%{pgmajorversion}.lang pg_upgrade-%{pgmajorversion}.lang > pg_server.lst
+%endif
+
+%check
+%if %runselftest
+# run_testsuite WHERE
+# -------------------
+# Run 'make check' in WHERE path. When that command fails, print the logs
+# given by PostgreSQL build system and set 'test_failure=1', so that the
+# other test suites still run before the build fails.
+
+test_failure=0
+
+# Our postgresql.conf.sample enables the logging collector, but the TAP tests
+# read the server log from the file that pg_ctl writes. Turn it off for the
+# test instances.
+echo "logging_collector = off" > pgdg_test.conf
+export TEMP_CONFIG="$PWD/pgdg_test.conf"
+
+run_testsuite()
+{
+	%{__make} -C "$1" MAX_CONNECTIONS=5 check && return 0
+
+	test_failure=1
+
+	(
+		set +x
+		echo "=== trying to find all regression.diffs files in build directory ==="
+		find -name 'regression.diffs' | \
+		while read line; do
+			echo "=== make failure: $line ==="
+			cat "$line"
+		done
+	)
+}
+
+	run_testsuite "src/test/regress"
+	# src/pl includes PL/pgSQL, PL/Perl, PL/Python and PL/Tcl
+	run_testsuite "src/pl"
+	run_testsuite "contrib"
+
+	if [ $test_failure -ne 0 ]; then
+		echo "=== regression tests failed, see above ==="
+		exit 1
+	fi
 %endif
 
 %pre server
@@ -1317,6 +1329,10 @@ fi
   leaves nothing behind. Move the ownership of lib and share from -server
   to -libs.
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/235
+- Move the regression tests from %%build to %%check. They are still
+  disabled by default; enable them with --define 'runselftest 1'. Fail
+  the build when a test suite fails: the failures were ignored so far.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/165
 
 * Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 17.11-4PGDG
 - Add RestartSec and StartLimitIntervalSec/StartLimitBurst to the
