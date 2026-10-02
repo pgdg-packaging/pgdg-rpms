@@ -3,11 +3,23 @@
 Summary:	Tool for diagnosing PostgreSQL system catalog corruption
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
-BuildRequires:	clang gcc make
+BuildRequires:	gcc make
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # The static libraries (libpgcommon, libpgport) are in the -static subpackage
 # as of PostgreSQL 19:
@@ -95,6 +107,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-7PGDG
+- Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
+  not work on SLES. Use the versioned packages per distro, as the other
+  packages do.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-6PGDG
 - Add missing BR
 - Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
