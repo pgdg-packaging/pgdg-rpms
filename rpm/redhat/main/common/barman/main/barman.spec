@@ -24,6 +24,8 @@
 %global python3_pkgversion 313
 %endif
 
+%{!?runselftest:%global runselftest 0}
+
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
 %global python_sitelib %(%{__ospython} -c "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
@@ -31,7 +33,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.20.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -58,6 +60,25 @@ BuildRequires:	systemd-rpm-macros
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
+%endif
+
+%if %runselftest
+%if 0%{?fedora} || 0%{?rhel} >= 10
+BuildRequires:	python3-pytest python3-psycopg2 python3-dateutil
+BuildRequires:	python3-argcomplete python3-lz4 python3-zstandard
+BuildRequires:	python3-snappy python3-cramjam python3-boto3
+BuildRequires:	python3-azure-identity python3-azure-storage-blob
+BuildRequires:	python3-azure-mgmt-compute python3-google-cloud-storage
+%endif
+%if 0%{?fedora}
+BuildRequires:	python3-mock
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
+BuildRequires:	python%{python3_pkgversion}-pytest python%{python3_pkgversion}-psycopg2
+BuildRequires:	python%{python3_pkgversion}-dateutil python%{python3_pkgversion}-lz4
+BuildRequires:	python%{python3_pkgversion}-zstandard python%{python3_pkgversion}-boto3
+BuildRequires:	python%{python3_pkgversion}-six
+%endif
 %endif
 
 Requires:	rsync >= 3.0.4 file systemd
@@ -152,6 +173,38 @@ touch %{buildroot}/var/log/barman/barman.log
 %{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
 %{__install} -m 0644 %{SOURCE4} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
 
+%check
+%if %runselftest
+# The tests use the mock module, which is not available for every Python
+# stack we build with. It is a backport of unittest.mock, so use that under
+# its name where it is missing.
+if ! %{__ospython} -c 'import mock' 2>/dev/null; then
+	%{__mkdir} -p mock-shim/mock
+	cat > mock-shim/mock/__init__.py <<SHIM
+import sys
+import unittest.mock
+
+unittest.mock.mock = unittest.mock
+sys.modules["mock"] = sys.modules["mock.mock"] = unittest.mock
+SHIM
+	export PYTHONPATH=$PWD/mock-shim
+fi
+# Run pytest by its executable: one test compares the program name in a help
+# output, which is different with "python -m pytest" as of Python 3.14.
+# RHEL 8 and 9 have no SDKs of Azure and Google Cloud, snappy and cramjam for
+# Python 3.12, and botocore cannot be imported there (no jmespath on RHEL 9),
+# so the tests of the cloud support are skipped there.
+PYTHONPATH=%{buildroot}%{python_sitelib}${PYTHONPATH:+:$PYTHONPATH} pytest-%{pybasever} tests \
+%if 0%{?rhel} && 0%{?rhel} <= 9
+	--ignore-glob='tests/test_*cloud*.py' \
+	--ignore=tests/test_compressor.py \
+	--ignore=tests/test_infofile.py \
+	--ignore=tests/test_output.py \
+	-k 'not cloud_backup_data_check_object_lock and not (TestSnapshotBackupExecutor and test_check_skipped_if_server_disabled)' \
+%endif
+	-p no:cacheprovider
+%endif
+
 %pre
 %sysusers_create_package %{name} %SOURCE3
 
@@ -192,6 +245,10 @@ touch %{buildroot}/var/log/barman/barman.log
 %{python_sitelib}/%{name}/
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-43PGDG
+- Add %%check, running the upstream tests with pytest. It is disabled by
+  default; enable it with --define 'runselftest 1'.
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-42PGDG
 - Update to 3.20.1, per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%2F3.20.1
