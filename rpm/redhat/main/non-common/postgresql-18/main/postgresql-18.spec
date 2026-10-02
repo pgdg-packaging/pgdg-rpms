@@ -47,7 +47,7 @@ Version:	18.6
 # which overrides our packages. Increase our release number on SuSE.
 Release:	4200005PGDG%{?dist}
 %else
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -501,6 +501,16 @@ The postgresql%{pgmajorversion}-server package contains the programs needed to
 create and run a PostgreSQL server, which will in turn allow you to create and
 maintain PostgreSQL databases.
 
+%package static
+Summary:	Statically linked PostgreSQL libraries
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
+Provides:	%{name}-static = %{version}-%{release}
+Provides:	%{name}-static%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
+
 %if %test
 %package test
 Summary:	The test suite distributed with PostgreSQL
@@ -779,9 +789,6 @@ semodule_package -o postgresql%{pgmajorversion}_sshd_fix.pp -m postgresql%{pgmaj
 %{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/man/
 %{__mv} doc/src/sgml/man1 doc/src/sgml/man3 doc/src/sgml/man7 %{buildroot}%{pgbaseinstdir}/share/man/
 %{__rm} -rf %{buildroot}%{_docdir}/pgsql
-
-# These file(s) should not be packaged:
-%{__rm} %{buildroot}%{pgbaseinstdir}/lib/libpgfeutils.a
 
 # Initialize file lists
 %{__cp} /dev/null main.lst
@@ -1402,6 +1409,9 @@ fi
 %{pgbaseinstdir}/share/snowball_create.sql
 %{pgbaseinstdir}/share/sql_features.txt
 
+%files static
+%{pgbaseinstdir}/lib/libpgfeutils.a
+
 %if %test
 %files test
 %defattr(-,postgres,postgres)
@@ -1410,6 +1420,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 1 2026 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 18-6-6PGDG
+- Add libpgfeutils.a to static rpm
+
 * Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-5PGDG
 - Own the directories under %%{pgbaseinstdir} that were left unowned
   (base dir, bin, doc, include, share/man*, share/locale, share/contrib,

@@ -152,6 +152,7 @@ postgresql15-plpython:	The Python procedural language for PostgreSQL
 postgresql15-pltcl:	The Tcl procedural language for PostgreSQL
 postgresql15-test:	The test suite distributed with PostgreSQL
 postgresql15-server:	Server executables and data files
+postgresql15-static:		Client static libraries
 
 postgresql-jdbc (version independent) and postgresql15-odbc are seperate (s)rpms.
 
@@ -162,6 +163,8 @@ with a remote PostgreSQL server. The others are optional.
 Pgtcl is distributed via postgresql15-tcl package.
 
 -devel subpackage requires additional repos on RHEL and its derivatives.
+
+-static subpackage provides static libraries not included in -libs.
 
 On RHEL 9 and 8, enable codeready-builder repo:
 

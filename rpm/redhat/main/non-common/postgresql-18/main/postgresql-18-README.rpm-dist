@@ -160,6 +160,7 @@ postgresql18-plpython:		The Python procedural language for PostgreSQL
 postgresql18-pltcl:		The Tcl procedural language for PostgreSQL
 postgresql18-test:		The test suite distributed with PostgreSQL
 postgresql18-server:		Server executables and data files
+postgresql18-static:		Client static libraries
 
 postgresql-jdbc (version independent) and postgresql18-odbc are separate (s)rpms.
 
@@ -170,6 +171,8 @@ with a remote PostgreSQL server. The others are optional.
 Pgtcl is distributed via postgresql18-tcl package.
 
 -devel subpackage requires additional repos on RHEL and its derivatives.
+
+-static subpackage provides static libraries not included in -libs.
 
 On RHEL 9 and 8, enable codeready-builder repo:
 

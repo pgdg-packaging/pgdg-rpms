@@ -152,6 +152,7 @@ postgresql17-plpython:	The Python procedural language for PostgreSQL
 postgresql17-pltcl:	The Tcl procedural language for PostgreSQL
 postgresql17-test:	The test suite distributed with PostgreSQL
 postgresql17-server:	Server executables and data files
+postgresql17-static:		Client static libraries
 
 postgresql-jdbc (version independent) and postgresql17-odbc are seperate (s)rpms.
 
@@ -162,6 +163,8 @@ with a remote PostgreSQL server. The others are optional.
 Pgtcl is distributed via postgresql17-tcl package.
 
 -devel subpackage requires additional repos on RHEL and its derivatives.
+
+-static subpackage provides static libraries not included in -libs.
 
 On RHEL 9 and 8, enable codeready-builder repo:
 

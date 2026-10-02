@@ -87,7 +87,7 @@ Version:	15.19
 # which overrides our packages. Increase our release number on SuSE.
 Release:	420005PGDG%{?dist}
 %else
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -444,6 +444,16 @@ BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %if %icu
 Requires:	libicu-devel
 %endif
+
+%package static
+Summary:	Statically linked PostgreSQL libraries
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
+Provides:	%{name}-static = %{version}-%{release}
+Provides:	%{name}-static%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
 
 %if %enabletaptests
 %if 0%{?suse_version} && 0%{?suse_version} >= 1315
@@ -887,9 +897,6 @@ semodule_package -o postgresql%{pgmajorversion}_sshd_fix.pp -m postgresql%{pgmaj
 %{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/man/
 %{__mv} doc/src/sgml/man1 doc/src/sgml/man3 doc/src/sgml/man7 %{buildroot}%{pgbaseinstdir}/share/man/
 %{__rm} -rf %{buildroot}%{_docdir}/pgsql
-
-# These file(s) should not be packaged:
-%{__rm} %{buildroot}%{pgbaseinstdir}/lib/libpgfeutils.a
 
 # initialize file lists
 %{__cp} /dev/null main.lst
@@ -1483,6 +1490,9 @@ fi
 %{pgbaseinstdir}/share/extension/*_plpython3u*
 %endif
 
+%files static
+%{pgbaseinstdir}/lib/libpgfeutils.a
+
 %if %test
 %files test
 %defattr(-,postgres,postgres)
@@ -1491,6 +1501,9 @@ fi
 %endif
 
 %changelog
+* Thu Oct 1 2026 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 18-6-6PGDG
+- Add libpgfeutils.a to static rpm
+
 * Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 15.19-5PGDG
 - Own the directories under %%{pgbaseinstdir} that were left unowned
   (base dir, bin, doc, include, share/man*, share/locale, share/contrib,
