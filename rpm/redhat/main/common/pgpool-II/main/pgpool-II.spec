@@ -4,8 +4,8 @@
 
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
-Version:		4.7.2
-Release:		4PGDG%{?dist}
+Version:		4.7.3
+Release:		1PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -197,6 +197,12 @@ fi
 %{_libdir}/libpgpoolpcp.so*
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-1PGDG
+- Update to 4.7.3 per changes described at:
+  https://www.pgpool.net/docs/latest/en/html/release-4-7-3.html
+  Fixes CVE-2026-92867, CVE-2026-92868, CVE-2026-92869, CVE-2026-92870,
+  CVE-2026-92871, CVE-2026-92872 and CVE-2026-92873.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.2-4PGDG
 - Add missing BR
 
