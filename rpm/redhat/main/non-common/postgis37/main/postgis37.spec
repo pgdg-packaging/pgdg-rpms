@@ -31,6 +31,7 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+%{!?runselftest:%global runselftest 0}
 %{!?utils:%global	utils 1}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
@@ -42,7 +43,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc1_3PGDG%{?dist}
+Release:	rc1_4PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc1.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc1-en.pdf
@@ -55,6 +56,15 @@ BuildRequires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt
 BuildRequires:	pgdg-srpm-macros >= 1.0.54 gmp-devel pcre2-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+BuildRequires:	pgdg-srpm-macros >= 2.0.0
+%if 0%{?suse_version} >= 1500
+BuildRequires:	cunit-devel
+%else
+BuildRequires:	CUnit-devel
+%endif
+%endif
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	pcre2
 %else
@@ -283,6 +293,24 @@ SHLIB_LINK="$SHLIB_LINK" %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} 
 %{__install} -m 644 utils/*.pl %{buildroot}%{_datadir}/%{name}
 %endif
 
+%check
+%if %runselftest
+%pgdg_check_init
+pgdg_check_start main
+# The unit tests of liblwgeom, the loader and the raster core. They need CUnit.
+%{__make} check-unit %{with_llvm_arg}
+# PostGIS runs its regression tests with a harness of its own, run_test.pl.
+# installcheck-base makes it load PostGIS with CREATE EXTENSION, from this
+# package's files, and then run the tests once more after upgrading the
+# extensions. Keep the harness' files in the build directory instead of the
+# shared /tmp/pgis_reg, and print the diffs of the failed tests.
+export PGIS_REG_TMPDIR=$PGDG_CHECK_DIR/pgis_reg
+%{__make} installcheck-base %{with_llvm_arg} || {
+	find $PGIS_REG_TMPDIR -name '*_diff' -printf '===== %p\n' -exec cat {} \;
+	exit 1
+}
+%endif
+
 # Create alternatives entries for common binaries
 %post client
 %{_sbindir}/update-alternatives --install %{_bindir}/pgsql2shp postgis-pgsql2shp %{pginstdir}/bin/pgsql2shp %{pgmajorversion}0
@@ -391,6 +419,11 @@ fi
 %endif
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-4PGDG
+- Add %%check, running the unit tests and the regression tests with the
+  %%check helpers from pgdg-srpm-macros 2.0.0. It is disabled by default;
+  enable it with --define 'runselftest 1'.
+
 * Sat Sep 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-3PGDG
 - Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
 
