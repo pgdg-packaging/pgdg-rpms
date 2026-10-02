@@ -1,0 +1,54 @@
+--- regress/core/geos39_expected.old	2026-04-14 18:16:37.000000000 -0400
++++ regress/core/geos39_expected	2026-10-02 14:58:20.542004329 -0400
+@@ -1,10 +1,10 @@
+-mic-box|POINT(49.5117 49.5117)|POINT(50.5111 98.9796)|49.4779
++mic-box|POINT(49.5 49.5)|POINT(50.5 99)|49.5
+ mic-empty|POINT EMPTY|POINT EMPTY|0.0000
+ mic-null|||
+ mic-line|POINT(49.5117 49.5117)|POINT(50.5111 98.9796)|49.4779
+ mic-mpoint|POINT(48.584 49.9512)|POINT(99 98)|69.6453
+ mic-point|POINT(0 0)|POINT(0 0)|0.0000
+-mic-cte|POINT(49.512 49.512)
++mic-cte|POINT(49.5 49.5)
+ rp-1|POINT(1.4 19.3)
+ rp-2|POINT(1 19)
+ rp-3|POINT(0 20)
+--- regress/core/geos39.sql.old	2026-04-14 18:16:37.000000000 -0400
++++ regress/core/geos39.sql	2026-10-02 14:58:20.541976781 -0400
+@@ -1,8 +1,8 @@
+ 
+ SELECT 'mic-box' AS name,
+-       st_astext(center, 4) AS center,
+-       st_astext(nearest, 4) AS nearest,
+-       round(radius::numeric,4) AS radius
++       st_astext(center, 1) AS center,
++       st_astext(nearest, 1) AS nearest,
++       round(radius::numeric,1) AS radius
+ FROM ST_MaximumInscribedCircle('Polygon((0 0, 100 0, 99 98, 0 100, 0 0))'::geometry);
+ 
+ SELECT 'mic-empty' AS name,
+@@ -35,7 +35,7 @@
+ WITH p AS (
+ 	SELECT 'Polygon((0 0, 100 0, 99 98, 0 100, 0 0))'::geometry AS ply
+ )
+-SELECT 'mic-cte' AS name, ST_AsText(st_snaptogrid((ST_MaximumInscribedCircle(ply)).center,0.001))
++SELECT 'mic-cte' AS name, ST_AsText(st_snaptogrid((ST_MaximumInscribedCircle(ply)).center,0.1))
+ 	FROM p;
+ 
+ -- ST_ReducePrecision
+--- regress/core/regress_index.sql.old	2026-04-14 18:16:37.000000000 -0400
++++ regress/core/regress_index.sql	2026-10-02 14:58:20.541943238 -0400
+@@ -55,11 +55,11 @@
+ BEGIN
+   EXECUTE 'EXPLAIN ANALYZE ' || qry INTO anl;
+ 
+-  SELECT regexp_matches(anl, ' rows=([0-9]*) .* rows=([0-9]*) ')
++  SELECT regexp_matches(anl, E' rows=([0-9]*) .* rows=([0-9\\.]*) ')
+   INTO mat;
+ 
+   est := mat[1];
+-  act := mat[2];
++  act := mat[2]::numeric::integer;
+ 
+   err = abs(est-act);
+ 

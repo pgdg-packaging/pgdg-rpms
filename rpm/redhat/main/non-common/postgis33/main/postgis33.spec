@@ -51,6 +51,7 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+%{!?runselftest:%global runselftest 0}
 %{!?utils:%global	utils 1}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global     raster 1}
@@ -69,7 +70,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -80,12 +81,22 @@ Patch2:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-pqsignal.patch
 Patch3:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-vacuum-delay-point.patch
 Patch4:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-tupledescattr.patch
 Patch5:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-json-categorize-type.patch
+Patch6:		%{sname}%{postgiscurrmajorversion}-regress-pg18-geos314.patch
 
 URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
 BuildRequires:	pgdg-srpm-macros >= 1.0.54 gmp-devel pcre2-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+BuildRequires:	pgdg-srpm-macros >= 2.0.0
+%if 0%{?suse_version} >= 1500
+BuildRequires:	cunit-devel
+%else
+BuildRequires:	CUnit-devel
+%endif
+%endif
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	pcre2
 %else
@@ -261,6 +272,7 @@ This package provides JIT support for PostGIS 3.3
 %patch -P 3 -p0
 %patch -P 4 -p0
 %patch -P 5 -p0
+%patch -P 6 -p0
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
@@ -316,6 +328,28 @@ SHLIB_LINK="$SHLIB_LINK" %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} 
 %if %utils
 %{__install} -d %{buildroot}%{_datadir}/%{name}
 %{__install} -m 644 utils/*.pl %{buildroot}%{_datadir}/%{name}
+%endif
+
+%check
+%if %runselftest
+%pgdg_check_init
+pgdg_check_start main
+# The unit tests of liblwgeom, the raster core and the loader. They need CUnit.
+# The top level check-unit target would also validate the documentation,
+# which needs the DocBook DTD.
+for dir in liblwgeom raster loader; do
+	%{__make} -C $dir check-unit %{with_llvm_arg}
+done
+# PostGIS runs its regression tests with a harness of its own, run_test.pl.
+# installcheck-base makes it load PostGIS with CREATE EXTENSION, from this
+# package's files, and then run the tests once more after upgrading the
+# extensions. Keep the harness' files in the build directory instead of the
+# shared /tmp/pgis_reg, and print the diffs of the failed tests.
+export PGIS_REG_TMPDIR=$PGDG_CHECK_DIR/pgis_reg
+%{__make} installcheck-base %{with_llvm_arg} || {
+	find $PGIS_REG_TMPDIR -name '*_diff' -printf '===== %p\n' -exec cat {} \;
+	exit 1
+}
 %endif
 
 # Create alternatives entries for common binaries
@@ -428,6 +462,14 @@ fi
 %endif
 
 %changelog
+* Fri Oct 2 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-8PGDG
+- Add %%check, running the unit tests and the regression tests with the
+  %%check helpers from pgdg-srpm-macros 2.0.0. It is disabled by default;
+  enable it with --define 'runselftest 1'.
+- Add a patch to fix two regression tests, as upstream did in the later
+  branches: regress_index did not parse the EXPLAIN ANALYZE output of
+  PostgreSQL 18, and geos39 expected the results of an older GEOS.
+
 * Sat Sep 19 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-7PGDG
 - Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
 - Fedora 45: build without llvmjit for now, as clang 23 crashes building the JIT bitcode.
