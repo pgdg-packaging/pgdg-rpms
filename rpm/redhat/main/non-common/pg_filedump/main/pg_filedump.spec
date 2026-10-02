@@ -10,12 +10,24 @@
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pg_fdmajorver}.%{pg_fdminorver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
 Patch0:		%{sname}-makefile-rpm-gcc.patch
 License:	GPLv2+
-BuildRequires:	clang gcc make
+BuildRequires:	gcc make
+%if 0%{?suse_version} == 1500
+BuildRequires:	llvm17-devel clang17-devel
+%endif
+%if 0%{?suse_version} == 1600
+BuildRequires:	llvm19-devel clang19-devel
+%endif
+%if 0%{?amzn}
+BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+%endif
+%if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
+BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # The static libraries (libpgcommon, libpgport) are in the -static subpackage
 # as of PostgreSQL 19:
@@ -69,6 +81,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-5PGDG
+- Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
+  not work on SLES. Use the versioned packages per distro, as the other
+  packages do.
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
