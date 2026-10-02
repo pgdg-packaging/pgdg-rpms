@@ -40,9 +40,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta4_420001PGDG%{?dist}
+Release:	beta4_420002PGDG%{?dist}
 %else
-Release:	beta4_1PGDG%{?dist}
+Release:	beta4_2PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -645,38 +645,6 @@ MAKELEVEL=0 %{__make} %{?_smp_mflags} all
 %endif
 
 
-# run_testsuite WHERE
-# -------------------
-# Run 'make check' in WHERE path. When that command fails, return the logs
-# given by PostgreSQL build system and set 'test_failure=1'.
-
-run_testsuite()
-{
-	%{__make} -C "$1" MAX_CONNECTIONS=5 check && return 0
-
-	test_failure=1
-
-	(
-		set +x
-		echo "=== trying to find all regression.diffs files in build directory ==="
-		find -name 'regression.diffs' | \
-		while read line; do
-			echo "=== make failure: $line ==="
-			cat "$line"
-		done
-	)
-}
-
-%if %runselftest
-	run_testsuite "src/test/regress"
-	%{__make} clean -C "src/test/regress"
-	run_testsuite "src/pl"
-%if %plpython3
-	run_testsuite "src/pl/plpython"
-%endif
-	run_testsuite "contrib"
-%endif
-
 %if %test
 	pushd src/test/regress
 	%{__make} all
@@ -879,6 +847,50 @@ cat postgresql-regress-%{pgmajorversion}.lang > pg_test.lst
 find %{buildroot}%{pgbaseinstdir}/share/locale -type d | sed "s|^%{buildroot}|%%dir |" > pg_localedirs.lst
 cat pg_localedirs.lst >> pg_libpq5.lst
 cat pg_localedirs.lst >> ecpg.lst
+%endif
+
+%check
+%if %runselftest
+# run_testsuite WHERE
+# -------------------
+# Run 'make check' in WHERE path. When that command fails, print the logs
+# given by PostgreSQL build system and set 'test_failure=1', so that the
+# other test suites still run before the build fails.
+
+test_failure=0
+
+# Our postgresql.conf.sample enables the logging collector, but the TAP tests
+# read the server log from the file that pg_ctl writes. Turn it off for the
+# test instances.
+echo "logging_collector = off" > pgdg_test.conf
+export TEMP_CONFIG="$PWD/pgdg_test.conf"
+
+run_testsuite()
+{
+	%{__make} -C "$1" MAX_CONNECTIONS=5 check && return 0
+
+	test_failure=1
+
+	(
+		set +x
+		echo "=== trying to find all regression.diffs files in build directory ==="
+		find -name 'regression.diffs' | \
+		while read line; do
+			echo "=== make failure: $line ==="
+			cat "$line"
+		done
+	)
+}
+
+	run_testsuite "src/test/regress"
+	# src/pl includes PL/pgSQL, PL/Perl, PL/Python and PL/Tcl
+	run_testsuite "src/pl"
+	run_testsuite "contrib"
+
+	if [ $test_failure -ne 0 ]; then
+		echo "=== regression tests failed, see above ==="
+		exit 1
+	fi
 %endif
 
 %pre server
@@ -1396,6 +1408,12 @@ fi
 %endif
 
 %changelog
+* Thu Oct 1 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0beta4-2PGDG
+- Move the regression tests from %%build to %%check. They are still
+  disabled by default; enable them with --define 'runselftest 1'. Fail
+  the build when a test suite fails: the failures were ignored so far.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+
 * Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0beta4-1PGDG
 - Update to PostgreSQL 19 beta 4.
 - Own the directories under %%{pgbaseinstdir} that were left unowned
