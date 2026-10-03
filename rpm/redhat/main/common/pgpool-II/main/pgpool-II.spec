@@ -1,11 +1,12 @@
 %global	_build_id_links none
 %global pgpoolinstdir /usr
 %global sname pgpool-II
+%{!?runselftest:%global runselftest 0}
 
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.7.3
-Release:		1PGDG%{?dist}
+Release:		2PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -30,6 +31,18 @@ BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 BuildRequires:		postgresql%{pgmajorversion}-devel pam-devel
 BuildRequires:		libmemcached-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+BuildRequires:	pgdg-srpm-macros >= 2.0.0 procps-ng openssl iputils
+%if 0%{?fedora} || 0%{?rhel} >= 8
+# Several tests run a JDBC client or memcached, rewrite_timestamp uses ruby
+BuildRequires:	java-devel postgresql-jdbc /usr/bin/ruby memcached
+%endif
+%if 0%{?rhel}
+# ruby does not start without it on RHEL
+BuildRequires:	rubygems
+%endif
+%endif
 Requires:		libmemcached
 
 %if 0%{?suse_version} >= 1500
@@ -114,6 +127,81 @@ USE_PGXS=1 %{__make} %{?_smp_mflags}
 USE_PGXS=1 %{__make} %{?_smp_mflags} -C src/sql/pgpool_adm
 USE_PGXS=1 %{__make} %{?_smp_mflags} -C src/sql/pgpool-recovery
 USE_PGXS=1 %{__make} %{?_smp_mflags} -C src/sql/pgpool-regclass
+
+%check
+%if %runselftest
+# Run upstream's regression suite (src/test/regression/regress.sh), which
+# builds pgpool clusters of its own with pgpool_setup. It uses fixed ports
+# from 11000 up, so do not run two of these builds on one host at a time.
+%pgdg_check_init
+# pgpool_setup installs pgpool_recovery, pgpool_regclass and pgpool_adm into
+# the clusters it creates, so put them into the copy of PostgreSQL.
+for d in pgpool_adm pgpool-recovery pgpool-regclass; do
+	USE_PGXS=1 %{__make} -C src/sql/$d install DESTDIR=$PWD/pgext PG_CONFIG=%{pginstdir}/bin/pg_config
+done
+%{__cp} -a pgext%{pginstdir}/. $PGDG_CHECK_INSTDIR/
+# regress.sh's own "make install prefix=..." cannot work with the absolute
+# sysconfdir of this package, so install pgpool into a scratch directory.
+inst=$PWD/pgpool-inst
+%{__make} install DESTDIR=$inst
+%{__install} -m 755 src/test/pgpool_setup src/test/watchdog_setup $inst%{_bindir}/
+# The script that starts a recovered standby runs pg_ctl over "ssh -T
+# localhost", which needs passwordless ssh; run pg_ctl directly instead.
+sed -i 's/^ssh -T \$DEST \$PGCTL /$PGCTL /' $inst%{_bindir}/pgpool_setup
+grep -q '^ssh -T' $inst%{_bindir}/pgpool_setup && { echo "pgpool_setup still uses ssh"; exit 1; }
+export PGPOOLDIR=$inst%{_sysconfdir}/%{name}
+export LD_LIBRARY_PATH=$inst%{_libdir}
+# pgpool_setup creates its own clusters, as the build user, with the copy
+# of PostgreSQL; it must not inherit the libpq settings of the helpers. The
+# tests run psql without -h, and our libpq looks in /run/postgresql by
+# default, so point it at the socket directory given to regress.sh.
+unset PGUSER PGPORT
+export PGHOST=/tmp
+cd src/test/regression
+# 007.memqcache-memcached expects a memcached on the default port
+memcached -d -l 127.0.0.1 -p 11211 -P $PWD/memcached.pid
+# Skipped tests:
+# - 028.watchdog_enable_consensus_with_half_votes: shutting down its four
+#   watchdog nodes does not finish in a build environment.
+# - 036.trusted_servers: the watchdog cannot ping the trusted servers there.
+# regress.sh empties log/ on each run, so run the tests one at a time and
+# show the logs of each failure right away. Now and then pgpool does not
+# stop at the end of a test, which then times out; retry those once.
+pgpool_test() {
+	./regress.sh -m noinstall -i $inst%{_prefix} -p $PGDG_CHECK_BINDIR -s /tmp -t 300 \
+		-j /usr/share/java/postgresql-jdbc.jar "^$1\$" > regress.out 2>&1
+	# regress.sh always exits 0. Its verdict is coloured by tput, whose
+	# escape sequences (and a trailing SI) are stripped here.
+	sed -E 's/\x1b[^a-zA-Z]*[a-zA-Z]//g; s/[[:cntrl:]]//g' regress.out | grep -a "^testing $1\.\.\." || :
+}
+failed=
+for t in $(ls tests | grep -E '^[0-9]{3}\.' | grep -v -E '^(028|036)\.'); do
+	r=$(pgpool_test $t)
+	case "$r" in
+	*...timeout.)
+		echo "$r, retrying once"
+		r=$(pgpool_test $t)
+		;;
+	esac
+	echo "$r"
+	case "$r" in
+	*...ok.) ;;
+	*)
+		failed="$failed $t"
+		echo "===== log/$t"; tail -60 log/$t
+		for f in tests/$t/testdir/log/pgpool.log tests/$t/testdir/data*/log/*; do
+			[ -f "$f" ] && { echo "===== $f"; tail -30 "$f"; }
+		done
+		;;
+	esac
+done
+kill $(cat memcached.pid)
+cd ../../..
+if [ -n "$failed" ]; then
+	echo "pgpool-II regression tests failed:$failed"
+	exit 1
+fi
+%endif
 
 %install
 export PATH=%{pginstdir}/bin/:$PATH
@@ -209,6 +297,13 @@ fi
 %{_libdir}/libpgpoolpcp.so*
 
 %changelog
+* Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-2PGDG
+- Add %%check, running upstream's regression suite (src/test/regression)
+  against a scratch installation, except two watchdog tests that cannot
+  work in a build environment. It is disabled by default; enable it with
+  --define 'runselftest 1'. It uses fixed ports from 11000 up, so do not
+  run two such builds on one host at a time.
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-1PGDG
 - Update to 4.7.3 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-7-3.html
