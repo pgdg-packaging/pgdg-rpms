@@ -24,10 +24,11 @@
 %global	python3_pkgversion 313
 %endif
 %global sname pgspot
+%{!?runselftest:%global runselftest 0}
 
 Name:		pgspot
 Version:	0.9.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Spot vulnerabilities in PostgreSQL extension scripts
 License:	PostgreSQL
 Url:		https://github.com/timescale/%{sname}
@@ -43,6 +44,9 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+%if %runselftest
+BuildRequires:	pglast python%{python3_pkgversion}-pytest
+%endif
 
 %description
 pgspot checks extension scripts for PostgreSQL security best practices.
@@ -62,6 +66,19 @@ pgspot checks for the following vulnerabilities:
 %install
 %pyproject_install
 
+%check
+%if %runselftest
+# The tests run the pgspot script, so use the one from the build root
+export PATH=%{buildroot}%{_bindir}:$PATH PYTHONPATH=%{buildroot}%{python3_sitelib}
+# tests/snapshot_test.py needs pytest-snapshot, which is not packaged; it
+# compares the output for each testdata/*.sql with testdata/expected, so do
+# that here instead.
+for f in testdata/*.sql; do
+	pgspot $f | diff -u testdata/expected/$(basename $f .sql).out -
+done
+%{__ospython} -m pytest tests --ignore=tests/snapshot_test.py -p no:cacheprovider
+%endif
+
 %files
 %defattr(-,root,root,0755)
 %doc README.md CHANGELOG.md REFERENCE.md
@@ -74,5 +91,9 @@ pgspot checks for the following vulnerabilities:
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.2-2PGDG
+- Add %%check, running the upstream tests. It is disabled by default;
+  enable it with --define 'runselftest 1'.
+
 * Wed Sep 16 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
