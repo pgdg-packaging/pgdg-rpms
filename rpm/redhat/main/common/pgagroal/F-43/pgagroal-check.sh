@@ -1,0 +1,1 @@
+../main/pgagroal-check.sh
