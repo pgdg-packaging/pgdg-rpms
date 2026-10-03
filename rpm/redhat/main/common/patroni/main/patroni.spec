@@ -1,36 +1,36 @@
 %if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
+%global __python3 %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
+%global __python3 %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
 %if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
+%global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
 
 %{!?runselftest:%global runselftest 0}
 
-%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.5
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -39,8 +39,18 @@ URL:		https://github.com/patroni/%{name}
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version}
+# Older setuptools have no bdist_wheel of their own
+BuildRequires:	python%{python3_pkgversion}-wheel
+%endif
 BuildRequires:	systemd-rpm-macros
+%if 0%{?suse_version}
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 %if %runselftest
 BuildRequires:	python3-ydiff py-consul
 BuildRequires:	python%{python3_pkgversion}-etcd
@@ -203,11 +213,10 @@ Meta package to pull zookeeper related dependencies for patroni
 %prep
 %setup -q
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__rm} -rf %{buildroot}
-%{__ospython} setup.py install --root %{buildroot} -O1 --skip-build
+%pyproject_install
 
 # Install sample yml files:
 %{__mkdir} -p %{buildroot}%{docdir}/%{name}
@@ -226,7 +235,7 @@ Meta package to pull zookeeper related dependencies for patroni
 ignore="--ignore=tests/test_raft.py --ignore=tests/test_raft_controller.py"
 # The validator tests bind to ::1, so they cannot pass in a build environment
 # without IPv6, such as a mock chroot.
-if ! %{__ospython} -c 'import socket; socket.socket(socket.AF_INET6).bind(("::1", 0))' 2>/dev/null; then
+if ! %{__python3} -c 'import socket; socket.socket(socket.AF_INET6).bind(("::1", 0))' 2>/dev/null; then
 	ignore="$ignore --ignore=tests/test_validator.py"
 fi
 %if 0%{?rhel} == 9
@@ -234,7 +243,7 @@ fi
 # Python 3.12 there.
 ignore="$ignore --ignore=tests/test_aws.py"
 %endif
-%{__ospython} -m pytest tests -p no:cacheprovider $ignore
+%{__python3} -m pytest tests -p no:cacheprovider $ignore
 %endif
 
 %post
@@ -275,7 +284,7 @@ fi
 %attr (755,root,root) %{_bindir}/patroni_barman
 %attr (755,root,root) %{_bindir}/patroni_raft_controller
 %{_unitdir}/%{name}.service
-%{python3_sitelib}/%{name}*.egg-info
+%{python3_sitelib}/%{name}-%{version}.dist-info
 %dir %{python3_sitelib}/%{name}/
 %{python3_sitelib}/%{name}/*
 
@@ -289,6 +298,12 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-6PGDG
+- Build and install with the %%pyproject_wheel and %%pyproject_install
+  macros instead of "setup.py install", which is deprecated (rpmlint's
+  python-setup-install warning). Use %%{__python3} for the interpreter
+  on every distro, as these macros do, instead of our own %%{__ospython}.
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-5PGDG
 - Add %%check, running the upstream tests with pytest. It is disabled by
   default; enable it with --define 'runselftest 1'.
@@ -302,6 +317,7 @@ fi
   made the earlier directive misleading and gave the false
   impression the service could crash-loop. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/191
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.5-2PGDG
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo. Note:
