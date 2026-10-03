@@ -6,7 +6,7 @@
 
 Name:		pgbouncer
 Version:	1.26.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -26,7 +26,7 @@ Patch1:		%{name}-al2023-no-pandoc.patch
 
 Requires:	python3 python3-psycopg2
 
-BuildRequires:	gcc
+BuildRequires:	gcc make
 BuildRequires:	libevent-devel >= 2.0
 Requires:	libevent >= 2.0
 
@@ -39,7 +39,7 @@ BuildRequires:	python3-pytest-xdist python3-psycopg3 python3-filelock
 BuildRequires:	openssl socat
 %endif
 %if 0%{?fedora}
-BuildRequires:	openldap-servers
+BuildRequires:	openldap-servers openldap-clients
 %endif
 %endif
 %if 0%{?amzn} != 2023
@@ -54,7 +54,7 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 BuildRequires:	c-ares-devel >= 1.13
 Requires:	c-ares >= 1.13
 %endif
@@ -71,7 +71,7 @@ Requires:	libldap-2_4-2
 BuildRequires:	openldap2-devel
 Requires:	libldap-2
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 BuildRequires:	openldap-devel
 Requires:	openldap
 %endif
@@ -103,12 +103,12 @@ sed -i.fedora \
  -e '/BININSTALL/s|-s||' \
  configure
 
-# c-ares >= 1.16 is needed for proper c-ares support. Currently
-# only RHEL 8 does not have it, so use libevent only on RHEL 8.
+# c-ares >= 1.16 is needed for proper c-ares support. RHEL 8 does not
+# have it, so use libevent's evdns only there.
 # Per https://redmine.postgresql.org/issues/6315
 %configure \
 	--datadir=%{_datadir} \
-%if 0%{?rhel} <= 8
+%if 0%{?rhel} == 8
 	--without-cares \
 %else
 	--with-cares --disable-evdns \
@@ -209,6 +209,16 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-44PGDG
+- Use c-ares everywhere except RHEL 8, as intended: the "rhel <= 8"
+  condition was also true on Fedora, SUSE and Amazon Linux, so only
+  RHEL 9 and 10 were built with c-ares. Add c-ares to Amazon Linux 2023.
+- Add the missing BuildRequires on openldap-devel on RHEL 8 and Amazon
+  Linux 2023, and on make, so that the package builds in a clean
+  buildroot there.
+- %%check: Add openldap-clients to the test BuildRequires on Fedora, for
+  the LDAP test.
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-43PGDG
 - Add %%check, running the unit tests of the HBA parser and, on Fedora and
   RHEL 10, the upstream pytest suite. It is disabled by default; enable it
