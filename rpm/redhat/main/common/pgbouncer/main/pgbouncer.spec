@@ -2,9 +2,11 @@
 %global __tar %{_bindir}/tar --transform 's|/\\./|/|g'
 %endif
 
+%{!?runselftest:%global runselftest 0}
+
 Name:		pgbouncer
 Version:	1.26.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -29,6 +31,17 @@ BuildRequires:	libevent-devel >= 2.0
 Requires:	libevent >= 2.0
 
 BuildRequires:	pam-devel
+%if %runselftest
+%if 0%{?fedora} || 0%{?rhel} >= 10
+BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+BuildRequires:	python3-pytest python3-pytest-asyncio python3-pytest-timeout
+BuildRequires:	python3-pytest-xdist python3-psycopg3 python3-filelock
+BuildRequires:	openssl socat
+%endif
+%if 0%{?fedora}
+BuildRequires:	openldap-servers
+%endif
+%endif
 %if 0%{?amzn} != 2023
 BuildRequires:	pandoc
 %endif
@@ -106,6 +119,25 @@ sed -i.fedora \
 
 %{__make} %{?_smp_mflags} V=1
 
+%check
+%if %runselftest
+# The unit tests of the HBA parser
+%{__make} -C test check
+%if 0%{?fedora} || 0%{?rhel} >= 10
+# The pytest suite starts PostgreSQL servers of its own, with the initdb and
+# pg_ctl it finds in PATH. It needs psycopg 3, which RHEL 8 does not have for
+# its Python, and the psycopg 3.3 published for RHEL 9 cannot be imported with
+# its Python 3.9, so it does not run on RHEL 8 and 9 for now.
+# The LDAP test needs slapd, which cannot be installed on RHEL 10.
+PATH=%{pginstdir}/bin:$PATH PYTHONIOENCODING=utf8 \
+	%{__python3} -m pytest -n %{_smp_build_ncpus} -r s -p no:cacheprovider \
+%if 0%{?rhel}
+	-k 'not test_ldap_auth' \
+%endif
+	;
+%endif
+%endif
+
 %install
 %{__rm} -rf %{buildroot}
 %{__make} install DESTDIR=%{buildroot}
@@ -177,6 +209,11 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-43PGDG
+- Add %%check, running the unit tests of the HBA parser and, on Fedora and
+  RHEL 10, the upstream pytest suite. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-42PGDG
 - Update to 1.26.0, per changes described at:
   https://github.com/pgbouncer/pgbouncer/releases/tag/pgbouncer_1_26_0
