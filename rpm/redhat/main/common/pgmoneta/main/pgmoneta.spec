@@ -1,12 +1,16 @@
+%{!?runselftest:%global runselftest 0}
+
 Name:		pgmoneta
 Version:	0.21.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 Summary:	Backup / restore for PostgreSQL
 License:	BSD
 URL:		https://github.com/%{name}/%{name}
 Source0:	https://github.com/%{name}/%{name}/archive/%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	%{name}-tmpfiles.d
+# Runs the test suite in %%check
+Source3:	%{name}-check.sh
 
 Patch0:		%{name}-conf-rpm.patch
 
@@ -17,6 +21,12 @@ BuildRequires:	libev-devel openssl-devel systemd-devel
 BuildRequires:	libssh-devel libarchive-devel cjson-devel libatomic
 Requires:	libev openssl systemd zlib libzstd lz4 bzip2 libssh
 Requires:	libarchive cjson liburing
+%if %runselftest
+# The test runner (test/pgmoneta-test) is only built when Check is found,
+# and always with AddressSanitizer and UBSan
+BuildRequires:	check-devel libasan libubsan
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %if 0%{?suse_version} >= 1500
 Requires:	libncurses6
@@ -82,6 +92,13 @@ popd
 %{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
 %{__install} -m 0644 %{SOURCE2} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
 
+%check
+%if %runselftest
+%pgdg_check_init
+PGDG_PGMAJORVERSION=%{pgmajorversion}
+. %{SOURCE3}
+%endif
+
 %post
 %{__chown} -R postgres:postgres %{_sysconfdir}/%{name}
 %{__mkdir} -p /var/log/%{name}
@@ -129,6 +146,11 @@ fi
 %{_unitdir}/%{name}.service
 
 %changelog
+* Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-4PGDG
+- Add %%check, running the upstream tests (test/pgmoneta-test) against a
+  PostgreSQL server from the %%check helpers of pgdg-srpm-macros 2.0.0.
+  It is disabled by default; enable it with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-3PGDG
 - Add missing BR
 
