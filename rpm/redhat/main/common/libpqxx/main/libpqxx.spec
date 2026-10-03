@@ -1,11 +1,12 @@
 %global		_vpath_builddir .
 %global		libpqxxmajorver 8.0
+%{!?runselftest:%global runselftest 0}
 
 Name:		libpqxx
 Summary:	C++ client API for PostgreSQL
 Epoch:		1
 Version:	%{libpqxxmajorver}.2
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 
 License:	BSD
 URL:		https://github.com/jtv/%{name}
@@ -18,6 +19,9 @@ BuildRequires:	pkgconfig
 BuildRequires:	libpq5-devel
 BuildRequires:	graphviz
 BuildRequires:	xmlto
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %if 0%{?rhel} == 9
 BuildRequires:	gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-plugin-annobin
@@ -75,6 +79,19 @@ pushd build
 %ninja_install
 popd
 
+%check
+%if %runselftest
+# The test runner connects to the server with the libpq environment
+# variables, which the %%check helpers set up. Some tests need a UTF8
+# database, so do not let initdb fall back to SQL_ASCII.
+export LC_ALL=C.UTF-8
+%pgdg_check_init
+pgdg_check_start main
+# Run the runner itself: the top level CMakeLists.txt does not enable
+# testing, so ctest finds no tests.
+build/test/runner
+%endif
+
 %files
 %doc AUTHORS NEWS README.md VERSION
 %license COPYING
@@ -95,6 +112,11 @@ popd
 %{_docdir}/%{name}/*.md
 
 %changelog
+* Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-46PGDG
+- Add %%check, running the upstream tests with the %%check helpers from
+  pgdg-srpm-macros 2.0.0. It is disabled by default; enable it with
+  --define 'runselftest 1'.
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1:8.0.2-45PGDG
 - Bump up Release: which I forgot in d68dbc3
 
