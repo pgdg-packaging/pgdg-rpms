@@ -1,10 +1,11 @@
 %global _vpath_builddir .
 %global sname pg_top
+%undefine _package_note_file
 
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
 Version:	4.1.3
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 License:	BSD
 URL:		https://gitlab.com/%{sname}/%{sname}
 Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
@@ -54,6 +55,9 @@ popd
 %{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Sun Oct 4 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-44PGDG
+- Undefine _package_note_file macro. This is needed for AL 2023.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-43PGDG
 - Add missing BR
 
