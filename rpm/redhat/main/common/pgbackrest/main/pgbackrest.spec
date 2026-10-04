@@ -5,8 +5,8 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.59.2
-Release:	2PGDG%{?dist}
+Version:	2.59.3
+Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -141,6 +141,10 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Sun Oct 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.3-1PGDG
+- Update to 2.59.3 per changes described at:
+  https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.59.3
+
 * Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.2-2PGDG
 - Add %%check, running upstream's smoke test (a backup/restore cycle
   against PostgreSQL 18). It is disabled by default; enable it with
