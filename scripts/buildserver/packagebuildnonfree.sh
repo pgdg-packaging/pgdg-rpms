@@ -28,10 +28,8 @@ if [ $# -lt 1 ]
 then
 	echo
 	echo "${red}ERROR:${reset} This script must be run with at least the name of the package:"
-	echo "       $0 [--force] <git-package-name> [sign-name] [pg-version]"
-	echo "       sign-name is not used any more, as the RPMs to sign come from the spec file."
-	echo "       It is only accepted so that existing commands keep working. Give '-' for it"
-	echo "       if you need pg-version, which restricts the build to one PostgreSQL major version."
+	echo "       $0 [--force] <git-package-name> [pg-version]"
+	echo "       pg-version restricts the build to one PostgreSQL major version."
 	echo
 	exit 1
 fi
@@ -45,12 +43,20 @@ sign_failed=0
 
 # The name of the package in the git tree (pgpool-II-41, postgresql-16, etc)
 packagename=$1
-# Not used any more (was: the package name to sign, e.g. postgresql16), as the
-# RPMs to sign come from the spec file. Kept so that existing commands still work.
-signPackageName=$2
 # Optional: The PostgreSQL major version the package will be built against.
 # Leave empty to build against all supported PostgreSQL versions.
-buildVersion=$3
+buildVersion=$2
+
+# The second parameter used to be the package name to sign, and the PostgreSQL
+# version the third one. Reject commands in the old form, instead of
+# ignoring the version or taking the sign name as one:
+if [ $# -gt 2 ] || [[ -n "${buildVersion}" && ! "${buildVersion}" =~ ^[0-9]+$ ]]
+then
+	echo "${red}ERROR:${reset} Usage: $0 [--force] <git-package-name> [pg-version]"
+	echo "       The package name to sign is not given any more; the PostgreSQL version is"
+	echo "       now the second parameter, e.g. $0 postgis34 17"
+	exit 1
+fi
 
 #################################
 #	Build packages		#
@@ -66,7 +72,7 @@ buildVersion=$3
 
 if [ -x ~/git/pgrpms/rpm/redhat/main/non-free/$packagename/$git_os ]
 then
-	# Build package against all PostgreSQL versions if 4th parameter is not given:
+	# Build package against all PostgreSQL versions if pg-version is not given:
 	if [ "${buildVersion}" == "" ]
 	then
 		:

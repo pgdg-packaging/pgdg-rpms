@@ -301,7 +301,7 @@ extras repository and acts accordingly.
 ### Usage
 
 ```
-packagebuild.sh [--beta] [--testing] [--force] <git-package-name> [sign-name] [pg-version]
+packagebuild.sh [--beta] [--testing] [--force] <git-package-name> [pg-version]
 ```
 
 - `--beta` — build against the current beta PostgreSQL version
@@ -314,16 +314,15 @@ packagebuild.sh [--beta] [--testing] [--force] <git-package-name> [sign-name] [p
   check" below).
 - `<git-package-name>` — the directory name in the git tree (e.g.
   `postgresql-16`, `pgpool-II-41`).
-- `[sign-name]` — not used any more. It used to be the name that `rpmsign`
-  searched for to find the built RPMs (e.g. `postgresql16`), and a mistyped
-  one left the package unsigned without any error. The RPMs to sign come
-  from the spec file now, so nothing needs to be typed. It is only accepted
-  so that existing commands (`packagebuild.sh psycopg3 python3-psycopg3`)
-  keep working. Give `-` for it when you need `pg-version`.
 - `[pg-version]` — optional; restricts the build to a single PostgreSQL
   major version. If omitted, all versions in the active build array are
   built. A version that is not in the build array is an error for non-common
   packages.
+
+The package name to sign (e.g. `postgresql16`) used to be the second
+parameter, and `pg-version` the third. The RPMs to sign come from the spec
+file now, so it is not given any more. A command in the old form (more than
+two parameters, or a second one that is not a number) is an error.
 
 ### Build logic
 
@@ -428,8 +427,8 @@ in `~/rpm<version>/RPMS`, via the shared `is_already_built` check. As in
 `packagebuild.sh`, `check_gpg_agent` runs at the start, the RPMs of a build
 are signed and checked (`sign_built_rpms`, exit status 1 if they are not all
 signed), a skipped version's RPMs are still signed if they are not (the same
-function), and the second parameter is not used any more:
-`packagebuildnonfree.sh <git-package-name> [sign-name] [pg-version]`.
+function), and no package name to sign is given:
+`packagebuildnonfree.sh [--force] <git-package-name> [pg-version]`.
 
 ---
 
@@ -654,8 +653,8 @@ gpg --with-keygrip -K         # Note the keygrip
 # no sign name needs to be given:
 ~/bin/packagebuild.sh postgis34
 
-# Build only against PostgreSQL 17 ("-" stands for the unused sign-name):
-~/bin/packagebuild.sh postgis34 - 17
+# Build only against PostgreSQL 17:
+~/bin/packagebuild.sh postgis34 17
 
 # Sync version 17 to production:
 ~/bin/packagesync.sh --sync=17
