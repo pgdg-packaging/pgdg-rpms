@@ -36,15 +36,30 @@ pg_top allows you to monitor PostgreSQL processes. It also allows you to:
 %prep
 %setup -q -n %{sname}-v%{version}
 
-mkdir build
+
+%build
+%{__install} -d build
 pushd build
-%cmake ..
+%if 0%{?suse_version}
+cmake .. \
+	-DCMAKE_C_FLAGS="%{optflags}" \
+	-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+%else
+%cmake .. \
+%endif
+	-DCMAKE_INSTALL_PREFIX=%{_prefix}
+
 %cmake_build
 popd
 
 %install
+%{__rm} -rf %{buildroot}
 pushd build
+%if 0%{?suse_version}
+%{__make} install DESTDIR=%{buildroot}
+%else
 %cmake_install
+%endif
 popd
 
 %files
@@ -57,6 +72,8 @@ popd
 %changelog
 * Sun Oct 4 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-44PGDG
 - Undefine _package_note_file macro. This is needed for AL 2023.
+- Fix builds on SLES: run cmake in %%build, and pass %%{optflags} to it so
+  that debuginfo/debugsource packages are not empty.
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-43PGDG
 - Add missing BR
