@@ -54,7 +54,7 @@ Also defines `is_valid()`, a helper used by other scripts for safe exact-match v
 
 The core sync script. Given an OS and version, it syncs either the **common repo** (if `--pg` is omitted) or a **specific PG version repo** (if `--pg` is provided). It loops over all architectures unless `--arch` pins it to one.
 
-After a successful sync it automatically removes any corresponding **testing repo** directories from the local mirror for each synced architecture.
+Testing repos are left alone by default. With `--delete-testing`, after a successful sync it removes the matching **testing repo** directory from the local mirror for each synced architecture: `testing/<pg>/…` after a PG sync, `testing/common/…` after a common sync, `testing/extras/…` after an extras sync. These are the paths `../sync/sync_pgdg_rpms.sh` rsyncs the testing repos into.
 
 ### Local directory layout expected
 
@@ -67,9 +67,15 @@ After a successful sync it automatically removes any corresponding **testing rep
 │   └── redhat/
 │       └── rhel-9.6-x86_64/
 ├── testing/
-│   └── 16/
+│   ├── 16/
+│   │   └── redhat/
+│   │       └── rhel-9.6-x86_64/   ← removed after a PG 16 sync with --delete-testing
+│   ├── common/
+│   │   └── redhat/
+│   │       └── rhel-9.6-x86_64/   ← removed after a common sync with --delete-testing
+│   └── extras/
 │       └── redhat/
-│           └── rhel-9.6-x86_64/   ← removed after sync
+│           └── rhel-9.6-x86_64/   ← removed after an extras sync with --delete-testing
 └── extras/
     └── redhat/
         └── x86_64/
@@ -91,6 +97,7 @@ aws_sync.sh --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [optio
 | `--pg` | No | PostgreSQL major version, e.g. `16`. If omitted, the common repo is synced instead. |
 | `--extras=1` | No | Also sync the extras repo (redhat only). |
 | `--non-free` | No | Sync non-free repos for all PG versions (redhat only). |
+| `--delete-testing` | No | After a successful sync, remove the matching local testing repo (`testing/<pg>/`, `testing/common/` or `testing/extras/`). Off by default. |
 | `--dry-run` | No | Print what would be run without executing anything. |
 | `--debug` | No | Print resolved parameter values before running. |
 
@@ -147,8 +154,8 @@ aws_sync.sh --os amzn --ver 2023 --pg 16
 3. For each architecture:
    - If `--pg` was omitted → syncs `common/<osdistro>/<os>-<ver>-<arch>/` to S3.
    - If `--pg` was provided → syncs `<pg>/<osdistro>/<os>-<ver>-<arch>/` to S3.
-   - If any sync succeeded → removes `testing/[common/|debug/]<pgver>/<osdistro>/<os>-<ver>-<arch>/` for every PG version.
-   - If `--extras=1` → syncs `extras/<osdistro>/<arch>/` to S3.
+   - If `--delete-testing` was given and that sync succeeded → removes `testing/<pg>/<osdistro>/<os>-<ver>-<arch>/` or `testing/common/<osdistro>/<os>-<ver>-<arch>/`.
+   - If `--extras=1` → syncs `extras/<osdistro>/<arch>/` to S3, and with `--delete-testing` removes `testing/extras/<osdistro>/<os>-<ver>-<arch>/`.
 4. After the arch loop, if `--non-free` → syncs `non-free/<pgver>/` to `$S3_BUCKET/non-free/<pgver>/` for every entry in `VALID_PG_VERSIONS` (redhat only; local root: `/srv/yum/yum/non-free/`).
 
 ---
@@ -175,6 +182,7 @@ aws_sync_archive.sh --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver
 | `--pg-version` | No | Pin to one PG major version. If omitted, all versions in `VALID_PG_VERSIONS` are used. |
 | `--extras=1` | No | Pass through to `aws_sync.sh` (redhat only). |
 | `--non-free` | No | Pass through to `aws_sync.sh`; sync non-free repos for all PG versions (redhat only). Rejected with an error if `--os-name` is not `redhat`. |
+| `--delete-testing` | No | Passed through to `aws_sync.sh`; remove the matching local testing repos after a sync. Off by default. |
 | `--dry-run` | No | Passed through to `aws_sync.sh`. |
 | `--debug` | No | Passed through to `aws_sync.sh`. |
 

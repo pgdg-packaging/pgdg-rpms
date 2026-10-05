@@ -14,10 +14,11 @@ DEBUG=0
 DRY_RUN=0
 extras=""
 non_free=0
+delete_testing=0
 
 usage() {
   cat <<EOF
-Usage: $0 --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver>] [--pg-version <pg>] [--dry-run] [--debug]
+Usage: $0 --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver>] [--pg-version <pg>] [--delete-testing] [--dry-run] [--debug]
 
 Required:
   --os-name        fedora, redhat, sles, opensuse, or amzn
@@ -26,6 +27,7 @@ Optional:
   --arch           aarch64, ppc64le, x86_64 (default: all)
   --os-version     OS version (if omitted, runs for all valid versions)
   --pg-version     PostgreSQL version (if omitted, runs for all)
+  --delete-testing Remove the matching local testing repos after a sync
   --dry-run        Simulate the operations
   --debug          Show debug output
 
@@ -45,6 +47,7 @@ while [[ $# -gt 0 ]]; do
     --pg-version) PG_VERSION="$2"; shift ;;
     --extras=*) extras="${1#*=}" ;;
     --non-free) non_free=1 ;;
+    --delete-testing) delete_testing=1 ;;
     --dry-run) DRY_RUN=1 ;;
     --debug) DEBUG=1 ;;
     --help) usage ;;
@@ -135,6 +138,7 @@ for pg in "${pg_versions[@]}"; do
     [[ -n "$ARCH"   ]] && cmd+=" --arch $ARCH"
     [[ -n "$extras"  ]] && cmd+=" --extras=$extras"
     [[ $non_free -eq 1 ]] && cmd+=" --non-free"
+    [[ $delete_testing -eq 1 ]] && cmd+=" --delete-testing"
     [[ $DRY_RUN -eq 1 ]] && cmd+=" --dry-run"
     [[ $DEBUG   -eq 1 ]] && cmd+=" --debug"
 
