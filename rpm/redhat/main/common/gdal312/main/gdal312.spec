@@ -134,7 +134,7 @@ BuildRequires:	libpng-devel >= 1.6.0
 %if 0%{?fedora}
 BuildRequires:	libkml-devel
 %endif
-BuildRequires:	libspatialite%{libspatialitemajorversion}-devel
+BuildRequires:	libspatialite%{libspatialitemajorversion}-devel >= 5.1.0-16
 
 BuildRequires:	libtiff-devel >= 4.1
 BuildRequires:	libwebp-devel
@@ -288,7 +288,7 @@ Provides:	bundled(degrib) = 2.14
 Requires:	geos%{geosmajorversion} >= %{geosfullversion}
 Requires:	netcdf >= 4.7 gpsbabel
 Requires:	libgeotiff%{libgeotiffmajorversion}
-Requires:	libspatialite%{libspatialitemajorversion}
+Requires:	libspatialite%{libspatialitemajorversion} >= 5.1.0-16
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} <= 1499
@@ -553,6 +553,8 @@ done
   rpaths, so that GDAL uses GeOS 3.14 also when other GeOS versions are
   installed: they were passed in SHLIB_LINK, which CMake ignores.
 - Require the GeOS package that we build against.
+- Build against and require libspatialite50 5.1.0-16 or later, which
+  uses GeOS 3.14 also when other GeOS versions are installed.
 - Add the numpy-devel BuildRequires on SUSE, which has the numpy headers
   that the Python bindings need.
 - Add the gcc13 BuildRequires on SLES 15, where the package is built
