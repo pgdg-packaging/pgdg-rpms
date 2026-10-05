@@ -6,8 +6,8 @@
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.10.11
-Release:	2PGDG%{?dist}
+Version:	2.10.12
+Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -89,6 +89,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %endif
 
 %changelog
+* Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.12-1PGDG
+- Update to 2.10.12 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.10.12
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.11-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
