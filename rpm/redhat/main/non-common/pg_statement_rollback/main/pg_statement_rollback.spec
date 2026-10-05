@@ -1,6 +1,7 @@
 %global sname pg_statement_rollback
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,18 @@
 Summary:	Server side rollback at statement level for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	ISC
-Source0:	https://github.com/lzlabs/%{sname}/archive/v%{version}.tar.gz
-URL:		https://github.com/lzlabs/%{sname}
+Source0:	https://github.com/HexaCluster/%{sname}/archive/v%{version}.tar.gz
+# Remove when upstream applies the patch:
+Patch0:		%{sname}-memctx-assert.patch
+
+URL:		https://github.com/HexaCluster/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_statement_rollback is a PostgreSQL extension to add server side
@@ -54,6 +61,7 @@ This package provides JIT support for pg_statement_rollback
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -65,6 +73,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 # Install documentation with a better name:
 %{__mv} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} %{buildroot}%{pginstdir}/doc/contrib/README.md
+
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
 
 %files
 %defattr(644,root,root,755)
@@ -78,6 +91,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
@@ -90,7 +108,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 
 * Thu Jul 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6-1PGDG
 - Update to 1.6 per changes described at:
-  https://github.com/lzlabs/pg_statement_rollback/releases/tag/v1.6
+  https://github.com/HexaCluster/pg_statement_rollback/releases/tag/v1.6
 
 * Wed Oct 8 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5-3PGDG
 - Add SLES 16 support
@@ -103,7 +121,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 
 * Mon Sep 29 2025 Devrim Gündüz <devrim@gunduz.org> - 1.5-1PGDG
 - Update to 1.5 per changes described at:
-  https://github.com/lzlabs/pg_statement_rollback/releases/tag/v1.5
+  https://github.com/HexaCluster/pg_statement_rollback/releases/tag/v1.5
 
 * Mon Jan 13 2025 Devrim Gündüz <devrim@gunduz.org> - 1.4-4PGDG
 - Update LLVM dependencies and fix license.
