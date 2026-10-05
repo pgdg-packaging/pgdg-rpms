@@ -2,6 +2,7 @@
 %global pointcloudmajorversion 1.2
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 1}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,9 +18,10 @@
 Summary:	A PostgreSQL extension for storing point cloud (LIDAR) data
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pointcloudmajorversion}.5
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 URL:		https://github.com/pgpointcloud/%{sname}
 Source0:	https://github.com/pgpointcloud/%{sname}/archive/v%{version}.tar.gz
+Patch0:		%{sname}-zlib-ng-memsize-tests.patch
 License:	BSD
 %if 0%{?suse_version} >= 1500
 Requires:	cunit-devel
@@ -29,6 +31,9 @@ Requires:	CUnit-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 BuildRequires:	automake autoconf
 Requires:	postgresql%{pgmajorversion}-server postgis3_%{pgmajorversion}
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 LIDAR point cloud are becoming more and more available. Devices are easy to
@@ -67,6 +72,7 @@ This package provides JIT support for pointcloud
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P0 -p1
 
 %build
 autoupdate
@@ -81,6 +87,15 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
+
+%check
+%if %runselftest
+# The regression tests are in pgsql/
+%pgdg_check_init
+pgdg_check_start main
+cd pgsql
+pgdg_installcheck %{with_llvm_arg}
+%endif
 
 %files
 %defattr(-,root,root)
@@ -97,6 +112,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.5-8PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+- Add a patch to fix regression tests against zlib-ng.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.5-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
