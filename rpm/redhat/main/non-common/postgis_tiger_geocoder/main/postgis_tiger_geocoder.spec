@@ -1,16 +1,24 @@
 %global	sname	postgis_tiger_geocoder
 
+%{!?runselftest:%global runselftest 0}
+
 Summary:	Functions for geocoding, reverse geocoding, and standardizing address data using US Census TIGER/Line data.
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2025.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 URL:		https://gitea.osgeo.org/postgis/%{sname}
 Source0:	https://gitea.osgeo.org/postgis/%{sname}/releases/download/%{version}/%{sname}-%{version}.tar.gz
 BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion} postgis3_%{pgmajorversion} >= 3.7.0
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The tests load postgis, fuzzystrmatch and address_standardizer
+BuildRequires:	postgis3_%{pgmajorversion} postgresql%{pgmajorversion}-contrib
+BuildRequires:	address_standardizer_%{pgmajorversion}
+%endif
 BuildArch:	noarch
 
 %description
@@ -37,6 +45,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
 
+%check
+%if %runselftest
+%pgdg_check_installcheck
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc SECURITY.md
@@ -44,6 +57,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2025.2-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2025.2-2PGDG
 - Add missing BR
 
