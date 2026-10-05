@@ -7,7 +7,7 @@
 
 Name:		librttopo
 Version:	1.1.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Create and manage SQL/MM topologies
 License:	GPLv2+
 URL:		https://git.osgeo.org/gitea/rttopo/%{name}
@@ -16,6 +16,7 @@ Source0:	https://git.osgeo.org/gitea/rttopo/%{name}/archive/%{name}-%{version}.t
 BuildRequires:	autoconf automake gcc libtool make
 BuildRequires:	pgdg-srpm-macros >= 1.0.24
 BuildRequires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
+Requires:	geos%{geosmajorversion} >= %{geosfullversion}
 
 %description
 The RT Topology Library exposes an API to create and manage standard
@@ -36,7 +37,7 @@ developing applications that use %{name}.
 CFLAGS="$CFLAGS -I%{geosinstdir}/include -g -fPIE"; export CFLAGS
 autoreconf -ifv
 export PATH=%{geosinstdir}/bin:$PATH
-SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{geosinstdir}/lib64" ; export SHLIB_LINK
+LDFLAGS="${LDFLAGS:-%{?build_ldflags}} -Wl,-rpath,%{geosinstdir}/lib64" ; export LDFLAGS
 %configure --disable-static
 %make_build
 
@@ -56,6 +57,12 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_libdir}/pkgconfig/rttopo.pc
 
 %changelog
+* Mon Oct 5 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-44PGDG
+- Embed the GeOS library path as an rpath, so that librttopo uses GeOS
+  3.14 also when other GeOS versions are installed: it was
+  passed in SHLIB_LINK, which configure ignores.
+- Require the GeOS package that we build against.
+
 * Thu May 7 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-43PGDG
 - Rebuild against GeOS 3.14
 
