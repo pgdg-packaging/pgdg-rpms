@@ -7,6 +7,15 @@
 PG_ALL_VERSIONS=(18 17 16 15 14)     # All supported stable versions
 PG_TEST_VERSIONS=(20 19 18 17 16 15 14)    # Versions available in testing repos
 
+# Maximum number of OS/version syncs that sync_pgdg_rpms_cron.sh runs at the
+# same time (1 = sequential). Each OS/version pair uses its own source hosts
+# and destination directories, so they do not interfere with each other.
+MAX_PARALLEL=4
+
+# Lock file used by sync_pgdg_rpms_cron.sh so that a run which overruns into
+# the next cron slot does not start a second, overlapping sync.
+CRON_LOCK_FILE="/tmp/sync_pgdg_rpms_cron.lock"
+
 # Valid operating systems
 VALID_OS=("redhat" "fedora" "sles" "opensuse" "amzn")
 

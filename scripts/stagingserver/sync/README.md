@@ -230,7 +230,7 @@ This script is intended to be called by cron to perform a full, unattended sync 
 ### Usage
 
 ```bash
-./sync_pgdg_rpms_cron.sh [--dry-run] [--debug] [--sync item1 item2 ...]
+./sync_pgdg_rpms_cron.sh [--dry-run] [--debug] [--jobs N] [--sync item1 item2 ...]
 ```
 
 ### Options
@@ -239,6 +239,7 @@ This script is intended to be called by cron to perform a full, unattended sync 
 |---|---|
 | `--dry-run` | Passed through to `sync_pgdg_rpms.sh` |
 | `--debug` | Passed through to `sync_pgdg_rpms.sh` |
+| `--jobs N` | Number of OS/version syncs to run in parallel. Defaults to `MAX_PARALLEL` in `sync_pgdg_rpms_config.sh`; `1` means sequential |
 | `--sync` | Passed through to `sync_pgdg_rpms.sh` to limit what is synced. The special keyword `pg` expands to every version in `PG_ALL_VERSIONS` |
 
 `pg` can be combined with any other item, e.g. `--sync pg common` syncs all PostgreSQL versions plus the common repo (equivalent to `--sync 18 17 16 15 14 common`, given the current `PG_ALL_VERSIONS`). It's expanded before being forwarded, so it works whether items are passed as separate words (`--sync pg common`) or as one quoted string (`--sync "pg common"`).
@@ -248,9 +249,11 @@ This script is intended to be called by cron to perform a full, unattended sync 
 1. Sources `sync_pgdg_rpms_config.sh` to read all OS/version mappings.
 2. Builds an associative array (`OS_VERSIONS`) mapping each OS to its list of versions.
 3. Expands any `pg` keyword in `--sync` to the full `PG_ALL_VERSIONS` list.
-4. Iterates over every `os → version` pair and invokes `sync_pgdg_rpms.sh --os <os> --ver <ver>`.
-5. If a particular `os/ver` combination fails, logs the error and continues with the next (using `|| continue`).
-6. Logs all actions with timestamps via a `log()` helper.
+4. Iterates over every `os → version` pair and invokes `sync_pgdg_rpms.sh --os <os> --ver <ver>`, running up to `MAX_PARALLEL` (or `--jobs`) pairs at the same time. Each pair uses its own source hosts and destination directories, so they do not interfere. Architectures within a pair are still synced one by one.
+5. Each job's output goes to its own temporary log, which is printed as one block when the job finishes (so output from different jobs does not interleave).
+6. If an `os/ver` combination fails, the other jobs carry on, and the failures are listed at the end.
+7. Logs all actions with timestamps via a `log()` helper.
+8. Takes an exclusive `flock` on `CRON_LOCK_FILE` (default `/tmp/sync_pgdg_rpms_cron.lock`) before syncing. If a previous run is still going, it logs a warning and exits 0 without syncing. `--dry-run` skips the lock.
 
 ### Suggested Crontab Entry
 
