@@ -94,6 +94,9 @@ export CARGO_PROFILE_RELEASE_DEBUG=2
 export CARGO_PROFILE_RELEASE_STRIP=none
 export RUSTFLAGS="%{?build_rustflags}"
 export PATH=%{pginstdir}/bin:$PATH
+# ccache 3.7 on RHEL 8 fails on the assembler files of aws-lc-sys with
+# "Internal error in format":
+export CCACHE_DISABLE=1
 
 # Point pgrx to the installed PostgreSQL. This writes $PGRX_HOME/config.toml
 # and does not download or build a PostgreSQL:
