@@ -72,7 +72,7 @@
 
 Name:		%{sname}313
 Version:	3.13.3
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -100,6 +100,10 @@ Requires:	lz4
 %endif
 
 BuildRequires:	ant cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.52
+%if 0%{?suse_version} == 1500
+# %%build and %%install use GCC 13 there
+BuildRequires:	gcc13 gcc13-c++
+%endif
 
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
@@ -281,6 +285,7 @@ Summary:	GDAL file format library
 # See frmts/grib/degrib/README.TXT
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
+Requires:	geos%{geosmajorversion} >= %{geosfullversion}
 Requires:	netcdf >= 4.7 gpsbabel
 Requires:	libgeotiff%{libgeotiffmajorversion}
 Requires:	libspatialite%{libspatialitemajorversion}
@@ -321,6 +326,10 @@ This package contains the API documentation for %{name}.
 %{?py_provide:%py_provide python3-gdal}
 Summary:	Python modules for the GDAL file format library
 BuildRequires:	python%{python3_pkgversion}-numpy
+%if 0%{?suse_version}
+# numpy/arrayobject.h
+BuildRequires:	python%{python3_pkgversion}-numpy-devel
+%endif
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 Requires:	python%{python3_pkgversion}-numpy
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
@@ -375,8 +384,7 @@ export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/inclu
 export CXXFLAGS="$CFLAGS -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{_includedir}/tirpc"
 %endif
-LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{_libdir}"; export LDFLAGS
-SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{libgeotiffinstdir}/lib,%{geosinstdir}/lib64,%{libspatialiteinstdir}/lib" ; export SHLIB_LINK
+LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{_libdir} -Wl,-rpath,%{projinstdir}/lib64:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
@@ -540,6 +548,16 @@ done
 %endif
 
 %changelog
+* Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-4PGDG
+- Embed the PROJ, GeOS, libgeotiff and SpatiaLite library paths as
+  rpaths, so that GDAL uses GeOS 3.14 also when other GeOS versions are
+  installed: they were passed in SHLIB_LINK, which CMake ignores.
+- Require the GeOS package that we build against.
+- Add the numpy-devel BuildRequires on SUSE, which has the numpy headers
+  that the Python bindings need.
+- Add the gcc13 BuildRequires on SLES 15, where the package is built
+  with GCC 13.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-3PGDG
 - Pin java-11/17/21-openjdk-devel BuildRequires on RHEL 8/9/10
   respectively, instead of the unversioned java-devel, which resolves
