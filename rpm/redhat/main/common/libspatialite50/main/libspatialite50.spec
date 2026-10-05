@@ -32,7 +32,7 @@ URL:		https://www.gaia-gis.it/fossil/libspatialite
 Source0:	http://www.gaia-gis.it/gaia-sins/%{sname}-sources/%{sname}-%{version}.tar.gz
 Source1:	%{name}-pgdg-libs.conf
 
-BuildRequires:	gcc librttopo-devel
+BuildRequires:	gcc librttopo-devel >= 1.1.0-44
 BuildRequires:	pgdg-srpm-macros >= 1.0.53
 %if 0%{?rhel} && 0%{?rhel} <= 9
 BuildRequires:	minizip-devel
@@ -53,6 +53,8 @@ BuildRequires:	sqlite-devel zlib-devel libxml2-devel
 
 Requires:	geos%{geosmajorversion} >= %{geosfullversion}
 Requires:	proj%{projmajorversion} >= %{projfullversion}
+# The first librttopo with an rpath to GeOS 3.14
+Requires:	librttopo >= 1.1.0-44
 
 %description
 SpatiaLite is a a library extending the basic SQLite core in order to
@@ -135,6 +137,9 @@ find %{buildroot} -type f -name "*.la" -delete
 - Embed the GeOS and PROJ library paths as rpaths, so that the library
   uses GeOS 3.14 also when other GeOS versions are installed: they were
   passed in SHLIB_LINK, which configure ignores.
+- Build against and require librttopo 1.1.0-44 or later, which uses
+  GeOS 3.14 also when other GeOS versions are installed. This also keeps
+  the librttopo of the OS out, which has no rpath to GeOS 3.14.
 
 * Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-15PGDG
 - Rebuild the package because of a signing issue
