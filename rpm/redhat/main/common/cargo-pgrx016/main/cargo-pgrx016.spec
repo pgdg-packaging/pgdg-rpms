@@ -16,14 +16,12 @@ URL:		https://github.com/pgcentralfoundation/pgrx
 Source0:	https://static.crates.io/crates/%{crate}/%{crate}-%{version}.crate
 # The crate has no license file:
 Source1:	https://raw.githubusercontent.com/pgcentralfoundation/pgrx/v%{version}/LICENSE#/%{crate}-%{version}-LICENSE
-# The dependencies of the crate, for building without network access. Made with:
-#   tar xf cargo-pgrx-%%{version}.crate && cd cargo-pgrx-%%{version}
-#   cargo vendor --locked -s ../openssl-new/Cargo.toml vendor
-# where ../openssl-new is an empty crate (with a Cargo.lock) that depends on
-# openssl = "=0.10.80" and openssl-sys = "=0.9.116", see %%prep.
-#   tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - vendor | xz -T0 -6 > ../cargo-pgrx-%%{version}-vendor.tar.xz
+# The dependencies of the crate, for building without network access. Made with
+# "./cargo-pgrx016-vendor.sh %%{version}", which also vendors openssl 0.10.80 and
+# openssl-sys 0.9.116 (see %%prep), and runs cargo-vendor-filterer for the Linux
+# architectures that we build on.
 # It has to be made again for every new version.
-Source2:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{crate}-%{version}-vendor.tar.xz
+Source2:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{crate}/%{crate}-%{version}-vendor.tar.xz
 
 # The newest crates in Cargo.lock of this release need Rust 1.85:
 BuildRequires:	rust >= 1.85
