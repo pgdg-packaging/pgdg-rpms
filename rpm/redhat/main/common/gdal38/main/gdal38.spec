@@ -57,7 +57,7 @@
 
 Name:		%{sname}38
 Version:	3.8.5
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -193,10 +193,11 @@ BuildRequires:	libtirpc-devel
 BuildRequires:	python3-devel
 %endif
 %if 0%{?rhel} == 8
-BuildRequires:	python3.12-devel
-%endif
+BuildRequires:	python3.12-devel python3.12-numpy python3.12-setuptools
+%else
 BuildRequires:	python3-numpy
 BuildRequires:	python3-setuptools
+%endif
 
 BuildRequires:	qhull-devel
 
@@ -235,7 +236,7 @@ Summary:	GDAL file format library
 # See frmts/grib/degrib/README.TXT
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
-Requires:	geos%{geosmajorversion} ogdi%{ogdimajorversion}
+Requires:	geos%{geosmajorversion} >= %{geosfullversion} ogdi%{ogdimajorversion}
 Requires:	netcdf gpsbabel
 Requires:	libgeotiff%{libgeotiffmajorversion}-devel
 Requires:	libspatialite%{libspatialitemajorversion}-devel
@@ -275,7 +276,11 @@ This package contains the API documentation for %{name}.
 %package python3
 %{?py_provide:%py_provide python3-gdal}
 Summary:	Python modules for the GDAL file format library
+%if 0%{?rhel} == 8
+Requires:	python3.12-numpy
+%else
 Requires:	python3-numpy
+%endif
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description python3
@@ -317,8 +322,7 @@ export CFLAGS="$RPM_OPT_FLAGS -fpic"
 %endif
 export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
-LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{ogdiinstdir}/lib -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{sqlitelibdir}"; export LDFLAGS
-SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{projinstdir}/lib64,%{ogdiinstdir}/lib,%{libgeotiffinstdir}/lib,%{geosinstdir}/lib64,%{libspatialiteinstdir}/lib" ; export SHLIB_LINK
+LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{ogdiinstdir}/lib -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{sqlitelibdir} -Wl,-rpath,%{projinstdir}/lib64:%{ogdiinstdir}/lib:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
 export OGDI_CFLAGS='-I%{ogdiinstdir}/include/ogdi'
 export OGDI_INCLUDE='-I%{ogdiinstdir}/include/ogdi'
 export OGDI_LIBS='-L%{ogdiinstdir}/lib'
@@ -471,6 +475,14 @@ done
 %endif
 
 %changelog
+* Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-9PGDG
+- Embed the PROJ, OGDI, GeOS, libgeotiff and SpatiaLite library paths as
+  rpaths, so that GDAL uses GeOS 3.14 also when other GeOS versions are
+  installed: they were passed in SHLIB_LINK, which CMake ignores.
+- Require the GeOS package that we build against.
+- Use the numpy and setuptools of Python 3.12 on RHEL 8, which the Python
+  bindings are built for.
+
 * Tue Aug 26 2025 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-8PGDG
 - Rebuild against PROJ 9.6 and GeOS 3.14
 - Use Python 3.12 on RHEL 8 to match Patroni and other packages.
