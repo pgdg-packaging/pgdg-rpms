@@ -1,6 +1,7 @@
 %global sname system_stats
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,19 @@
 Summary:	A Postgres extension for exposing system metrics such as CPU, memory and disk information
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.1
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
+# Alternative expected output for Linux, from
+# https://github.com/EnterpriseDB/system_stats/pull/71 . Remove when
+# upstream merges it.
+Patch0:		%{sname}-pr71-linux-expected.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 system_stats is a Postgres extension that provides functions to access system
@@ -58,6 +66,7 @@ This package provides JIT support for system_stats
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -68,6 +77,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/include/server/extension/%{sname}/*.h
+
+%check
+%if %runselftest
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -85,6 +99,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.1-4PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
+  with --define 'runselftest 1'.
+- Add a patch from upstream PR #71 with an alternative expected output
+  for Linux, where the regression test failed.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.1-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
