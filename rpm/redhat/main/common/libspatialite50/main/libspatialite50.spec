@@ -25,7 +25,7 @@
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	15PGDG%{?dist}
+Release:	16PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -75,10 +75,9 @@ developing applications that use %{name}.
 %build
 CFLAGS="$CFLAGS -I%{projinstdir}/include"; export CFLAGS
 CFLAGS="$CFLAGS -I%{geosinstdir}/include"; export CFLAGS
-SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{geosinstdir}/lib64,%{projinstdir}/lib64" ; export SHLIB_LINK
 
 # PROJ 9x uses lib64 as the library path.
-LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -L%{projinstdir}/lib64"; export LDFLAGS
+LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -L%{projinstdir}/lib64 -Wl,-rpath,%{geosinstdir}/lib64:%{projinstdir}/lib64"; export LDFLAGS
 ./configure \
 	--prefix=%{libspatialiteinstdir} \
 	--libdir=%{libspatialiteinstdir}/lib \
@@ -132,6 +131,11 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-16PGDG
+- Embed the GeOS and PROJ library paths as rpaths, so that the library
+  uses GeOS 3.14 also when other GeOS versions are installed: they were
+  passed in SHLIB_LINK, which configure ignores.
+
 * Thu Apr 16 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-15PGDG
 - Rebuild the package because of a signing issue
 
