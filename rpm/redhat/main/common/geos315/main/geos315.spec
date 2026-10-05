@@ -7,7 +7,7 @@
 
 Name:		%{sname}%{_geosversion}
 Version:	3.15.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	GEOS is a C++ port of the Java Topology Suite
 
 License:	LGPLv2
@@ -20,7 +20,11 @@ BuildRequires:	cmake-full
 %else
 BuildRequires:	cmake-rpm-macros
 %endif
-BuildRequires:	libtool gcc-c++ pgdg-srpm-macros >= 1.0.52
+BuildRequires:	libtool gcc-c++ pgdg-srpm-macros >= 2.0.0
+%if 0%{?suse_version} == 1500
+# %%build and %%install use GCC 13 there
+BuildRequires:  gcc13 gcc13-c++
+%endif
 Provides:	geos%{_geosversion}-python >= %{version}
 
 %description
@@ -50,6 +54,11 @@ use GEOS
 %setup -q -n %{sname}-%{version}
 
 %build
+# Use a newer GCC on SLES 15 to install this version of GDAL:
+%if 0%{?suse_version} == 1500
+export CC=/usr/bin/gcc-13
+export CXX=/usr/bin/g++-13
+%endif
 %cmake .. \
 	-DCMAKE_INSTALL_PREFIX:PATH=%{geosinstdir} -DCMAKE_BUILD_TYPE=Release .. \
 	-D LIB_INSTALL_DIR=%{_lib} .
@@ -57,6 +66,12 @@ use GEOS
 %cmake_build
 
 %install
+# Use a newer GCC on SLES 15 to install this version of GDAL:
+%if 0%{?suse_version} == 1500
+export CC=/usr/bin/gcc-13
+export CXX=/usr/bin/g++-13
+%endif
+
 %cmake_install
 
 # Remove files we don't ship:
@@ -92,6 +107,9 @@ echo "%{geosinstdir}/%{_geoslibdir}/" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{geosinstdir}/%{_geoslibdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 3.15.0-2PGDG
+- Build using GCC 13 on SLES 15.
+
 * Tue Sep 1 2026 Devrim Gunduz <devrim@gunduz.org> - 3.15.0-1PGDG
 - Initial packaging of 3.15.X for the PostgreSQL RPM Repository:
   https://github.com/libgeos/geos/releases/tag/3.15.0
