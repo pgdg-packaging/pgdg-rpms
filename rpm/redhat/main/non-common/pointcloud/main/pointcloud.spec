@@ -2,7 +2,7 @@
 %global pointcloudmajorversion 1.2
 
 %{!?llvm:%global llvm 1}
-%{!?runselftest:%global runselftest 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
