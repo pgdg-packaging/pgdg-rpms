@@ -29,7 +29,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -42,12 +42,21 @@ BuildRequires:	python%{python3_pkgversion}-wheel
 Requires:	python%{python3_pkgversion}-argh python%{python3_pkgversion}-kiwisolver
 Requires:	python%{python3_pkgversion}-matplotlib python%{python3_pkgversion}-numpy
 Requires:	python%{python3_pkgversion}-packaging python%{python3_pkgversion}-pandas
-Requires:	python%{python3_pkgversion}-plac python3-psycopg3 >= 3.2.1
+Requires:	python3-psycopg3 >= 3.2.1
 Requires:	python%{python3_pkgversion}-pyparsing python%{python3_pkgversion}-six
+%if ! 0%{?amzn}
+Requires:	python%{python3_pkgversion}-plac
+%endif
 
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	python3-cycler python3-dateutil python3-pillow
 Requires:	python3-fonttools
+%endif
+
+%if 0%{?amzn} == 2023
+Requires:	python%{python3_pkgversion}-contourpy python%{python3_pkgversion}-cycler
+Requires:	python%{python3_pkgversion}-dateutil python%{python3_pkgversion}-fonttools
+Requires:	python%{python3_pkgversion}-pillow
 %endif
 
 %if 0%{?suse_version} >= 1500
@@ -111,6 +120,12 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-8PGDG
+- Fix Amazon Linux 2023 support: add the missing Requires (contourpy,
+  cycler, dateutil, fonttools, pillow), whose python3.13 packages are now
+  in the PostgreSQL RPM repository, and do not require plac there.
+  pg_statviz does not use it.
+
 * Mon Sep 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-7PGDG
 - Support AI features also on RHEL 10.
 
