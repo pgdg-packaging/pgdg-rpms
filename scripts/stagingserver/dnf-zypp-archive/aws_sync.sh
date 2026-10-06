@@ -37,7 +37,7 @@ Optional:
                If omitted, all architectures are synced.
   --pg         PostgreSQL version ($(IFS="|"; echo "${VALID_PG_VERSIONS[*]}"))
                If omitted, only the common repo is synced.
-  --extras=1   Sync extras (redhat only)
+  --extras=1   Sync the extras repo too (if there is one for this OS)
   --non-free   Sync non-free repos for all PG versions (redhat only)
   --delete-testing
                Remove the matching local testing repos after a sync
@@ -169,6 +169,17 @@ sync_pg_repo() {
   fi
 }
 
+sync_extras_repo() {
+  local a="$1"
+  local path="$BASE_DIR/extras/$osdistro/$osname-$ver-$a"
+  if [[ -d "$path" ]]; then
+    echo "Syncing extras repo: $path"
+    run_sync_cmd "$path" "$S3_BUCKET/extras/$osdistro/$osname-$ver-$a"
+  else
+    echo "[Skip] Missing extras repo dir: $path"
+  fi
+}
+
 sync_non_free_repos() {
   local pgver_filter="$1"  # if set, sync only this PG version; otherwise sync all
   if [[ "$osdistro" != "redhat" ]]; then
@@ -239,11 +250,13 @@ else
     fi
 
     if [[ "$extras" == "1" ]]; then
-      echo "Syncing extras repo for arch: $a"
-      run_sync_cmd "$BASE_DIR/extras/$osdistro/$a" "$S3_BUCKET/extras/$osdistro/$a"
-      synced_something=1
-      if [[ $delete_testing -eq 1 ]]; then
-        cleanup_testing_repo extras "$a"
+      any_sync_done=0
+      sync_extras_repo "$a"
+      if [[ $any_sync_done -eq 1 ]]; then
+        synced_something=1
+        if [[ $delete_testing -eq 1 ]]; then
+          cleanup_testing_repo extras "$a"
+        fi
       fi
     fi
   done

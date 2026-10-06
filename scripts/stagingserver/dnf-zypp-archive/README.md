@@ -78,7 +78,7 @@ Testing repos are left alone by default. With `--delete-testing`, after a succes
 │           └── rhel-9.6-x86_64/   ← removed after an extras sync with --delete-testing
 └── extras/
     └── redhat/
-        └── x86_64/
+        └── rhel-9.6-x86_64/
 ```
 
 ### Usage
@@ -95,7 +95,7 @@ aws_sync.sh --os <os> --ver <version> [--arch <arch>] [--pg <pg_version>] [optio
 | `--ver` | Yes | OS version, e.g. `9.6`, `10.0`, `42`, `2023` |
 | `--arch` | No | Architecture: `aarch64`, `ppc64le`, `x86_64`. If omitted, all three are synced. |
 | `--pg` | No | PostgreSQL major version, e.g. `16`. If omitted, the common repo is synced instead. |
-| `--extras=1` | No | Also sync the extras repo (redhat only). |
+| `--extras=1` | No | Also sync the extras repo, if there is one for this OS (Fedora has none). |
 | `--non-free` | No | Sync non-free repos for all PG versions (redhat only). |
 | `--delete-testing` | No | After a successful sync, remove the matching local testing repo (`testing/<pg>/`, `testing/common/` or `testing/extras/`). Off by default. |
 | `--dry-run` | No | Print what would be run without executing anything. |
@@ -155,7 +155,7 @@ aws_sync.sh --os amzn --ver 2023 --pg 16
    - If `--pg` was omitted → syncs `common/<osdistro>/<os>-<ver>-<arch>/` to S3.
    - If `--pg` was provided → syncs `<pg>/<osdistro>/<os>-<ver>-<arch>/` to S3.
    - If `--delete-testing` was given and that sync succeeded → removes `testing/<pg>/<osdistro>/<os>-<ver>-<arch>/` or `testing/common/<osdistro>/<os>-<ver>-<arch>/`.
-   - If `--extras=1` → syncs `extras/<osdistro>/<arch>/` to S3, and with `--delete-testing` removes `testing/extras/<osdistro>/<os>-<ver>-<arch>/`.
+   - If `--extras=1` → syncs `extras/<osdistro>/<os>-<ver>-<arch>/` to S3 (skipped if it does not exist locally), and with `--delete-testing` removes `testing/extras/<osdistro>/<os>-<ver>-<arch>/`.
 4. After the arch loop, if `--non-free` → syncs `non-free/<pgver>/` to `$S3_BUCKET/non-free/<pgver>/` for every entry in `VALID_PG_VERSIONS` (redhat only; local root: `/srv/yum/yum/non-free/`).
 
 ---
@@ -180,7 +180,7 @@ aws_sync_archive.sh --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver
 | `--arch` | No | Pin to one architecture. If omitted, all architectures are synced (via `aws_sync.sh`). |
 | `--os-version` | No | Pin to one OS version. If omitted, all valid versions for the OS are used. |
 | `--pg-version` | No | Pin to one PG major version. If omitted, all versions in `VALID_PG_VERSIONS` are used. |
-| `--extras=1` | No | Pass through to `aws_sync.sh` (redhat only). |
+| `--extras=1` | No | Pass through to `aws_sync.sh`. |
 | `--non-free` | No | Pass through to `aws_sync.sh`; sync non-free repos for all PG versions (redhat only). Rejected with an error if `--os-name` is not `redhat`. |
 | `--delete-testing` | No | Passed through to `aws_sync.sh`; remove the matching local testing repos after a sync. Off by default. |
 | `--dry-run` | No | Passed through to `aws_sync.sh`. |

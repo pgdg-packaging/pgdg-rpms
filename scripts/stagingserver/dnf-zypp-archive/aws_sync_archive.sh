@@ -30,9 +30,9 @@ Optional:
   --delete-testing Remove the matching local testing repos after a sync
   --dry-run        Simulate the operations
   --debug          Show debug output
+  --extras=1       Sync the extras repo too (if there is one for this OS)
 
 Redhat only:
-  --extras=1
   --non-free
 EOF
   exit 1
