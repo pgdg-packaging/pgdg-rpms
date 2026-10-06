@@ -3,10 +3,15 @@
 %if 0%{?rhel} && 0%{?rhel} == 10
 %global python3_pkgversion 3.12
 %endif
+%if 0%{?amzn} == 2023
+%global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.6.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	The official Python client for Ollama
 
 License:	MIT
@@ -41,6 +46,10 @@ projects with Ollama.}
 %doc README.md
 
 %changelog
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.2-2PGDG
+- Add Amazon Linux 2023 support (python3.13), for pg_statviz. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository to support pg_statviz
   package on RHEL 10, per:
