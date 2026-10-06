@@ -29,7 +29,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	8PGDG%{dist}
+Release:	9PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -38,6 +38,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+%if 0%{?suse_version}
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Requires:	python%{python3_pkgversion}-argh python%{python3_pkgversion}-kiwisolver
 Requires:	python%{python3_pkgversion}-matplotlib python%{python3_pkgversion}-numpy
@@ -66,7 +71,7 @@ Requires:	python%{python3_pkgversion}-Pillow python%{python3_pkgversion}-FontToo
 
 BuildArch:	noarch
 
-# AI deps. Currently only for Fedora and RHEL 10:
+# AI deps. Currently only for Fedora, RHEL 10 and Amazon Linux 2023:
 %if 0%{?fedora} >= 43
 # Claude:
 Requires:	python3-anthropic
@@ -79,12 +84,21 @@ Requires:	python3-google-genai
 %endif
 
 %if 0%{?rhel} && 0%{?rhel} == 10
+# Claude:
+Requires:	python3-anthropic
 # Local:
 Requires:	python3-ollama
 # OpenAI:
 Requires:	python3-openai
 # Gemini:
 Requires:	python3-google-genai
+%endif
+
+%if 0%{?amzn} == 2023
+# Claude:
+Requires:	python%{python3_pkgversion}-anthropic
+# Local:
+Requires:	python%{python3_pkgversion}-ollama
 %endif
 
 %description
@@ -120,6 +134,12 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
+- Support the Claude AI feature on RHEL 10, and the Claude and local
+  (Ollama) AI features on Amazon Linux 2023. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Add missing BR for %%pyproject_wheel macros.
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-8PGDG
 - Fix Amazon Linux 2023 support: add the missing Requires (contourpy,
   cycler, dateutil, fonttools, pillow), whose python3.13 packages are now
