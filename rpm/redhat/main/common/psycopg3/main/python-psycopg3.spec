@@ -34,7 +34,7 @@ Version:	3.2.13
 Release:	1PGDG%{?dist}
 %else
 Version:	3.3.6
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 %endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
@@ -69,7 +69,12 @@ BuildRequires:	pyproject-rpm-macros pyproject-srpm-macros
 %endif
 
 Requires:	libpq5 >= 10.0
+# psycopg only needs typing-extensions on Python < 3.13. We build against
+# python3.13 on Amazon Linux 2023, where python3-typing-extensions is the
+# module for the OS Python (3.9):
+%if ! 0%{?amzn}
 Requires:	python3-typing-extensions
+%endif
 
 %description
 Psycopg is the most popular PostgreSQL adapter for the Python
@@ -284,6 +289,11 @@ fi
 %endif
 
 %changelog
+* Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-43PGDG
+- Amazon Linux 2023: Do not require python3-typing-extensions. psycopg
+  only needs it on Python < 3.13, and we build against python3.13 there,
+  while python3-typing-extensions is for the OS Python (3.9).
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1:3.2.13-1PGDG
 - RHEL 9 only: Go back to psycopg 3.2.13, as psycopg 3.3 requires
   Python >= 3.10 and RHEL 9's python3 is 3.9 ("import psycopg" fails
