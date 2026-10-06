@@ -1,5 +1,9 @@
 %global	modname argh
 
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -20,6 +24,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros:
+%global	pythons python311
+%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -27,8 +34,10 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.31.3
-Release:	3PGDG%{?dist}
+# pg_statviz (the only consumer) requires argh < 0.30:
+Epoch:		1
+Version:	0.29.4
+Release:	1PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -41,6 +50,11 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-flit-core
 BuildRequires:	python%{python3_pkgversion}-pip
+%if 0%{?suse_version}
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros
+%endif
 
 Provides:	python3-%{modname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -75,6 +89,16 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.29.4-1PGDG
+- Downgrade to 0.29.4, and add Epoch to make it an upgrade. pg_statviz,
+  the only consumer of this package, requires argh < 0.30: newer argh
+  releases have breaking changes, and they have not been tested with
+  pg_statviz yet.
+- Add missing BR for %%pyproject_wheel macros. Builds failed on RHEL
+  and SLES without it.
+- Build the python311 flavor on SLES 15.
+- Add missing Fedora 45 pin (python3.15)
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.31.3-3PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
