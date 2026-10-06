@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.7.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	HTTP library with thread-safe connection pooling, file post, and more
 
 License:	MIT
@@ -72,6 +72,10 @@ many critical features that are missing from the Python standard libraries:
 # hatchling read the version from src/urllib3/_version.py instead; populate
 # that file here.
 echo '__version__ = "%{version}"' > src/urllib3/_version.py
+# hatchling leaves the files in .gitignore out of the wheel, and
+# src/urllib3/_version.py is there:
+sed -i '\|^src/urllib3/_version.py$|d' .gitignore
+if grep -q '_version.py' .gitignore; then exit 1; fi
 
 # Make sure that the RECENT_DATE value doesn't get too far behind what the current date is.
 # RECENT_DATE must not be older that 2 years from the build time, or else test_recent_date
@@ -108,6 +112,11 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %{python3_sitelib}/%{modname}/*
 
 %changelog
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.7.0-3PGDG
+- Package src/urllib3/_version.py: it is in .gitignore, so hatchling left it
+  out of the wheel, and "import urllib3" failed. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.7.0-2PGDG
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
