@@ -1,0 +1,1 @@
+../main/pgx-bm25.spec
