@@ -58,7 +58,7 @@ BuildRequires:	pyproject-rpm-macros
 %description
 Google Gen AI Python SDK provides an interface for developers to integrate
 generative models of Google into their Python applications. It supports the
-Gemini Developer API and Vertex AI APIs.}
+Gemini Developer API and Vertex AI APIs.
 
 %prep
 %autosetup -p0 -n %{pypi_name}-%{version}
@@ -106,7 +106,7 @@ grep -q '^license = { text = "Apache-2.0" }$' pyproject.toml
 %doc README.md
 
 %changelog
-* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-2PGDG
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.66.0-2PGDG
 - Add Amazon Linux 2023 support with 1.66.0, and SLES 16 support with
   1.55.0, the newest releases that work with the dependencies there. Both
   for pg_statviz. Per

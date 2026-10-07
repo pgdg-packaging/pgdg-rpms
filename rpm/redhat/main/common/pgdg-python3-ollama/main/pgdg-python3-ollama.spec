@@ -23,7 +23,7 @@ BuildRequires:	python%{python3_pkgversion}-devel pyproject-rpm-macros
 
 %description
 The Ollama Python library provides the easiest way to integrate Python 3.8+
-projects with Ollama.}
+projects with Ollama.
 
 %prep
 %autosetup -n %{pypi_name}-%{version}

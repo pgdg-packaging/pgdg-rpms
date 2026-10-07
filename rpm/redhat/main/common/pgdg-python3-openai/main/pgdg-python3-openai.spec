@@ -100,7 +100,7 @@ grep -q '^requires = \["hatchling", ' pyproject.toml
 %{_bindir}/openai
 
 %changelog
-* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-2PGDG
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.28.0-2PGDG
 - Add Amazon Linux 2023 support with 2.28.0, the newest release that works
   with typing-extensions 4.12.2 and anyio 4.9.0 there.
 - Add SLES 16 support, with 1.39.0 and the httpx 0.28 patch, as SLES 16 has

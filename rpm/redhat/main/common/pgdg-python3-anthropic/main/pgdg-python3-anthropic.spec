@@ -43,13 +43,13 @@ BuildRequires:	python3-aiohttp python3-boto3 python3-botocore
 
 
 %description
-The Claude SDK for Python provides access to the Claude API from Python applications.}
+The Claude SDK for Python provides access to the Claude API from Python applications.
 
 %package -n python%{python3_pkgversion}-anthropic
 Summary:	The official Python library for the anthropic API
 
 %description -n python%{python3_pkgversion}-anthropic
-The Claude SDK for Python provides access to the Claude API from Python applications.}
+The Claude SDK for Python provides access to the Claude API from Python applications.
 
 
 %prep
@@ -86,7 +86,7 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %license LICENSE
 
 %changelog
-* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.40.0-1PGDG
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-1PGDG
 - Add RHEL 10 and Amazon Linux 2023 support for pg_statviz. Use 0.40.0
   there, without the extras: newer releases need typing-extensions >= 4.10
   and httpx2. Fedora stays on 1.11.0. Per
