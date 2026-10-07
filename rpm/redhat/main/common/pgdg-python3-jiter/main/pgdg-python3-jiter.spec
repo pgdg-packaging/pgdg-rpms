@@ -50,7 +50,12 @@ BuildRequires:	pyproject-rpm-macros
 %endif
 %if 0%{?amzn} == 2023
 BuildRequires:	python%{python3_pkgversion}-maturin >= 1.15.0
-%else
+%endif
+%if 0%{?suse_version}
+# SLES 16 has maturin 1.8.7, which builds this release too:
+BuildRequires:	python%{python3_pkgversion}-maturin
+%endif
+%if ! 0%{?amzn} && ! 0%{?suse_version}
 BuildRequires:	maturin >= 1.15.0
 %endif
 # rust-version in Cargo.toml of this release:
@@ -98,5 +103,5 @@ export MATURIN_PEP517_ARGS="--frozen"
 %changelog
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.17.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
-  anthropic dependency (for pg_statviz) on RHEL 10 and Amazon Linux 2023.
-  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+  anthropic dependency (for pg_statviz) on RHEL 10, Amazon Linux 2023 and
+  SLES 16. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/249

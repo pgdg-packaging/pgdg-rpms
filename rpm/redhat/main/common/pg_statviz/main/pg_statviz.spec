@@ -106,6 +106,11 @@ Requires:	python%{python3_pkgversion}-google-genai
 %endif
 
 %if 0%{?suse_version} == 1600
+# Claude:
+Requires:	python%{python3_pkgversion}-anthropic
+# Local (0.4.7 of SLES 16 has no "think" argument in chat(), which
+# pg_statviz uses; 0.5 and later are in the PostgreSQL RPM repository):
+Requires:	python%{python3_pkgversion}-ollama >= 0.5
 # OpenAI:
 Requires:	python%{python3_pkgversion}-openai
 # Gemini:
@@ -151,8 +156,8 @@ Best served with pg_statviz extensions package, which includes the extension fil
 - Do not require python3-anthropic on Fedora 43, where anthropic 1.x
   cannot be built (no httpx2). The Claude feature is not available there.
 - Support the OpenAI and Gemini AI features on Amazon Linux 2023.
-- Add SLES 16 support, with the OpenAI and Gemini AI features.
-  Per
+- Add SLES 16 support, with the Claude, local (Ollama), OpenAI and Gemini
+  AI features. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
 
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
