@@ -3,7 +3,7 @@
 %global plrmajver 8
 %global plrmidver 4
 %global plrminver 8
-%global plrfinver 7
+%global plrfinver 9
 
 %{!?llvm:%global llvm 1}
 %{!?runselftest:%global runselftest 0}
@@ -22,7 +22,7 @@
 Summary:	Procedural language interface between PostgreSQL and R
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plrmajver}.%{plrmidver}.%{plrminver}.%{plrfinver}
-Release:	3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/postgres-%{sname}/%{sname}/archive/REL%{plrmajver}_%{plrmidver}_%{plrminver}_%{plrfinver}.tar.gz
 URL:		https://github.com/postgres-%{sname}/%{sname}
@@ -97,6 +97,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{bui
 %endif
 
 %changelog
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 8.4.8.9-1PGDG
+- Update to 8.4.8.9 per changes described at:
+  https://github.com/postgres-plr/plr/releases/tag/REL8_4_8_9
+  and https://github.com/postgres-plr/plr/releases/tag/REL8_4_8_8
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 8.4.8.7-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
