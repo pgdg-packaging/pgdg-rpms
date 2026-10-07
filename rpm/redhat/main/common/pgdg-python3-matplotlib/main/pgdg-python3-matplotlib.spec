@@ -10,6 +10,9 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -36,11 +39,18 @@ URL:		https://matplotlib.org/
 Source0:	https://files.pythonhosted.org/packages/source/m/%{modname}/%{modname}-%{version}.tar.gz
 
 BuildRequires:	python%{python3_pkgversion}-devel
+%if ! 0%{?suse_version}
+BuildRequires:	pyproject-rpm-macros
+%endif
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-meson-python >= 0.13.1
 BuildRequires:	python%{python3_pkgversion}-pybind11 >= 2.6
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm >= 7
+%if 0%{?rhel} == 9
+BuildRequires:	python%{python3_pkgversion}-numpy
+%else
 BuildRequires:	python%{python3_pkgversion}-numpy >= 2.0.0
+%endif
 BuildRequires:	gcc gcc-c++ ninja-build pkgconfig
 BuildRequires:	freetype-devel qhull-devel
 
@@ -88,3 +98,5 @@ export PKG_CONFIG_PATH=$(%{__python3} -m pybind11 --pkgconfigdir)
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 3.9.4-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.
+- Add RHEL 9 support (python3.12), for pg_statviz. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
