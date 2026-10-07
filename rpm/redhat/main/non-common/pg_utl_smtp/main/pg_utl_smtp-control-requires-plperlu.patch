@@ -1,0 +1,7 @@
+--- pg_utl_smtp.control.old
++++ pg_utl_smtp.control
+@@ -3,3 +3,4 @@
+ module_pathname = '$libdir/pg_utl_smtp'
+ schema = 'utl_smtp'
+ relocatable = false
++requires = 'plperlu'
