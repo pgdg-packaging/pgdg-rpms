@@ -29,7 +29,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	9PGDG%{dist}
+Release:	10PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -49,9 +49,6 @@ Requires:	python%{python3_pkgversion}-matplotlib python%{python3_pkgversion}-num
 Requires:	python%{python3_pkgversion}-packaging python%{python3_pkgversion}-pandas
 Requires:	python3-psycopg3 >= 3.2.1
 Requires:	python%{python3_pkgversion}-pyparsing python%{python3_pkgversion}-six
-%if ! 0%{?amzn}
-Requires:	python%{python3_pkgversion}-plac
-%endif
 
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	python3-cycler python3-dateutil python3-pillow
@@ -71,10 +68,13 @@ Requires:	python%{python3_pkgversion}-Pillow python%{python3_pkgversion}-FontToo
 
 BuildArch:	noarch
 
-# AI deps. Currently only for Fedora, RHEL 10 and Amazon Linux 2023:
+# AI deps. Currently only for Fedora, RHEL 10, Amazon Linux 2023 and SLES 16:
 %if 0%{?fedora} >= 43
-# Claude:
+# Claude (not on Fedora 43: it has no httpx2 for anthropic 1.x, and 0.x
+# prints a pydantic warning with Python 3.14 on every run):
+%if 0%{?fedora} >= 44
 Requires:	python3-anthropic
+%endif
 # Local:
 Requires:	python3-ollama
 # OpenAI:
@@ -99,6 +99,17 @@ Requires:	python3-google-genai
 Requires:	python%{python3_pkgversion}-anthropic
 # Local:
 Requires:	python%{python3_pkgversion}-ollama
+# OpenAI:
+Requires:	python%{python3_pkgversion}-openai
+# Gemini:
+Requires:	python%{python3_pkgversion}-google-genai
+%endif
+
+%if 0%{?suse_version} == 1600
+# OpenAI:
+Requires:	python%{python3_pkgversion}-openai
+# Gemini:
+Requires:	python%{python3_pkgversion}-google-genai
 %endif
 
 %description
@@ -134,6 +145,16 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-10PGDG
+- Do not require plac on any distro: pg_statviz does not use it, and it
+  blocked the installation on Fedora.
+- Do not require python3-anthropic on Fedora 43, where anthropic 1.x
+  cannot be built (no httpx2). The Claude feature is not available there.
+- Support the OpenAI and Gemini AI features on Amazon Linux 2023.
+- Add SLES 16 support, with the OpenAI and Gemini AI features.
+  Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
 - Support the Claude AI feature on RHEL 10, and the Claude and local
   (Ollama) AI features on Amazon Linux 2023. Per
