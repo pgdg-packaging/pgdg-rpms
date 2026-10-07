@@ -28,7 +28,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.3.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Python library providing high-performance data analysis tools
 
 License:	BSD-3-Clause
@@ -37,14 +37,26 @@ Source0:	https://files.pythonhosted.org/packages/source/p/%{modname}/%{modname}-
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
-BuildRequires:	python%{python3_pkgversion}-cython >= 3.0
 BuildRequires:	python%{python3_pkgversion}-meson-python >= 0.13.1
+BuildRequires:	gcc gcc-c++
+%if 0%{?suse_version}
+BuildRequires:	python-rpm-macros ninja
+BuildRequires:	python%{python3_pkgversion}-Cython >= 3.0
+BuildRequires:	python%{python3_pkgversion}-numpy-devel >= 2.0
+%else
+BuildRequires:	ninja-build
+BuildRequires:	python%{python3_pkgversion}-cython >= 3.0
 BuildRequires:	python%{python3_pkgversion}-numpy >= 2.0
-BuildRequires:	gcc gcc-c++ ninja-build
+%endif
 
-Requires:	python%{python3_pkgversion}-dateutil >= 2.8.2
 Requires:	python%{python3_pkgversion}-numpy >= 1.26.0
 Requires:	python%{python3_pkgversion}-pytz >= 2020.1
+%if 0%{?suse_version}
+Requires:	python%{python3_pkgversion}-python-dateutil >= 2.8.2
+Requires:	python%{python3_pkgversion}-tzdata
+%else
+Requires:	python%{python3_pkgversion}-dateutil >= 2.8.2
+%endif
 
 %description
 pandas is a Python package providing fast, flexible, and expressive data
@@ -61,8 +73,10 @@ sed -i 's|^import versioneer$|# import versioneer|' generate_version.py
 grep -q '^# import versioneer$' generate_version.py
 
 %build
+%if 0%{?amzn} == 2023
 # Cython is installed as cython%{python3_pkgversion} on Amazon Linux 2023:
 export CYTHON=%{_bindir}/cython%{python3_pkgversion}
+%endif
 %pyproject_wheel
 
 %install
@@ -75,6 +89,10 @@ export CYTHON=%{_bindir}/cython%{python3_pkgversion}
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-2PGDG
+- Add SLES 16 support, for pg_statviz: SLES 16 has no pandas. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.
