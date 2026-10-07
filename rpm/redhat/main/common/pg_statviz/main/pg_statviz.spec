@@ -76,8 +76,7 @@ Requires:	python%{python3_pkgversion}-Pillow python%{python3_pkgversion}-FontToo
 
 BuildArch:	noarch
 
-# AI deps. Currently only for Fedora, RHEL 10, Amazon Linux 2023 and SLES 16
-# (RHEL 9 has none of their dependencies for python3.12):
+# AI deps:
 %if 0%{?fedora} >= 43
 # Claude (not on Fedora 43: it has no httpx2 for anthropic 1.x, and 0.x
 # prints a pydantic warning with Python 3.14 on every run):
@@ -103,7 +102,7 @@ Requires:	python3-openai
 Requires:	python3-google-genai
 %endif
 
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 # Claude:
 Requires:	python%{python3_pkgversion}-anthropic
 # Local:
@@ -167,7 +166,8 @@ Best served with pg_statviz extensions package, which includes the extension fil
 - Support the OpenAI and Gemini AI features on Amazon Linux 2023.
 - Add SLES 16 support, with the Claude, local (Ollama), OpenAI and Gemini
   AI features.
-- Add RHEL 9 support (python3.12), without the AI features. Per
+- Add RHEL 9 support (python3.12), with the Claude, local (Ollama), OpenAI
+  and Gemini AI features. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
 
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
