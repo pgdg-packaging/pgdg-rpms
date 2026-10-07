@@ -3,6 +3,11 @@
 %if 0%{?rhel} && 0%{?rhel} == 10
 %global python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -71,6 +76,7 @@ projects with Ollama.
 %changelog
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.2-2PGDG
 - Add Amazon Linux 2023 support (python3.13), for pg_statviz.
+- Add RHEL 9 support (python3.12), for pg_statviz.
 - Add SLES 16 support, for pg_statviz: the python313-ollama 0.4.7 of SLES 16
   has no "think" argument in chat(), which pg_statviz uses. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249

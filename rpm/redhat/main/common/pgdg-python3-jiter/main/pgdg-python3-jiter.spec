@@ -10,6 +10,9 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -48,14 +51,14 @@ BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 BuildRequires:	python%{python3_pkgversion}-maturin >= 1.15.0
 %endif
 %if 0%{?suse_version}
 # SLES 16 has maturin 1.8.7, which builds this release too:
 BuildRequires:	python%{python3_pkgversion}-maturin
 %endif
-%if ! 0%{?amzn} && ! 0%{?suse_version}
+%if ! 0%{?amzn} && ! 0%{?suse_version} && 0%{?rhel} != 9
 BuildRequires:	maturin >= 1.15.0
 %endif
 # rust-version in Cargo.toml of this release:
@@ -105,3 +108,5 @@ export MATURIN_PEP517_ARGS="--frozen"
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   anthropic dependency (for pg_statviz) on RHEL 10, Amazon Linux 2023 and
   SLES 16. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Add RHEL 9 support (python3.12), for pg_statviz. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249

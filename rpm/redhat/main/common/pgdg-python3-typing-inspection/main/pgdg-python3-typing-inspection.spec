@@ -10,6 +10,9 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -38,6 +41,9 @@ Source0:	https://files.pythonhosted.org/packages/source/t/%{pymodname}/%{pymodna
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
+%if ! 0%{?suse_version}
+BuildRequires:	pyproject-rpm-macros
+%endif
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-hatchling
 
@@ -48,6 +54,12 @@ typing-inspection provides tools to inspect type annotations at runtime.
 
 %prep
 %autosetup -n %{pymodname}-%{version}
+%if 0%{?rhel} == 9
+# The license-files array of PEP 639 needs hatchling 1.27, RHEL 9 has 1.25
+# (1.27 needs packaging 24.2). The license file is still packaged below:
+sed -i "/^license-files = \['LICENSE'\]$/d" pyproject.toml
+if grep -q '^license-files' pyproject.toml; then exit 1; fi
+%endif
 
 %build
 %pyproject_wheel
@@ -65,4 +77,8 @@ typing-inspection provides tools to inspect type annotations at runtime.
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pydantic dependency (for pg_statviz) on Amazon Linux 2023. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Add RHEL 9 support (python3.12), for pg_statviz. Drop the license-files
+  key there, as hatchling 1.25 of RHEL 9 does not support its PEP 639 form.
+  Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249

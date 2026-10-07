@@ -1,3 +1,8 @@
+%if 0%{?rhel} == 9
+%global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -12,7 +17,7 @@
 # 4.12.2 for python3.13; 0.86 and later need >= 4.14, SLES 16 has 4.13.2) and
 # httpx2, which are not available there. pg_statviz only uses the Messages
 # API, which 0.40.0 supports.
-%if 0%{?rhel} == 10 || 0%{?amzn} == 2023 || 0%{?suse_version} == 1600
+%if 0%{?rhel} == 9 || 0%{?rhel} == 10 || 0%{?amzn} == 2023 || 0%{?suse_version} == 1600
 %global	oldsdk 1
 %else
 %global	oldsdk 0
@@ -115,7 +120,7 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 
 %changelog
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-1PGDG
-- Add RHEL 10, Amazon Linux 2023 and SLES 16 support for pg_statviz. Use
+- Add RHEL 9, RHEL 10, Amazon Linux 2023 and SLES 16 support for pg_statviz. Use
   0.40.0 there, without the extras: newer releases need typing-extensions >= 4.10
   and httpx2. Fedora stays on 1.11.0. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249

@@ -10,6 +10,9 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -38,6 +41,9 @@ Source0:	https://files.pythonhosted.org/packages/source/t/%{pymodname}/%{pymodna
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
+%if ! 0%{?suse_version}
+BuildRequires:	pyproject-rpm-macros
+%endif
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
@@ -66,4 +72,6 @@ adding retry behavior to just about anything.
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 9.1.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   google-genai dependency (for pg_statviz) on Amazon Linux 2023. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Add RHEL 9 support (python3.12), for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249

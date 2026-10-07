@@ -3,6 +3,11 @@
 %if 0%{?rhel} && 0%{?rhel} == 10
 %global python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -14,9 +19,9 @@
 %endif
 
 # RHEL 10 (typing-extensions 4.9.0) and SLES 16 (no jiter) stay on 1.39.0.
-# Amazon Linux 2023 uses the newest release that works with its
+# Amazon Linux 2023 and RHEL 9 use the newest release that works with their
 # typing-extensions 4.12.2 and anyio 4.9.0.
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 %global	oldsdk 0
 %else
 %global	oldsdk 1
@@ -105,6 +110,7 @@ grep -q '^requires = \["hatchling", ' pyproject.toml
   with typing-extensions 4.12.2 and anyio 4.9.0 there.
 - Add SLES 16 support, with 1.39.0 and the httpx 0.28 patch, as SLES 16 has
   no jiter.
+- Add RHEL 9 support (python3.12), with 2.28.0.
 - Both for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
 

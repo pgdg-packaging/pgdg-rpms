@@ -1,0 +1,1 @@
+../main/pgdg-python3-poetry-core.spec

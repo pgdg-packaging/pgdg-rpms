@@ -3,6 +3,11 @@
 %if 0%{?rhel} && 0%{?rhel} == 10
 %global python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -19,10 +24,10 @@ Name:		python%{python3_pkgversion}-google-genai
 # cryptography >= 38) and typing-extensions 4.12.2 (1.67.0 uses the
 # extra_items argument of TypedDict, which needs 4.13), SLES 16 the newest one
 # that works with its google-auth 2.38.
-%if 0%{?rhel}
+%if 0%{?rhel} == 10
 Version:	1.0.0
 %endif
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 Version:	1.66.0
 %endif
 %if 0%{?suse_version}
@@ -34,7 +39,7 @@ Summary:	Google GenAI Python SDK
 License:	Apache-2.0
 URL:		https://github.com/googleapis/python-genai
 Source0:	https://files.pythonhosted.org/packages/source/g/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
-%if 0%{?rhel}
+%if 0%{?rhel} == 10
 # pyproject.toml has no build-backend key, so the pyproject macros treat this as a
 # legacy project and look for a setup.py:
 Patch0:		google-genai-add-build-backend.patch
@@ -62,16 +67,16 @@ Gemini Developer API and Vertex AI APIs.
 
 %prep
 %autosetup -p0 -n %{pypi_name}-%{version}
-%if ! 0%{?rhel}
+%if 0%{?rhel} != 10
 # pyproject.toml has no build-backend key, so the pyproject macros treat this
 # as a legacy project and look for a setup.py. twine, packaging and pkginfo
 # are only needed for uploading to PyPI:
 sed -i 's|^requires = \["setuptools", "wheel", "twine>=6.1.0", "packaging>=24.2", "pkginfo>=1.12.0"\]$|requires = ["setuptools", "wheel"]\nbuild-backend = "setuptools.build_meta"|' pyproject.toml
 grep -q '^build-backend = "setuptools.build_meta"$' pyproject.toml
 %endif
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 # The license metadata uses PEP 639, which needs setuptools >= 77. Use the
-# older format, as Amazon Linux 2023 has setuptools 69:
+# older format, as Amazon Linux 2023 has setuptools 69 (RHEL 9: 68):
 sed -i 's|^license = "Apache-2.0"$|license = { text = "Apache-2.0" }|' pyproject.toml
 grep -q '^license = { text = "Apache-2.0" }$' pyproject.toml
 %endif
@@ -107,7 +112,7 @@ grep -q '^license = { text = "Apache-2.0" }$' pyproject.toml
 
 %changelog
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.66.0-2PGDG
-- Add Amazon Linux 2023 support with 1.66.0, and SLES 16 support with
+- Add Amazon Linux 2023 and RHEL 9 support with 1.66.0, and SLES 16 support with
   1.55.0, the newest releases that work with the dependencies there. Both
   for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249

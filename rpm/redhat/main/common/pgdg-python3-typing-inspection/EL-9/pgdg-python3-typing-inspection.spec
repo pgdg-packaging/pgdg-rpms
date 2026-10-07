@@ -1,0 +1,1 @@
+../main/pgdg-python3-typing-inspection.spec
