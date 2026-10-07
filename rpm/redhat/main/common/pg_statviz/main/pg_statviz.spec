@@ -12,6 +12,9 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -47,15 +50,20 @@ BuildRequires:	pyproject-rpm-macros
 Requires:	python%{python3_pkgversion}-argh python%{python3_pkgversion}-kiwisolver
 Requires:	python%{python3_pkgversion}-matplotlib python%{python3_pkgversion}-numpy
 Requires:	python%{python3_pkgversion}-packaging python%{python3_pkgversion}-pandas
+%if 0%{?rhel} == 9
+# python3-psycopg3 is for python3 (3.9) of RHEL 9:
+Requires:	python%{python3_pkgversion}-psycopg3 >= 3.2.1
+%else
 Requires:	python3-psycopg3 >= 3.2.1
+%endif
 Requires:	python%{python3_pkgversion}-pyparsing python%{python3_pkgversion}-six
 
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 10
 Requires:	python3-cycler python3-dateutil python3-pillow
 Requires:	python3-fonttools
 %endif
 
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 Requires:	python%{python3_pkgversion}-contourpy python%{python3_pkgversion}-cycler
 Requires:	python%{python3_pkgversion}-dateutil python%{python3_pkgversion}-fonttools
 Requires:	python%{python3_pkgversion}-pillow
@@ -68,7 +76,8 @@ Requires:	python%{python3_pkgversion}-Pillow python%{python3_pkgversion}-FontToo
 
 BuildArch:	noarch
 
-# AI deps. Currently only for Fedora, RHEL 10, Amazon Linux 2023 and SLES 16:
+# AI deps. Currently only for Fedora, RHEL 10, Amazon Linux 2023 and SLES 16
+# (RHEL 9 has none of their dependencies for python3.12):
 %if 0%{?fedora} >= 43
 # Claude (not on Fedora 43: it has no httpx2 for anthropic 1.x, and 0.x
 # prints a pydantic warning with Python 3.14 on every run):
@@ -157,7 +166,8 @@ Best served with pg_statviz extensions package, which includes the extension fil
   cannot be built (no httpx2). The Claude feature is not available there.
 - Support the OpenAI and Gemini AI features on Amazon Linux 2023.
 - Add SLES 16 support, with the Claude, local (Ollama), OpenAI and Gemini
-  AI features. Per
+  AI features.
+- Add RHEL 9 support (python3.12), without the AI features. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
 
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
