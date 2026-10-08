@@ -23,13 +23,13 @@
 %global	oldsdk 0
 %endif
 
-Name:		python-anthropic
+Name:		python%{python3_pkgversion}-anthropic
 %if %{oldsdk}
 Version:	0.40.0
 %else
 Version:	1.12.1
 %endif
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	The official Python library for the anthropic API
 
 License:	MIT
@@ -57,23 +57,8 @@ BuildRequires:	python3-httpx2 python3-jiter python3-sniffio
 BuildRequires:	python3-aiohttp python3-boto3 python3-botocore
 %endif
 
-
 %description
 The Claude SDK for Python provides access to the Claude API from Python applications.
-
-%package -n python%{python3_pkgversion}-anthropic
-Summary:	The official Python library for the anthropic API
-%if 0%{?suse_version}
-# The SUSE macros do not generate these:
-Requires:	python%{python3_pkgversion}-anyio python%{python3_pkgversion}-distro
-Requires:	python%{python3_pkgversion}-httpx python%{python3_pkgversion}-jiter
-Requires:	python%{python3_pkgversion}-pydantic python%{python3_pkgversion}-sniffio
-Requires:	python%{python3_pkgversion}-typing_extensions
-%endif
-
-%description -n python%{python3_pkgversion}-anthropic
-The Claude SDK for Python provides access to the Claude API from Python applications.
-
 
 %prep
 %autosetup -p0 -n anthropic-%{version}
@@ -119,6 +104,9 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %license LICENSE
 
 %changelog
+* Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.12.1-2PGDG
+- Update package name so that it matches our other Python packages.
+
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.12.1-1PGDG
 - Update to 1.12.1 per changes described at:
   https://github.com/anthropics/anthropic-sdk-python/releases#release-v1.12.1
