@@ -1,0 +1,46 @@
+Backport of https://github.com/apache/datasketches-postgresql/pull/78 (merged
+after 1.7.0): aod_sketch_union() crashed the backend when the sketches had a
+different num_values than the one passed to it. Raise an error instead.
+
+--- src/aod_sketch_c_adapter.cpp
++++ src/aod_sketch_c_adapter.cpp
+@@ -157,6 +157,16 @@ char* aod_sketch_to_string(const void* sketchptr, bool print_entries) {
+   pg_unreachable();
+ }
+ 
++unsigned aod_sketch_get_num_values(const void* sketchptr) {
++  try {
++    uint8_t num_values = static_cast<const compact_aod_sketch_pg*>(sketchptr)->get_num_values();
++    return num_values;
++  } catch (std::exception& e) {
++    pg_error(e.what());
++  }
++  pg_unreachable();
++}
++
+ ptr_with_size aod_sketch_serialize(const void* sketchptr, unsigned header_size) {
+   try {
+     ptr_with_size p;
+--- src/aod_sketch_c_adapter.h
++++ src/aod_sketch_c_adapter.h
+@@ -39,6 +39,7 @@ double update_aod_sketch_get_estimate(const void* sketchptr);
+ double compact_aod_sketch_get_estimate(const void* sketchptr);
+ void** aod_sketch_get_estimate_and_bounds(const void* sketchptr, unsigned num_std_devs);
+ char* aod_sketch_to_string(const void* sketchptr, bool print_entries);
++unsigned aod_sketch_get_num_values(const void* sketchptr);
+ 
+ struct ptr_with_size aod_sketch_serialize(const void* sketchptr, unsigned header_size);
+ void* aod_sketch_deserialize(const char* buffer, unsigned length);
+--- src/aod_sketch_pg_functions.c
++++ src/aod_sketch_pg_functions.c
+@@ -189,6 +189,10 @@ Datum pg_aod_sketch_union_agg(PG_FUNCTION_ARGS) {
+ 
+   sketch_bytes = PG_GETARG_BYTEA_P(1);
+   sketchptr = aod_sketch_deserialize(VARDATA(sketch_bytes), VARSIZE(sketch_bytes) - VARHDRSZ);
++  if (stateptr->num_values != aod_sketch_get_num_values(sketchptr)) {
++    compact_aod_sketch_delete(sketchptr);
++    elog(ERROR, "pg_aod_sketch_union_agg expects the same num_values in sketches");
++  }
+   aod_union_update(stateptr->ptr, sketchptr);
+   compact_aod_sketch_delete(sketchptr);
+ 
