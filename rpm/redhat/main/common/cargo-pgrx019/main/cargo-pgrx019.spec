@@ -21,7 +21,7 @@ Source1:	https://raw.githubusercontent.com/pgcentralfoundation/pgrx/v%{version}/
 #   cargo vendor --locked vendor
 #   tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - vendor | xz -T0 -6 > ../cargo-pgrx-%%{version}-vendor.tar.xz
 # It has to be made again for every new version.
-Source2:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{crate}-%{version}-vendor.tar.xz
+Source2:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{crate}/%{crate}-%{version}-vendor.tar.xz
 
 # This release of cargo-pgrx (and pgrx) needs Rust 1.96:
 BuildRequires:	rust >= 1.96
