@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.5.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	A fast implementation of the Cassowary constraint solver
 
 License:	BSD-3-Clause
@@ -57,8 +57,9 @@ matplotlib.
 %prep
 %autosetup -n %{modname}-%{version}
 # setuptools checks the classifiers against trove-classifiers when it is
-# installed, and older releases of it do not know Python 3.15:
-sed -i '/"Programming Language :: Python :: 3.15",/d' pyproject.toml
+# installed, and older releases of it do not know some of them (Python 3.15,
+# GraalPy). The classifiers are only metadata, so remove all of them:
+sed -i '/^  classifiers = \[/,/^  \]/d' pyproject.toml
 
 %build
 %pyproject_wheel
@@ -73,6 +74,10 @@ sed -i '/"Programming Language :: Python :: 3.15",/d' pyproject.toml
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-3PGDG
+- Remove all classifiers, not only Python 3.15: older trove-classifiers
+  releases do not know the GraalPy classifier either.
+
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-2PGDG
 - Remove the Python 3.15 classifier, which fails the build when an
   older trove-classifiers is installed.
