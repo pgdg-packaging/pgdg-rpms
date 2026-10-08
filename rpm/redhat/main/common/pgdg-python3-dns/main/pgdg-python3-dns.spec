@@ -17,6 +17,7 @@
 %endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
+%global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
 %if 0%{?suse_version} == 1600
@@ -26,7 +27,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	50PGDG%{?dist}
+Release:	51PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -41,6 +42,7 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -84,6 +86,14 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-51PGDG
+- Set the version statically in pyproject.toml, so that the package does not
+  install dnspython-0.0.0.dist-info, which made security scanners report
+  CVEs that are already fixed in 2.8.0. Patch by Surabhi Bhat. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/pull/243
+- Add missing python3-wheel BR
+- Set __python3 on SLES 15, so that the build uses python3.11
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-50PGDG
 - Remove Fedora <= 42 support
 
