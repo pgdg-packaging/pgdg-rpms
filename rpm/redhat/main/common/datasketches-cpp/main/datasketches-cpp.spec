@@ -1,11 +1,11 @@
 %global _vpath_builddir .
 %global _libdir /usr/lib64
 
-Summary:	Routing functionality for PostGIS
+Summary:	Core C++ library of Apache DataSketches
 Name:		datasketches-cpp
-Version:	5.2.0
-Release:	4PGDG%{dist}
-License:	GPLv2+
+Version:	5.3.0
+Release:	1PGDG%{dist}
+License:	Apache-2.0
 Source0:	https://github.com/apache/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		%{name}-cmakelist-lib64.patch
 URL:		https://github.com/apache/%{name}/
@@ -31,6 +31,15 @@ create adaptors for target systems, such as PostgreSQL.
 %patch -P 0 -p0
 
 %build
+%if 0%{?suse_version}
+# SUSE's %%cmake creates and enters the build directory itself:
+%cmake \
+	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DBUILD_TESTS=OFF \
+	-DLIB_INSTALL_DIR=%{_libdir}
+%cmake_build
+%else
 %{__install} -d build
 pushd build
 %cmake .. \
@@ -40,13 +49,18 @@ pushd build
 	-DLIB_INSTALL_DIR=%{_libdir}
 %cmake_build
 popd
+%endif
 
 
 %install
 %{__rm} -rf %{buildroot}
+%if 0%{?suse_version}
+%cmake_install
+%else
 pushd build
 %cmake_install
 popd
+%endif
 
 %files
 %defattr(644,root,root,755)
@@ -58,6 +72,12 @@ popd
 %{_libdir}/DataSketches/*
 
 %changelog
+* Thu Oct 8 2026 Devrim Gündüz <devrim@gunduz.org> - 5.3.0-1PGDG
+- Update to 5.3.0 per changes described at:
+  https://github.com/apache/datasketches-cpp/releases/tag/5.3.0
+- Fix Summary and License tags
+- Fix SLES builds: SUSE's %%cmake macro creates the build directory itself
+
 * Tue Apr 28 2026 Devrim Gündüz <devrim@gunduz.org> - 5.2.0-4PGDG
 - (Once again) fix builds against CMake 4. Per #167
 
