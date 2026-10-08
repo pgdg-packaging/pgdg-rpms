@@ -60,6 +60,10 @@ This package is built without the optional Cython extensions.
 %autosetup -n %{modname}-%{version}
 
 %build
+# Do not build the optional Cython extensions, even when Cython is
+# installed. They need Cython >= 3.1, which is newer than the Cython of
+# some distros (AL2023 has 3.0):
+export FONTTOOLS_WITH_CYTHON=0
 %pyproject_wheel
 
 %install
@@ -80,3 +84,5 @@ This package is built without the optional Cython extensions.
   pg_statviz dependency on Amazon Linux 2023.
 - Add RHEL 9 support (python3.12), for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Do not build the Cython extensions when Cython is installed, they
+  need Cython >= 3.1.
