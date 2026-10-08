@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.66.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Tools to manipulate font files
 
 License:	MIT
@@ -79,10 +79,12 @@ export FONTTOOLS_WITH_CYTHON=0
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 4.66.1-2PGDG
+- Do not build the Cython extensions when Cython is installed, they
+  need Cython >= 3.1.
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 4.66.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.
 - Add RHEL 9 support (python3.12), for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
-- Do not build the Cython extensions when Cython is installed, they
-  need Cython >= 3.1.

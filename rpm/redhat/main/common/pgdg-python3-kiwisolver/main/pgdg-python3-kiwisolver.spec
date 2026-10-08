@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.5.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A fast implementation of the Cassowary constraint solver
 
 License:	BSD-3-Clause
@@ -56,6 +56,9 @@ matplotlib.
 
 %prep
 %autosetup -n %{modname}-%{version}
+# setuptools checks the classifiers against trove-classifiers when it is
+# installed, and older releases of it do not know Python 3.15:
+sed -i '/"Programming Language :: Python :: 3.15",/d' pyproject.toml
 
 %build
 %pyproject_wheel
@@ -70,6 +73,10 @@ matplotlib.
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-2PGDG
+- Remove the Python 3.15 classifier, which fails the build when an
+  older trove-classifiers is installed.
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.
