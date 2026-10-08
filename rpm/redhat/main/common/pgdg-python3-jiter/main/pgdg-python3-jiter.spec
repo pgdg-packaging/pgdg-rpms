@@ -58,7 +58,13 @@ BuildRequires:	python%{python3_pkgversion}-maturin >= 1.15.0
 # SLES 16 has maturin 1.8.7, which builds this release too:
 BuildRequires:	python%{python3_pkgversion}-maturin
 %endif
-%if ! 0%{?amzn} && ! 0%{?suse_version} && 0%{?rhel} != 9
+%if 0%{?rhel} == 10
+# EPEL 10 has maturin 1.9.6. pyproject.toml asks for 1.15.0, but pip does
+# not check the build requirements with --no-build-isolation, and older
+# releases build this release fine:
+BuildRequires:	maturin
+%endif
+%if 0%{?fedora}
 BuildRequires:	maturin >= 1.15.0
 %endif
 # rust-version in Cargo.toml of this release:
