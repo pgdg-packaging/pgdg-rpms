@@ -66,7 +66,8 @@ BuildRequires:	python%{python3_pkgversion}-maturin
 # releases build this release fine:
 BuildRequires:	maturin
 %endif
-%if 0%{?fedora}
+# Amazon Linux 2023 defines %%fedora too:
+%if 0%{?fedora} && ! 0%{?amzn}
 BuildRequires:	maturin >= 1.15.0
 %endif
 # rust-version in Cargo.toml of this release:
