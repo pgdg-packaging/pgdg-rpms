@@ -43,7 +43,9 @@ Source0:	https://files.pythonhosted.org/packages/source/p/%{pymodname}/%{pymodna
 # access. Made with "./pgdg-python3-pydantic-core-vendor.sh %%{version}", which
 # runs cargo-vendor-filterer for the Linux architectures that we build on.
 # It has to be made again for every new version.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{pymodname}-%{version}-vendor.tar.xz
+# The CDN cached a 404 for the plain URL. The query string makes it fetch
+# the file again; #/ keeps the local file name unchanged.
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{pymodname}-%{version}-vendor.tar.xz?v=2#/%{pymodname}-%{version}-vendor.tar.xz
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip

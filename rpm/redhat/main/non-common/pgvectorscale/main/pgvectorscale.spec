@@ -19,7 +19,9 @@ Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/%{version}.tar.
 # cargo-vendor-filterer for the Linux architectures that we build on. It also
 # vendors bindgen 0.72.1, see %%prep.
 # It has to be made again for every new version.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-vendor.tar.xz
+# The CDN cached a 404 for the plain URL. The query string makes it fetch
+# the file again; #/ keeps the local file name unchanged.
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-vendor.tar.xz?v=2#/%{sname}-%{version}-vendor.tar.xz
 
 # The newest crates in Cargo.lock need Rust 1.88:
 BuildRequires:	rust >= 1.88
