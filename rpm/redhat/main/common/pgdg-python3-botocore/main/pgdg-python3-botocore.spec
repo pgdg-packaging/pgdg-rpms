@@ -30,8 +30,8 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
-Version:	1.43.83
-Release:	2PGDG%{?dist}
+Version:	1.43.111
+Release:	1PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -41,6 +41,9 @@ Source0:	https://files.pythonhosted.org/packages/source/b/botocore/botocore-%{ve
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%endif
 Provides:	bundled(python%{python3_version}-six) = 1.16.0
 Provides:	bundled(python%{python3_version}-requests) = 2.7.0
 
@@ -62,6 +65,10 @@ rm -vr tests/functional/leak
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+# Create __pycache__ directories and their contents in SLES *too*:
+%if 0%{?suse_version}
+%{expand:%%python%{python3_pkgversion}_compile}
+%endif
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
@@ -76,6 +83,12 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Fri Oct 9 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.111-1PGDG
+- Update to 1.43.111 per changes described at:
+  https://pypi.org/project/botocore/1.43.111/
+- Bytecompile on SLES, too, so that the package ships the
+  __pycache__ files like on the other distros.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-2PGDG
 - Remove Fedora <= 42 support
 - Fix Fedora 44 mapped to python3.15 instead of python3.14
