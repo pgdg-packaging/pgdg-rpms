@@ -6,7 +6,7 @@
 %global pgrx_series	0.19
 
 Name:		cargo-pgrx019
-Version:	0.19.1
+Version:	0.19.3
 Release:	1PGDG%{?dist}
 Summary:	Cargo subcommand to build PostgreSQL extensions written in Rust (pgrx 0.19)
 # The licenses of the crates that are compiled into the binary, checked with
@@ -76,6 +76,11 @@ install -Dpm 0755 target/release/%{crate} %{buildroot}%{_bindir}/%{crate}-%{pgrx
 %{_bindir}/%{crate}-%{pgrx_series}
 
 %changelog
+* Thu Oct 8 2026 Devrim Gündüz <devrim@gunduz.org> - 0.19.3-1PGDG
+- Update to 0.19.3 per changes described at:
+  https://github.com/pgcentralfoundation/pgrx/releases/tag/v0.19.2
+  https://github.com/pgcentralfoundation/pgrx/releases/tag/v0.19.3
+
 * Mon Sep 21 2026 Devrim Gündüz <devrim@gunduz.org> - 0.19.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to build PostgreSQL
   Anonymizer 3.x, which is written in Rust with pgrx 0.19.1. This is the first
