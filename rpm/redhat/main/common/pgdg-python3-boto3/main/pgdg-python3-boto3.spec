@@ -29,8 +29,8 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.43.83
-Release:	2PGDG%{?dist}
+Version:	1.43.111
+Release:	1PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -40,6 +40,9 @@ BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%endif
 
 # Save space by hardlinking duplicate JSON resource files
 BuildRequires:	hardlink
@@ -59,6 +62,10 @@ services like Amazon S3 and Amazon EC2.}
 
 %install
 %{__ospython} setup.py install --no-compile --root %{buildroot}
+# Create __pycache__ directories and their contents in SLES *too*:
+%if 0%{?suse_version}
+%{expand:%%python%{python3_pkgversion}_compile}
+%endif
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
@@ -94,6 +101,12 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Fri Oct 9 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.111-1PGDG
+- Update to 1.43.111 per changes described at:
+  https://pypi.org/project/boto3/1.43.111/
+- Bytecompile on SLES, too. The SLES 16 build never worked, because
+  no __pycache__ files were created there.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.83-2PGDG
 - Remove Fedora <= 42 support
 - Fix Fedora 44 mapped to python3.15 instead of python3.14
