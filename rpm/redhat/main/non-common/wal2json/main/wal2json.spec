@@ -1,5 +1,5 @@
 %global sname wal2json
-%global wal2json_rel 2_6
+%global wal2json_rel 2_7
 
 %{!?llvm:%global llvm 1}
 %{!?runselftest:%global runselftest 0}
@@ -17,8 +17,8 @@
 
 Summary:	JSON output plugin for changeset extraction
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.6
-Release:	8PGDG%{?dist}
+Version:	2.7
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{wal2json_rel}.tar.gz
 URL:		https://github.com/eulerto/wal2json
@@ -26,8 +26,6 @@ BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
-# The tests also use test_decoding
-BuildRequires:	postgresql%{pgmajorversion}-contrib
 %endif
 
 %description
@@ -86,13 +84,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg} DESTDIR=%
 %if %runselftest
 # The tests create logical replication slots. Recent PostgreSQL minor
 # releases only allow the output plugins listed in output_plugin_libraries,
-# so add wal2json there when it exists. The tests also need a UTF8
-# database: without a locale the cluster would be SQL_ASCII.
-export LC_ALL=C.UTF-8
+# so add wal2json there when it exists.
 %pgdg_check_init
 opl=
 if postgres --describe-config | grep -q '^output_plugin_libraries'; then
-	opl="output_plugin_libraries = 'pgoutput, test_decoding, wal2json'"
+	opl="output_plugin_libraries = 'pgoutput, wal2json'"
 fi
 pgdg_check_start main "wal_level = logical" "max_replication_slots = 10" \
 	${opl:+"$opl"}
@@ -110,6 +106,14 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 2.7-1PGDG
+- Update to 2.7, per changes described at:
+  https://github.com/eulerto/wal2json/releases/tag/wal2json_2_7
+- Add PostgreSQL 19 support.
+- The tests no longer use test_decoding, and create their database as UTF8
+  themselves: remove the postgresql-contrib BuildRequires and C.UTF-8.
+- Per https://github.com/pgdg-packaging/pgdg-rpms/issues/349
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6-8PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
