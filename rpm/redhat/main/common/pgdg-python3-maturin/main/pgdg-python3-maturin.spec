@@ -86,6 +86,12 @@ sed -i -e 's|^license = "MIT OR Apache-2.0"$|license = { text = "MIT OR Apache-2
 grep -q '^license = { text = "MIT OR Apache-2.0" }$' pyproject.toml
 if grep -q '^license-files' pyproject.toml; then exit 1; fi
 
+# Older trove-classifiers releases, like the one of Amazon Linux 2023, do not
+# know the GraalPy classifier, and setuptools fails the build. Classifiers are
+# only PyPI metadata, so remove them all:
+sed -i '/^classifiers = \[$/,/^\]$/d' pyproject.toml
+if grep -q '^classifiers' pyproject.toml; then exit 1; fi
+
 # setuptools-rust 1.7 of Amazon Linux 2023 has no env argument in RustBin. It
 # is only used to install Rust when cargo is not found, which is never the
 # case here:
@@ -118,3 +124,5 @@ export CARGO_NET_OFFLINE=true
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
 - Add RHEL 9 support (python3.12), for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Remove the classifiers from pyproject.toml, as the trove-classifiers
+  release of Amazon Linux 2023 does not know the GraalPy classifier.
