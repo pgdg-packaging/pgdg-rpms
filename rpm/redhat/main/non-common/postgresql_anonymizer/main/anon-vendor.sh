@@ -2,12 +2,15 @@
 
 set -euo pipefail
 
-if [ $# -lt 1 ]; then
-	echo "Usage: $0 version"
+if [ $# -lt 2 ]; then
+	echo "Usage: $0 version pgrx_version"
 	exit 1
 fi
 
 VERSION="$1"
+# The pgrx release to build with. It has to be the version of the cargo-pgrx
+# package, as cargo-pgrx refuses older pgrx crates:
+PGRX_VERSION="$2"
 TOPDIR="$PWD"
 WORKDIR="$TOPDIR/tmp/anon-$VERSION"
 
@@ -18,6 +21,9 @@ cd postgresql_anonymizer-$VERSION/
 # Keep the crate cache and the temporary files out of the source tree and /tmp:
 export CARGO_HOME="$WORKDIR/cargo-home" TMPDIR="$WORKDIR/tmp"
 mkdir -p "$TMPDIR"
+# Move the pgrx crates in Cargo.lock to the version of cargo-pgrx. Cargo.lock is
+# shipped in the tarball, and replaces the one of upstream in %prep:
+cargo update -p pgrx -p pgrx-tests --precise "$PGRX_VERSION"
 # Only keep the crates for the Linux architectures that we build on, and not the
 # dev dependencies. The other crates are replaced with empty stubs, so that
 # Cargo.lock still resolves. Needs cargo-vendor-filterer. ('*-unknown-linux-gnu'
@@ -28,9 +34,10 @@ cargo vendor-filterer \
 	--platform=powerpc64le-unknown-linux-gnu \
 	--platform=s390x-unknown-linux-gnu \
 	--all-features --keep-dep-kinds=no-dev vendor
-tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - vendor | xz -T0 -6 > "$WORKDIR/postgresql_anonymizer-$VERSION-vendor.tar.xz"
-xz -t "$WORKDIR/postgresql_anonymizer-$VERSION-vendor.tar.xz"
+TARBALL="postgresql_anonymizer-$VERSION-pgrx$PGRX_VERSION-vendor.tar.xz"
+tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - Cargo.lock vendor | xz -T0 -6 > "$WORKDIR/$TARBALL"
+xz -t "$WORKDIR/$TARBALL"
 
-mv "$WORKDIR/postgresql_anonymizer-$VERSION-vendor.tar.xz" "$TOPDIR/"
+mv "$WORKDIR/$TARBALL" "$TOPDIR/"
 cd "$TOPDIR"
 rm -rf "$TOPDIR/tmp"

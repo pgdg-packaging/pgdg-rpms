@@ -1,11 +1,14 @@
 %global sname postgresql_anonymizer
 # cargo-pgrx has to be the same version as the pgrx crate that the extension uses:
 %global pgrx_series 0.19
+# The pgrx release that it is built with (Cargo.lock of upstream may have an
+# older one, which anon-vendor.sh changes):
+%global pgrx_version 0.19.3
 
 Summary:	Anonymization & Data Masking for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The extension itself, and the licenses of the Rust crates that are compiled into
 # it (236 crates), checked with "cargo metadata --filter-platform
 # x86_64-unknown-linux-gnu", without the dev dependencies:
@@ -13,11 +16,12 @@ License:	PostgreSQL AND MIT AND Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND
 URL:		https://labs.dalibo.com/postgresql_anonymizer
 Source0:	https://gitlab.com/dalibo/%{sname}/-/archive/%{version}/%{sname}-%{version}.tar.gz
 # The dependencies of the crate, for building without network access. Made with
-# "./anon-vendor.sh %%{version}", which runs cargo-vendor-filterer for the Linux
-# architectures that we build on, without the dev dependencies. It is not run with
-# --locked, as Cargo.lock of upstream has the wrong version of the crate itself.
-# It has to be made again for every new version.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-vendor.tar.xz
+# "./anon-vendor.sh %%{version} %%{pgrx_version}", which moves the pgrx crates
+# in Cargo.lock to %%{pgrx_version} and runs cargo-vendor-filterer for the Linux
+# architectures that we build on, without the dev dependencies. The tarball also
+# has the new Cargo.lock, which replaces the one of upstream.
+# It has to be made again for every new version of anon or of cargo-pgrx019.
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-pgrx%{pgrx_version}-vendor.tar.xz
 
 # pgrx 0.19 and edition 2024 need Rust 1.96:
 BuildRequires:	rust >= 1.96
@@ -30,7 +34,7 @@ BuildRequires:	rustfmt
 %if 0%{?suse_version} >= 1600
 BuildRequires:	rust1.98
 %endif
-BuildRequires:	cargo-pgrx019 = 0.19.1
+BuildRequires:	cargo-pgrx019 = %{pgrx_version}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 # pgrx-pg-sys generates the bindings of the PostgreSQL headers with bindgen:
 %if 0%{?suse_version} == 1600
@@ -107,6 +111,10 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 %{pginstdir}/share/extension/anon/
 
 %changelog
+* Fri Oct 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-2PGDG
+- Build with pgrx 0.19.3, to match cargo-pgrx019 0.19.3. cargo-pgrx refuses
+  pgrx crates that are older than itself.
+
 * Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-1PGDG
 - Update to 3.2.3 per changes described at:
   https://gitlab.com/dalibo/postgresql_anonymizer/-/blob/3.2.3/CHANGELOG.md
