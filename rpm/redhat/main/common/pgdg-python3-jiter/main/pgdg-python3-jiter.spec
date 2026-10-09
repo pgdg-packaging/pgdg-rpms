@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.17.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Fast iterable JSON parser
 # jiter is MIT. The licenses of the crates that are compiled into the
 # extension, checked with "cargo tree -p jiter-python -e normal" (40 crates):
@@ -113,6 +113,11 @@ export MATURIN_PEP517_ARGS="--frozen"
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 0.17.0-2PGDG
+- Amazon Linux 2023 defines %%fedora too, so the Fedora maturin
+  BuildRequires was also used there, and the build failed. Use it only on
+  Fedora. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.17.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   anthropic dependency (for pg_statviz) on RHEL 10, Amazon Linux 2023 and
