@@ -31,10 +31,10 @@ Name:		python3-%{sname}
 # 3.3.6-42PGDG packages that were already published for RHEL 9.
 Epoch:		1
 Version:	3.2.13
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %else
 Version:	3.3.6
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 %endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
@@ -109,6 +109,8 @@ database adapter.
 %package c
 Summary:	C extensions for Psycopg 3
 Requires:	libpq5
+# The C module only works with the Python part of the same release:
+Requires:	python3-%{sname} = %{?epoch:%{epoch}:}%{version}-%{release}
 # The OS's own native psycopg3 package (where it exists, e.g. Fedora)
 # names this same subpackage python3-psycopg3_c (underscore, from the
 # PyPI distribution name), which rpm doesn't treat as the same package
@@ -289,6 +291,11 @@ fi
 %endif
 
 %changelog
+* Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-44PGDG
+- Make the -c subpackage require the same version and release of
+  python3-psycopg3: a mix of the two fails at runtime.
+- RHEL 9: Same change, as 1:3.2.13-2PGDG.
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-43PGDG
 - Amazon Linux 2023: Do not require python3-typing-extensions. psycopg
   only needs it on Python < 3.13, and we build against python3.13 there,
