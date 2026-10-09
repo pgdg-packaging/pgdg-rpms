@@ -26,10 +26,11 @@
 Name:		python%{python3_pkgversion}-anthropic
 %if %{oldsdk}
 Version:	0.40.0
-%else
-Version:	1.12.1
-%endif
 Release:	2PGDG%{dist}
+%else
+Version:	1.13.0
+Release:	1PGDG%{dist}
+%endif
 Summary:	The official Python library for the anthropic API
 
 License:	MIT
@@ -104,6 +105,11 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %license LICENSE
 
 %changelog
+* Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 1.13.0-1PGDG
+- Update to 1.13.0 on Fedora, per changes described at:
+  https://github.com/anthropics/anthropic-sdk-python/releases/tag/v1.13.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/350
+
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.12.1-2PGDG
 - Update package name so that it matches our other Python packages.
 
