@@ -6,7 +6,7 @@
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.10.13
+Version:	2.10.14
 Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
@@ -71,6 +71,9 @@ export PATH=%{pginstdir}/bin:$PATH
 
 %check
 %if %runselftest
+# plpgsql_check_expr_walk needs a UTF-8 database, but the build environment
+# may run with LANG=C (EL-8), which would make the test cluster SQL_ASCII.
+export LC_ALL=C.UTF-8
 %pgdg_check_installcheck
 %endif
 
@@ -89,6 +92,12 @@ export PATH=%{pginstdir}/bin:$PATH
 %endif
 
 %changelog
+* Sat Oct 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.14-1PGDG
+- Update to 2.10.14 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.10.14
+- Run the tests with LC_ALL=C.UTF-8: the new expr_walk test needs a UTF-8
+  database.
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.13-1PGDG
 - Update to 2.10.13 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.10.13
