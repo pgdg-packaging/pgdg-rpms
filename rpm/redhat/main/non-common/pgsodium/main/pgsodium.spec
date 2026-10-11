@@ -17,13 +17,14 @@
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.11
-Release:	6PGDG%{dist}
+Release:	7PGDG%{dist}
 License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
 # The ipcrypt functions need libsodium 1.0.21 or newer. Build them as stubs that
 # raise an error with an older libsodium (RHEL 8 and 9, SLES 15), so that the
-# rest of pgsodium can still be built there:
+# rest of pgsodium can still be built there. From upstream PR
+# https://github.com/michelp/pgsodium/pull/125 ; remove when it is released:
 Patch0:		%{sname}-ipcrypt-old-libsodium.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel libsodium-devel
 Requires:	postgresql%{pgmajorversion}-server
@@ -131,6 +132,11 @@ pg_prove -d postgres -p $(pgdg_check_port plain) test/test.sql
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-7PGDG
+- Use the patch from upstream PR https://github.com/michelp/pgsodium/pull/125
+  to build the ipcrypt functions as stubs with libsodium older than 1.0.21,
+  instead of our own one, which does the same.
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-6PGDG
 - Add %%check, running the pgTAP tests of upstream with pg_prove and the
   %%check helpers from pgdg-srpm-macros 2.0.0, with and without server keys.
