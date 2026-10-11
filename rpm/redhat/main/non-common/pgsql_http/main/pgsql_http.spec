@@ -2,6 +2,7 @@
 %global sname pgsql-http
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,13 +18,16 @@
 Summary:	PostgreSQL HTTP client
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.7.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	libcurl-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pgsql_http allows users to be able to write a trigger that calls a
@@ -68,6 +72,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests send their requests to http://httpbin.org and
+# https://postgis.net, so they need internet access:
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root)
 %{pginstdir}/lib/http.so
@@ -81,6 +92,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.2-5PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. The tests need internet access. It is
+  disabled by default; enable it with --define 'runselftest 1'. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.2-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
