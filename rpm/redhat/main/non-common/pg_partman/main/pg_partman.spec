@@ -1,6 +1,7 @@
 %global sname pg_partman
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -18,12 +19,16 @@ Summary:	A PostgreSQL extension to manage partitioned tables by time or ID
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgpartman/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgpartman/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+BuildRequires:	pgtap_%{pgmajorversion}
+%endif
 Requires:	python3-psycopg2
 
 %description
@@ -82,6 +87,25 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot}
 
+%check
+%if %runselftest
+# Upstream's tests are pgTAP tests, run with pg_prove. They expect pg_partman
+# in the partman schema and pgTAP in public, and need a higher
+# max_locks_per_transaction than the default. The tests in the subdirectories
+# need manual steps between them (procedures, background worker, reindexing),
+# except for test_pg17plus. Its test-time-monthly-source-generated.sql expects
+# a row count after undo_partition() that is only right on some days of the
+# year (one row per day for 2 months of retention), so skip it:
+%pgdg_check_init
+pgdg_check_start main "max_locks_per_transaction = 128"
+psql -X -v ON_ERROR_STOP=1 -d postgres -c "CREATE SCHEMA partman" \
+	-c "CREATE EXTENSION pg_partman SCHEMA partman" -c "CREATE EXTENSION pgtap"
+pg_prove -d postgres -o -f test/*.sql
+%if %{pgmajorversion} >= 17
+pg_prove -d postgres -o -f $(ls test/test_pg17plus/*.sql | grep -v '/test-time-monthly-source-generated\.sql$')
+%endif
+%endif
+
 %files
 %defattr(644,root,root,755)
 %doc %{pginstdir}/doc/extension/%{sname}.md
@@ -104,6 +128,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-5PGDG
+- Add %%check, running the pgTAP tests of upstream with pg_prove and the
+  %%check helpers from pgdg-srpm-macros 2.0.0. It is disabled by default;
+  enable it with --define 'runselftest 1'. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-4PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
