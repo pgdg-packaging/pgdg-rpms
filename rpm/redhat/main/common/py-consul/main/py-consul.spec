@@ -21,7 +21,7 @@
 
 Name:		py-consul
 Version:	1.7.1
-Release:	46PGDG%{?dist}
+Release:	47PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -65,19 +65,17 @@ Python client for Consul
 %doc README.md
 %license LICENSE
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
-%{python3_sitelib}/consul/*.py*
-%{python3_sitelib}/consul/api/*.py*
-%{python3_sitelib}/consul/api/acl/*.py*
+%{python3_sitelib}/consul/
 %if 0%{?suse_version} == 1500
 %{python3_sitelib}/docs/*.py
 %endif
-%if 0%{?rhel} || 0%{?fedora}
-%{python3_sitelib}/consul/__pycache__/*.py*
-%{python3_sitelib}/consul/api/__pycache__/*.py*
-%{python3_sitelib}/consul/api/acl/__pycache__/*.py*
-%endif
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-47PGDG
+- Package the consul directory itself, so that the __pycache__ files
+  that SLES 16 creates are packaged, too. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-46PGDG
 - Add missing BR
 
