@@ -1,6 +1,7 @@
 %global sname pg_curl
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,13 +18,16 @@
 Summary:	PostgreSQL tool for transferring data with URL syntax
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.4.5
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 License:	MIT
 BuildRequires:	postgresql%{pgmajorversion}-devel libcurl-devel libxml2-devel
 BuildRequires:	unzip
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 %description
 pg_curl is a PostgreSQL tool for transferring data with URL syntax, supporting
@@ -69,6 +73,13 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The tests send their requests to https://httpbin.org (unless an httpbin
+# listens on localhost), so they need internet access:
+%pgdg_check_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root)
 %{pginstdir}/lib/%{sname}.so
@@ -81,6 +92,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
     %{pginstdir}/lib/bitcode/%{sname}/*.bc
 %endif
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.5-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. The tests need internet access. It is
+  disabled by default; enable it with --define 'runselftest 1'. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+
 * Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.5-2PGDG
 - Add missing BR
 
