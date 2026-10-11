@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	5PGDG%{?dist}.1
+Release:	6PGDG%{?dist}
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -39,7 +39,9 @@ BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-set
 # Needed so setuptools_scm's setup_requires is already satisfied locally;
 # otherwise setup.py tries to pip-fetch it, which fails in a
 # network-isolated mock build.
+%if 0%{?rhel} != 8
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+%endif
 %if 0%{?rhel} && 0%{?rhel} <= 9
 BuildRequires:	python%{python3_pkgversion}-pip
 %endif
@@ -62,6 +64,14 @@ module available in Python.
 %autosetup -p1 -n python-%{modname}-%{version}
 iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{__mv} NEWS.new NEWS
+%if 0%{?rhel} == 8
+# There is no python3.12-setuptools_scm on RHEL 8. Give setup.py the version
+# directly (the sdist already has src/dateutil/_version.py):
+sed -i -e "/^      use_scm_version={$/,/^      },$/c\\      version='%{version}'," setup.py
+sed -i -e '/^setup_requires = setuptools_scm$/d' setup.cfg
+grep -q "^      version='%{version}',$" setup.py
+if grep -q 'scm' setup.py setup.cfg; then exit 1; fi
+%endif
 
 %build
 %{__ospython} setup.py build
@@ -91,6 +101,11 @@ iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-6PGDG
+- There is no python3.12-setuptools_scm on RHEL 8: do not BuildRequire it
+  there, and give setup.py the version directly instead. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-5PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
