@@ -1,6 +1,7 @@
 %global sname pgsodium
 
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -16,12 +17,20 @@
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.11
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
+# The ipcrypt functions need libsodium 1.0.21 or newer. Build them as stubs that
+# raise an error with an older libsodium (RHEL 8 and 9, SLES 15), so that the
+# rest of pgsodium can still be built there:
+Patch0:		%{sname}-ipcrypt-old-libsodium.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel libsodium-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+BuildRequires:	pgtap_%{pgmajorversion}
+%endif
 
 %if 0%{?fedora} || 0%{?rhel}
 Requires:	libsodium
@@ -71,6 +80,7 @@ This package provides JIT support for pgsodium
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P0 -p1
 
 %build
 
@@ -81,6 +91,29 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 # Install documentation with a better name:
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
+
+%check
+%if %runselftest
+# Upstream's tests are a pgTAP suite, run with pg_prove (the sql/ directory
+# only has documentation examples). Run it as upstream does, once with
+# pgsodium preloaded and a getkey script, which enables the server key
+# tests, and once without:
+%pgdg_check_init
+mkdir -p tmp_check
+# Without the ipcrypt functions of libsodium (see Patch0), skip their tests:
+if ! grep -qs '^#define crypto_ipcrypt_KEYBYTES' %{_includedir}/sodium/crypto_ipcrypt.h; then
+	sed -i '/^\\ir ipcrypt\.sql$/d' test/test.sql
+	if grep -q 'ipcrypt\.sql' test/test.sql; then exit 1; fi
+fi
+head -c 32 /dev/urandom | od -A n -t x1 | tr -d ' \n' > tmp_check/root.key
+printf '#!/bin/sh\ncat %s\n' "$PWD/tmp_check/root.key" > tmp_check/getkey
+chmod 700 tmp_check/getkey
+pgdg_check_start serverkeys "shared_preload_libraries = 'pgsodium'" \
+	"pgsodium.getkey_script = '$PWD/tmp_check/getkey'"
+pg_prove -d postgres -p $(pgdg_check_port serverkeys) test/test.sql
+pgdg_check_start plain
+pg_prove -d postgres -p $(pgdg_check_port plain) test/test.sql
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -98,6 +131,15 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-6PGDG
+- Add %%check, running the pgTAP tests of upstream with pg_prove and the
+  %%check helpers from pgdg-srpm-macros 2.0.0, with and without server keys.
+  It is disabled by default; enable it with --define 'runselftest 1'. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+- Add a patch to build the ipcrypt functions as stubs that raise an error,
+  when libsodium is older than 1.0.21, which does not have them. This makes
+  pgsodium 3.1.11 build on RHEL 8 and 9.
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

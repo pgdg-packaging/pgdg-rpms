@@ -1,0 +1,61 @@
+--- a/src/ipcrypt.c	2026-06-10 22:19:08.000000000 +0300
++++ b/src/ipcrypt.c	2026-10-12 01:40:16.882705689 +0300
+@@ -19,6 +19,52 @@
+ 
+ #include "pgsodium.h"
+ 
++/*
++ * The ipcrypt functions are only available in libsodium 1.0.21 and newer.
++ * With an older libsodium, the functions of the SQL interface raise an
++ * error instead, so that the extension can still be created and updated.
++ */
++#ifndef crypto_ipcrypt_KEYBYTES
++
++#define PGSODIUM_IPCRYPT_STUB(fn) \
++PG_FUNCTION_INFO_V1 (fn); \
++Datum \
++fn (PG_FUNCTION_ARGS) \
++{ \
++	ereport (ERROR, \
++		(errcode (ERRCODE_FEATURE_NOT_SUPPORTED), \
++		 errmsg ("%s: pgsodium was built with a libsodium older than 1.0.21, which has no ipcrypt functions", \
++			 __func__))); \
++	PG_RETURN_NULL (); \
++}
++
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ip2bin)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_bin2ip)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_keygen)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_encrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_decrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_encrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_decrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_pfx_keygen)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_pfx_encrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_pfx_decrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_pfx_encrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_pfx_decrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_nd_keygen)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_nd_tweakgen)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_nd_encrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_nd_decrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_nd_encrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_nd_decrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ndx_keygen)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ndx_tweakgen)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ndx_encrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ndx_decrypt)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ndx_encrypt_by_id)
++PGSODIUM_IPCRYPT_STUB (pgsodium_crypto_ipcrypt_ndx_decrypt_by_id)
++
++#else							/* crypto_ipcrypt_KEYBYTES */
++
+ /* ---------------------------------------------------------------------------
+  * Conversion helpers between text IP addresses and the 16 byte binary form.
+  * ------------------------------------------------------------------------- */
+@@ -536,3 +582,5 @@
+ 		PGSODIUM_UCHARDATA_ANY (ct), PGSODIUM_UCHARDATA_ANY (key));
+ 	PG_RETURN_BYTEA_P (result);
+ }
++
++#endif							/* crypto_ipcrypt_KEYBYTES */
