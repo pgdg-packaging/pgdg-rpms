@@ -14,7 +14,7 @@
 Summary:	The user interface of PoWA
 Name:		%{sname}
 Version:	5.3.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
 Source2:	%{sname}.service
@@ -26,7 +26,7 @@ Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
 
-BuildRequires:		python3-devel python3-pip python3-setuptools
+BuildRequires:		python3-devel python3-pip python3-setuptools python3-wheel
 BuildRequires:		systemd-rpm-macros
 
 %if 0%{?suse_version} >= 1500
@@ -72,6 +72,11 @@ This is the user interface of POWA.
 %{_unitdir}/%{sname}.service
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-4PGDG
+- Add python3-wheel BR: without it, pip on RHEL 8 built no wheel, so
+  nothing was installed. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-3PGDG
 - Add missing BR
 
