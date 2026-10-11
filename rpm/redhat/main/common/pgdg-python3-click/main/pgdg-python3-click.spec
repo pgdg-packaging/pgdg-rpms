@@ -14,6 +14,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} >= 1500
@@ -35,6 +36,9 @@ Source0:	https://github.com/pallets/%{modname}/archive/%{version}/%{modname}-%{v
 
 BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-flit-core
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+BuildRequires:	pyproject-rpm-macros
 
 Provides:	python%{python3_pkgversion}dist(click)
 
@@ -46,12 +50,20 @@ comes with good defaults out of the box.
 
 %prep
 %autosetup -n click-%{version} -p1
+# Upstream needs flit-core 3.11 or newer for the SPDX license expression
+# and license-files, which are not available on these platforms. Use the
+# license table, which older flit-core versions understand:
+sed -i -e 's|^license = "BSD-3-Clause"$|license = { text = "BSD-3-Clause" }|' \
+	-e '/^license-files = /d' \
+	-e 's|"flit_core>=3.11,<4"|"flit_core>=3.4,<4"|' pyproject.toml
+grep -q '^license = { text = "BSD-3-Clause" }$' pyproject.toml
+if grep -q '^license-files' pyproject.toml; then exit 1; fi
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
@@ -60,17 +72,19 @@ comes with good defaults out of the box.
 %endif
 
 %files
-%license LICENSE.rst
-%doc README.rst CHANGES.rst
-%{pgdg_python3_sitearch}/%{modname}-%{version}-py%{pybasever}.egg-info/
-%{pgdg_python3_sitearch}/%{modname}/*.py*
-%{pgdg_python3_sitearch}/%{modname}/__pycache__/*.py*
-%{pgdg_python3_sitearch}/%{modname}/py.typed
+%license LICENSE.txt
+%doc README.md CHANGES.md
+%{pgdg_python3_sitearch}/%{modname}-%{version}.dist-info/
+%{pgdg_python3_sitearch}/%{modname}/
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-2PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
+- Click has no setup.py since 8.2. Build with the pyproject macros and
+  flit-core, and use the license table form in pyproject.toml, as flit-core
+  3.11 is not available on these platforms. Update the doc file names. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-1PGDG.1
 - Update to 8.5.0 per changes described at:
