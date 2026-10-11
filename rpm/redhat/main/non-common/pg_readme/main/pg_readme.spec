@@ -1,10 +1,6 @@
 %global sname	pg_readme
 
 %{!?runselftest:%global runselftest 0}
-# The tests use the \getenv command of psql, which is new in PostgreSQL 15:
-%if 0%{?pgmajorversion} && 0%{?pgmajorversion} < 15
-%global runselftest 0
-%endif
 
 Summary:	PostgreSQL extension to generate a README.md document for a database extension or schema
 Name:		%{sname}_%{pgmajorversion}
@@ -18,9 +14,11 @@ BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
+%if %{pgmajorversion} >= 15
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 # For hstore, which pg_readme requires:
 BuildRequires:	postgresql%{pgmajorversion}-contrib
+%endif
 %endif
 BuildArch:	noarch
 
@@ -46,6 +44,8 @@ in the pg_description system catalog.
 
 %check
 %if %runselftest
+# The tests use the \getenv command of psql, which is new in PostgreSQL 15:
+%if %{pgmajorversion} >= 15
 # The test creates the extension with each of its entry versions, updates it to
 # the newest one and runs its test procedures. The expected output has the
 # versions in ascending order, but the Makefile lists them with $(wildcard),
@@ -53,6 +53,7 @@ in the pg_description system catalog.
 # them sorted:
 %pgdg_check_installcheck EXTENSION_ENTRY_VERSIONS="$(ls sql/%{sname}--[0-9]*.[0-9]*.[0-9]*.sql | \
 	sed -n 's|^sql/%{sname}--\([0-9.]*\)\.sql$|\1|p' | sort -V | paste -sd ' ')"
+%endif
 %endif
 
 %files
