@@ -16,8 +16,8 @@
 
 Summary:	A semantic version data type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.41.0
-Release:	4PGDG%{?dist}
+Version:	0.42.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/theory/pg-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/theory/pg-%{sname}/
@@ -82,11 +82,18 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 
 %if %llvm
 %files llvmjit
-   %{pginstdir}/lib/bitcode/src/%{sname}*.bc
-   %{pginstdir}/lib/bitcode/src/%{sname}/src/*.bc
+   %{pginstdir}/lib/bitcode/%{sname}*.bc
+   %{pginstdir}/lib/bitcode/%{sname}/src/*.bc
 %endif
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.42.0-1PGDG
+- Update to 0.42.0 per changes described at:
+  https://github.com/theory/pg-semver/releases/tag/v0.42.0
+  This release breaks hash index compatibility: reindex any semver hash
+  indexes after upgrading.
+- The module is now built as MODULE_big, so update the bitcode paths.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.41.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
