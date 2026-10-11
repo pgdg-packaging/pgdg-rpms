@@ -2,7 +2,7 @@
 %global __ospython %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 43
+%if 0%{?fedora} && 0%{?fedora} <= 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -28,7 +28,7 @@
 %endif
 
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
@@ -99,6 +99,10 @@ the jsonb values and replays the changes against the PostgreSQL database.
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Fix the Fedora 44 interpreter pin: the Fedora 45 change made it cover
+  only Fedora <= 43, so the spec did not parse on Fedora 44.
+- Migrate %%python3_sitelib off the removed distutils.sysconfig module to
+  sysconfig.get_path().
 
 * Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-11PGDG
 - Add Fedora 45 support
