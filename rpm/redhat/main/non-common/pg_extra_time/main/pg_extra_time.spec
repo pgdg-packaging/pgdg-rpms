@@ -1,9 +1,16 @@
 %global sname	pg_extra_time
 
+%{!?runselftest:%global runselftest 0}
+# The tests use the time zone form of generate_series(), which is new in
+# PostgreSQL 16:
+%if 0%{?pgmajorversion} && 0%{?pgmajorversion} < 16
+%global runselftest 0
+%endif
+
 Summary:	Extra date time functions and operators for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 URL:		https://github.com/bigsmoke/%{sname}
@@ -11,6 +18,9 @@ Source0:	https://github.com/bigsmoke/%{sname}/archive/refs/tags/v%{version}.tar.
 BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 BuildArch:	noarch
 
 %description
@@ -32,6 +42,17 @@ functions and operators.
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
+%check
+%if %runselftest
+# The test creates the extension with each of its entry versions, updates it to
+# the newest one and runs its test procedures. The expected output has the
+# versions in ascending order, but the Makefile lists them with $(wildcard),
+# whose order is not guaranteed (older GNU make does not sort it), so pass
+# them sorted:
+%pgdg_check_installcheck EXTENSION_ENTRY_VERSIONS="$(ls sql/%{sname}--[0-9]*.[0-9]*.[0-9]*.sql | \
+	sed -n 's|^sql/%{sname}--\([0-9.]*\)\.sql$|\1|p' | sort -V | paste -sd ' ')"
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
@@ -40,6 +61,13 @@ functions and operators.
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-3PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0, on PostgreSQL 16 and newer: the tests use
+  the time zone form of generate_series(), which is new in PostgreSQL 16.
+  It is disabled by default; enable it with --define 'runselftest 1'. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-2PGDG
 - Add missing BR
 
