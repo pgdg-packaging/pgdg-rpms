@@ -78,10 +78,7 @@ documentation and it doesn't say things like that!
 %license LICENSE
 
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
-%{python3_sitelib}/%{sname}/__init__.py
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600
-%{python3_sitelib}/%{sname}/__pycache__/__init__*
-%endif
+%{python3_sitelib}/%{sname}/
 
 %changelog
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-3PGDG
@@ -91,6 +88,8 @@ documentation and it doesn't say things like that!
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Package the parsy directory itself, so that the __pycache__ files are
+  packaged wherever they are created (now on Amazon Linux 2023, too).
 
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
