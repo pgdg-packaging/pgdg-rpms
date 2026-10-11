@@ -65,17 +65,19 @@ This is the user interface of POWA.
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{sname}
-%dir %{python_sitelib}/%{swebname}
-%{python_sitelib}/%{swebname}/*
-%{python_sitelib}/powa_web-%{version}.dist-info/
+%dir %{python3_sitelib}/%{swebname}
+%{python3_sitelib}/%{swebname}/*
+%{python3_sitelib}/powa_web-%{version}.dist-info/
 %{_sysconfdir}/powa-web.conf-dist
 %{_unitdir}/%{sname}.service
 
 %changelog
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-4PGDG
-- Add python3-wheel BR: without it, pip on RHEL 8 built no wheel, so
-  nothing was installed. Per
+- Use %%{python3_sitelib} in %%files: the pyproject macros install with
+  %%{__python3} (python3.12 on RHEL 8), but %%{python_sitelib} pointed to
+  the default python3 (3.6) there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Add python3-wheel BR.
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-3PGDG
 - Add missing BR
