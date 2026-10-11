@@ -55,7 +55,7 @@ BuildRequires:	pyproject-rpm-macros
 # it, neither python(abi) nor pythonX.Ydist(...) get generated. Per
 # https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-hatchling
+BuildRequires:	python%{python3_pkgversion}-flit-core
 BuildRequires:	python%{python3_pkgversion}-pip
 
 %description
@@ -70,6 +70,21 @@ sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
 # The hatchling on SLES 16 does not know the Python 3.15 trove classifier
 # yet, and refuses to build with it. Classifiers are informational only.
 sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
+# hatchling is not available on RHEL 8, and too old for the SPDX license
+# expression and license-files on RHEL 9 and Amazon Linux 2023. Build with
+# flit-core instead, which is available everywhere, and use the license
+# table, which flit-core < 3.11 understands:
+sed -i -e '/^\[build-system\]$/,/^requires = \[ "hatchling" \]$/d' \
+	-e 's|^license = "MIT"$|license = { text = "MIT" }|' \
+	-e '/^license-files = /d' pyproject.toml
+cat >> pyproject.toml << 'BUILDSYSTEM'
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = [ "flit_core >=3.4,<4" ]
+BUILDSYSTEM
+grep -q '^license = { text = "MIT" }$' pyproject.toml
+if grep -qE '^license-files|hatchling' pyproject.toml; then exit 1; fi
 
 %build
 %pyproject_wheel
@@ -97,6 +112,11 @@ sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Build with flit-core instead of hatchling, and use the license table form
+  in pyproject.toml: hatchling is not available on RHEL 8, and too old for
+  the SPDX license expression and license-files on RHEL 9 and Amazon Linux
+  2023.
+- Add Amazon Linux 2023 support: prettytable 3.18.0 needs wcwidth >= 0.3.5.
 
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-4PGDG
 - Package the whole %%{modname}/ directory instead of hand-picked globs
