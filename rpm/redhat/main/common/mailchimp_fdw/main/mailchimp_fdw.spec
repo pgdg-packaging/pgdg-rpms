@@ -21,6 +21,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -33,7 +36,7 @@
 Summary:	PostgreSQL foreign data wrapper for Mailchimp
 Name:		%{sname}
 Version:	0.3.1
-Release:	12PGDG%{?dist}
+Release:	13PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/daamien/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/daamien/%{sname}
@@ -79,6 +82,12 @@ This is a PostgreSQL FDW for Mailchimp
 %{python_sitelib}/mailchimpfdw/__pycache__/*.pyc
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3.1-13PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the files were not installed under
+  python3.11 and the build failed. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3.1-12PGDG
 - Add Fedora 45 support
 
