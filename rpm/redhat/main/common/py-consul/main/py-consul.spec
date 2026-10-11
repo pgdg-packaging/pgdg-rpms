@@ -17,6 +17,7 @@
 # Build the python311 flavor with the SUSE pyproject macros, instead of
 # the default python3 (3.6):
 %global	pythons python311
+%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
 %endif
 %if 0%{?suse_version} == 1600
 %global	python3_pkgversion 313
@@ -81,6 +82,8 @@ Python client for Consul
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Set python3_sitelib to the python3.11 one on SLES 15, too: the SUSE macro
+  points to the default python3 (3.6).
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-46PGDG
 - Add missing BR

@@ -21,6 +21,7 @@
 # Build the python311 flavor with the SUSE pyproject macros, instead of
 # the default python3 (3.6):
 %global	pythons python311
+%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -98,6 +99,8 @@ done
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Set python3_sitelib to the python3.11 one on SLES 15, too: the SUSE macro
+  points to the default python3 (3.6).
 
 * Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.2-2PGDG
 - Add %%check, running the upstream tests. It is disabled by default;

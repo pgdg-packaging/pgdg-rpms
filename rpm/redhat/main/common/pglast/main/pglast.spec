@@ -21,6 +21,7 @@
 # Build the python311 flavor with the SUSE pyproject macros, instead of
 # the default python3 (3.6):
 %global	pythons python311
+%global	python3_sitearch %{_libdir}/python3.11/site-packages
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -87,6 +88,8 @@ sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/'
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Set python3_sitearch to the python3.11 one on SLES 15, too: the SUSE macro
+  points to the default python3 (3.6).
 
 * Wed Sep 16 2026 Devrim Gunduz <devrim@gunduz.org> - 7.11-1PGDG
 - Initial packaging for the PostgreSQL RPM repository
