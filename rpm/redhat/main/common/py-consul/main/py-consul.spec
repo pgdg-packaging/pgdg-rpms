@@ -14,6 +14,9 @@
 %endif
 %if 0%{?suse_version} == 1500
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	python3_pkgversion 313
@@ -74,6 +77,9 @@ Python client for Consul
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-47PGDG
 - Package the consul directory itself, so that the __pycache__ files
   that SLES 16 creates are packaged, too. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-46PGDG

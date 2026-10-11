@@ -18,6 +18,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -26,7 +29,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	54PGDG%{?dist}
+Release:	55PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -89,6 +92,11 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-55PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-54PGDG
 - Add missing BR
 

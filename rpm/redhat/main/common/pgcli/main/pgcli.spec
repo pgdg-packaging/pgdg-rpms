@@ -18,6 +18,9 @@
 %if 0%{?suse_version} == 1500
 %global	python3_pkgversion 311
 %global	pybasever 3.11
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	python3_pkgversion 313
@@ -33,7 +36,7 @@
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
 Version:	4.7.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/dbcli/%{name}
@@ -114,6 +117,11 @@ sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproje
 %doc LICENSE.txt
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.1-4PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.1-3PGDG
 - Add missing Requires. Needed at least on RHEL 10.
 

@@ -4,6 +4,9 @@
 %if 0%{?suse_version} == 1500
 %global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__python3 %{_bindir}/python3.13
@@ -14,7 +17,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.2.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Pure-Python MySQL client library
 
 License:	MIT
@@ -62,6 +65,11 @@ and Jython.
 %{python3_sitelib}/%{pname}/constants/__pycache__/*.py*
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-3PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-2PGDG
 - Update patch0
 - Add missing BRs

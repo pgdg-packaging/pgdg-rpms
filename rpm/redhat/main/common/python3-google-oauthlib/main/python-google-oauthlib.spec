@@ -7,12 +7,15 @@
 %if 0%{?suse_version} == 1500
 %global __python3 %{_bindir}/python3.11
 %global python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %{!?python3_pkgversion: %global python3_pkgversion 3}
 
 Name:		python%{python3_pkgversion}-%{library}
 Version:	1.2.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Epoch:		1
 Summary:	oauthlib integration for Google Auth
 License:	ASL 2.0
@@ -54,6 +57,11 @@ oauthlib integration for Google Auth
 %{python3_sitelib}/google_auth_oauthlib/
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.4-4PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.4-3PGDG
 - Switch to pyproject builds
 - Use Python 3.11 on SLES 15

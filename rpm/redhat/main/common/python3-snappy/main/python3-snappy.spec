@@ -18,6 +18,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -27,7 +30,7 @@
 Name:		python3-snappy
 Epoch:		1
 Version:	0.6.1
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
@@ -63,6 +66,11 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-2PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.6.1-1PGDG
 - Pin back to 0.6.1: 0.7.x rewrote the compression backend to hard-depend
   on cramjam (Rust-based), which isn't packaged anywhere in SLES 15/16

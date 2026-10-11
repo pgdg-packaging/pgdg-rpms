@@ -18,6 +18,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -30,7 +33,7 @@
 Summary:	Command line tool designed to interact with the PostgreSQL Extension Network
 Name:		pgxnclient
 Version:	1.3.2
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 Source0:	https://pypi.python.org/packages/source/p/%{name}/%{name}-%{version}.tar.gz
 License:	BSD
 Url:		https://github.com/pgxn/%{name}
@@ -74,6 +77,11 @@ removing extensions in a PostgreSQL installation or database.
 %{python3_sitelib}/%{name}/utils/__pycache__/*.p*
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.2-11PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Wed Sep 9 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.2-10PGDG
 - Mark this package as noarch.
 

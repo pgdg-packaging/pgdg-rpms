@@ -13,6 +13,9 @@
 %endif
 %if 0%{?suse_version} == 1500
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	python3_pkgversion 313
@@ -21,7 +24,7 @@
 
 Name:		python3-%{sname}
 Version:	1.0
-Release:	47PGDG%{?dist}
+Release:	48PGDG%{?dist}
 Summary:	View colored, incremental diff in a workspace or from stdin, with side by side and auto pager support
 
 License:	BSD
@@ -67,6 +70,11 @@ and auto pager support. Requires python (>= 2.5.0) and less.
 %{python3_sitelib}/cdiff*
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-48PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-47PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)

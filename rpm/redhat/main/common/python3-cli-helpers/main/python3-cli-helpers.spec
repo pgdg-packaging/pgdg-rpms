@@ -20,6 +20,9 @@
 %if 0%{?suse_version} == 1500
 %global python3_pkgversion 311
 %global pybasever 3.11
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global python3_pkgversion 313
@@ -29,7 +32,7 @@
 Summary:	Python helpers for common CLI tasks
 Name:		python%{python3_pkgversion}-cli-helpers
 Version:	2.15.1
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD-3-Clause
 URL:		https://github.com/dbcli/cli_helpers
 Source0:	https://github.com/dbcli/cli_helpers/archive/refs/tags/v%{version}.tar.gz
@@ -87,6 +90,11 @@ command-line interfaces.
 %{python3_sitelib}/%{pypi_name}-%{version}.dist-info/
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.15.1-5PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.15.1-4PGDG
 - BuildRequire python-rpm-packaging on SUSE, which python313-devel does
   not pull in, so that the Python dependency generators run there.

@@ -18,6 +18,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -27,7 +30,7 @@
 
 Name:		pglast
 Version:	7.11
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL Languages AST and statements prettifier
 License:	GPLv3+
 Url:		https://github.com/lelit/%{sname}
@@ -80,5 +83,10 @@ sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/'
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 7.11-2PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Wed Sep 16 2026 Devrim Gunduz <devrim@gunduz.org> - 7.11-1PGDG
 - Initial packaging for the PostgreSQL RPM repository

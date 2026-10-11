@@ -20,6 +20,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -91,6 +94,9 @@ sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
   the Python dependency generators run there.
 - Drop the Python 3.15 classifier from pyproject.toml, which the hatchling
   on SLES 16 rejects.
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
 
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-4PGDG
 - Package the whole %%{modname}/ directory instead of hand-picked globs

@@ -19,6 +19,9 @@
 %global	__ospython %{_bindir}/python3.11
 %global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -27,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.8.0
-Release:	51PGDG%{?dist}
+Release:	52PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -86,6 +89,11 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-52PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-51PGDG
 - Set the version statically in pyproject.toml, so that the package does not
   install dnspython-0.0.0.dist-info, which made security scanners report

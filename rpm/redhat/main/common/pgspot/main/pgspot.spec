@@ -18,6 +18,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -28,7 +31,7 @@
 
 Name:		pgspot
 Version:	0.9.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Spot vulnerabilities in PostgreSQL extension scripts
 License:	PostgreSQL
 Url:		https://github.com/timescale/%{sname}
@@ -91,6 +94,11 @@ done
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.2-3PGDG
+- Build the python311 flavor on SLES 15. The SUSE pyproject macros built
+  for the default python3 (3.6), so the build failed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.2-2PGDG
 - Add %%check, running the upstream tests. It is disabled by default;
   enable it with --define 'runselftest 1'.
