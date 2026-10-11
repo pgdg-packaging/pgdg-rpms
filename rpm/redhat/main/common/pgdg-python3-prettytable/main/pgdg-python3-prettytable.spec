@@ -14,6 +14,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} >= 1500
@@ -36,7 +37,9 @@ Source0:	https://files.pythonhosted.org/packages/source/p/prettytable/prettytabl
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-flit-core
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
+BuildRequires:	pyproject-rpm-macros
 BuildRequires:	sed
 
 Provides:	python%{python3_pkgversion}dist(prettytable)
@@ -52,12 +55,30 @@ a row range.
 %prep
 %autosetup -n %{modname}-%{version}
 sed -i -e '/^*!\//, 1d' src/prettytable/*.py
+# Upstream builds with hatchling >= 1.27 and hatch-vcs: hatchling is not
+# available on RHEL 8, and older on RHEL 9. Build with flit-core instead,
+# which is available everywhere, with the version written in pyproject.toml
+# (the sdist already has src/prettytable/_version.py), and use the license
+# table, which flit-core < 3.11 understands:
+sed -i -e '/^\[build-system\]$/,/^\]$/d' \
+	-e 's|^license = "BSD-3-Clause"$|license = { text = "BSD-3-Clause" }|' \
+	-e '/^license-files = /d' \
+	-e 's|^dynamic = \[ "version" \]$|version = "%{version}"|' pyproject.toml
+cat >> pyproject.toml << 'BUILDSYSTEM'
+
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = [ "flit_core >=3.4,<4" ]
+BUILDSYSTEM
+grep -q '^license = { text = "BSD-3-Clause" }$' pyproject.toml
+grep -q '^version = "%{version}"$' pyproject.toml
+if grep -qE '^license-files|^dynamic|hatchling' pyproject.toml; then exit 1; fi
 
 %build
-%{__ospython} setup.py build
+%pyproject_wheel
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
@@ -67,15 +88,20 @@ sed -i -e '/^*!\//, 1d' src/prettytable/*.py
 
 %files
 %doc README.md CHANGELOG.md
-%license COPYING
-%{python3_sitelib}/%{modname}-%{version}-py%{pybasever}.egg-info/
-%{python3_sitelib}/%{modname}/*.py*
-%{python3_sitelib}/%{modname}/__pycache__/*.py*
+%license LICENSE
+%{python3_sitelib}/%{modname}-%{version}.dist-info/
+%{python3_sitelib}/%{modname}/
 
 %changelog
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.18.0-2PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
+- prettytable has no setup.py anymore. Build with the pyproject macros and
+  flit-core instead of upstream's hatchling >= 1.27 and hatch-vcs, which
+  are not available on RHEL 8 and 9, and use the license table form in
+  pyproject.toml. Update the license file name. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+- Needs wcwidth >= 0.3.5: build pgdg-python3-wcwidth 0.8.3 first.
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.18.0-1PGDG.1
 - Update to 3.18.0 per changes described at:
