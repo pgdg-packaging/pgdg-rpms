@@ -14,6 +14,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} == 1500
@@ -30,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.2
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -80,6 +81,11 @@ documentation and it doesn't say things like that!
 %endif
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-3PGDG
+- Set __python3 on Amazon Linux 2023, too, so that the pyproject macros
+  build with python3.13 instead of the system python3. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
