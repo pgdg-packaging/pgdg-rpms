@@ -26,13 +26,13 @@
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.4.5
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
 License:	LicenseRef-Callaway-BSD
 Source:		https://files.pythonhosted.org/packages/source/l/%{srcname}/%{srcname}-%{version}.tar.gz
-# Only applied on RHEL 8, RHEL 9 and AL 2023, where there is no pkgconfig module
+# Only applied on RHEL 8, RHEL 9, AL 2023 and SLES 15, where there is no pkgconfig module
 # for the Python stack used here. It is listed on every distro, so that the SRPM
 # always carries it.
 Patch0:		lz4-drop-pkgconfig-setup-requires.patch
@@ -49,7 +49,7 @@ BuildRequires:	gcc python%{python3_pkgversion}-devel python%{python3_pkgversion}
 %if 0%{?rhel} != 8
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 %endif
-%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023 || 0%{?suse_version} == 1500
 # There is no pkgconfig module for the Python stack used here. setup.py only uses
 # it to find a system liblz4, and falls back to the bundled lz4 without it, so
 # the patch drops it from setup_requires (which would pip-fetch it from PyPI).
@@ -73,7 +73,7 @@ Python 3 bindings for the lz4 compression library.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023 || 0%{?suse_version} == 1500
 %patch -P0 -p0
 %endif
 %if 0%{?rhel} == 8
@@ -114,6 +114,11 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-4PGDG
+- There is no python311-pkgconfig on SLES 15 either, so drop pkgconfig
+  from setup_requires there, too, and build with the bundled lz4. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-3PGDG
 - On RHEL 8, there is no python3.12-setuptools_scm, so do not BuildRequire it, and
   give setup.py the version directly with a second patch. The sdist already
