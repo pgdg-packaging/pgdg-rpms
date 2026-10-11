@@ -37,7 +37,7 @@
 Summary:	A PostgreSQL client that does auto-completion and syntax highlighting
 Name:		pgcli
 Version:	4.7.1
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/dbcli/%{name}
@@ -51,7 +51,9 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+%if 0%{?rhel} != 8
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+%endif
 BuildRequires:	python%{python3_pkgversion}-wheel
 
 Requires:	python3-%{name} = %{version}-%{release}
@@ -95,6 +97,15 @@ This is a build of the pgcli for the debug build of Python 3.
 # it to the older PEP 621 {text = ...} form, which every setuptools in
 # our build matrix accepts.
 sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproject.toml
+%if 0%{?rhel} == 8
+# There is no python3.12-setuptools_scm on RHEL 8. Write the version into
+# pyproject.toml instead (pgcli/__init__.py already has it):
+sed -i -e 's|^dynamic = \["version"\]$|version = "%{version}"|' \
+	-e 's|^requires = \["setuptools>=64.0", "setuptools-scm>=8"\]$|requires = ["setuptools>=64.0"]|' \
+	-e '/^\[tool.setuptools_scm\]$/d' pyproject.toml
+grep -q '^version = "%{version}"$' pyproject.toml
+if grep -qi 'setuptools.scm' pyproject.toml; then exit 1; fi
+%endif
 
 %build
 %pyproject_wheel
@@ -118,6 +129,11 @@ sed -i 's/^license = "BSD-3-Clause"$/license = {text = "BSD-3-Clause"}/' pyproje
 %doc LICENSE.txt
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.1-5PGDG
+- There is no python3.12-setuptools_scm on RHEL 8: do not BuildRequire it
+  there, and write the version into pyproject.toml instead. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.1-4PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
