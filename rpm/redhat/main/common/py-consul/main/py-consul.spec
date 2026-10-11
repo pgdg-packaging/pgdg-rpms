@@ -70,9 +70,6 @@ Python client for Consul
 %license LICENSE
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 %{python3_sitelib}/consul/
-%if 0%{?suse_version} == 1500
-%{python3_sitelib}/docs/*.py
-%endif
 
 %changelog
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-47PGDG
@@ -84,6 +81,8 @@ Python client for Consul
   https://github.com/pgdg-packaging/pgdg-rpms/issues/226
 - Set python3_sitelib to the python3.11 one on SLES 15, too: the SUSE macro
   points to the default python3 (3.6).
+- Do not list the docs directory on SLES 15: %%install removes it on all
+  platforms.
 
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-46PGDG
 - Add missing BR

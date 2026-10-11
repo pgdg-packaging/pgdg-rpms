@@ -26,16 +26,14 @@
 %global	python3_pkgversion 313
 %endif
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%endif
+# The package is built with %%{__python3}, so the egg-info directory name has
+# its version, which is not always the one of %%{__ospython} (SLES 15):
+%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write('.'.join(map(str, sys.version_info[:2])))"`)}
 
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	17PGDG%{?dist}
+Release:	18PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -98,6 +96,12 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-18PGDG
+- Get the Python version of the egg-info directory name from %%{__python3},
+  which builds the package, instead of %%{__ospython}. On SLES 15 they
+  differ (3.6 and 3.11), and the version was cut to "3.1" there, so the
+  build failed. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
 * Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-17PGDG
 - Add Fedora 45 support
 
