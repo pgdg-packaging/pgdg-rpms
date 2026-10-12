@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	4.16.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -63,6 +63,11 @@ readable size or throughput.\
 %prep
 %autosetup -n %{sname}-%{version}
 
+# The hatchling we ship for RHEL 9 (1.25) is older than 1.27, and does not support
+# the PEP 639 license-files list. Its default license file patterns
+# include LICENCE anyway:
+%{__sed} -i -e '/^license-files = /d' -e 's/"hatchling>=1.27"/"hatchling"/' pyproject.toml
+
 # Remove shebangs from libs.
 for lib in src/humanize/time.py src/humanize/filesize.py src/humanize/number.py; do
  sed '1{\@^#!/usr/bin/env python@d}' $lib > $lib.new &&
@@ -88,6 +93,10 @@ find -name '*.po' -delete
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-3PGDG
+- Fix build on RHEL 9: remove the PEP 639 license-files list from
+  pyproject.toml, which the hatchling there does not support.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
