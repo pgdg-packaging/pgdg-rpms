@@ -6,7 +6,7 @@
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.10.14
+Version:	2.10.15
 Release:	1PGDG%{?dist}
 Summary:	Additional tools for PL/pgSQL functions validation
 License:	BSD
@@ -92,6 +92,10 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.15-1PGDG
+- Update to 2.10.15 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.10.15
+
 * Sat Oct 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.10.14-1PGDG
 - Update to 2.10.14 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.10.14
