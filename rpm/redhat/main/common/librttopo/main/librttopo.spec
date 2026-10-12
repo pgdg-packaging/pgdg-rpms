@@ -1,13 +1,13 @@
 %pgdg_set_gis_variables
 
 # Override GeOS version:
-%global geosfullversion %geos314fullversion
-%global geosmajorversion %geos314majorversion
-%global geosinstdir %geos314instdir
+%global geosfullversion %geos315fullversion
+%global geosmajorversion %geos315majorversion
+%global geosinstdir %geos315instdir
 
 Name:		librttopo
 Version:	1.1.0
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Create and manage SQL/MM topologies
 License:	GPLv2+
 URL:		https://git.osgeo.org/gitea/rttopo/%{name}
@@ -57,6 +57,10 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_libdir}/pkgconfig/rttopo.pc
 
 %changelog
+* Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-45PGDG
+- Rebuild against GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Mon Oct 5 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-44PGDG
 - Embed the GeOS library path as an rpath, so that librttopo uses GeOS
   3.14 also when other GeOS versions are installed: it was
