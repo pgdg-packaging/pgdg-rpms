@@ -7,9 +7,9 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global	geosfullversion %geos314fullversion
-%global	geosmajorversion %geos314majorversion
-%global	geosinstdir %geos314instdir
+%global	geosfullversion %geos315fullversion
+%global	geosmajorversion %geos315majorversion
+%global	geosinstdir %geos315instdir
 
 %global	gdalfullversion %gdal313fullversion
 %global	gdalmajorversion %gdal313majorversion
@@ -43,7 +43,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc1_4PGDG%{?dist}
+Release:	rc1_5PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc1.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc1-en.pdf
@@ -419,6 +419,10 @@ fi
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-5PGDG
+- Rebuild against GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-4PGDG
 - Add %%check, running the unit tests and the regression tests with the
   %%check helpers from pgdg-srpm-macros 2.0.0. It is disabled by default;
