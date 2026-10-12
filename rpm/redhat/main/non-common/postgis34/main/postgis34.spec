@@ -7,9 +7,9 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global	geosfullversion %geos314fullversion
-%global	geosmajorversion %geos314majorversion
-%global	geosinstdir %geos314instdir
+%global	geosfullversion %geos315fullversion
+%global	geosmajorversion %geos315majorversion
+%global	geosinstdir %geos315instdir
 
 %if 0%{?rhel} && 0%{?rhel} == 8
 %global	gdalfullversion %gdal38fullversion
@@ -65,12 +65,15 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.6
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 Patch0:		%{sname}%{postgiscurrmajorversion}-regress-geos314.patch
+# GEOS 3.15 support, backported from the stable branch of PostGIS.
+# Per https://github.com/pgdg-packaging/pgdg-rpms/issues/359 . Remove when PostGIS 3.4.7 is released:
+Patch1:	%{sname}%{postgiscurrmajorversion}-%{version}-geos315-backport.patch
 
 URL:		https://www.postgis.net/
 
@@ -252,6 +255,7 @@ This package provides JIT support for PostGIS 3.4
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 %patch -P 0 -p0
+%patch -P 1 -p1
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
@@ -443,6 +447,12 @@ fi
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.6-8PGDG
+- Rebuild against GEOS 3.15, and add a patch to support it, backported
+  from the stable branch of PostGIS. Without it, ST_Split() of a line by
+  points returns the line unsplit with GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Fri Oct 2 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.6-7PGDG
 - Add %%check, running the unit tests and the regression tests with the
   %%check helpers from pgdg-srpm-macros 2.0.0. It is disabled by default;
