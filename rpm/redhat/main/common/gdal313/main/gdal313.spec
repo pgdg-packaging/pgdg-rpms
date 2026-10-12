@@ -41,9 +41,9 @@
 
 %global bashcompletiondir %(pkg-config --variable=compatdir bash-completion)
 
-%global geosfullversion %geos314fullversion
-%global geosmajorversion %geos314majorversion
-%global geosinstdir %geos314instdir
+%global geosfullversion %geos315fullversion
+%global geosmajorversion %geos315majorversion
+%global geosinstdir %geos315instdir
 
 %global gdalinstdir /usr/%{name}
 %global gdalsomajorversion	39
@@ -72,7 +72,7 @@
 
 Name:		%{sname}313
 Version:	3.13.3
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -548,6 +548,10 @@ done
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-5PGDG
+- Rebuild against GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-4PGDG
 - Embed the PROJ, GeOS, libgeotiff and SpatiaLite library paths as
   rpaths, so that GDAL uses GeOS 3.14 also when other GeOS versions are
