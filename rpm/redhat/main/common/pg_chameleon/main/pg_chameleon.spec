@@ -33,7 +33,7 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	13PGDG%{?dist}
+Release:	14PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -48,14 +48,12 @@ BuildRequires:	python%{python3_pkgversion}-wheel
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 %if !0%{?suse_version}
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	pyproject-rpm-macros
 %endif
 
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
-Requires:	python3-pyyaml python3-parsy python3-daemonize
-Requires:	python3-tabulate python3-psycopg2 python3-rollbar
-Requires:	python3-PyMySQL python3-mysql-replication >= 0.31
-%endif
+# On RHEL/Fedora/AL2023 the runtime Requires are generated from the
+# dist-info metadata as python%%{python3_pkgversion}dist(...).
 %if 0%{?suse_version} >= 1500
 Requires:	python3-PyYAML python%{python3_pkgversion}-parsy
 Requires:	python%{python3_pkgversion}-daemonize python%{python3_pkgversion}-tabulate
@@ -76,6 +74,18 @@ the jsonb values and replays the changes against the PostgreSQL database.
 # Sphinx is only needed to build the docs, not at runtime:
 %{__sed} -i -e "s/'psycopg2-binary>=/'psycopg2>=/" \
 	-e "/'Sphinx>=/d" setup.py
+# pkg_resources is deprecated and only available with setuptools; use
+# importlib.metadata from the standard library instead:
+%{__sed} -i -e 's/^from pkg_resources import get_distribution$/from importlib.metadata import version/' \
+	-e "s/^__version__ = get_distribution('pg_chameleon')$/__version__ = 'pg_chameleon ' + version('pg_chameleon')/" \
+	scripts/chameleon.py
+%{__sed} -i -e 's/^from pkg_resources import get_distribution$/from importlib.metadata import version/' \
+	-e "s/str(get_distribution('PyYAML')).split(' ')\[1\]/version('PyYAML')/" \
+	pg_chameleon/lib/global_lib.py
+# distutils was removed in Python 3.12; get_python_lib is imported but
+# never used:
+%{__sed} -i '/^from distutils.sysconfig import get_python_lib$/d' \
+	pg_chameleon/lib/global_lib.py pg_chameleon/lib/pg_lib.py
 
 %build
 %pyproject_wheel
@@ -99,6 +109,17 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-14PGDG
+- Remove the hand-written python3-* Requires on RHEL and Fedora. On RHEL 9
+  they pointed to the system python3 (3.9) packages, and they could not
+  be satisfied by the renamed python3.12-* packages. The generated
+  python3.12dist() Requires already cover all dependencies.
+- Add missing pyproject-rpm-macros BuildRequires.
+- Use importlib.metadata instead of pkg_resources, which is only
+  available with setuptools, so chameleon failed to start.
+- Remove the unused distutils import, which made chameleon fail to start
+  on Python >= 3.12.
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-13PGDG
 - Replace psycopg2-binary with psycopg2 and remove Sphinx in setup.py's
   install_requires, so that the generated python3dist() Requires can be

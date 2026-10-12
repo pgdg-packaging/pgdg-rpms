@@ -33,7 +33,7 @@
 Name:		python%{python3_pkgversion}-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	1.4.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -42,6 +42,7 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -51,7 +52,7 @@ BuildRequires:	pyproject-rpm-macros
 Requires:	python%{python3_pkgversion}-%{sname}
 Requires:	python3-requests
 
-Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
+Provides:	python3-%{sname} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 Provides:	python%{python3_pkgversion}-python3-%{sname}
 # Package was renamed from python3-%%{sname}:
@@ -120,6 +121,12 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-6PGDG
+- Remove %%{?_isa} from the python3-rollbar Provides: this is a noarch
+  package, and on RHEL 9 it was generated as python3-rollbar(x86-64),
+  which did not satisfy Requires: python3-rollbar.
+- Add missing python%%{python3_pkgversion}-wheel BuildRequires.
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-5PGDG
 - Add Obsoletes: for the old python3-rollbar package name, so that
   updates replace it instead of failing with file conflicts.
