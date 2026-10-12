@@ -51,7 +51,7 @@ BuildArch:	noarch
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 Provides:	python%{python3_pkgversion}-%{name}
-# Package was renamed from python3-%{sname}:
+# Package was renamed from python3-%%{sname}:
 Obsoletes:	python3-%{sname} < %{version}-%{release}
 
 %description
