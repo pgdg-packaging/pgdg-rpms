@@ -32,14 +32,16 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.0.17
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
 Source0:	https://github.com/noplay/python-%{sname}/archive/%{version}.tar.gz
 BuildArch:	noarch
 
-Provides:	python3-%{sname}
+Provides:	python3-%{sname} = %{version}-%{release}
+# Package was renamed from python3-%{sname}:
+Obsoletes:	python3-%{sname} < %{version}-%{release}
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -89,6 +91,10 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-5PGDG
+- Add Obsoletes: for the old python3-mysql-replication package name, so
+  that updates replace it instead of failing with file conflicts.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-4PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
