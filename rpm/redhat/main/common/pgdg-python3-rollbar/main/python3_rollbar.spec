@@ -33,7 +33,7 @@
 Name:		python%{python3_pkgversion}-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	1.4.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -54,6 +54,8 @@ Requires:	python3-requests
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 Provides:	python%{python3_pkgversion}-python3-%{sname}
+# Package was renamed from python3-%%{sname}:
+Obsoletes:	python3-%{sname} < %{version}-%{release}
 
 %description
 The rollbar module makes it easy to write user friendly command line interfaces.
@@ -118,6 +120,10 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-5PGDG
+- Add Obsoletes: for the old python3-rollbar package name, so that
+  updates replace it instead of failing with file conflicts.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-4PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per

@@ -34,7 +34,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	2.2
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -51,6 +51,8 @@ BuildArch:	noarch
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 Provides:	python%{python3_pkgversion}-%{name}
+# Package was renamed from python3-%{sname}:
+Obsoletes:	python3-%{sname} < %{version}-%{release}
 
 %description
 Parsy is an easy and elegant way to parse text in Python by combining small
@@ -81,6 +83,10 @@ documentation and it doesn't say things like that!
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-4PGDG
+- Add Obsoletes: for the old python3-parsy package name, so that
+  updates replace it instead of failing with file conflicts.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-3PGDG
 - Set __python3 on Amazon Linux 2023, too, so that the pyproject macros
   build with python3.13 instead of the system python3. Per
