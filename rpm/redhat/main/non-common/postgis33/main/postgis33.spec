@@ -7,9 +7,9 @@
 %pgdg_set_gis_variables
 
 # Override some variables:
-%global	geosfullversion %geos314fullversion
-%global	geosmajorversion %geos314majorversion
-%global	geosinstdir %geos314instdir
+%global	geosfullversion %geos315fullversion
+%global	geosmajorversion %geos315majorversion
+%global	geosinstdir %geos315instdir
 
 %if 0%{?rhel} && 0%{?rhel} == 8
 %global	gdalfullversion %gdal38fullversion
@@ -70,7 +70,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.10
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}.pdf
@@ -82,6 +82,9 @@ Patch3:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-vacuum-delay-point.p
 Patch4:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-tupledescattr.patch
 Patch5:		%{sname}%{postgiscurrmajorversion}-%{version}-pg18-json-categorize-type.patch
 Patch6:		%{sname}%{postgiscurrmajorversion}-regress-pg18-geos314.patch
+# GEOS 3.15 support, backported from the stable branch of PostGIS.
+# Per https://github.com/pgdg-packaging/pgdg-rpms/issues/359 . Remove when PostGIS 3.3.11 is released:
+Patch7:	%{sname}%{postgiscurrmajorversion}-%{version}-geos315-backport.patch
 
 URL:		https://www.postgis.net/
 
@@ -273,6 +276,7 @@ This package provides JIT support for PostGIS 3.3
 %patch -P 4 -p0
 %patch -P 5 -p0
 %patch -P 6 -p0
+%patch -P 7 -p1
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
@@ -462,6 +466,12 @@ fi
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-9PGDG
+- Rebuild against GEOS 3.15, and add a patch to support it, backported
+  from the stable branch of PostGIS. Without it, ST_Split() of a line by
+  points returns the line unsplit with GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Fri Oct 2 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.10-8PGDG
 - Add %%check, running the unit tests and the regression tests with the
   %%check helpers from pgdg-srpm-macros 2.0.0. It is disabled by default;
