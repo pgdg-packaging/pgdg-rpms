@@ -40,7 +40,7 @@ Source0:	https://github.com/noplay/python-%{sname}/archive/%{version}.tar.gz
 BuildArch:	noarch
 
 Provides:	python3-%{sname} = %{version}-%{release}
-# Package was renamed from python3-%{sname}:
+# Package was renamed from python3-%%{sname}:
 Obsoletes:	python3-%{sname} < %{version}-%{release}
 
 %if 0%{?suse_version} >= 1500
