@@ -1,0 +1,10 @@
+# Databases monitored by pgwatch. See /usr/share/doc/pgwatch/sample.sources.yaml
+# for all available options, and https://pgwat.ch for the documentation.
+#
+# Set is_enabled to true after adjusting the connection string.
+
+- name: local
+  conn_str: postgresql://pgwatch@localhost:5432/postgres
+  kind: postgres
+  preset_metrics: basic
+  is_enabled: false

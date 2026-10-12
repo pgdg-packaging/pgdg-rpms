@@ -1,0 +1,22 @@
+[Unit]
+Description=pgwatch PostgreSQL monitoring metrics collector
+Documentation=https://pgwat.ch
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=10
+
+[Service]
+Type=simple
+User=pgwatch
+Group=pgwatch
+WorkingDirectory=/var/lib/pgwatch
+# pgwatch reads its settings from PW_* environment variables, see
+# "pgwatch --help" for the full list:
+EnvironmentFile=-/etc/pgwatch/pgwatch.conf
+ExecStart=/usr/bin/pgwatch $PGWATCH_OPTS
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
