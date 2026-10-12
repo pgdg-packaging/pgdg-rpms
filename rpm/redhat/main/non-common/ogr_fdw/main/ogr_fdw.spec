@@ -30,7 +30,7 @@
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.9
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
@@ -74,7 +74,10 @@ This package provides JIT support for ogr_fdw
 %setup -q -n pgsql-ogr-fdw-%{version}
 
 %build
-PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
+# Link ogr_fdw.so and ogr_fdw_info with an RPATH to our GDAL, instead of
+# relying on its ld.so.conf.d file. GDAL_LIBS is used for both links:
+PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} \
+	GDAL_LIBS="$(%{gdalinstdir}/bin/gdal-config --libs) -Wl,-rpath,%{gdalinstdir}/lib"
 
 %install
 %{__rm} -rf %{buildroot}
@@ -82,7 +85,8 @@ PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mfla
 %{__install} -d %{buildroot}%{pginstdir}/
 %{__install} -d %{buildroot}%{pginstdir}/bin/
 %{__install} -d %{buildroot}%{pginstdir}/share/extension
-PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg}
+PATH=%{pginstdir}/bin:%{gdalinstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg} \
+	GDAL_LIBS="$(%{gdalinstdir}/bin/gdal-config --libs) -Wl,-rpath,%{gdalinstdir}/lib"
 
 # Install README file under PostgreSQL installation directory:
 %{__install} -m 755 README.md %{buildroot}%{pginstdir}/share/extension/README-%{sname}.md
@@ -114,6 +118,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.9-6PGDG
+- Link ogr_fdw.so and ogr_fdw_info with an RPATH to GDAL, instead of
+  relying on the ld.so.conf.d file of GDAL. Rebuild against GDAL built
+  with GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.9-5PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
