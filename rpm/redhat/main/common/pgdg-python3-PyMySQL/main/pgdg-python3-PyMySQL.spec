@@ -12,12 +12,21 @@
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 313
 %endif
+%if 0%{?amzn} == 2023
+%global	__python3 %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
 
+%if 0%{?amzn} == 2023
+# distutils is gone in Python 3.12+:
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%else
 %global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%endif
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.2.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Pure-Python MySQL client library
 
 License:	MIT
@@ -25,7 +34,10 @@ URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-pyproject-license.patch
 
+# Do not claim the OS python3 (3.9) name on Amazon Linux 2023:
+%if !0%{?amzn}
 Provides:	python3-%{sname}
+%endif
 
 BuildArch:	noarch
 # python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
@@ -34,6 +46,12 @@ BuildArch:	noarch
 # get generated. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 %if !0%{?suse_version}
 BuildRequires:	python%{python3_pkgversion}-devel
+%if 0%{?amzn} == 2023
+BuildRequires:	pyproject-rpm-macros
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
+%endif
 %else
 BuildRequires:	python-rpm-macros python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -65,6 +83,10 @@ and Jython.
 %{python3_sitelib}/%{pname}/constants/__pycache__/*.py*
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-4PGDG
+- Add Amazon Linux 2023 support, building the python3.13 flavor there
+  (python3.13-PyMySQL) for pg_chameleon.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-3PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
