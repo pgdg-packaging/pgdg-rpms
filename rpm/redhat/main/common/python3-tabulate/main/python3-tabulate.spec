@@ -1,8 +1,28 @@
 %global sname tabulate
 
-Name:		python3-%{sname}
+# Our consumers (pg_chameleon, cli-helpers) use python3.12 on RHEL 9 and
+# python3.13 on Amazon Linux 2023, not the system python3 (3.9), so
+# build that flavor there. Elsewhere the system python3 is already the
+# one our consumers use, so keep the python3-tabulate name.
+%global pyname python3
+%if 0%{?rhel} == 9
+%global __ospython %{_bindir}/python3.12
+%global python3_pkgversion 3.12
+%global pyname python3.12
+%endif
+%if 0%{?amzn} == 2023
+%global __ospython %{_bindir}/python3.13
+%global __python3 %{_bindir}/python3.13
+%global python3_pkgversion 3.13
+%global pyname python3.13
+%endif
+%if "%{pyname}" != "python3"
+%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%endif
+
+Name:		%{pyname}-%{sname}
 Version:	0.10.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Pretty-print tabular data in Python, a library and a command-line utility
 
 License:	MIT
@@ -11,20 +31,20 @@ Source:		https://files.pythonhosted.org/packages/46/58/8c37dea7bbf769b20d58e7ace
 
 BuildArch:	noarch
 
-BuildRequires:	python3-devel
-BuildRequires:	python3-pip
-BuildRequires:	python3-wheel
-BuildRequires:	python3-setuptools
+BuildRequires:	%{pyname}-devel
+BuildRequires:	%{pyname}-pip
+BuildRequires:	%{pyname}-wheel
+BuildRequires:	%{pyname}-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
 # widechars support
-%{?python_extras_subpkg:Recommends: python3-%{sname}+widechars}
+%{?python_extras_subpkg:Recommends: %{name}+widechars}
 %{!?python_extras_subpkg:Recommends: python%{python3_version}dist(wcwidth)}
 
-%{?python_extras_subpkg:%python_extras_subpkg -n python3-%{sname} -i %{python3_sitelib}/%{sname}-%{version}.dist-info widechars}
+%{?python_extras_subpkg:%python_extras_subpkg -n %{name} -i %{python3_sitelib}/%{sname}-%{version}.dist-info widechars}
 
 %description
 The main use cases of the library are:
@@ -70,15 +90,27 @@ EOF
 
 %install
 %pyproject_install
+%if "%{pyname}" != "python3"
+# Do not conflict with the system python3-tabulate:
+%{__rm} -f %{buildroot}%{_bindir}/%{sname}
+%endif
 
 %files
 %license LICENSE
 %doc README README.md
+%if "%{pyname}" == "python3"
 %{_bindir}/%{sname}
+%endif
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-3PGDG
+- Build the python3.12 flavor on RHEL 9 and the python3.13 flavor on
+  Amazon Linux 2023, as python3.12-tabulate and python3.13-tabulate.
+  The system python3 build did not provide the python3.12dist(tabulate)
+  and python3.13dist(tabulate) that pg_chameleon and cli-helpers need.
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-2PGDG
 - Update to 0.10.0 per changes described at:
   https://pypi.org/project/tabulate/0.10.0/
