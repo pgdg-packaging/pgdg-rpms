@@ -10,9 +10,9 @@
 %pgdg_set_gis_variables
 
 # Override some variables.
-%global geosfullversion %geos314fullversion
-%global geosmajorversion %geos314majorversion
-%global geosinstdir %geos314instdir
+%global geosfullversion %geos315fullversion
+%global geosmajorversion %geos315majorversion
+%global geosinstdir %geos315instdir
 %if 0%{?rhel} && 0%{?rhel} == 8
 %global projmajorversion %proj96majorversion
 %global projfullversion %proj96fullversion
@@ -25,7 +25,7 @@
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	16PGDG%{?dist}
+Release:	17PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -133,6 +133,10 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-17PGDG
+- Rebuild against GEOS 3.15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/359
+
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-16PGDG
 - Embed the GeOS and PROJ library paths as rpaths, so that the library
   uses GeOS 3.14 also when other GeOS versions are installed: they were
