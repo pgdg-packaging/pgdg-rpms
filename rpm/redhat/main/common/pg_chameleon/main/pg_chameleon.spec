@@ -33,7 +33,7 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	12PGDG%{?dist}
+Release:	13PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -72,6 +72,10 @@ the jsonb values and replays the changes against the PostgreSQL database.
 
 %prep
 %setup -q -n %{name}-%{version}
+# No RPM provides psycopg2-binary; the packaged psycopg2 is the same module.
+# Sphinx is only needed to build the docs, not at runtime:
+%{__sed} -i -e "s/'psycopg2-binary>=/'psycopg2>=/" \
+	-e "/'Sphinx>=/d" setup.py
 
 %build
 %pyproject_wheel
@@ -95,6 +99,11 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-13PGDG
+- Replace psycopg2-binary with psycopg2 and remove Sphinx in setup.py's
+  install_requires, so that the generated python3dist() Requires can be
+  satisfied.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-12PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
