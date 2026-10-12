@@ -35,13 +35,6 @@ BuildRequires:	zlib-devel
 BuildRequires:	protozero-devel libosmium-devel
 %endif
 
-%if 0%{?suse_version} == 1500
-BuildRequires:	libboost_headers1_66_0-devel libbz2-devel
-BuildRequires:	Catch2-2-devel clang-tools
-BuildRequires:	libexpat-devel nlohmann_json-devel
-BuildRequires:	lua54-devel
-%endif
-
 %if 0%{?suse_version} == 1600
 BuildRequires:	libboost_headers1_86_0-devel libbz2-devel
 BuildRequires:	Catch2-2-devel clang-tools
@@ -133,6 +126,9 @@ popd
 - Do not build osm2pgsql-gen on Fedora: the OpenCV of Fedora links the
   GDAL of Fedora, which needs the libpq of Fedora instead of libpq5, so
   osm2pgsql-gen did not link in a clean build root.
+- Remove SLES 15 support: osm2pgsql 2.3.1 needs the CMake package
+  configuration files of Boost, which are only shipped with Boost 1.70
+  and later, and SLES 15 only has Boost 1.66.
 
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.1-2PGDG
 - Install osm2pgsql-gen on RHEL 10 and Fedora.
