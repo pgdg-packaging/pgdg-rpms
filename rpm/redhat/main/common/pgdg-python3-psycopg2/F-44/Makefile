@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="python-psycopg2.spec"
+SPECFILE="pgdg-python3-psycopg2.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global

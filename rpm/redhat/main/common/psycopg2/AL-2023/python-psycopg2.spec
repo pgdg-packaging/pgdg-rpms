@@ -1,1 +1,0 @@
-../main/../main/python-psycopg2.spec
