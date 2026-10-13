@@ -1,6 +1,8 @@
 %global sname e-maj
 %global pname emaj
 
+%{!?runselftest:%global runselftest 0}
+
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.0.0
 Release:	2PGDG%{?dist}
@@ -8,9 +10,19 @@ Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{pname}/
 Source0:	https://github.com/dalibo/%{pname}/archive/refs/tags/v%{version}.tar.gz
+Source1:	%{pname}-check.sh
 
 BuildArch:	noarch
 Requires:	postgresql%{pgmajorversion}-contrib
+%if %runselftest
+# Upstream's expected output for PostgreSQL 17 is older than the release
+%if %{pgmajorversion} != 17
+BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+BuildRequires:	pgdg-srpm-macros >= 2.0.0
+# The client test runs the perl clients of client/
+BuildRequires:	perl(DBI) perl(DBD::Pg) perl(Time::HiRes)
+%endif
+%endif
 
 %description
 E-Maj is a set of PL/pgSQL functions allowing PostgreSQL Database
@@ -31,6 +43,17 @@ in time.
 %{__cp} -r sql/* %{buildroot}%{pginstdir}/share/%{pname}/
 %{__cp} %{pname}.control %{buildroot}%{pginstdir}/share/extension
 
+%check
+%if %runselftest
+%if %{pgmajorversion} != 17
+# The regression tests of upstream's tools/regress.sh, see emaj-check.sh
+%pgdg_check_init
+PGDG_PGMAJORVERSION=%{pgmajorversion}
+PGDG_EMAJ_VERSION=%{version}
+. %{SOURCE1}
+%endif
+%endif
+
 %files
 %defattr(-,root,root,-)
 %license LICENSE
@@ -44,6 +67,11 @@ in time.
   'emaj'") makes PostgreSQL look for them, as upstream does. They were in
   share/extension, so CREATE EXTENSION emaj failed, and so did every query of
   pg_available_extension_versions on servers with this package installed.
+- Add %%check, running the standard regression test scenario of upstream's
+  tools/regress.sh (including the tests of the perl clients) with the
+  %%check helpers from pgdg-srpm-macros 2.0.0, in emaj-check.sh. It is
+  disabled by default; enable it with --define 'runselftest 1'. Not on
+  PostgreSQL 17: upstream's expected output for it is older than 5.0.0.
 
 * Sun Jul 26 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0.0-1PGDG
 - Update to 5.0.0
