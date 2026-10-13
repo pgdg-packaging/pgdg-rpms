@@ -1,0 +1,1 @@
+../main/pgdg-python3-googleapis-common-protos.spec
