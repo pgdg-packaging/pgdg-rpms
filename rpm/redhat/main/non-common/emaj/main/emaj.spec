@@ -3,7 +3,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.0.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{pname}/
@@ -25,8 +25,10 @@ in time.
 
 %install
 %{__rm} -rf %{buildroot}
-%{__install} -d %{buildroot}%{pginstdir}/share/extension/
-%{__cp} -r sql/* %{buildroot}%{pginstdir}/share/extension
+%{__install} -d %{buildroot}%{pginstdir}/share/extension/ %{buildroot}%{pginstdir}/share/%{pname}/
+# emaj.control sets "directory = 'emaj'", so PostgreSQL looks for the SQL
+# scripts in share/emaj, as upstream installs them:
+%{__cp} -r sql/* %{buildroot}%{pginstdir}/share/%{pname}/
 %{__cp} %{pname}.control %{buildroot}%{pginstdir}/share/extension
 
 %files
@@ -34,9 +36,15 @@ in time.
 %license LICENSE
 %doc CHANGES.md docs README.md
 %{pginstdir}/share/extension/%{pname}.control
-%{pginstdir}/share/extension/%{pname}*.sql
+%{pginstdir}/share/%{pname}/
 
 %changelog
+* Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0.0-2PGDG
+- Install the SQL scripts into share/emaj, where emaj.control ("directory =
+  'emaj'") makes PostgreSQL look for them, as upstream does. They were in
+  share/extension, so CREATE EXTENSION emaj failed, and so did every query of
+  pg_available_extension_versions on servers with this package installed.
+
 * Sun Jul 26 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0.0-1PGDG
 - Update to 5.0.0
 
