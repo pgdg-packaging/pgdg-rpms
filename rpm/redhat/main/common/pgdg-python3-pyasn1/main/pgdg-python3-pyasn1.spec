@@ -10,7 +10,7 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
-%if 0%{?rhel} == 9
+%if 0%{?rhel} && 0%{?rhel} <= 9
 %global	__python3 %{_bindir}/python3.12
 %endif
 %if 0%{?amzn} == 2023
@@ -41,12 +41,17 @@ Source0:	https://files.pythonhosted.org/packages/source/p/%{pymodname}/%{pymodna
 BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel
-%if ! 0%{?suse_version}
+%if ! 0%{?suse_version} && 0%{?rhel} != 8
 BuildRequires:	pyproject-rpm-macros
 %endif
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+
+%if 0%{?rhel} == 8
+# The RHEL 8 dependency generator may not create this for python3.12:
+Provides:	python%{python3_pkgversion}dist(pyasn1) = %{version}
+%endif
 
 %description
 This is a pure-Python implementation of ASN.1 types and DER/BER/CER codecs
@@ -56,10 +61,24 @@ This is a pure-Python implementation of ASN.1 types and DER/BER/CER codecs
 %autosetup -n %{pymodname}-%{version}
 
 %build
+%if 0%{?rhel} == 8
+# There are no pyproject-rpm-macros on RHEL 8:
+%{__python3} -m pip wheel --no-deps --no-build-isolation --no-index \
+	--disable-pip-version-check -w pgdg-dist .
+%else
 %pyproject_wheel
+%endif
 
 %install
+%if 0%{?rhel} == 8
+%{__python3} -m pip install --no-deps --no-index --no-compile \
+	--disable-pip-version-check --ignore-installed \
+	--root %{buildroot} --prefix %{_prefix} pgdg-dist/*.whl
+%{__rm} -f %{buildroot}%{python3_sitelib}/*.dist-info/direct_url.json
+echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
+%else
 %pyproject_install
+%endif
 
 %files
 %license LICENSE.rst
@@ -74,3 +93,6 @@ This is a pure-Python implementation of ASN.1 types and DER/BER/CER codecs
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
 - Add RHEL 9 support (python3.12), for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Add RHEL 8 support (python3.12), for google-auth, for bigquery_fdw. Build with pip there,
+  as RHEL 8 has no pyproject-rpm-macros. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/367
