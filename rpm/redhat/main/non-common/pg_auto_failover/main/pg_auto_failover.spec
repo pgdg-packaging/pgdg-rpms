@@ -1,5 +1,7 @@
 %global sname pg_auto_failover
 
+%{!?runselftest:%global runselftest 0}
+
 %{!?llvm:%global llvm 1}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
@@ -16,11 +18,16 @@
 Summary:	Postgres extension and service for automated failover and high-availability
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}/
 BuildRequires:	postgresql%{pgmajorversion}-devel
+%if %runselftest
+# The tests need btree_gist, from contrib:
+BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
+BuildRequires:	pgdg-srpm-macros >= 2.0.0
+%endif
 # All supported distros have libselinux-devel package:
 BuildRequires:	libselinux-devel >= 2.0.93
 # SLES: SLES 15 does not have selinux-policy packageç
@@ -100,6 +107,19 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install %{with_llvm_arg}
 # Strip .so file to produce -debug* packages properly:
 %{__strip} %{buildroot}%{pginstdir}/lib/*.so
 
+%check
+%if %runselftest
+# The regression tests of the monitor extension, which must be preloaded.
+# Run them in src/monitor: the check target of the top level Makefile would
+# install the extension into the system first. The pg_autoctl tests of
+# upstream need root, network namespaces and several nodes, so they cannot
+# run here.
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'pgautofailover'"
+cd src/monitor
+pgdg_installcheck %{with_llvm_arg}
+%endif
+
 %files
 %defattr(-,root,root,-)
 %doc CHANGELOG.md docs/
@@ -116,6 +136,13 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-8PGDG
+- Add %%check, running the regression tests of the monitor extension with
+  the %%check helpers from pgdg-srpm-macros 2.0.0. The pg_autoctl tests of
+  upstream need root, network namespaces and several nodes, so they are not
+  run. It is disabled by default; enable it with --define 'runselftest 1'.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/165
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
