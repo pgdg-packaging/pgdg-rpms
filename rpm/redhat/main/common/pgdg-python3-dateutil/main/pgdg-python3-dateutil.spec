@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.9.0.post0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
@@ -53,6 +53,8 @@ BuildRequires:	python%{python3_pkgversion}-pip
 %endif
 
 Requires:	tzdata
+# The dependency generator does not add this on RHEL 8:
+Requires:	python%{python3_pkgversion}-six >= 1.5
 
 Provides:	python%{python3_pkgversion}dist(python-dateutil)
 
@@ -101,6 +103,11 @@ if grep -q 'scm' setup.py setup.cfg; then exit 1; fi
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/
 
 %changelog
+* Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-7PGDG
+- Add an explicit Requires on six: the dependency generator does not add
+  it on RHEL 8, so dateutil could not be imported there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-6PGDG
 - There is no python3.12-setuptools_scm on RHEL 8: do not BuildRequire it
   there, and give setup.py the version directly instead. Per
