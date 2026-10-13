@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="python3_fonttools.spec"
+SPECFILE="pgdg-python3-fonttools.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
