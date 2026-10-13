@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="python-google-auth.spec"
+SPECFILE="pgdg-python3-google-auth.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
