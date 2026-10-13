@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="python3-typing-extensions.spec"
+SPECFILE="pgdg-python3-typing-extensions.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
