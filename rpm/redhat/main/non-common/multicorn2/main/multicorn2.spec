@@ -24,7 +24,10 @@
 %endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
+%global	__python3 %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
+# The RHEL 8 macro needs distutils, which python3.12 only has with setuptools:
+%global	python3_sitearch %{_libdir}/python3.12/site-packages
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
@@ -33,11 +36,16 @@
 %endif
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
+%global	__python3 %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# The SUSE macro points to the default python3 (3.6):
+%global	python3_sitearch %{_libdir}/python3.11/site-packages
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 313
+# python313-devel does not pull in the macros that define this:
+%global	python3_sitearch %{_libdir}/python3.13/site-packages
 %endif
 
 %{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
@@ -45,13 +53,13 @@
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
 URL:		https://github.com/pgsql-io/%{version}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	python3-devel
+BuildRequires:	python%{python3_pkgversion}-devel
 
 Provides:	python3dist(multicorn)%{?_isa} = %{version}-%{release}
 # Provide versionless multicorn. This will simplify using
@@ -99,11 +107,14 @@ This package provides JIT support for multicorn2
 %patch -P 0 -p0
 
 %build
-PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
+# Without PYTHON_OVERRIDE, multicorn links the libpython that PostgreSQL
+# was built with (the default python3), while its Python code is installed
+# for %{__ospython} below:
+PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} PYTHON_OVERRIDE=%{__ospython}
 
 %install
 %{__rm} -rf %{buildroot}
-PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install %{with_llvm_arg}
+PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install %{with_llvm_arg} PYTHON_OVERRIDE=%{__ospython}
 # Install Python portions manually:
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{pname}
 %{__cp} -rp python/multicorn/* %{buildroot}%{python3_sitearch}/%{pname}
@@ -124,6 +135,22 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-10PGDG
+- Link against the libpython of the interpreter that the Python code is
+  installed for (python3.12 on RHEL, python3.13 on Amazon Linux 2023,
+  python3.11 on SLES 15), via PYTHON_OVERRIDE, and BuildRequire its devel
+  package. multicorn.so used to link the libpython PostgreSQL was built
+  with (the default python3), which could not import the multicorn module
+  on RHEL 8, RHEL 9, Amazon Linux 2023 and SLES 15. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+- Also set __python3 and python3_sitearch on RHEL and SLES 15, and
+  python3_sitearch on SLES 16, so that the Python code is installed for
+  that interpreter everywhere. It went to the python3.6 site-packages on
+  RHEL 8 and SLES 15.
+- Note that, as with Python >= 3.12 everywhere, multicorn2 and PL/Python
+  cannot be used in the same database; see "Known Issues" at
+  https://github.com/pgsql-io/multicorn2#known-issues
+
 * Sun Sep 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-9PGDG
 - Add Fedora 45 support
 
