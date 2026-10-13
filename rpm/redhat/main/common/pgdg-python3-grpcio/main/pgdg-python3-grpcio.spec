@@ -63,6 +63,7 @@ Summary:	HTTP/2-based RPC framework
 License:	Apache-2.0 AND BSD-3-Clause AND MIT AND MPL-2.0
 URL:		https://grpc.io
 Source0:	https://files.pythonhosted.org/packages/source/g/%{pymodname}/%{pymodname}-%{version}.tar.gz
+Patch0:	grpcio-1.84.0-openssl4.patch
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -70,12 +71,13 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 BuildRequires:	gcc gcc-c++ make
 %if 0%{?suse_version}
-BuildRequires:	libopenssl-devel zlib-devel
+BuildRequires:	libopenssl-3-devel zlib-devel
 %else
 BuildRequires:	openssl-devel zlib-devel
 %endif
-# gRPC includes openssl/engine.h, which is in a separate package there:
-%if 0%{?fedora} >= 41
+# gRPC includes openssl/engine.h, which is in a separate package on Fedora
+# 43 and 44 (Fedora 45 has it in openssl-devel again, with OPENSSL_NO_ENGINE):
+%if 0%{?fedora} && 0%{?fedora} <= 44
 BuildRequires:	openssl-devel-engine
 %endif
 # gRPC needs C++17, which the default GCC 7 of SLES 15 does not fully
@@ -101,7 +103,7 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}, for bigquery_fdw.
 
 %prep
-%autosetup -n %{pymodname}-%{version}
+%autosetup -p1 -n %{pymodname}-%{version}
 # PEP 639 license strings need setuptools >= 77, which RHEL 8, Amazon Linux
 # 2023 and SLES 15 do not have:
 %{__sed} -i 's/^license = "\(.*\)"$/license = { text = "\1" }/' pyproject.toml
@@ -139,3 +141,5 @@ export CC=gcc-13 CXX=g++-13
 - Initial packaging for the PostgreSQL RPM repository, as part of the
   private Python stack of bigquery_fdw. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+- Add a patch from upstream (first in 1.85.0) to build with the OpenSSL 4
+  of Fedora 45.
