@@ -1,80 +1,603 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
+%global sname psycopg3
+%global pname python-%{sname}
+
+# This spec builds the python3 flavor of the OS (python3-psycopg3 and
+# python3-psycopg3-c) everywhere, and on RHEL 9 also the pure Python
+# python3.12 flavor (python3.12-psycopg3) in the same build, for pg_statviz.
+# The python3.12 flavor used to be the separate pgdg-python3-psycopg3 spec,
+# merged here per https://github.com/pgdg-packaging/pgdg-rpms/issues/369
+%global	with_alt 0
 %if 0%{?rhel} == 9
-%global	__python3 %{_bindir}/python3.12
+%global	with_alt 1
+%global	alt_pyver 3.12
+%global	alt_python %{_bindir}/python%{alt_pyver}
+%global	alt_sitelib %{_prefix}/lib/python%{alt_pyver}/site-packages
 %endif
+
+%{!?with_docs:%global with_docs 0}
+
 %if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
+# AL2023's default python3 is 3.9, but psycopg requires >= 3.10, so build
+# against the python3.13 alt-stack (also the only one with a Cython package).
+%global __python3 %{_bindir}/python3.13
+%global python3_runtimes python3.13
+%global __ospython %{_bindir}/python3.13
+%global python3_sitearch %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
+%else
+%global python3_runtimes python3
+%global __ospython %{_bindir}/python3
 %endif
 
-%global	modname psycopg
+%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
-Name:		python%{python3_pkgversion}-%{modname}3
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%else
+%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%endif
+
+Summary:	A PostgreSQL database adapter for Python 3
+Name:		python3-%{sname}
+%if 0%{?rhel} == 9
+# psycopg 3.3 requires Python >= 3.10, but RHEL 9's python3 is 3.9. Stay
+# on the 3.2 branch there. The Epoch is needed to replace the broken
+# 3.3.6-42PGDG packages that were already published for RHEL 9.
+Epoch:		1
 Version:	3.2.13
-Release:	1PGDG%{?dist}
-Summary:	A PostgreSQL database adapter for Python 3 (python%{python3_pkgversion})
-
+Release:	3PGDG%{?dist}
+%else
+Version:	3.3.6
+Release:	44PGDG%{?dist}
+%endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
-License:	LGPL-3.0-only WITH LGPL-3.0-linking-exception
-URL:		https://psycopg.org
-Source0:	https://files.pythonhosted.org/packages/source/p/%{modname}/%{modname}-%{version}.tar.gz
-BuildArch:	noarch
+License:	LGPLv3+ with exceptions
+Url:		https://psycopg.org
+Source0:	https://github.com/psycopg/psycopg/archive/refs/tags/%{version}.tar.gz
+# psycopg_c's GitHub tarball needs Cython >= 3.1 to build; use its PyPI
+# sdist instead, which ships pre-generated .c files.
+Source1:	https://pypi.io/packages/source/p/psycopg-c/psycopg_c-%{version}.tar.gz
 
-BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-pip
-BuildRequires:	pyproject-rpm-macros
-BuildRequires:	python%{python3_pkgversion}-setuptools
-BuildRequires:	python%{python3_pkgversion}-wheel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+# To compile psycopg_c; the PGDG minimal buildroots don't include a
+# compiler by default.
+BuildRequires:	gcc
+%if 0%{?amzn} == 2023
+BuildRequires:	python3.13-wheel
+BuildRequires:	python3.13-devel python3.13-pip python3.13-setuptools
+BuildRequires:	python3.13-cython
+%else
+BuildRequires:	python3-wheel
+BuildRequires:	python3-devel python3-pip python3-setuptools
+%if 0%{?suse_version} == 1600
+BuildRequires:	python313-Cython
+%else
+BuildRequires:	python3-cython
+%endif
+%endif
 
-# The pure Python implementation loads libpq at runtime:
+%if %{with_alt}
+BuildRequires:	python%{alt_pyver}-devel python%{alt_pyver}-pip
+BuildRequires:	python%{alt_pyver}-setuptools python%{alt_pyver}-wheel
+%endif
+
+%if 0%{?suse_version} >= 1500
+BuildRequires:	python-rpm-macros
+%else
+BuildRequires:	pyproject-rpm-macros pyproject-srpm-macros
+%endif
+
 Requires:	libpq5 >= 10.0
-Requires:	python%{python3_pkgversion}-typing-extensions >= 4.6
+# psycopg only needs typing-extensions on Python < 3.13. We build against
+# python3.13 on Amazon Linux 2023, where python3-typing-extensions is the
+# module for the OS Python (3.9):
+%if ! 0%{?amzn}
+Requires:	python3-typing-extensions
+%endif
 
 %description
+Psycopg is the most popular PostgreSQL adapter for the Python
+programming language. At its core it fully implements the Python DB
+API 2.0 specifications. Several extensions allow access to many of the
+features offered by PostgreSQL.
+
+# Enable this package only on Fedora:
+%if 0%{?fedora} >= 42
+%package -n python3-%{sname}-tests
+Summary:	A testsuite for Python 3
+BuildArch:	noarch
+Requires:	python3-%sname = %{?epoch:%{epoch}:}%version-%release
+
+%description -n python3-%{sname}-tests
+This sub-package delivers set of tests for the adapter.
+%endif
+
+%if %with_docs
+%package doc
+Summary:	Documentation for psycopg python PostgreSQL database adapter
+BuildArch:	noarch
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python-%{sname}-doc >= 2.0.0
+Provides:	python-%{sname}-doc = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description doc
+Documentation and example files for the psycopg python PostgreSQL
+database adapter.
+%endif
+
+%package c
+Summary:	C extensions for Psycopg 3
+Requires:	libpq5
+# The C module only works with the Python part of the same release:
+Requires:	python3-%{sname} = %{?epoch:%{epoch}:}%{version}-%{release}
+# The OS's own native psycopg3 package (where it exists, e.g. Fedora)
+# names this same subpackage python3-psycopg3_c (underscore, from the
+# PyPI distribution name), which rpm doesn't treat as the same package
+# as our python3-psycopg3-c (hyphen) -- so both can end up installed at
+# once, fighting over the same site-packages/psycopg_c files.
+Obsoletes:	python3-%{sname}_c <= 99.0
+Provides:	python3-%{sname}_c = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description c
+This package contains the C extensions for enhanced performance in Psycopg 3.
+
+%if %{with_alt}
+%package -n python%{alt_pyver}-%{sname}
+Summary:	A PostgreSQL database adapter for Python %{alt_pyver}
+BuildArch:	noarch
+# The pure Python implementation loads libpq at runtime:
+Requires:	libpq5 >= 10.0
+Requires:	python%{alt_pyver}-typing-extensions >= 4.6
+
+%description -n python%{alt_pyver}-%{sname}
 Psycopg is the most popular PostgreSQL adapter for the Python programming
 language.
 
-This is the pure Python implementation for python%{python3_pkgversion}, for
-the packages that need a newer Python than python3 of RHEL 9, such as
-pg_statviz. python3-psycopg3 is for python3 of the OS.
+This is the pure Python implementation for python%{alt_pyver}, for the
+packages that need a newer Python than python3 of RHEL 9, such as
+pg_statviz.
+%endif
 
 %prep
-%autosetup -n %{modname}-%{version}
+%setup -q -n psycopg-%{version} -a 1
+# Use psycopg_c's PyPI sdist (Source1) instead of the GitHub tarball's
+# copy, which needs a newer Cython than we have everywhere.
+rm -rf psycopg_c
+mv psycopg_c-%{version} psycopg_c
+
+%if 0%{?rhel} != 9
+# Rewrite upstream's bare PEP 639 SPDX license string to the older PEP
+# 621 {text = ...} form, which every setuptools in our build matrix can
+# parse, and drop the SPDX-only license-files key. Also drop classifiers
+# for Python versions not yet registered on PyPI (e.g. 3.15), which
+# newer setuptools rejects as an invalid trove classifier.
+for f in psycopg/pyproject.toml psycopg_c/pyproject.toml; do
+	sed -i 's/^license = "LGPL-3.0-only"$/license = {text = "LGPL-3.0-only"}/' $f
+	sed -i '/^license-files = \["LICENSE.txt"\]$/d' $f
+	sed -i '/^    "Programming Language :: Python :: 3.14",$/d' $f
+	sed -i '/^    "Programming Language :: Python :: 3.15",$/d' $f
+done
+
+# RHEL 9's setuptools (53.0.0) predates pyproject.toml [project]/
+# [tool.setuptools] support entirely, so give it psycopg's metadata via
+# setup.py instead.
+cat > psycopg/setup.py <<SETUP_PY_EOF
+from setuptools import find_packages, setup
+
+setup(
+    name="psycopg",
+    version="%{version}",
+    packages=find_packages(),
+    package_data={"psycopg": ["py.typed"]},
+)
+SETUP_PY_EOF
+
+# RHEL 10's setuptools (69.0.3) rejects the declarative
+# [[tool.setuptools.ext-modules]] table in pyproject.toml. Move the
+# Extension declarations (and cmdclass, which depends on the same
+# backend-path removed below) into a plain setup.py instead.
+sed -i '/^# Note: these ext modules/,$d' psycopg_c/pyproject.toml
+%endif
+
+# The custom cython_backend needs tomli on Python < 3.11 (RHEL 9),
+# just to decide whether Cython is needed -- moot here since this
+# sdist has no .pyx to cythonize. Use plain setuptools.build_meta.
+sed -i 's/^build-backend = "cython_backend"$/build-backend = "setuptools.build_meta"/;/^backend-path = \["build_backend"\]$/d' psycopg_c/pyproject.toml
+
+%if 0%{?rhel} != 9
+# Same setuptools-53 problem as psycopg's setup.py above.
+cat > psycopg_c/setup.py <<SETUP_PY_EOF
+import sys
+
+sys.path.insert(0, "build_backend")
+from psycopg_build_ext import psycopg_build_ext # noqa: E402
+from setuptools import Extension, setup # noqa: E402
+
+setup(
+    name="psycopg-c",
+    version="%{version}",
+    include_package_data=True,
+    packages=["psycopg_c", "psycopg_c.pq", "psycopg_c._psycopg", "psycopg_c.types"],
+    package_data={
+	"psycopg_c": ["py.typed", "*.pyi", "*.pxd", "_psycopg/*.pxd", "pq/*.pxd"],
+    },
+    ext_modules=[
+        Extension(
+            "psycopg_c._psycopg",
+            sources=["psycopg_c/_psycopg.c", "psycopg_c/types/numutils.c"],
+        ),
+        Extension("psycopg_c.pq", sources=["psycopg_c/pq.c"]),
+    ],
+    cmdclass={"build_ext": psycopg_build_ext},
+)
+SETUP_PY_EOF
+%endif
+
+%if %{with_alt}
+# The python3.12 flavor is built from a copy of the pure Python part:
+%{__rm} -rf ../psycopg-alt ../psycopg-alt-dist
+%{__cp} -a psycopg ../psycopg-alt
+%endif
 
 %build
+%if %{with_alt}
+%{alt_python} -m pip wheel --no-deps --no-build-isolation --no-index \
+	--disable-pip-version-check -w ../psycopg-alt-dist ../psycopg-alt
+%endif
+
+# Change Python path in the scripts:
+find . -iname "*.py" -exec sed -i "s/\/usr\/bin\/env python/\/usr\/bin\/python3/g" {} \;
+
+export PATH=%{pginstdir}/bin:$PATH
+pushd psycopg
 %pyproject_wheel
+popd
+pushd psycopg_c
+%pyproject_wheel
+popd
+
+%if %with_docs
+# Fix for wrong-file-end-of-line-encoding problem; upstream also must fix this.
+for i in `find doc -iname "*.html"`; do sed -i 's/\r//' $i; done
+for i in `find doc -iname "*.css"`; do sed -i 's/\r//' $i; done
+
+# Get rid of a "hidden" file that rpmlint complains about
+%{__rm} -f doc/html/.buildinfo
+%endif
 
 %install
+export PATH=%{pginstdir}/bin:$PATH
+pushd psycopg
 %pyproject_install
+popd
+pushd psycopg_c
+%pyproject_install
+popd
+
+%if %{with_alt}
+%{alt_python} -m pip install --no-deps --no-index --no-compile \
+	--disable-pip-version-check --ignore-installed \
+	--root %{buildroot} --prefix %{_prefix} ../psycopg-alt-dist/*.whl
+# As %%pyproject_install does:
+%{__rm} -f %{buildroot}%{alt_sitelib}/*.dist-info/{direct_url.json,RECORD,REQUESTED}
+echo rpm > $(echo %{buildroot}%{alt_sitelib}/psycopg-%{version}.dist-info)/INSTALLER
+%endif
+
+%{__mkdir} -p %{buildroot}%{python3_sitearch}/%{sname}/
+
+#Only on Fedora:
+%if 0%{?fedora} >= 42
+# Copy tests directory:
+%{__cp} -rp tests %{buildroot}%{python3_sitearch}/%{sname}/tests
+# This test is skipped on 3.7 and has a syntax error so brp-python-bytecompile would choke on it
+%{__rm} -f %{buildroot}%{python3_sitearch}/%{sname}/tests/test_async_keyword.py
+%endif
+
+%pre
+# Remove old psycopg3 directory on updates
+if [ $1 -gt 1 ] ; then
+%{__rm} -rf %{python3_sitelib}/psycopg-3*-py%{py3ver}.egg-info
+fi
 
 %files
-%license LICENSE.txt
+%defattr(-,root,root)
 %doc README.rst
-%{python3_sitelib}/%{modname}/
-%{python3_sitelib}/%{modname}-%{version}.dist-info/
+%dir %{python3_sitearch}/%{sname}
+
+%{python3_sitelib}/psycopg-%{version}.dist-info/
+%{python3_sitelib}/psycopg/*.py
+%{python3_sitelib}/psycopg/crdb/*.py*
+%{python3_sitelib}/psycopg/pq/*.py*
+%{python3_sitelib}/psycopg/types/*.py*
+%{python3_sitelib}/psycopg/py.typed
+
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
+%{python3_sitelib}/psycopg/__pycache__/*.pyc
+%{python3_sitelib}/psycopg/crdb/__pycache__/*.py*
+%{python3_sitelib}/psycopg/pq/__pycache__/*.py*
+%{python3_sitelib}/psycopg/types/__pycache__/*.py*
+%endif
+
+# Only on Fedora:
+%if 0%{?fedora} >= 42
+%files -n python3-%{sname}-tests
+%{python3_sitearch}/%{sname}/tests
+%endif
+
+%if %with_docs
+%files doc
+%defattr(-,root,root)
+%doc doc
+%endif
+
+%if %{with_alt}
+%files -n python%{alt_pyver}-%{sname}
+%license psycopg/LICENSE.txt
+%doc psycopg/README.rst
+%{alt_sitelib}/psycopg/
+%{alt_sitelib}/psycopg-%{version}.dist-info/
+%endif
+
+%files c
+%{python3_sitearch}/psycopg_c-%{version}.dist-info/
+%{python3_sitearch}/psycopg_c/*.py*
+%if 0%{?rhel} != 9
+%{python3_sitearch}/psycopg_c/*.c
+%endif
+%{python3_sitearch}/psycopg_c/*.so
+%{python3_sitearch}/psycopg_c/__pycache__/*py*
+%{python3_sitearch}/psycopg_c/_psycopg/*
+%{python3_sitearch}/psycopg_c/pq.pxd
+%{python3_sitearch}/psycopg_c/pq/*
+%{python3_sitearch}/psycopg_c/py.typed
+%if 0%{?rhel} != 9
+%{python3_sitearch}/psycopg_c/types/*
+%endif
 
 %changelog
+* Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 1:3.2.13-3PGDG
+- Merge the pgdg-python3-psycopg3 spec (the pure Python python3.12 flavor)
+  into this one: on RHEL 9, build python3.12-psycopg3 in the same build as
+  python3-psycopg3. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/369
+
+* Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-44PGDG
+- Make the -c subpackage require the same version and release of
+  python3-psycopg3: a mix of the two fails at runtime.
+- RHEL 9: Same change, as 1:3.2.13-2PGDG.
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.13-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on RHEL 9 (python3.12). Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+
+* Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-43PGDG
+- Amazon Linux 2023: Do not require python3-typing-extensions. psycopg
+  only needs it on Python < 3.13, and we build against python3.13 there,
+  while python3-typing-extensions is for the OS Python (3.9).
+
+* Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1:3.2.13-1PGDG
+- RHEL 9 only: Go back to psycopg 3.2.13, as psycopg 3.3 requires
+  Python >= 3.10 and RHEL 9's python3 is 3.9 ("import psycopg" fails
+  with "cannot import name 'TypeAlias' from 'typing'"). Add Epoch: 1 so
+  that it replaces 3.3.6-42PGDG.
+- Remove RHEL 8 bits, it is not supported since 3.3.3-1PGDG.
+
+* Fri Sep 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.6-42PGDG
+- Update to 3.3.6 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.6
+- Fix RHEL 9,10 and SLES 16 build failures.
+- Switch psycopg_c to its PyPI sdist (new Source1) instead of the
+  GitHub tarball: the tarball's .pyx sources need a newer Cython than
+  RHEL 10 (and others) ship, while the sdist has pre-built .c files.
+- Add missing BuildRequires: gcc, needed now that psycopg_c actually
+  compiles on the PGDG minimal buildroots.
+- Fix %%files c: it never matched real paths for psycopg_c's compiled
+  .so/.c files, since the subpackage wasn't actually building before.
+- psycopg_c now ships real per-arch binaries, so drop the top-level
+  "BuildArch: noarch" and mark -tests/-doc noarch explicitly instead;
+  the main package now builds per-arch too.
+- Replace the static pyproject.toml license patches with an inline sed
+  in %%prep (same approach used in pglast.spec), which rewrites upstream's
+  bare PEP 639 SPDX license string to the older PEP 621 {text = ...}
+  form and drops the license-files key. Avoids needing to regenerate a
+  literal-diff patch against pyproject.toml on every version bump.
+
+* Tue Sep 1 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.5-1PGDG
+- Update to 3.3.5 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.5
+
+* Fri Aug 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-3PGDG
+- Package the psycopg_c .dist-info directory itself instead of globbing
+  only its contents (dist-info/*), so RHEL/Fedora's pythondist.attr
+  generator (which is anchored on the .dist-info directory entry)
+  actually fires and emits the correct runtime Requires for this
+  subpackage too (the main psycopg package already packaged its own
+  .dist-info directory correctly). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/226
+
+* Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-2PGDG
+- Build against the python3.13 alt-stack on Amazon Linux 2023, since the
+  default python3 there is 3.9 and psycopg requires >= 3.10. It's also
+  the only alt-Python version on AL2023 with a Cython package available.
+
+* Sun May 3 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.4-1PGDG
+- Update to 3.3.4 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.4
+
+* Thu Feb 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.3-1PGDG
+- Update to 3.3.3 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.3
+- Add a patch that updates license field to compatible format for
+  all supported Python versions.
+- Add new subpackage: Optimization module written in C/Cython
+
+* Sun Dec 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.2-1PGDG
+- Update to 3.3.2 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.2
+
+* Wed Dec 3 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.1-1PGDG
+- Update to 3.3.1 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.1
+
+* Tue Dec 2 2025 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-1PGDG
+- Update to 3.3.0 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.0
+
+* Mon Nov 24 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.13-1PGDG
+- Update to 3.2.13 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.13
+
+* Fri Nov 7 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.12-2PGDG
+- Add missing BRs. Spotted during mock builds.
+- Install __pycache__ also on SLES 16.
+
+* Mon Oct 27 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.12-1PGDG
+- Update to 3.2.12 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.12
+
+* Mon Oct 20 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.11-1PGDG
+- Update to 3.2.11 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.11
+- Switch to pyproject builds
+
+* Sat Oct 4 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.10-2PGDG
+- Add SLES 16 support
+
+* Mon Sep 8 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.10-1PGDG
+- Update to 3.2.10 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.10
+
+* Mon Aug 25 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.9-2PGDG
+- Forgot to bump up the version number in previous commit. Fixed.
+- Fix logic in removing "old" psycopg egg directory. Improves the
+  solution in https://github.com/pgdg-packaging/pgdg-rpms/issues/66
+
+* Mon Aug 4 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.9-1PGDG
+- Remove old psycopg3 directory on updates. Per report and patch from
+  Alexandre Pereira: https://github.com/pgdg-packaging/pgdg-rpms/issues/66
+- Update to 3.2.9 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.9
+
+* Mon May 12 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.8-1PGDG
+- Update to 3.2.8 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.8
+
+* Mon May 5 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.7-1PGDG
+- Update to 3.2.7 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.7
+
+* Thu Mar 13 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.6-1PGDG
+- Update to 3.2.6 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.6
+
+* Mon Feb 24 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.5-1PGDG
+- Update to 3.2.5 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.5
+
+* Thu Jan 16 2025 Devrim Gündüz <devrim@gunduz.org> - 3.2.4-1PGDG
+- Update to 3.2.4 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.4
+
+* Tue Dec 17 2024 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-2PGDG
+- Add RHEL 10 support
+
+* Wed Oct 2 2024 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-1PGDG
+- Update to 3.2.3 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.3
+
+* Wed Sep 25 2024 Devrim Gündüz <devrim@gunduz.org> - 3.2.2-2PGDG
+- Add python3-typing-extensions dependency per:
+  https://redmine.postgresql.org/issues/7781
+
+* Sun Sep 22 2024 Devrim Gündüz <devrim@gunduz.org> - 3.2.2-1PGDG
+- Update to 3.2.2 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.2.2
+
+* Tue Jul 2 2024 Devrim Gündüz <devrim@gunduz.org> - 3.2.1-1PGDG
+- Update to 3.2.1
+
+* Mon May 20 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.19-1PGDG
+- Update to 3.1.19, per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.1.19
+
+* Tue Feb 6 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.18-1PGDG
+- Update to 3.1.18, per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.1.18
+
+* Fri Jan 19 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.17-2PGDG
+- Add RHEL 8 support
+
+* Sun Jan 7 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.17-1PGDG
+- Update to 3.1.17, per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.1.17
+
+* Wed Jan 3 2024 Devrim Gündüz <devrim@gunduz.org> - 3.1.16-1PGDG
+- Update to 3.1.16, per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.1.16
+  https://github.com/psycopg/psycopg/releases/tag/3.1.15
+
+* Mon Dec 11 2023 Devrim Gündüz <devrim@gunduz.org> - 3.1.14-1PGDG
+- Update to 3.1.14, per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.1.14
+
+* Mon Oct 9 2023 Devrim Gündüz <devrim@gunduz.org> - 3.1.12-1PGDG
+- Update to 3.1.12
+
+* Thu Sep 14 2023 Devrim Gündüz <devrim@gunduz.org> - 3.1.10-1PGDG
+- Update to 3.1.10
+- Add PGDG branding
+
+* Thu May 4 2023 Devrim Gündüz <devrim@gunduz.org> - 3.1.9-1
+- Update to 3.1.9
+
+* Tue Feb 21 2023 Devrim Gündüz <devrim@gunduz.org> - 3.1.8-1
+- Update to 3.1.8
+
+* Tue Jan 3 2023 Devrim Gündüz <devrim@gunduz.org> - 3.1.7-1
+- Update to 3.1.7
+
+* Tue Dec 6 2022 Devrim Gündüz <devrim@gunduz.org> - 3.1.4-2
+- Remove Advance Toolchain support from RHEL 7 - ppc64le.
+
+* Tue Nov 1 2022 Devrim Gündüz <devrim@gunduz.org> - 3.1.4-1
+- Update to 3.1.4
+
+* Fri Oct 7 2022 Devrim Gündüz <devrim@gunduz.org> - 3.1.3-1
+- Update to 3.1.3
+
+* Fri Sep 16 2022 Devrim Gündüz <devrim@gunduz.org> - 3.1.1-1
+- Update to 3.1.1
+
+* Sun Sep 4 2022 Devrim Gündüz <devrim@gunduz.org> - 3.1-1
+- Update to 3.1
+
+* Sun Jul 10 2022 Devrim Gündüz <devrim@gunduz.org> - 3.0.15-1
+- Update to 3.0.15
+
+* Mon Apr 18 2022 Devrim Gündüz <devrim@gunduz.org> - 3.0.11-1
+- Update to 3.0.11
+
+* Mon Mar 28 2022 Devrim Gündüz <devrim@gunduz.org> - 3.0.10-1
+- Update to 3.0.10
+
+* Mon Feb 28 2022 Devrim Gündüz <devrim@gunduz.org> - 3.0.9-1
+- Update to 3.0.9
+
+* Thu Jan 20 2022 Devrim Gündüz <devrim@gunduz.org> - 3.0.8-1
+- Update to 3.0.8
+
+* Wed Jan 5 2022 Devrim Gündüz <devrim@gunduz.org> - 3.0.7-1
+- Update to 3.0.7
+
+* Tue Nov 2 2021 Devrim Gündüz <devrim@gunduz.org> - 3.0-3
+- Add Fedora 35 support.
+
+* Wed Oct 13 2021 Devrim Gündüz <devrim@gunduz.org> - 3.0-2
+- Disable unit tests on RHEL, because of Python version. Per tip from
+  Daniele: https://github.com/psycopg/psycopg/issues/106
+
+* Wed Oct 13 2021 Devrim Gündüz <devrim@gunduz.org> - 3.0-1
+- Update to 3.0
+
+* Wed Sep 8 2021 Devrim Gündüz <devrim@gunduz.org> - 3.0-beta1-1
+- Initial packaging

@@ -1,0 +1,1 @@
+../main/pgdg-python3-psycopg3.spec
