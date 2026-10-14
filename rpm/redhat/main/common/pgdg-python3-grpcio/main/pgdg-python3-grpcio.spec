@@ -75,11 +75,6 @@ BuildRequires:	libopenssl-3-devel zlib-devel
 %else
 BuildRequires:	openssl-devel zlib-devel
 %endif
-# gRPC includes openssl/engine.h, which is in a separate package on Fedora
-# 43 and 44 (Fedora 45 has it in openssl-devel again, with OPENSSL_NO_ENGINE):
-%if 0%{?fedora} && 0%{?fedora} <= 44
-BuildRequires:	openssl-devel-engine
-%endif
 # gRPC needs C++17, which the default GCC 7 of SLES 15 does not fully
 # support:
 %if 0%{?suse_version} == 1500
@@ -116,6 +111,13 @@ export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
 export GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS=$(echo "%{?_smp_mflags}" | %{__sed} -n 's/.*-j *\([0-9][0-9]*\).*/\1/p')
 export GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS=${GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS:-1}
 export CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" LDFLAGS="%{?build_ldflags}"
+# Fedora 43 and 44 moved openssl/engine.h, which is deprecated, to
+# openssl-devel-engine. Build without the OpenSSL engine support instead, as
+# on Fedora 45, whose OpenSSL 4 defines OPENSSL_NO_ENGINE (Patch0 makes the
+# include conditional):
+%if 0%{?fedora} && 0%{?fedora} <= 44
+CFLAGS="$CFLAGS -DOPENSSL_NO_ENGINE" CXXFLAGS="$CXXFLAGS -DOPENSSL_NO_ENGINE"
+%endif
 %if 0%{?suse_version} == 1500
 export CC=gcc-13 CXX=g++-13
 %endif
@@ -143,3 +145,5 @@ export CC=gcc-13 CXX=g++-13
   https://github.com/pgdg-packaging/pgdg-rpms/issues/367
 - Add a patch from upstream (first in 1.85.0) to build with the OpenSSL 4
   of Fedora 45.
+- Build without the deprecated OpenSSL engine support on Fedora 43 and
+  44 (OPENSSL_NO_ENGINE), instead of BuildRequiring openssl-devel-engine.
