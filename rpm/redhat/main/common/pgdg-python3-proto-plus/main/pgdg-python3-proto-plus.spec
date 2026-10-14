@@ -57,7 +57,7 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 Version:	1.29.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Beautiful, Pythonic protocol buffers
 
 License:	Apache-2.0
@@ -80,6 +80,9 @@ This package installs the module into the private PGDG Python tree,
 
 %prep
 %autosetup -n %{pymodname}-%{version}
+# The trove-classifiers module of SLES 16 does not know Python 3.15 yet, and
+# setuptools rejects pyproject.toml when it is installed:
+%{__sed} -i '/"Programming Language :: Python :: 3\.15",/d' pyproject.toml
 
 %build
 %{__python3} -m pip wheel --no-deps --no-build-isolation --no-index \
@@ -100,6 +103,11 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.29.0-2PGDG
+- Remove the Python 3.15 classifier from pyproject.toml: setuptools rejects
+  it when an older trove-classifiers module is installed, as on SLES 16.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.29.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, as part of the
   private Python stack of bigquery_fdw. Per
