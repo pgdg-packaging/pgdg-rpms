@@ -3,8 +3,8 @@
 
 %global sname orafce
 %global orafcemajver 4
-%global orafcemidver 16
-%global orafceminver 12
+%global orafcemidver 17
+%global orafceminver 1
 
 %{!?llvm:%global llvm 1}
 %{!?runselftest:%global runselftest 0}
@@ -12,7 +12,7 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -79,6 +79,11 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 4.17.1-1PGDG
+- Update to 4.17.1 per changes described at
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_17_1
+  (includes 4.17.0, which adds the UTL_RAW package)
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 4.16.12-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
