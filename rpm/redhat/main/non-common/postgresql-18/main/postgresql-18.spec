@@ -45,7 +45,7 @@ Version:	18.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200005PGDG%{?dist}
+Release:	4200006PGDG%{?dist}
 %else
 Release:	6PGDG%{?dist}
 %endif
@@ -275,10 +275,10 @@ Requires:	llvm17-devel clang17-devel
 Requires:	llvm19-devel clang19-devel
 %endif
 %if 0%{?amzn}
-BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm-devel >= 15.0 clang-devel >= 15.0
 %endif
 %if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
-BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 %endif
 
@@ -1420,6 +1420,12 @@ fi
 %endif
 
 %changelog
+* Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-6PGDG
+- Fix the llvm-devel and clang-devel dependencies of the -devel subpackage:
+  they were BuildRequires instead of Requires on Fedora, RHEL and Amazon
+  Linux 2023.
+  Per report from Muralikrishna Bandaru.
+
 * Thu Oct 1 2026 Yogesh Sharma <yogesh.sharma@catprosystems.com> - 18-6-6PGDG
 - Add libpgfeutils.a to static rpm
 

@@ -262,16 +262,16 @@ Requires:	libicu-devel
 
 %if %llvm
 %if 0%{?suse_version} == 1500
-BuildRequires:	llvm17-devel clang17-devel
+Requires:	llvm17-devel clang17-devel
 %endif
 %if 0%{?suse_version} == 1600
-BuildRequires:	llvm19-devel clang19-devel
+Requires:	llvm19-devel clang19-devel
 %endif
 %if 0%{?amzn}
-BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
+Requires:	llvm-devel >= 15.0 clang-devel >= 15.0
 %endif
 %if ( 0%{?fedora} || 0%{?rhel} ) && !0%{?amzn}
-BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
+Requires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 
 %endif
@@ -1410,6 +1410,10 @@ fi
 %changelog
 * Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-1PGDG
 - Update to v19 RC 1!
+- Fix the llvm-devel and clang-devel dependencies of the -devel subpackage:
+  they were BuildRequires instead of Requires on Fedora, RHEL, Amazon
+  Linux 2023 and SLES.
+  Per report from Muralikrishna Bandaru.
 
 * Thu Oct 1 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0beta4-2PGDG
 - Move the regression tests from %%build to %%check. They are still
