@@ -7,7 +7,7 @@
 %global sname postgresql
 %global pgbaseinstdir	/usr/pgsql-%{pgmajorversion}
 
-%global	beta 1
+%global	beta 0
 %{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
 %{!?enabletaptests:%global enabletaptests 1}
@@ -40,13 +40,13 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	beta4_420002PGDG%{?dist}
+Release:	rc1_420001PGDG%{?dist}
 %else
-Release:	beta4_2PGDG%{?dist}
+Release:	rc1_1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}beta4/postgresql-%{version}beta4.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}rc1/postgresql-%{version}rc1.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -517,7 +517,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}beta4
+%setup -q -n %{sname}-%{pgpackageversion}rc1
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1408,6 +1408,9 @@ fi
 %endif
 
 %changelog
+* Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-1PGDG
+- Update to v19 RC 1!
+
 * Thu Oct 1 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0beta4-2PGDG
 - Move the regression tests from %%build to %%check. They are still
   disabled by default; enable them with --define 'runselftest 1'. Fail
