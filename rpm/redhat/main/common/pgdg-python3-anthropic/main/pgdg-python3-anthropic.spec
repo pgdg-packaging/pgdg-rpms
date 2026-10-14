@@ -28,7 +28,7 @@ Name:		python%{python3_pkgversion}-anthropic
 Version:	0.40.0
 Release:	2PGDG%{dist}
 %else
-Version:	1.13.0
+Version:	1.14.0
 Release:	1PGDG%{dist}
 %endif
 Summary:	The official Python library for the anthropic API
@@ -56,6 +56,7 @@ BuildRequires:	python3-hatch-fancy-pypi-readme python3-mcp
 BuildRequires:	python3-docstring-parser python3-google-auth+requests
 BuildRequires:	python3-httpx2 python3-jiter python3-sniffio
 BuildRequires:	python3-aiohttp python3-boto3 python3-botocore
+BuildRequires:	python3-opentelemetry-api
 %endif
 
 %description
@@ -105,6 +106,12 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %license LICENSE
 
 %changelog
+* Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.14.0-1PGDG
+- Update to 1.14.0 on Fedora, per changes described at:
+  https://github.com/anthropics/anthropic-sdk-python/releases/tag/v1.14.0
+  It needs python3-opentelemetry-api, which Fedora provides.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/381
+
 * Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 1.13.0-1PGDG
 - Update to 1.13.0 on Fedora, per changes described at:
   https://github.com/anthropics/anthropic-sdk-python/releases/tag/v1.13.0
