@@ -5,8 +5,8 @@
 %{!?runselftest:%global runselftest 0}
 
 Name:		pgbouncer
-Version:	1.26.0
-Release:	44PGDG%{?dist}
+Version:	1.26.1
+Release:	1PGDG%{?dist}
 Summary:	Lightweight connection pooler for PostgreSQL
 License:	MIT and BSD
 URL:		https://www.pgbouncer.org/
@@ -209,6 +209,22 @@ fi
 %attr(755,pgbouncer,pgbouncer) %dir /var/run/%{name}
 
 %changelog
+* Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.1-1PGDG
+- Update to 1.26.1 per changes described at:
+  https://github.com/pgbouncer/pgbouncer/releases/tag/pgbouncer_1_26_1
+  This release fixes three security issues:
+  * CVE-2026-107350: a second StartupMessage sent during SCRAM
+    authentication to a non-existent database could be used to log in
+    as any other user that authenticates using SCRAM.
+  * CVE-2026-107349: an unauthenticated client could make PgBouncer spin
+    forever on a CPU core with an empty option name in the startup
+    options parameter (when ignore_startup_parameters is non-empty but
+    does not contain options).
+  * CVE-2026-107348: an integer overflow in the packet buffer growth
+    logic could make PgBouncer hang (only when max_packet_size is set
+    to 2147483649 or higher).
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/378
+
 * Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1.26.0-44PGDG
 - Use c-ares everywhere except RHEL 8, as intended: the "rhel <= 8"
   condition was also true on Fedora, SUSE and Amazon Linux, so only
