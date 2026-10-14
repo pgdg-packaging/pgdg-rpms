@@ -31,12 +31,13 @@
 
 %if %{pgdg_altstack}
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	4.66.1
+Version:	4.67.0
+Release:	1PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
 Version:	4.63.0
-%endif
 Release:	2PGDG%{?dist}
+%endif
 Summary:	Tools to manipulate font files
 
 License:	MIT
@@ -123,6 +124,13 @@ export FONTTOOLS_WITH_CYTHON=1
 %endif
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-1PGDG
+- Update to 4.67.0 on RHEL 9 and Amazon Linux 2023, per changes described
+  at https://github.com/fonttools/fonttools/releases/tag/4.67.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/379
+- Give each flavor its own Release, so that the SLES (4.63.0) builds keep
+  2PGDG.
+
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 4.66.1-2PGDG
 - Do not build the Cython extensions when Cython is installed, they
   need Cython >= 3.1.
