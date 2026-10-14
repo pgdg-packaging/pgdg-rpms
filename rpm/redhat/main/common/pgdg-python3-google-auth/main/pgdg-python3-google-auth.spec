@@ -1,18 +1,13 @@
-# This spec builds two flavors, depending on the distribution:
+# This spec builds the python3.12 / python3.13 alt-stack flavor
+# (python3.12-google-auth, python3.13-google-auth) on RHEL 8, RHEL 9 and
+# Amazon Linux 2023, for pg_statviz and bigquery_fdw.
 #
-# - On RHEL 8, RHEL 9 and Amazon Linux 2023: the python3.12 / python3.13
-#   alt-stack flavor (python3.12-google-auth, python3.13-google-auth), for
-#   pg_statviz and bigquery_fdw.
-# - Elsewhere: the default python3 flavor (python3-google-auth;
-#   python311-google-auth on SLES 15), for bigquery_fdw. This used to be the
-#   separate python3-google-auth directory, merged here per
-#   https://github.com/pgdg-packaging/pgdg-rpms/issues/369
-%global	pgdg_altstack 0
-%if ( 0%{?rhel} && 0%{?rhel} <= 9 ) || 0%{?amzn} == 2023
-%global	pgdg_altstack 1
-%endif
-
-%if %{pgdg_altstack}
+# It is not built elsewhere: Fedora, RHEL 10 (EPEL) and SUSE ship
+# python3-google-auth (python311-/python313-google-auth on SUSE) themselves,
+# new enough for bigquery_fdw, together with its extras subpackages, which
+# pin it to their own version. The default python3 flavor that this spec used
+# to build there replaced the OS package and broke the updates of those
+# extras.
 %if 0%{?rhel}
 %global	__ospython %{_bindir}/python3.12
 %global	__python3 %{_bindir}/python3.12
@@ -23,28 +18,14 @@
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
-%else
-%{?python_enable_dependency_generator}
-# Upstream requires Python >= 3.10; SLES 15's default python3 is 3.6, so
-# use the python3.11 alt-stack there:
-%if 0%{?suse_version} == 1500
-%global	__python3 %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
-%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
-%endif
-%{!?python3_pkgversion: %global python3_pkgversion 3}
-%endif
 
 %global	modname google-auth
 %global	pymodname google_auth
 
-# The alt-stack flavor uses the 2.47 series on RHEL 9 and Amazon Linux 2023
-# (see the description). RHEL 8 is only used by bigquery_fdw, and its
-# python3.12-cryptography is new enough for the current release:
-%if %{pgdg_altstack} && 0%{?rhel} != 8
+# The 2.47 series on RHEL 9 and Amazon Linux 2023 (see the description).
+# RHEL 8 is only used by bigquery_fdw, and its python3.12-cryptography is
+# new enough for the current release:
+%if 0%{?rhel} != 8
 %global	pgdg_gauth247 1
 %else
 %global	pgdg_gauth247 0
@@ -57,9 +38,6 @@ Version:	2.47.0
 Version:	2.62.0
 %endif
 Release:	1PGDG%{?dist}
-%if ! %{pgdg_altstack}
-Epoch:		1
-%endif
 Summary:	Google Authentication Library
 
 License:	Apache-2.0
@@ -73,10 +51,7 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
-%if 0%{?suse_version} >= 1500
-BuildRequires:	python-rpm-macros
-%endif
-%if ! 0%{?suse_version} && 0%{?rhel} != 8
+%if 0%{?rhel} != 8
 BuildRequires:	pyproject-rpm-macros
 %endif
 
@@ -101,10 +76,8 @@ This is the 2.47 series, the newest one that does not need cryptography >=
 38 (Amazon Linux 2023 has 36 for python3.13).
 %endif
 
-# google-genai (pg_statviz) requires google-auth[requests]. Only for the
-# alt-stack flavor: the distributions ship python3-google-auth+requests
-# themselves.
-%if %{pgdg_altstack} && 0%{?rhel} != 8
+# google-genai (pg_statviz) requires google-auth[requests]:
+%if 0%{?rhel} != 8
 %pyproject_extras_subpkg -n python%{python3_pkgversion}-%{modname} requests
 %endif
 
