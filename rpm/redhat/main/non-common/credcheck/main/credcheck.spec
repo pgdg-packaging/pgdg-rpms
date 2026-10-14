@@ -15,8 +15,8 @@
 %endif
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	5.0
-Release:	5PGDG%{?dist}
+Version:	6.0
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/HexaCluster/%{sname}
@@ -103,6 +103,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0-1PGDG
+- Update to 6.0 per changes described at
+  https://github.com/HexaCluster/credcheck/releases/tag/v6.0
+  This release fixes a privilege escalation via self ALTER ROLE when
+  credcheck.password_valid_until is set.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0-5PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
