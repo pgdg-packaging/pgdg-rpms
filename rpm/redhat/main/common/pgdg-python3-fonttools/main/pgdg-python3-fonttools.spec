@@ -22,8 +22,6 @@
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
-%else
-%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
 %endif
 
 %global	modname fonttools
@@ -36,7 +34,7 @@ Release:	1PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
 Version:	4.63.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 Summary:	Tools to manipulate font files
 
@@ -83,6 +81,11 @@ This package is built without the optional Cython extensions.
 %if ! %{pgdg_altstack}
 %{__rm} -rf *.egg-info
 sed -i '1d' Lib/fontTools/mtiLib/__init__.py
+# Do not pass the freethreading_compatible directive to Cython on Python
+# >= 3.13: it needs Cython >= 3.1, which is newer than the Cython of SLES.
+# It only matters for the free-threaded Python builds, which SLES does
+# not ship:
+sed -i '/directives\["freethreading_compatible"\] = True/d; /if sys.version_info >= (3, 13):$/d' setup.py
 %endif
 
 %build
@@ -120,10 +123,17 @@ export FONTTOOLS_WITH_CYTHON=1
 %license LICENSE
 %doc NEWS.rst README.rst
 %{python3_sitearch}/%{pymodname}
-%{python3_sitearch}/%{modname}-%{version}-py%{py3ver}.egg-info
+%{python3_sitearch}/%{modname}-%{version}-py%{python3_version}.egg-info
 %endif
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 4.63.0-3PGDG
+- SLES: Fix "unknown compiler directive: freethreading_compatible" build
+  failure with Python 3.13: do not pass that directive to Cython, it needs
+  Cython >= 3.1.
+- SLES: Use %%{python3_version} in the egg-info directory name. The
+  sys.version[:3] construct returned "3.1" on Python 3.13.
+
 * Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-1PGDG
 - Update to 4.67.0 on RHEL 9 and Amazon Linux 2023, per changes described
   at https://github.com/fonttools/fonttools/releases/tag/4.67.0
