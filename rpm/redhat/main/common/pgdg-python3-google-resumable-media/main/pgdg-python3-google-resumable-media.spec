@@ -35,14 +35,12 @@
 %global	pgdg_pyver 3.13
 %endif
 
-# SUSE ships its own (older) copies of these modules with exactly the
-# same package names, which ours would replace, so use distinct names
-# there:
-%if 0%{?suse_version}
+# Use names that the distributions do not use: SUSE ships its own (older)
+# copies of these modules as python3XX-<module>, and on RHEL 10, where
+# Python 3.12 is the default, EPEL's python3-<module> packages obsolete
+# python3.12-<module> < their version (python3-google-api-core with an
+# Epoch), which replaced ours on updates:
 %global	pgdg_pyname pgdg-python%{python3_pkgversion}
-%else
-%global	pgdg_pyname python%{python3_pkgversion}
-%endif
 %global	pgdg_pyprefix %{_prefix}/lib/pgdg-python
 %global	pgdg_pysitelib %{pgdg_pyprefix}/python%{pgdg_pyver}/site-packages
 
@@ -57,14 +55,12 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 Version:	2.11.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Utilities for Google Media Downloads and Resumable Uploads
 %if ! 0%{?suse_version}
-# A name that only the packages of the private tree provide (on SUSE, it is
-# the package name). The distribution's packages provide python3.X-<module>,
-# too, some with an Epoch (Fedora's and EPEL's python3-google-api-core), so
-# versioned Requires on those names do not ensure that ours are installed:
-Provides:	pgdg-python%{python3_pkgversion}-%{modname} = %{version}-%{release}
+# This package was called python3.X-<module> before this release, and was
+# replaced by EPEL's python3-<module> on RHEL 10:
+Obsoletes:	python%{python3_pkgversion}-%{modname} < %{version}-%{release}
 %endif
 
 License:	Apache-2.0
@@ -108,6 +104,13 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.0-3PGDG
+- Rename the package to pgdg-python3.X-<module> on all distributions, as
+  on SUSE, and obsolete the old python3.X-<module> package. On RHEL 10,
+  EPEL's python3-<module> packages obsolete python3.12-<module> < their
+  version, so python3-google-api-core 1:2.11.1 replaced ours on updates.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+
 * Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.0-2PGDG
 - Provide pgdg-python3.X-<module> (on SUSE, that is the package name) and
   require the other modules of the private tree by that name. The
