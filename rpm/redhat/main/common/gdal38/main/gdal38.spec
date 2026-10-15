@@ -1,3 +1,5 @@
+%global gdalmajorversion 3.8
+
 %if 0%{?rhel} == 8
 # gdal-3.8 cmake build does not work in source directory
 %undefine __cmake_in_source_build
@@ -56,15 +58,15 @@
 %global spatialite "--with-spatialite=%{libspatialiteinstdir}"
 
 Name:		%{sname}38
-Version:	3.8.5
-Release:	10PGDG%{?dist}
+Version:	%{gdalmajorversion}.5
+Release:	11PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
 # Source0: https://download.osgeo.org/gdal/%%{version}/gdal-%%{version}.tar.xz
 # See PROVENANCE.TXT-fedora and the cleaner script for details!
 
-Source0:	%{sname}-%{version}-fedora.tar.xz
+Source0:	https://download.postgresql.org/pub/repos/yum/sources/gdal/%{gdalmajorversion}/gdal-%{version}-fedora.tar.xz
 Source4:	PROVENANCE.TXT-fedora
 
 # Cleaner script for the tarball
@@ -475,6 +477,9 @@ done
 %endif
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-11PGDG
+- Update download URL
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-10PGDG
 - Rebuild against GEOS 3.15. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/359
