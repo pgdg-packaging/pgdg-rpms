@@ -1,4 +1,5 @@
 %global sname gdal
+%global gdalmajorversion 3.13
 
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1600
 %global gdal_python_enabled 1
@@ -71,15 +72,15 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}313
-Version:	3.13.3
-Release:	5PGDG%{?dist}
+Version:	%{gdalmajorversion}.3
+Release:	6PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
 # Source0: https://download.osgeo.org/gdal/%%{version}/gdal-%%{version}.tar.xz
 # See PROVENANCE.TXT-fedora and the cleaner script for details!
 
-Source0:	%{sname}-%{version}-fedora.tar.xz
+Source0:	https://download.postgresql.org/pub/repos/yum/sources/gdal/%{gdalmajorversion}/gdal-%{version}-fedora.tar.xz
 Source4:	PROVENANCE.TXT-fedora
 
 # Cleaner script for the tarball
@@ -548,6 +549,9 @@ done
 %endif
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-6PGDG
+- Update download URL
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-5PGDG
 - Rebuild against GEOS 3.15. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/359
