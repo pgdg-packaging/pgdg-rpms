@@ -1,24 +1,28 @@
 %global sname	pg_hint_plan
 
+%if %{pgmajorversion} == 19
+%global pghintplanversion 1.9.0
+%global git_tag	1_9_0
+%endif
 %if %{pgmajorversion} == 18
-%global pghintplanversion 1.8.0
-%global git_tag	1_8_0
+%global pghintplanversion 1.8.1
+%global git_tag	1_8_1
 %endif
 %if %{pgmajorversion} == 17
-%global pghintplanversion 1.7.1
-%global git_tag	1_7_1
+%global pghintplanversion 1.7.2
+%global git_tag	1_7_2
 %endif
 %if %{pgmajorversion} == 16
-%global pghintplanversion 1.6.2
-%global git_tag	1_6_2
+%global pghintplanversion 1.6.3
+%global git_tag	1_6_3
 %endif
 %if %{pgmajorversion} == 15
-%global pghintplanversion 1.5.3
-%global git_tag	1_5_3
+%global pghintplanversion 1.5.4
+%global git_tag	1_5_4
 %endif
 %if %{pgmajorversion} == 14
-%global pghintplanversion 1.4.4
-%global git_tag	1_4_4
+%global pghintplanversion 1.4.5
+%global git_tag	1_4_5
 %endif
 %if %{pgmajorversion} == 13
 %global pghintplanversion 1.3.11
@@ -43,7 +47,7 @@
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	8PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
@@ -143,6 +147,26 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-1PGDG
+- Add PostgreSQL 19 support (1.9.0), per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL19_1_9_0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/385
+- Update to 1.8.1 for PostgreSQL 18 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL18_1_8_1
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/386
+- Update to 1.7.2 for PostgreSQL 17 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL17_1_7_2
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/387
+- Update to 1.6.3 for PostgreSQL 16 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL16_1_6_3
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/388
+- Update to 1.5.4 for PostgreSQL 15 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL15_1_5_4
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/389
+- Update to 1.4.5 for PostgreSQL 14 per changes described at:
+  https://github.com/ossc-db/pg_hint_plan/releases/tag/REL14_1_4_5
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/390
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-8PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
