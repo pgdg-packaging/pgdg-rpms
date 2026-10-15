@@ -1,0 +1,114 @@
+From a1887ce920f2155ed07c3020ac2d1c5054ad6a5e Mon Sep 17 00:00:00 2001
+From: Tanzeel Khan <tzlkhan@amazon.com>
+Date: Mon, 5 Oct 2026 06:51:01 +0000
+Subject: [PATCH] Fix engine build with GCC 15 (C23 default)
+
+GCC 15 compiles C as C23 by default, where an empty parameter list
+"()" means "(void)" instead of "unspecified parameters". The
+pltsql_is_partitioned_table_reloptions_allowed_hook typedef was
+declared with "()" but is called with the reloptions Datum, so
+reloptions.c failed to compile:
+
+  error: too many arguments to function
+  'pltsql_is_partitioned_table_reloptions_allowed_hook'; expected 0,
+  have 1
+
+Declare the hook with its real (Datum reloptions) parameter, and give
+the other Babelfish hook typedefs that take no arguments an explicit
+(void) so they are proper prototypes on every C standard.
+
+Also stop removeTimeZoneStrFromTypmod() from writing through a
+const char * it got from strstr(); with C23 and glibc 2.43 strstr()
+returns a const pointer for const input, which made this a
+-Wdiscarded-qualifiers warning. Its only caller passes a palloc'd
+buffer.
+
+Task: BABEL-7211
+Signed-off-by: Tanzeel Khan <tzlkhan@amazon.com>
+---
+ src/backend/utils/adt/format_type.c | 2 +-
+ src/include/access/attmap.h         | 2 +-
+ src/include/access/reloptions.h     | 2 +-
+ src/include/catalog/namespace.h     | 2 +-
+ src/include/commands/sequence.h     | 2 +-
+ src/include/utils/builtins.h        | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/backend/utils/adt/format_type.c b/src/backend/utils/adt/format_type.c
+index 7f245ac6724..d94f16e063b 100644
+--- a/src/backend/utils/adt/format_type.c
++++ b/src/backend/utils/adt/format_type.c
+@@ -365,7 +365,7 @@ format_type_with_typemod(Oid type_oid, int32 typemod)
+ }
+ 
+ static void
+-removeTimeZoneStrFromTypmod(const char *tmstr, const char *tzstr)
++removeTimeZoneStrFromTypmod(char *tmstr, const char *tzstr)
+ {
+ 	char *substr = strstr(tmstr, tzstr);
+ 	if (substr)
+diff --git a/src/include/access/attmap.h b/src/include/access/attmap.h
+index 391b9e64e6b..9d1ff09328f 100644
+--- a/src/include/access/attmap.h
++++ b/src/include/access/attmap.h
+@@ -50,7 +50,7 @@ extern AttrMap *build_attrmap_by_name_if_req(TupleDesc indesc,
+ extern AttrMap *build_attrmap_by_position(TupleDesc indesc,
+ 										  TupleDesc outdesc,
+ 										  const char *msg);
+-typedef bool (*called_for_tsql_itvf_func_hook_type)();
++typedef bool (*called_for_tsql_itvf_func_hook_type) (void);
+ extern PGDLLIMPORT called_for_tsql_itvf_func_hook_type called_for_tsql_itvf_func_hook;
+ 
+ #endif							/* ATTMAP_H */
+diff --git a/src/include/access/reloptions.h b/src/include/access/reloptions.h
+index 6535a62172c..e5cb96d0208 100644
+--- a/src/include/access/reloptions.h
++++ b/src/include/access/reloptions.h
+@@ -256,7 +256,7 @@ extern bytea *index_reloptions(amoptions_function amoptions, Datum reloptions,
+ extern bytea *attribute_reloptions(Datum reloptions, bool validate);
+ extern bytea *tablespace_reloptions(Datum reloptions, bool validate);
+ extern LOCKMODE AlterTableGetRelOptionsLockLevel(List *defList);
+-typedef bool (*pltsql_is_partitioned_table_reloptions_allowed_hook_type)();
++typedef bool (*pltsql_is_partitioned_table_reloptions_allowed_hook_type) (Datum reloptions);
+ extern PGDLLEXPORT pltsql_is_partitioned_table_reloptions_allowed_hook_type pltsql_is_partitioned_table_reloptions_allowed_hook;
+ 
+ #endif							/* RELOPTIONS_H */
+diff --git a/src/include/catalog/namespace.h b/src/include/catalog/namespace.h
+index 35fdfb26ceb..44af23dcfb0 100644
+--- a/src/include/catalog/namespace.h
++++ b/src/include/catalog/namespace.h
+@@ -94,7 +94,7 @@ extern PGDLLIMPORT match_pltsql_func_call_hook_type match_pltsql_func_call_hook;
+ typedef const char * (*remove_db_name_in_schema_hook_type) (const char *schema_name, const char *object_type);
+ extern PGDLLIMPORT remove_db_name_in_schema_hook_type remove_db_name_in_schema_hook;
+ 
+-typedef bool (*is_bbf_tds_connection_hook_type) ();
++typedef bool (*is_bbf_tds_connection_hook_type) (void);
+ extern PGDLLEXPORT is_bbf_tds_connection_hook_type is_bbf_tds_connection_hook;
+ 
+ #define RangeVarGetRelid(relation, lockmode, missing_ok) \
+diff --git a/src/include/commands/sequence.h b/src/include/commands/sequence.h
+index f5a791d2e27..f011b5ce9ec 100644
+--- a/src/include/commands/sequence.h
++++ b/src/include/commands/sequence.h
+@@ -42,7 +42,7 @@ typedef void (*pltsql_nextval_hook_type) (Oid seqid, int64 val);
+ extern PGDLLEXPORT pltsql_nextval_hook_type pltsql_nextval_hook;
+ 
+ /* Sequence reset cache hook */
+-typedef void (*pltsql_resetcache_hook_type) ();
++typedef void (*pltsql_resetcache_hook_type) (void);
+ extern PGDLLEXPORT pltsql_resetcache_hook_type pltsql_resetcache_hook;
+ 
+ /* Sequence setval hook */
+diff --git a/src/include/utils/builtins.h b/src/include/utils/builtins.h
+index 07dbcd70b00..a48022858bb 100644
+--- a/src/include/utils/builtins.h
++++ b/src/include/utils/builtins.h
+@@ -139,7 +139,7 @@ extern int32 type_maximum_size(Oid type_oid, int32 typemod);
+ extern char *quote_literal_cstr(const char *rawstr);
+ 
+ /* varchar.c */
+-typedef bool (*suppress_string_truncation_error_hook_type)();
++typedef bool (*suppress_string_truncation_error_hook_type) (void);
+ extern PGDLLEXPORT suppress_string_truncation_error_hook_type suppress_string_truncation_error_hook;
+ 
+ /* name.c */

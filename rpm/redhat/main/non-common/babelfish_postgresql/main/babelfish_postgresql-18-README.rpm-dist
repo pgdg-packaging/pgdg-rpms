@@ -1,0 +1,50 @@
+README.rpm-dist
+-----------------------------------------------------------------------------
+PostgreSQL 18 engine patched for Babelfish, RPM set.
+-----------------------------------------------------------------------------
+
+This is the PostgreSQL engine modified for Babelfish for PostgreSQL (SQL Server
+compatibility), built from
+https://github.com/babelfish-for-postgresql/postgresql_modified_for_babelfish
+
+It is installed next to, and independent of, the stock PGDG PostgreSQL 18
+packages:
+
+  Installation directory : /usr/babelfish-18
+  Service                : babelfish_postgresql-18
+  Data directory         : /var/lib/babelfish/18/data
+  Setup script           : babelfish_postgresql-18-setup
+
+Binaries are NOT added to /usr/bin (no update-alternatives) and the libraries
+are NOT added to the system linker path; use the full path
+(/usr/babelfish-18/bin/psql) or add the bin directory to PATH.
+
+QUICKSTART
+-----------------------------------------------------------------------------
+1. Install the babelfish_postgresql18-server package (and
+   babelfish_extensions_18 for the Babelfish extensions).
+
+2. Initialize the cluster:
+
+     /usr/babelfish-18/bin/babelfish_postgresql-18-setup initdb
+
+3. Start it:
+
+     systemctl enable --now babelfish_postgresql-18
+
+Both this server and the stock PostgreSQL 18 service default to port 5432.
+Change "port" in postgresql.conf if you run them on the same host.
+
+Enabling Babelfish itself (shared_preload_libraries, CREATE EXTENSION
+babelfishpg_tds, migration mode, ...) is described in the Babelfish
+documentation at https://babelfishpg.org/ and needs the babelfish_extensions
+package.
+
+NOTES
+-----------------------------------------------------------------------------
+* The upgrade/check_upgrade modes of the setup script expect the previous
+  major version of this same Babelfish engine (/usr/babelfish-17,
+  /var/lib/babelfish/17/data). Babelfish clusters cannot be upgraded
+  from a stock PostgreSQL cluster.
+* No SELinux policy is shipped for this engine: the stock policy only labels
+  /usr/pgsql-<version>/ paths.

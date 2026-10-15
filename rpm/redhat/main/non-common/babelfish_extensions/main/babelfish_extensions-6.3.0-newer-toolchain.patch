@@ -1,0 +1,792 @@
+From 16eb0df35dd50ceeb7d54fbdc2b477259005b111 Mon Sep 17 00:00:00 2001
+From: Tanzeel Khan <140405735+tanscorpio7@users.noreply.github.com>
+Date: Mon, 5 Oct 2026 17:41:09 +0530
+Subject: [PATCH] Fix build with newer GCC, glibc, OpenSSL and CMake (#5035)
+
+Babelfish failed to build on current toolchains (GCC 15/16, glibc 2.43+,
+OpenSSL 4, CMake 4, e.g. Ubuntu 26.04). The extensions compile with
+-Werror, so every warning a newer compiler adds breaks the build, and
+regular CI pins ubuntu-22.04 / GCC 11, so none of this was caught.
+
+Engine PR  https://github.com/babelfish-for-postgresql/postgresql_modified_for_babelfish/pull/807
+
+Task: BABEL-7211
+
+Author: Tanzeel Khan <tzlkhan@amazon.com>
+---
+ .../compile-antlr/action.yml                  |   2 +-
+ .github/scripts/install-deps.sh               |  34 ++-
+ .github/workflows/latest-toolchain-build.yml  | 212 ++++++++++++++++++
+ INSTALLING.md.tmpl                            |   2 +-
+ contrib/README.md                             |   2 +-
+ contrib/babelfishpg_common/Makefile           |   3 +
+ contrib/babelfishpg_tds/Makefile              |   3 +
+ .../src/backend/tds/tds-secure-openssl.c      |  17 +-
+ .../babelfishpg_tds/src/backend/tds/tdsrpc.c  |   9 +-
+ .../src/backend/tds/tdssecure.c               |   9 -
+ contrib/babelfishpg_tsql/Makefile             |   5 +-
+ contrib/babelfishpg_tsql/src/collation.c      |   2 +-
+ contrib/babelfishpg_tsql/src/err_handler.c    |   6 +-
+ contrib/babelfishpg_tsql/src/hooks.c          |  16 +-
+ contrib/babelfishpg_tsql/src/linked_servers.c |   4 +-
+ contrib/babelfishpg_tsql/src/pl_gram.y        |  10 +-
+ contrib/babelfishpg_tsql/src/pltsql_utils.c   |   4 +-
+ contrib/babelfishpg_tsql/src/tsqlIface.cpp    |   2 -
+ .../babelfishpg_tsql/src/tsql_for/tsql_for.c  |   8 +-
+ contrib/babelfishpg_unit/babelfishpg_unit.c   |   2 +-
+ dev-tools.sh                                  |   2 +-
+ 21 files changed, 279 insertions(+), 75 deletions(-)
+ create mode 100644 .github/workflows/latest-toolchain-build.yml
+
+diff --git a/.github/composite-actions/compile-antlr/action.yml b/.github/composite-actions/compile-antlr/action.yml
+index 5e46480f948..11f8a551ee6 100644
+--- a/.github/composite-actions/compile-antlr/action.yml
++++ b/.github/composite-actions/compile-antlr/action.yml
+@@ -30,7 +30,7 @@ runs:
+         mkdir build && cd build
+         export CMAKE_C_COMPILER_LAUNCHER=ccache
+         export CMAKE_CXX_COMPILER_LAUNCHER=ccache
+-        cmake .. -D ANTLR_JAR_LOCATION="/usr/local/lib/antlr-$ANTLR_VERSION-complete.jar" -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_DEMO=True
++        cmake .. -D ANTLR_JAR_LOCATION="/usr/local/lib/antlr-$ANTLR_VERSION-complete.jar" -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_DEMO=True -DANTLR_BUILD_CPP_TESTS=OFF
+         make -j 4
+         sudo make install
+         cp "/usr/local/lib/libantlr4-runtime.so.$ANTLR_VERSION" ~/${{inputs.install_dir}}/lib/
+diff --git a/.github/scripts/install-deps.sh b/.github/scripts/install-deps.sh
+index 04b01227c85..f343464ea12 100755
+--- a/.github/scripts/install-deps.sh
++++ b/.github/scripts/install-deps.sh
+@@ -1,9 +1,19 @@
+ #!/bin/bash
+ set -e
+ 
++# Optional environment:
++#   ANTLR_VERSION   ANTLR C++ runtime version to build (default 4.13.2)
++#   EXTRA_PACKAGES  additional OS packages to install (e.g. for CI)
++
+ ANTLR_VERSION="${ANTLR_VERSION:-4.13.2}"
+ REPO_DIR="${REPO_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
+ 
++# Use sudo only when not already root (containers usually run as root without sudo)
++SUDO=
++if [ "$(id -u)" -ne 0 ]; then
++    SUDO=sudo
++fi
++
+ install_packages() {
+     echo "Installing OS packages..."
+     if [ -f /etc/os-release ]; then
+@@ -13,17 +23,17 @@ install_packages() {
+     case "$ID" in
+         ubuntu|debian)
+             export DEBIAN_FRONTEND=noninteractive
+-            sudo apt-get update
+-            sudo apt-get install -y uuid-dev flex openjdk-21-jre \
++            $SUDO apt-get update
++            $SUDO apt-get install -y uuid-dev flex openjdk-21-jre \
+                 libicu-dev libxml2-dev openssl libssl-dev python3-dev \
+                 libossp-uuid-dev libpq-dev pkg-config g++ build-essential bison \
+-                wget unzip
++                wget unzip $EXTRA_PACKAGES
+             ;;
+         amzn|rhel|centos)
+-            sudo yum install -y libicu-devel libxml2-devel \
++            $SUDO yum install -y libicu-devel libxml2-devel \
+                 openssl-devel uuid-devel postgresql-devel gcc gcc-c++ java \
+                 make bison flex python3-devel \
+-                wget unzip tar gzip which
++                wget unzip tar gzip which $EXTRA_PACKAGES
+             ;;
+         *)
+             echo "Unsupported OS: ${ID:-unknown}. See contrib/README.md."
+@@ -45,11 +55,11 @@ install_cmake() {
+ 
+     case "$ID" in
+         ubuntu|debian)
+-            sudo apt-get install -y cmake
++            $SUDO apt-get install -y cmake
+             ;;
+         amzn|rhel|centos)
+-            sudo yum install -y cmake3
+-            sudo alternatives --install /usr/bin/cmake cmake /usr/bin/cmake3 1
++            $SUDO yum install -y cmake3
++            $SUDO alternatives --install /usr/bin/cmake cmake /usr/bin/cmake3 1
+             ;;
+     esac
+ }
+@@ -65,7 +75,7 @@ install_antlr() {
+ 
+     local jar="$REPO_DIR/contrib/babelfishpg_tsql/antlr/thirdparty/antlr/antlr-${ANTLR_VERSION}-complete.jar"
+     if [ -f "$jar" ]; then
+-        sudo cp "$jar" /usr/local/lib/
++        $SUDO cp "$jar" /usr/local/lib/
+     fi
+ 
+     local work_dir=$(mktemp -d)
+@@ -73,15 +83,15 @@ install_antlr() {
+     wget -q "http://www.antlr.org/download/antlr4-cpp-runtime-${ANTLR_VERSION}-source.zip"
+     unzip -qd antlr4 "antlr4-cpp-runtime-${ANTLR_VERSION}-source.zip"
+     cd antlr4 && mkdir -p build && cd build
+-    cmake .. -DANTLR_JAR_LOCATION="/usr/local/lib/antlr-${ANTLR_VERSION}-complete.jar" -DCMAKE_INSTALL_PREFIX=/usr/local
++    cmake .. -DANTLR_JAR_LOCATION="/usr/local/lib/antlr-${ANTLR_VERSION}-complete.jar" -DCMAKE_INSTALL_PREFIX=/usr/local -DANTLR_BUILD_CPP_TESTS=OFF
+     make -j$(nproc)
+-    sudo make install
++    $SUDO make install
+     rm -rf "$work_dir"
+ 
+     # Symlink lib64 → lib if needed (AL2/RHEL installs to lib64)
+     if [ -f "/usr/local/lib64/libantlr4-runtime.so.${ANTLR_VERSION}" ] && \
+        [ ! -f "/usr/local/lib/libantlr4-runtime.so.${ANTLR_VERSION}" ]; then
+-        sudo ln -s "/usr/local/lib64/libantlr4-runtime.so.${ANTLR_VERSION}" \
++        $SUDO ln -s "/usr/local/lib64/libantlr4-runtime.so.${ANTLR_VERSION}" \
+                     "/usr/local/lib/libantlr4-runtime.so.${ANTLR_VERSION}"
+     fi
+ }
+diff --git a/.github/workflows/latest-toolchain-build.yml b/.github/workflows/latest-toolchain-build.yml
+new file mode 100644
+index 00000000000..fe02d6a4cbe
+--- /dev/null
++++ b/.github/workflows/latest-toolchain-build.yml
+@@ -0,0 +1,212 @@
++name: Build with Latest GCC and Ubuntu
++
++# Builds the Babelfish engine and extensions with the newest GCC releases and
++# Ubuntu toolchains (C23 by default, newer glibc, OpenSSL 3/4, CMake 4), then
++# runs a short smoke test. The regular CI pins ubuntu-22.04 / GCC 11, so this
++# catches breakage from newer compilers before users hit it.
++#
++# Runs weekly on the default branch. To run it manually, use the Actions tab or:
++#   gh workflow run latest-toolchain-build.yml --ref <branch> [-f engine_branch=<branch>]
++on:
++  schedule:
++    - cron: '0 0 * * 0'  # every Sunday at midnight (UTC)
++  workflow_dispatch:
++    inputs:
++      engine_branch:
++        description: 'Engine branch (default: same-named branch in your fork or upstream, else the default in clone_engine_repo.conf)'
++        required: false
++        default: ''
++
++permissions:
++  contents: read
++
++jobs:
++  build:
++    name: ${{ matrix.os.image }} / ${{ matrix.build_type }}
++    runs-on: ubuntu-latest
++    timeout-minutes: 120
++    # ubuntu:devel is a pre-release; report its failures without failing the run
++    continue-on-error: ${{ matrix.os.image == 'ubuntu:devel' }}
++    container:
++      image: ${{ matrix.os.image }}
++    strategy:
++      fail-fast: false
++      matrix:
++        os:
++          - { image: 'ubuntu:rolling', label: ubuntu-rolling }  # newest released Ubuntu
++          - { image: 'ubuntu:devel', label: ubuntu-devel }      # next Ubuntu release
++          - { image: 'gcc:latest', label: gcc-latest }          # newest GCC release (Debian based)
++        build_type: [debug, release]
++    defaults:
++      run:
++        shell: bash
++    env:
++      DEBIAN_FRONTEND: noninteractive
++      INSTALL_DIR: /opt/bbf/psql
++      ANTLR_VERSION: 4.13.2
++      POSTGIS_VERSION: 3.6.0
++      CC: gcc
++      CXX: g++
++    steps:
++      # git is needed for a real checkout and by clone_engine_repo
++      - name: Install git
++        run: |
++          apt-get update
++          apt-get install -y --no-install-recommends git ca-certificates
++          # github.workspace is the host path in container jobs; use the container's
++          echo "LOG_DIR=$GITHUB_WORKSPACE/build-logs" >> "$GITHUB_ENV"
++
++      - uses: actions/checkout@v4
++
++      # Same script developers use for first-time setup (packages + ANTLR runtime),
++      # plus what CI builds on top: GSSAPI, linked servers (FreeTDS), PostGIS, TDS client
++      - name: Install dependencies
++        env:
++          EXTRA_PACKAGES: >-
++            libkrb5-dev freetds-dev freetds-bin libsybdb5
++            libgeos-dev libproj-dev libjson-c-dev
++        run: |
++          ./.github/scripts/install-deps.sh
++          if [ -d /usr/local/lib64 ]; then
++            echo /usr/local/lib64 > /etc/ld.so.conf.d/local-lib64.conf
++            ldconfig
++          fi
++
++      - name: Report toolchain
++        run: |
++          {
++            echo "### ${{ matrix.os.image }} / ${{ matrix.build_type }}"
++            echo '```'
++            . /etc/os-release && echo "$PRETTY_NAME"
++            # sed instead of head: head exits early and pipefail turns SIGPIPE into a failure
++            gcc --version | sed -n 1p
++            g++ --version | sed -n 1p
++            ldd --version | sed -n 1p
++            cmake --version | sed -n 1p
++            openssl version
++            echo '```'
++          } | tee -a "$GITHUB_STEP_SUMMARY"
++
++      - name: Clone engine
++        env:
++          ENGINE_BRANCH: ${{ inputs.engine_branch || github.ref_name }}
++        run: |
++          mkdir -p "$LOG_DIR"
++          cd ..
++          rm -rf postgresql_modified_for_babelfish
++          "$GITHUB_WORKSPACE/.github/scripts/clone_engine_repo" "$GITHUB_REPOSITORY_OWNER" "$ENGINE_BRANCH"
++          git -C postgresql_modified_for_babelfish log -1 --format='Engine: %H %s' | tee -a "$GITHUB_STEP_SUMMARY"
++
++      - name: Build engine
++        run: |
++          cd ../postgresql_modified_for_babelfish
++          if [ "${{ matrix.build_type }}" = release ]; then
++            cflags="-ggdb -O2"; extra=""
++          else
++            cflags="-ggdb"; extra="--enable-cassert"
++          fi
++          ./configure --prefix="$INSTALL_DIR" --with-python PYTHON=/usr/bin/python3 --without-readline \
++            $extra CFLAGS="$cflags" --with-libxml --with-uuid=ossp --with-icu --with-openssl --with-gssapi
++          make -j"$(nproc)" 2>&1 | tee "$LOG_DIR/engine.log"
++          make install
++          make -C contrib -j"$(nproc)" install
++          # babelfishpg_tsql loads the ANTLR runtime (built by install-deps.sh) from the engine's lib dir
++          cp /usr/local/lib/libantlr4-runtime.so.$ANTLR_VERSION "$INSTALL_DIR/lib/"
++
++      - name: Build extensions
++        env:
++          TSQL_CPPFLAGS: -I/usr/include -DENABLE_TDS_LIB -DENABLE_SPATIAL_TYPES
++          TSQL_SHLIB_LINK: -lsybdb -L/usr/lib64
++        run: |
++          export PG_CONFIG="$INSTALL_DIR/bin/pg_config"
++          export PG_SRC="$(cd ../postgresql_modified_for_babelfish && pwd)"
++          export cmake="$(command -v cmake)"
++          jobs=$(nproc)
++          {
++            make -C contrib/babelfishpg_money -j$jobs install
++            PG_CPPFLAGS='-DENABLE_SPATIAL_TYPES' make -C contrib/babelfishpg_common -j$jobs install
++            make -C contrib/babelfishpg_tds -j$jobs install
++            # Generate the ANTLR parser first: the C++ sources include its headers
++            PG_CPPFLAGS="$TSQL_CPPFLAGS" SHLIB_LINK="$TSQL_SHLIB_LINK" make -C contrib/babelfishpg_tsql antlr/libantlr_tsql.a
++            PG_CPPFLAGS="$TSQL_CPPFLAGS" SHLIB_LINK="$TSQL_SHLIB_LINK" make -C contrib/babelfishpg_tsql -j$jobs install
++            PATH="$INSTALL_DIR/bin:$PATH" make -C contrib/babelfishpg_unit -j$jobs install
++          } 2>&1 | tee "$LOG_DIR/extensions.log"
++
++      # babelfishpg_common built with ENABLE_SPATIAL_TYPES needs PostGIS at CREATE EXTENSION time
++      - name: Build PostGIS
++        run: |
++          cd /tmp
++          wget -q https://download.osgeo.org/postgis/source/postgis-$POSTGIS_VERSION.tar.gz
++          tar xzf postgis-$POSTGIS_VERSION.tar.gz
++          cd postgis-$POSTGIS_VERSION
++          ./configure --without-protobuf --without-raster --with-pgconfig="$INSTALL_DIR/bin/pg_config"
++          # PostGIS' utils/ Makefile is not parallel safe (races on rtpostgis.sql)
++          make
++          make install
++
++      - name: Smoke test
++        run: |
++          id bbf >/dev/null 2>&1 || useradd -m bbf
++          chown -R bbf "$INSTALL_DIR"
++          chmod -R a+rX "$GITHUB_WORKSPACE"
++          runuser -u bbf -- bash -eo pipefail <<'EOF'
++          export PATH="$INSTALL_DIR/bin:$PATH"
++          data=/home/bbf/data
++          initdb -E UTF8 --locale=C.UTF-8 -D "$data"
++          sed -i "s/#shared_preload_libraries = ''/shared_preload_libraries = 'babelfishpg_tds, pg_stat_statements'/" "$data/postgresql.conf"
++          pg_ctl -D "$data" -l "$data/logfile" -w start
++          psql -v ON_ERROR_STOP=1 -d postgres -v user=jdbc_user -v db=babelfish_db -v migration_mode=multi-db \
++            -v tsql_port=1433 -v parallel_query_mode=false -f "$GITHUB_WORKSPACE/.github/scripts/create_extension.sql"
++          pg_ctl -D "$data" -l "$data/logfile" -w restart
++
++          # T-SQL over the TDS endpoint (ANTLR parser, partitioned tables, money)
++          printf '[bbf]\n\thost = localhost\n\tport = 1433\n\ttds version = 7.4\n' > /home/bbf/freetds.conf
++          cat > /home/bbf/smoke.sql <<'SQL'
++          SELECT @@version;
++          GO
++          CREATE PARTITION FUNCTION pf (int) AS RANGE RIGHT FOR VALUES (10, 20);
++          GO
++          CREATE PARTITION SCHEME ps AS PARTITION pf ALL TO ([PRIMARY]);
++          GO
++          CREATE TABLE ptab (a int, b varchar(10)) ON ps(a);
++          GO
++          INSERT INTO ptab VALUES (1, 'x'), (15, 'y'), (25, 'z');
++          GO
++          SELECT COUNT(*) AS cnt, CAST(12.5 AS money) AS m FROM ptab;
++          GO
++          DROP TABLE ptab; DROP PARTITION SCHEME ps; DROP PARTITION FUNCTION pf;
++          GO
++          SQL
++          FREETDSCONF=/home/bbf/freetds.conf bsqldb -S bbf -U jdbc_user -P 12345678 -D master -i /home/bbf/smoke.sql
++
++          # babelfishpg_unit tests
++          psql -v ON_ERROR_STOP=1 -d babelfish_db -c "CREATE EXTENSION IF NOT EXISTS babelfishpg_unit"
++          psql -v ON_ERROR_STOP=1 -d babelfish_db -c "SELECT status, count(*) FROM babelfishpg_unit.babelfishpg_unit_run_tests() GROUP BY 1"
++          failed=$(psql -At -d babelfish_db -c "SELECT count(*) FROM babelfishpg_unit.babelfishpg_unit_run_tests() WHERE status = 'fail'")
++          [ "$failed" = 0 ] || { echo "$failed babelfishpg_unit test(s) failed"; exit 1; }
++          pg_ctl -D "$data" -w stop
++          EOF
++
++      - name: Summarize compiler warnings
++        if: always()
++        run: |
++          for f in engine extensions; do
++            log="$LOG_DIR/$f.log"
++            [ -f "$log" ] || continue
++            grep -E '^[^ ]+:[0-9]+:[0-9]+: warning: ' "$log" | sort -u > "$LOG_DIR/$f-warnings.txt" || true
++            echo "- $f: $(wc -l < "$LOG_DIR/$f-warnings.txt") unique compiler warnings" >> "$GITHUB_STEP_SUMMARY"
++          done
++
++      - name: Collect logs
++        if: failure()
++        run: |
++          cp ../postgresql_modified_for_babelfish/config.log "$LOG_DIR/" 2>/dev/null || true
++          cp /home/bbf/data/logfile "$LOG_DIR/postgres.log" 2>/dev/null || true
++
++      - name: Upload logs
++        if: failure()
++        uses: actions/upload-artifact@v4
++        with:
++          name: build-logs-${{ matrix.os.label }}-${{ matrix.build_type }}
++          path: build-logs
++          retention-days: 7
+diff --git a/INSTALLING.md.tmpl b/INSTALLING.md.tmpl
+index f1aa5987f51..d2d81d9bb5c 100644
+--- a/INSTALLING.md.tmpl
++++ b/INSTALLING.md.tmpl
+@@ -83,7 +83,7 @@ unzip -d ${ANTLR_RUNTIME} antlr4-cpp-runtime-${ANTLR4_VERSION}-source.zip
+ 
+ cd ${ANTLR_RUNTIME}
+ mkdir build && cd build 
+-cmake .. -D ANTLR_JAR_LOCATION=/usr/local/lib/antlr-${ANTLR4_VERSION}-complete.jar -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_DEMO=True
++cmake .. -D ANTLR_JAR_LOCATION=/usr/local/lib/antlr-${ANTLR4_VERSION}-complete.jar -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_DEMO=True -DANTLR_BUILD_CPP_TESTS=OFF
+ make -j $JOBS 
+ sudo make install
+ ```
+diff --git a/contrib/README.md b/contrib/README.md
+index a877ab48500..b5fb660f6aa 100644
+--- a/contrib/README.md
++++ b/contrib/README.md
+@@ -88,7 +88,7 @@ The following build instructions comply with Ubuntu 22.04 and Amazon Linux 2 env
+     unzip -d antlr4 antlr4-cpp-runtime-4.13.2-source.zip 
+     cd antlr4
+     mkdir build && cd build 
+-    cmake .. -DANTLR_JAR_LOCATION=/usr/local/lib/antlr-4.13.2-complete.jar -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_DEMO=True
++    cmake .. -DANTLR_JAR_LOCATION=/usr/local/lib/antlr-4.13.2-complete.jar -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_DEMO=True -DANTLR_BUILD_CPP_TESTS=OFF
+     make
+     sudo make install
+     ```
+diff --git a/contrib/babelfishpg_common/Makefile b/contrib/babelfishpg_common/Makefile
+index 04c7aca9aba..4695f8c33ae 100644
+--- a/contrib/babelfishpg_common/Makefile
++++ b/contrib/babelfishpg_common/Makefile
+@@ -14,6 +14,9 @@ MODULE_big = $(EXTENSION)
+ 
+ PG_CFLAGS += -g -Werror -Wfloat-conversion
+ PG_CFLAGS += -fstack-protector-strong
++# GCC 14+ gets -Wmissing-variable-declarations from the server's CFLAGS;
++# opt out the same way upstream PostgreSQL does for code not yet clean of it
++PG_CFLAGS += $(PERMIT_MISSING_VARIABLE_DECLARATIONS)
+ ifdef PREV_EXTVERSION
+ DATA = sql/$(EXTENSION)--$(PREV_EXTVERSION).sql
+ endif
+diff --git a/contrib/babelfishpg_tds/Makefile b/contrib/babelfishpg_tds/Makefile
+index 69a5271146a..9c1010f1013 100644
+--- a/contrib/babelfishpg_tds/Makefile
++++ b/contrib/babelfishpg_tds/Makefile
+@@ -11,6 +11,9 @@ TSQL_SRC = ../babelfishpg_tsql
+ 
+ PG_CFLAGS += -Werror -Wfloat-conversion
+ PG_CFLAGS += -fstack-protector-strong
++# GCC 14+ gets -Wmissing-variable-declarations from the server's CFLAGS;
++# opt out the same way upstream PostgreSQL does for code not yet clean of it
++PG_CFLAGS += $(PERMIT_MISSING_VARIABLE_DECLARATIONS)
+ PG_CPPFLAGS += -I$(TSQL_SRC) -I$(PG_SRC) -I$(tds_top_dir)
+ 
+ # Exclude the following files from the build (sometimes these
+diff --git a/contrib/babelfishpg_tds/src/backend/tds/tds-secure-openssl.c b/contrib/babelfishpg_tds/src/backend/tds/tds-secure-openssl.c
+index 039a2030bc2..771081feb25 100644
+--- a/contrib/babelfishpg_tds/src/backend/tds/tds-secure-openssl.c
++++ b/contrib/babelfishpg_tds/src/backend/tds/tds-secure-openssl.c
+@@ -93,13 +93,7 @@ Tds_be_tls_init(bool isServerStart)
+ 	/* This stuff need be done only once. */
+ 	if (!SSL_initialized)
+ 	{
+-#ifdef HAVE_OPENSSL_INIT_SSL
+ 		OPENSSL_init_ssl(OPENSSL_INIT_LOAD_CONFIG, NULL);
+-#else
+-		OPENSSL_config(NULL);
+-		SSL_library_init();
+-		SSL_load_error_strings();
+-#endif
+ 		SSL_initialized = true;
+ 	}
+ 
+@@ -584,13 +578,8 @@ Tds_be_tls_open_server(Port *port)
+ 	}
+ 
+ 	/* TDS specific post SSL function register */
+-#ifdef HAVE_BIO_METH_NEW
+ 	BIO_meth_set_read(my_bio_methods, my_sock_read);
+ 	BIO_meth_set_write(my_bio_methods, my_sock_write);
+-#else
+-	my_bio_methods->bread = my_sock_read;
+-	my_bio_methods->bwrite = my_sock_write;
+-#endif
+ 
+ 
+ 	/* and extract the Common Name and Distinguished Name from it. */
+@@ -600,18 +589,18 @@ Tds_be_tls_open_server(Port *port)
+ 	if (port->peer != NULL)
+ 	{
+ 		int			len;
+-		X509_NAME  *x509name = X509_get_subject_name(port->peer);
++		const X509_NAME *x509name = X509_get_subject_name(port->peer);
+ 		char	   *peer_dn;
+ 		BIO		   *bio = NULL;
+ 		BUF_MEM    *bio_buf = NULL;
+ 
+-		len = X509_NAME_get_text_by_NID(x509name, NID_commonName, NULL, 0);
++		len = X509_NAME_get_text_by_NID(unconstify(X509_NAME *, x509name), NID_commonName, NULL, 0);
+ 		if (len != -1)
+ 		{
+ 			char	   *peer_cn;
+ 
+ 			peer_cn = MemoryContextAlloc(TopMemoryContext, len + 1);
+-			r = X509_NAME_get_text_by_NID(x509name, NID_commonName, peer_cn,
++			r = X509_NAME_get_text_by_NID(unconstify(X509_NAME *, x509name), NID_commonName, peer_cn,
+ 										  len + 1);
+ 			peer_cn[len] = '\0';
+ 			if (r != len)
+diff --git a/contrib/babelfishpg_tds/src/backend/tds/tdsrpc.c b/contrib/babelfishpg_tds/src/backend/tds/tdsrpc.c
+index da08acad058..fe005691aa1 100644
+--- a/contrib/babelfishpg_tds/src/backend/tds/tdsrpc.c
++++ b/contrib/babelfishpg_tds/src/backend/tds/tdsrpc.c
+@@ -454,8 +454,7 @@ SetVariables(TDSRequestSP req, FunctionCallInfo *fcinfo)
+ {
+ 	InlineCodeBlockArgs *codeblock_args;
+ 	ParameterToken token = NULL;
+-	int			i = 0,
+-				index = 0;
++	int			index = 0;
+ 
+ 	/* should be only called for sp_execute */
+ 	Assert(req->spType == SP_EXECUTE);
+@@ -498,8 +497,6 @@ SetVariables(TDSRequestSP req, FunctionCallInfo *fcinfo)
+ 																   index,
+ 																   NULL,
+ 																   fcinfo);
+-
+-			i++;
+ 		}
+ 	}
+ 
+@@ -2225,7 +2222,6 @@ InitializeDataParamTokenIndex(TDSRequestSP request)
+ {
+ 	ParameterToken token;
+ 	uint16		idOutParam = 0;
+-	int32		paramCount = 0;
+ 
+ 	request->nOutParams = 0;
+ 	request->idxOutParams = NULL;
+@@ -2251,7 +2247,6 @@ InitializeDataParamTokenIndex(TDSRequestSP request)
+ 
+ 		if ((token->flags & 0x01) == 1)
+ 			request->idxOutParams[idOutParam++] = token;
+-		paramCount++;
+ 	}
+ 
+ 	Assert(request->nOutParams == idOutParam);
+@@ -3918,7 +3913,7 @@ TdsGetAndSetParamIndex(const char *name)
+ 		int			i = 0,
+ 					temp = 0;
+ 		const char *source = req->metaDataParameterValue->data;
+-		char	   *pos;
++		const char *pos;
+ 		int			ptr;
+ 		int			qlen = strlen(source);
+ 		int			nlen = strlen(name);
+diff --git a/contrib/babelfishpg_tds/src/backend/tds/tdssecure.c b/contrib/babelfishpg_tds/src/backend/tds/tdssecure.c
+index 50aedb02572..79a3f72f78a 100644
+--- a/contrib/babelfishpg_tds/src/backend/tds/tdssecure.c
++++ b/contrib/babelfishpg_tds/src/backend/tds/tdssecure.c
+@@ -281,7 +281,6 @@ TdsBioSecureSocket(BIO_METHOD * my_bio_methods)
+ 	if (my_bio_methods == NULL)
+ 	{
+ 		BIO_METHOD *biom = (BIO_METHOD *) BIO_s_socket();
+-#ifdef HAVE_BIO_METH_NEW
+ 		int			my_bio_index;
+ 
+ 		my_bio_index = BIO_get_new_index();
+@@ -304,14 +303,6 @@ TdsBioSecureSocket(BIO_METHOD * my_bio_methods)
+ 			my_bio_methods = NULL;
+ 			return NULL;
+ 		}
+-#else
+-		my_bio_methods = malloc(sizeof(BIO_METHOD));
+-		if (!my_bio_methods)
+-			return NULL;
+-		memcpy(my_bio_methods, biom, sizeof(BIO_METHOD));
+-		my_bio_methods->bread = SslHandShakeRead;
+-		my_bio_methods->bwrite = SslHandShakeWrite;
+-#endif
+ 	}
+ 	return my_bio_methods;
+ }
+diff --git a/contrib/babelfishpg_tsql/Makefile b/contrib/babelfishpg_tsql/Makefile
+index 3b45d50cc0b..1e089f8779c 100644
+--- a/contrib/babelfishpg_tsql/Makefile
++++ b/contrib/babelfishpg_tsql/Makefile
+@@ -120,10 +120,13 @@ PG_CXXFLAGS += -g -Werror -Wfloat-conversion
+ PG_CXXFLAGS += -Wno-deprecated -Wno-error=attributes -Wno-suggest-attribute=format # disable some warnings from ANTLR runtime header
+ PG_CXXFLAGS += -Wno-undef -Wall -Wcpp
+ PG_CXXFLAGS += -Wno-register # otherwise C++17 gags on PostgreSQL headers
+-PG_CXXFLAGS += -I$(ANTLR4_RUNTIME_INCLUDE_DIR)
++PG_CXXFLAGS += -isystem $(ANTLR4_RUNTIME_INCLUDE_DIR) # system header: don't fail on warnings inside the ANTLR runtime
+ PG_CXXFLAGS += -std=c++17
+ PG_CFLAGS += -g -Werror -Wfloat-conversion
+ PG_CFLAGS += -fstack-protector-strong
++# GCC 14+ gets -Wmissing-variable-declarations from the server's CFLAGS;
++# opt out the same way upstream PostgreSQL does for code not yet clean of it
++PG_CFLAGS += $(PERMIT_MISSING_VARIABLE_DECLARATIONS)
+ PG_CPPFLAGS += -I$(TSQLSRC) -I$(PG_SRC) -DFAULT_INJECTOR -Wfloat-conversion
+ 
+ SHLIB_LINK += -L$(ANTLR4_RUNTIME_LIB_DIR) $(ANTLR4_RUNTIME_LIB) -lcrypto $(ICU_LIBS)
+diff --git a/contrib/babelfishpg_tsql/src/collation.c b/contrib/babelfishpg_tsql/src/collation.c
+index f2bc2304bf7..a6cc383b984 100644
+--- a/contrib/babelfishpg_tsql/src/collation.c
++++ b/contrib/babelfishpg_tsql/src/collation.c
+@@ -659,7 +659,7 @@ Datum remove_accents_internal_using_cache(PG_FUNCTION_ARGS)
+ 		unsigned char b4 = 0;
+ 		uint32 utf8_char;
+ 		uint32 utf8_normalized_str;
+-		remove_accent_map_pair *pr;
++		const remove_accent_map_pair *pr;
+ 
+ 		/* "break" cases all represent errors */
+ 		if (*input_str == '\0')
+diff --git a/contrib/babelfishpg_tsql/src/err_handler.c b/contrib/babelfishpg_tsql/src/err_handler.c
+index 6eac541e575..a8bc107046d 100644
+--- a/contrib/babelfishpg_tsql/src/err_handler.c
++++ b/contrib/babelfishpg_tsql/src/err_handler.c
+@@ -389,13 +389,13 @@ get_err_lineno(const char *context)
+ 	int			lineno = -1;
+ 	const char *pattern1 = "line ";
+ 	const char *pattern2 = " at";
+-	char	   *start,
+-			   *end;
++	const char *start;
++	char	   *end;
+ 
+ 	if ((start = strstr(context, pattern1)))
+ 	{
+ 		start += strlen(pattern1);
+-		if ((end = strstr(start, pattern2)))
++		if (strstr(start, pattern2))
+ 		{
+ 			lineno = strtoint(start, &end, 10);
+ 		}
+diff --git a/contrib/babelfishpg_tsql/src/hooks.c b/contrib/babelfishpg_tsql/src/hooks.c
+index 08e565233a9..486cb4b5e3d 100644
+--- a/contrib/babelfishpg_tsql/src/hooks.c
++++ b/contrib/babelfishpg_tsql/src/hooks.c
+@@ -1213,9 +1213,11 @@ pltsql_ExecFuncProc_AclCheck(Oid funcid, Expr *expr)
+ 	return object_aclcheck(ProcedureRelationId, funcid, userid, ACL_EXECUTE);
+ }
+ 
++typedef bool (*plan_tree_walker_callback) (Plan *plan, void *context);
++
+ typedef struct WalkSubplanContext
+ {
+-	bool (*plan_walker) ();
++	plan_tree_walker_callback plan_walker;
+ 	void *plan_context;
+ 	List *allplans;
+ } WalkSubplanContext;
+@@ -1233,7 +1235,7 @@ static bool expr_walk_subplan(Node *node, void *context)
+ }
+ 
+ static bool
+-plan_walk_members(List *plans, bool (*walker) (), void *context)
++plan_walk_members(List *plans, plan_tree_walker_callback walker, void *context)
+ {
+ 	ListCell   *l;
+ 	foreach(l, plans)
+@@ -1247,8 +1249,8 @@ plan_walk_members(List *plans, bool (*walker) (), void *context)
+ 
+ static bool
+ plan_walk_subplans(List *plans, List *allplans,
+-						bool (*walker) (),
+-						void *context)
++				   plan_tree_walker_callback walker,
++				   void *context)
+ {
+ 	ListCell   *lc;
+ 
+@@ -1266,7 +1268,7 @@ plan_walk_subplans(List *plans, List *allplans,
+ }
+ 
+ static bool
+-plan_tree_walker(Plan *plan, List *allplans, bool (*walker) (), void *context)
++plan_tree_walker(Plan *plan, List *allplans, plan_tree_walker_callback walker, void *context)
+ {
+ 	struct WalkSubplanContext sc = { walker, context, allplans };
+ 
+@@ -1399,8 +1401,10 @@ replace_params_mutator(Node *node, ParamReplaceContext *context)
+  * Recursively walk the plan tree and replace params in quals.
+  */
+ static bool
+-replace_params_in_plan_tree(Plan *plan, ParamReplaceContext *context)
++replace_params_in_plan_tree(Plan *plan, void *arg)
+ {
++	ParamReplaceContext *context = (ParamReplaceContext *) arg;
++
+ 	if (plan == NULL)
+ 		return false;
+ 
+diff --git a/contrib/babelfishpg_tsql/src/linked_servers.c b/contrib/babelfishpg_tsql/src/linked_servers.c
+index 942d3d62a7b..91d00a4989b 100644
+--- a/contrib/babelfishpg_tsql/src/linked_servers.c
++++ b/contrib/babelfishpg_tsql/src/linked_servers.c
+@@ -1024,7 +1024,7 @@ getOpenqueryTupdescFromMetadata(char *linked_server, char *query, TupleDesc *tup
+ 					 * We return here, when we will again execute the query we
+ 					 * will error out from there
+ 					 */
+-					if (bind_typename == NULL)
++					if (bind_typename[0] == '\0')
+ 						ereport(ERROR,
+ 								(errcode(ERRCODE_FDW_UNABLE_TO_CREATE_EXECUTION),
+ 								 errmsg("Failed to bind results for column \"system_type_name\" to a variable.")
+@@ -1043,7 +1043,7 @@ getOpenqueryTupdescFromMetadata(char *linked_server, char *query, TupleDesc *tup
+ 					 * TODO: Solve for cases where column with only whitespace
+ 					 * characters is a valid column name.
+ 					 */
+-					if ((bind_colname == NULL))
++					if (bind_colname[0] == '\0')
+ 						strncpy(bind_colname, "?column?", 256);
+ 					else
+ 					{
+diff --git a/contrib/babelfishpg_tsql/src/pl_gram.y b/contrib/babelfishpg_tsql/src/pl_gram.y
+index 7ee85030f5e..01ce4de6a3a 100644
+--- a/contrib/babelfishpg_tsql/src/pl_gram.y
++++ b/contrib/babelfishpg_tsql/src/pl_gram.y
+@@ -4728,7 +4728,6 @@ make_target_row(List *fields, int location)
+ static char *
+ read_top_clause(execsql_ctx *ctx)
+ {
+-	int length = 4; /* length of "TOP " */
+ 	int start = yylloc;
+ 
+ 	/*
+@@ -4741,12 +4740,9 @@ read_top_clause(execsql_ctx *ctx)
+ 		YYDPRINTF((stderr, "read_top_clause - tok (%d) loc(%d) len(%d)\n", 
+ 				  ctx->tok, pltsql_yylloc, pltsql_get_yyleng()));
+ 
+-		if (ctx->tok == ICONST)
+-			length += pltsql_get_yyleng();
+-		else if (ctx->tok == FCONST)
+-			length += pltsql_get_yyleng();
+-		else if (word_matches(ctx->tok, "PERCENT"))
+-			length += pltsql_get_yyleng();
++		if (ctx->tok == ICONST || ctx->tok == FCONST ||
++			word_matches(ctx->tok, "PERCENT"))
++			continue;			/* still inside the TOP clause */
+ 		else if (ctx->tok == '(')
+ 		{
+ 			int paren_level = 1;
+diff --git a/contrib/babelfishpg_tsql/src/pltsql_utils.c b/contrib/babelfishpg_tsql/src/pltsql_utils.c
+index f9c07e0304f..70e3efeebd9 100644
+--- a/contrib/babelfishpg_tsql/src/pltsql_utils.c
++++ b/contrib/babelfishpg_tsql/src/pltsql_utils.c
+@@ -2418,7 +2418,7 @@ List
+ *get_columns(char *index_stmt)
+ {
+ 	
+-	const char 	*indexdf = index_stmt;
++	char	   *indexdf = index_stmt;
+ 	List		*column_name_list = NULL;
+ 	size_t 		regconfig_len = strlen("regconfig, ");
+ 	size_t 		replace_special_chars_fts_len = strlen("replace_special_chars_fts(");
+@@ -2507,7 +2507,7 @@ char
+ 
+ 			if (next_char_index < input_len) {
+ 				for (int k = 0; k < 5; k++) {
+-					char *is_special_char = strchr(special_chars[k], input_str[next_char_index]);
++					const char *is_special_char = strchr(special_chars[k], input_str[next_char_index]);
+ 					while ((next_char_index < input_len && isspace((unsigned char)input_str[next_char_index])) || (next_char_index < input_len && is_special_char != NULL)) {
+ 						if (is_special_char != NULL) {
+ 							is_single = false;
+diff --git a/contrib/babelfishpg_tsql/src/tsqlIface.cpp b/contrib/babelfishpg_tsql/src/tsqlIface.cpp
+index 36d87c2ac36..331d7f7e364 100644
+--- a/contrib/babelfishpg_tsql/src/tsqlIface.cpp
++++ b/contrib/babelfishpg_tsql/src/tsqlIface.cpp
+@@ -3510,10 +3510,8 @@ class tsqlBuilder : public tsqlCommonMutator
+ 			{
+ 				// For each assignment to a @variable, a fragment was created (via makeInitializer).
+ 				// There can be multiple declarations and assignments in a single DECLARE, and these are processed below.
+-				int i = 0;
+ 				for (TSqlParser::Declare_localContext *d : ctx->declare_statement()->declare_local() ) 
+ 				{
+-					i++;
+ 					if (d->expression())
+ 					{  
+ 						ParserRuleContext *ctx_fragment = (ParserRuleContext *) ctx;
+diff --git a/contrib/babelfishpg_tsql/src/tsql_for/tsql_for.c b/contrib/babelfishpg_tsql/src/tsql_for/tsql_for.c
+index 6c2fc87b3f2..d85b3765dbe 100644
+--- a/contrib/babelfishpg_tsql/src/tsql_for/tsql_for.c
++++ b/contrib/babelfishpg_tsql/src/tsql_for/tsql_for.c
+@@ -18,7 +18,7 @@ void
+ tsql_for_datetime_format(StringInfo format_output, const char *outputstr)
+ {
+ 	char	   *date;
+-	char	   *spaceptr;
++	const char *spaceptr;
+ 	int			len;
+ 
+ 	/* if we receive a null value, set the output as an empty string */
+@@ -47,10 +47,10 @@ void
+ tsql_for_datetimeoffset_format(StringInfo format_output, const char *str)
+ {
+ 	char	   *date,
+-			   *endptr,
+-			   *time,
++			   *time;
++	const char *endptr,
+ 			   *offset;
+-	char	   *spaceptr;
++	const char *spaceptr;
+ 	int			len;
+ 
+ 	/* if we receive a null value, set the output as an empty string */
+diff --git a/contrib/babelfishpg_unit/babelfishpg_unit.c b/contrib/babelfishpg_unit/babelfishpg_unit.c
+index 6c70e83ad86..998f584be96 100644
+--- a/contrib/babelfishpg_unit/babelfishpg_unit.c
++++ b/contrib/babelfishpg_unit/babelfishpg_unit.c
+@@ -326,7 +326,7 @@ babelfishpg_unit_run_tests(PG_FUNCTION_ARGS)
+ 		values[STATUS_NAME_COLUMN] = PointerGetDatum(cstring_to_text(test->enabled ? 
+ 				(tr->result ? PASS : FAIL) : NOT_RUN));
+ 		values[MESSAGE_NAME_COLUMN] = PointerGetDatum(cstring_to_text(tr->message));
+-		values[RUNTIME_NAME_COLUMN] = PointerGetDatum(tr->run_time);
++		values[RUNTIME_NAME_COLUMN] = Int64GetDatum((int64) tr->run_time);
+ 		values[ENABLED_NAME_COLUMN] = PointerGetDatum(cstring_to_text(test->enabled ? ENABLED : DISABLED));
+ 		tuple = heap_form_tuple(state->tupledesc, values, state->nulls);
+ 		result = HeapTupleGetDatum(tuple);
+diff --git a/dev-tools.sh b/dev-tools.sh
+index 9601e05705c..71e12b931cc 100755
+--- a/dev-tools.sh
++++ b/dev-tools.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ set -e
+ 
