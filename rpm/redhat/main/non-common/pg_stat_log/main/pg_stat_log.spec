@@ -16,8 +16,8 @@
 
 Summary:	PostgreSQL extension that uses the Custom Cumulative Stats API to track log messages
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.2
-Release:	3PGDG%{?dist}
+Version:	0.3
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/fabriziomello/%{sname}
 Source0:	https://github.com/fabriziomello/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -100,6 +100,11 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 0.3-1PGDG
+- Update to 0.3 per changes described at:
+  https://github.com/fabriziomello/pg_stat_log/releases/tag/0.3
+- Per https://github.com/pgdg-packaging/pgdg-rpms/issues/393
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.2-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
