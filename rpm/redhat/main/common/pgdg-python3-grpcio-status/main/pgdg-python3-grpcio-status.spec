@@ -57,8 +57,15 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 Version:	1.84.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Status proto mapping for gRPC
+%if ! 0%{?suse_version}
+# A name that only the packages of the private tree provide (on SUSE, it is
+# the package name). The distribution's packages provide python3.X-<module>,
+# too, some with an Epoch (Fedora's and EPEL's python3-google-api-core), so
+# versioned Requires on those names do not ensure that ours are installed:
+Provides:	pgdg-python%{python3_pkgversion}-%{modname} = %{version}-%{release}
+%endif
 
 License:	Apache-2.0
 URL:		https://grpc.io
@@ -70,9 +77,9 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
-Requires:	%{pgdg_pyname}-grpcio >= 1.84.0
-Requires:	%{pgdg_pyname}-protobuf >= 7.36.2
-Requires:	%{pgdg_pyname}-googleapis-common-protos >= 1.75.5
+Requires:	pgdg-python%{python3_pkgversion}-grpcio >= 1.84.0
+Requires:	pgdg-python%{python3_pkgversion}-protobuf >= 7.36.2
+Requires:	pgdg-python%{python3_pkgversion}-googleapis-common-protos >= 1.75.5
 
 %description
 Reference package for GRPC Python status proto mapping.
@@ -105,6 +112,15 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 1.84.0-2PGDG
+- Provide pgdg-python3.X-<module> (on SUSE, that is the package name) and
+  require the other modules of the private tree by that name. The
+  versioned Requires on python3.X-<module> were satisfied by the packages
+  of the distribution that have an Epoch (Fedora's and EPEL's
+  python3-google-api-core 1:2.27.0), so our google-api-core and proto-plus
+  were not installed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.84.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, as part of the
   private Python stack of bigquery_fdw. Per

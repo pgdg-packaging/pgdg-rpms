@@ -57,8 +57,15 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 Version:	1.29.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Beautiful, Pythonic protocol buffers
+%if ! 0%{?suse_version}
+# A name that only the packages of the private tree provide (on SUSE, it is
+# the package name). The distribution's packages provide python3.X-<module>,
+# too, some with an Epoch (Fedora's and EPEL's python3-google-api-core), so
+# versioned Requires on those names do not ensure that ours are installed:
+Provides:	pgdg-python%{python3_pkgversion}-%{modname} = %{version}-%{release}
+%endif
 
 License:	Apache-2.0
 URL:		https://github.com/googleapis/google-cloud-python/tree/main/packages/proto-plus
@@ -70,7 +77,7 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
-Requires:	%{pgdg_pyname}-protobuf >= 7.36.2
+Requires:	pgdg-python%{python3_pkgversion}-protobuf >= 7.36.2
 
 %description
 Beautiful, idiomatic protocol buffers in Python.
@@ -103,6 +110,15 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 1.29.0-3PGDG
+- Provide pgdg-python3.X-<module> (on SUSE, that is the package name) and
+  require the other modules of the private tree by that name. The
+  versioned Requires on python3.X-<module> were satisfied by the packages
+  of the distribution that have an Epoch (Fedora's and EPEL's
+  python3-google-api-core 1:2.27.0), so our google-api-core and proto-plus
+  were not installed there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+
 * Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.29.0-2PGDG
 - Remove the Python 3.15 classifier from pyproject.toml: setuptools rejects
   it when an older trove-classifiers module is installed, as on SLES 16.
