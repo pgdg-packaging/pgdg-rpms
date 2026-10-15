@@ -36,7 +36,7 @@
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	14PGDG%{?dist}
+Release:	15PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
@@ -57,14 +57,11 @@ BuildRequires:	pyproject-rpm-macros
 
 Requires:	multicorn2
 # The Google Cloud libraries live in the private PGDG Python tree, for the
-# interpreter that multicorn2 embeds. google-auth comes with them:
-%if 0%{?suse_version}
-# On SUSE, the private stack has distinct package names, as SUSE ships
-# older copies of these modules under the usual ones:
+# interpreter that multicorn2 embeds. google-auth comes with them. Only the
+# packages of that tree provide the pgdg-python3.X-<module> names (on SUSE,
+# they are the package names); the distribution's python3.X-<module>
+# packages may satisfy versioned Requires on the usual names with an Epoch:
 Requires:	pgdg-python%{python3_pkgversion}-google-cloud-bigquery >= 3.46.1
-%else
-Requires:	python%{python3_pkgversion}-google-cloud-bigquery >= 3.46.1
-%endif
 
 %description
 bigquery_fdw is a BigQuery foreign data wrapper for PostgreSQL using
@@ -83,27 +80,29 @@ test ! -s src/__init__.py
 %{__cat} > src/__init__.py << 'EOF'
 # Added by the PGDG RPM packaging: use the private PGDG Python tree, which
 # has the Google Cloud libraries bigquery_fdw needs.
-import importlib as _importlib
 import os as _os
 import sys as _sys
 _pgdg_sitelib = '/usr/lib/pgdg-python/python%d.%d/site-packages' % _sys.version_info[:2]
 if _pgdg_sitelib not in _sys.path:
     _sys.path.insert(0, _pgdg_sitelib)
-# A setuptools "-nspkg.pth" file (e.g. that of an older system protobuf)
-# may have created these namespace packages at startup, with a fixed path
-# that does not include the private tree:
+# setuptools "-nspkg.pth" files of the system packages (e.g. those of
+# protobuf and google-cloud-core) may have created these namespace packages
+# at startup, with a path that only has the directory of that .pth file,
+# and that is not recalculated, as the private "google" is a regular
+# package. Set their path to the private tree first, then the directories
+# of all sys.path entries (e.g. /usr/lib64 and /usr/lib, where the system
+# google-auth is), as pkgutil.extend_path() would:
 for _name in ('google', 'google.cloud'):
     _mod = _sys.modules.get(_name)
     _dir = _os.path.join(_pgdg_sitelib, *_name.split('.'))
-    if (_mod is None or not _os.path.isdir(_dir)
-            or _dir in list(getattr(_mod, '__path__', []))):
+    if _mod is None or not _os.path.isdir(_dir):
         continue
-    if isinstance(_mod.__path__, list):
-        _mod.__path__.insert(0, _dir)
-    elif not any(_k.startswith(_name + '.') for _k in _sys.modules):
-        # Nothing was imported from it yet, so re-create it from sys.path:
-        del _sys.modules[_name]
-        _importlib.import_module(_name)
+    _path = [_dir]
+    for _p in ([_os.path.join(_e, *_name.split('.')) for _e in _sys.path
+                if isinstance(_e, str)] + list(getattr(_mod, '__path__', []))):
+        if _p not in _path and _os.path.isdir(_p):
+            _path.append(_p)
+    _mod.__path__ = _path
 EOF
 
 %build
@@ -138,6 +137,17 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-15PGDG
+- Fix "cannot import name 'bigquery' from 'google.cloud'" on Fedora and
+  RHEL 10, when the distribution's Google Cloud packages are installed:
+  their -nspkg.pth files create the google and google.cloud namespace
+  packages at startup, and __init__.py did not add the private tree to
+  their path in all cases.
+- Require pgdg-python3.X-google-cloud-bigquery, which only the private
+  tree provides, so that the distribution's packages (some have an Epoch)
+  do not satisfy the dependencies of the stack. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/367
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-14PGDG
 - Use the new private Python stack (google-cloud-bigquery 3.46.1 and its
   dependencies, in /usr/lib/pgdg-python), built for the interpreter that
