@@ -1,3 +1,5 @@
+%global gdalmajorversion 3.10
+
 %if 0%{?rhel} == 8
 # gdal-3.8 cmake build does not work in source directory
 %undefine __cmake_in_source_build
@@ -52,15 +54,15 @@
 # https://bugzilla.redhat.com/show_bug.cgi?id=1490492
 
 Name:		%{sname}310
-Version:	3.10.3
-Release:	2PGDG%{?dist}
+Version:	%{gdalmajorversion}.3
+Release:	3PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
 # Source0: https://download.osgeo.org/gdal/%%{version}/gdal-%%{version}.tar.xz
 # See PROVENANCE.TXT-fedora and the cleaner script for details!
 
-Source0:	%{sname}-%{version}-fedora.tar.xz
+Source0:	https://download.postgresql.org/pub/repos/yum/sources/gdal/%{gdalmajorversion}/gdal-%{version}-fedora.tar.xz
 Source4:	PROVENANCE.TXT-fedora
 
 # Cleaner script for the tarball
@@ -482,6 +484,9 @@ done
 %endif
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.10.3-3PGDG
+- Update download URL
+
 * Wed Apr 16 2025 Devrim Gunduz <devrim@gunduz.org> - 3.10.3-2PGDG
 - Rebuild against PROJ 9.6
 
