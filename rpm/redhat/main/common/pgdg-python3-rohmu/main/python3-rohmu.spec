@@ -16,7 +16,7 @@ Name:		python%{python3_pkgversion}-%{sname}
 Name:		python3-%{sname}
 %endif
 Version:	2.8.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Epoch:		1
 Summary:	Python library for building backup tools for databases
 
@@ -30,7 +30,14 @@ BuildRequires:	python%{python3_pkgversion}-hatchling python%{python3_pkgversion}
 %else
 BuildRequires:	python3-devel python3-pip python3-hatchling python3-hatch-vcs
 %endif
+%if 0%{?suse_version}
+# SUSE has no pyproject-rpm-macros; its pyproject macros are in
+# python-rpm-macros, and its Python dependency generators in
+# python-rpm-packaging:
+BuildRequires:	python-rpm-macros python-rpm-packaging
+%else
 BuildRequires:	pyproject-rpm-macros
+%endif
 
 %if 0%{?amzn} == 2023
 # The modules that only the Google Cloud storage backend needs are weak
@@ -40,7 +47,19 @@ BuildRequires:	pyproject-rpm-macros
 Recommends:	pgdg-python%{python3_pkgversion}-google-api-python-client >= 2.201.0
 Recommends:	python%{python3_pkgversion}-oauth2client
 Recommends:	python%{python3_pkgversion}-httplib2
-%else
+%endif
+%if 0%{?suse_version}
+# SUSE does not generate requirements from the Python metadata, so list
+# them. The modules of the storage backends are weak dependencies, as
+# rohmu only imports them when that backend is used (SUSE has no
+# azure-storage-blob, oauth2client and swiftclient packages, for instance):
+Requires:	python3-cryptography python3-pydantic python3-python-dateutil
+Requires:	python3-requests python3-typing_extensions python3-zstandard
+Recommends:	python3-azure-common python3-azure-storage-blob python3-botocore
+Recommends:	python3-google-api-python-client python3-httplib2 python3-oauth2client
+Recommends:	python3-paramiko python3-python-swiftclient python3-snappy
+%endif
+%if ! 0%{?amzn} && ! 0%{?suse_version}
 Requires:	python3-azure-storage-blob
 %endif
 BuildArch:	noarch
@@ -111,11 +130,7 @@ export PGDG_PACKAGE_VERSION=%{version}
 %{python3_sitelib}/%{sname}/
 
 %changelog
-* Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-3PGDG
-- Migrate %%python3_sitelib off the removed distutils.sysconfig module to
-  sysconfig.get_path() (distutils is gone on Python 3.12+, e.g. Fedora's
-  default python3.14)
-- Switch to pyproject builds.
+* Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-4PGDG
 - Build for Python 3.13 on Amazon Linux 2023 (python3.13-rohmu), whose
   default python3 has no hatchling. The Python 3.13 packages of the cloud
   storage SDKs are new in the PGDG repository there; google-api-python-client
@@ -126,6 +141,18 @@ export PGDG_PACKAGE_VERSION=%{version}
   hatchling either, and rohmu needs Python >= 3.8.
 - Require typing_extensions on all Python versions, rohmu imports it
   unconditionally.
+- BuildRequire python-rpm-macros and python-rpm-packaging on SUSE, which
+  has no pyproject-rpm-macros.
+- List the requirements on SUSE, which does not generate them from the
+  Python metadata: the core ones as Requires, the modules of the storage
+  backends as Recommends. Do not require azure-storage-blob there, SUSE
+  does not have it.
+
+* Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-3PGDG
+- Migrate %%python3_sitelib off the removed distutils.sysconfig module to
+  sysconfig.get_path() (distutils is gone on Python 3.12+, e.g. Fedora's
+  default python3.14)
+- Switch to pyproject builds.
 
 * Mon Aug 31 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-1PGDG
 - Update to 2.8.2 per changes described at:

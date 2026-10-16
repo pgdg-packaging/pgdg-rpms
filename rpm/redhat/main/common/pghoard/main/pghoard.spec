@@ -8,7 +8,7 @@
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
 Version:	2.8.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	Apache License 2.0
 Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		pghoard-pyproject.toml.patch
@@ -21,6 +21,12 @@ BuildRequires:	python%{python3_pkgversion}-pip
 %else
 Requires:	python3-snappy python3-cryptography
 Requires:	python3-rohmu
+%if 0%{?suse_version}
+# SUSE does not generate requirements from the Python metadata:
+Requires:	python3-packaging python3-psycopg2 python3-pydantic
+Requires:	python3-python-dateutil python3-requests python3-systemd
+Requires:	python3-zstandard
+%endif
 BuildRequires:	python3-devel python3-build python3-hatchling python3-pip
 %endif
 BuildRequires:	systemd-rpm-macros
@@ -83,8 +89,7 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %license LICENSE
 
 %changelog
-* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-2PGDG
-- Add missing BR
+* Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-3PGDG
 - Fix the generated dependencies, which could not be satisfied: require
   psycopg2 instead of psycopg2-binary, and systemd-python instead of
   python-systemd. Add the missing packaging dependency. Remove the
@@ -93,6 +98,11 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
   version line that was appended to pghoard/__init__.py instead shadowed
   that module, and pghoard failed to start.
 - Build for Python 3.13 on Amazon Linux 2023, like rohmu.
+- List the requirements on SUSE, which does not generate them from the
+  Python metadata.
+
+* Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-2PGDG
+- Add missing BR
 
 * Thu Jul 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-1PGDG
 - Update to 2.8.0 per changes described at:
