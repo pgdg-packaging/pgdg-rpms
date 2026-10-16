@@ -593,7 +593,7 @@ MAKELEVEL=0 %{__make} %{?_smp_mflags} world-bin
 	popd
 %endif
 
-%{__mkdir} -p %{buildroot}%{bbfpginstdir}/share/extension/
+%{__mkdir} -p %{buildroot}%{bbfpginstdir}/share/pgsql/extension/
 %{__make} -C contrib DESTDIR=%{buildroot} install
 %if %uuid
 %{__make} -C contrib/uuid-ossp DESTDIR=%{buildroot} install
@@ -605,8 +605,8 @@ case `uname -i` in
 	i386 | x86_64 | ppc | ppc64 | s390 | s390x)
 		%{__mv} %{buildroot}%{bbfpginstdir}/include/pg_config.h %{buildroot}%{bbfpginstdir}/include/pg_config_`uname -i`.h
 		%{__install} -m 644 %{SOURCE5} %{buildroot}%{bbfpginstdir}/include/pg_config.h
-		%{__mv} %{buildroot}%{bbfpginstdir}/include/server/pg_config.h %{buildroot}%{bbfpginstdir}/include/server/pg_config_`uname -i`.h
-		%{__install} -m 644 %{SOURCE5} %{buildroot}%{bbfpginstdir}/include/server/pg_config.h
+		%{__mv} %{buildroot}%{bbfpginstdir}/include/pgsql/server/pg_config.h %{buildroot}%{bbfpginstdir}/include/pgsql/server/pg_config_`uname -i`.h
+		%{__install} -m 644 %{SOURCE5} %{buildroot}%{bbfpginstdir}/include/pgsql/server/pg_config.h
 		%{__mv} %{buildroot}%{bbfpginstdir}/include/ecpg_config.h %{buildroot}%{bbfpginstdir}/include/ecpg_config_`uname -i`.h
 		%{__install} -m 644 %{SOURCE7} %{buildroot}%{bbfpginstdir}/include/ecpg_config.h
 		;;
@@ -648,6 +648,9 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 %{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
 %{__install} -m 0644 %{SOURCE19} %{buildroot}/%{_tmpfilesdir}/%{sname}-%{pgmajorversion}.conf
 
+# Home directory of the postgres user, which is shared with stock PostgreSQL.
+%{__install} -d -m 700 %{buildroot}/var/lib/pgsql
+
 # PGDATA needs removal of group and world permissions due to pg_pwd hole.
 %{__install} -d -m 700 %{buildroot}/var/lib/babelfish/%{pgmajorversion}/data
 
@@ -668,8 +671,7 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 	# pg_regress binary should be only in one subpackage,
 	# there will be a symlink from -test to -devel
 	%{__rm} -f %{buildroot}%{bbfpginstdir}/lib/test/regress/pg_regress
-	%{__mkdir} -p %{buildroot}%{bbfpginstdir}/lib/pgsql/test/regress/
-	%{__ln_s} -f ../../pgxs/src/test/regress/pg_regress %{buildroot}%{bbfpginstdir}/lib/test/regress/pg_regress
+	%{__ln_s} -f ../../pgsql/pgxs/src/test/regress/pg_regress %{buildroot}%{bbfpginstdir}/lib/test/regress/pg_regress
 	pushd %{buildroot}%{bbfpginstdir}/lib/test/regress
 	strip *.so
 	%{__rm} -f GNUmakefile Makefile *.o
@@ -683,9 +685,9 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 
 %if %plpython3
 # Quick hack:
-%{__rm} -f %{buildroot}/%{bbfpginstdir}/share/extension/*plpython2u*
-%{__rm} -f %{buildroot}/%{bbfpginstdir}/share/extension/*plpythonu-*
-%{__rm} -f %{buildroot}/%{bbfpginstdir}/share/extension/*_plpythonu.control
+%{__rm} -f %{buildroot}/%{bbfpginstdir}/share/pgsql/extension/*plpython2u*
+%{__rm} -f %{buildroot}/%{bbfpginstdir}/share/pgsql/extension/*plpythonu-*
+%{__rm} -f %{buildroot}/%{bbfpginstdir}/share/pgsql/extension/*_plpythonu.control
 %endif
 
 # Fix some more documentation
@@ -837,7 +839,7 @@ fi
 %if %llvm
 # Install bitcode directory along with the main package,
 # so that extensions can use this dir.
-%dir %{bbfpginstdir}/lib/bitcode
+%dir %{bbfpginstdir}/lib/pgsql/bitcode
 %endif
 %dir %{bbfpginstdir}/bin
 %dir %{bbfpginstdir}/share/man
@@ -865,7 +867,7 @@ fi
 %{bbfpginstdir}/bin/psql
 %{bbfpginstdir}/bin/reindexdb
 %{bbfpginstdir}/bin/vacuumdb
-%{bbfpginstdir}/share/errcodes.txt
+%{bbfpginstdir}/share/pgsql/errcodes.txt
 %{bbfpginstdir}/share/man/man1/clusterdb.*
 %{bbfpginstdir}/share/man/man1/createdb.*
 %{bbfpginstdir}/share/man/man1/createuser.*
@@ -891,134 +893,134 @@ fi
 
 %files contrib -f pg_contrib.lst
 %defattr(-,root,root)
-%dir %{bbfpginstdir}/doc
-%dir %{bbfpginstdir}/doc/extension
-%doc %{bbfpginstdir}/doc/extension/*.example
-%{bbfpginstdir}/lib/_int.so
-%{bbfpginstdir}/lib/amcheck.so
-%{bbfpginstdir}/lib/auth_delay.so
-%{bbfpginstdir}/lib/autoinc.so
-%{bbfpginstdir}/lib/auto_explain.so
-%{bbfpginstdir}/lib/basebackup_to_shell.so
-%{bbfpginstdir}/lib/basic_archive.so
-%{bbfpginstdir}/lib/bloom.so
-%{bbfpginstdir}/lib/btree_gin.so
-%{bbfpginstdir}/lib/btree_gist.so
-%{bbfpginstdir}/lib/citext.so
-%{bbfpginstdir}/lib/cube.so
-%{bbfpginstdir}/lib/dblink.so
-%{bbfpginstdir}/lib/earthdistance.so
-%{bbfpginstdir}/lib/file_fdw.so*
-%{bbfpginstdir}/lib/fuzzystrmatch.so
-%{bbfpginstdir}/lib/insert_username.so
-%{bbfpginstdir}/lib/isn.so
-%{bbfpginstdir}/lib/hstore.so
+%dir %{bbfpginstdir}/doc/pgsql
+%dir %{bbfpginstdir}/doc/pgsql/extension
+%doc %{bbfpginstdir}/doc/pgsql/extension/*.example
+%{bbfpginstdir}/lib/pgsql/_int.so
+%{bbfpginstdir}/lib/pgsql/amcheck.so
+%{bbfpginstdir}/lib/pgsql/auth_delay.so
+%{bbfpginstdir}/lib/pgsql/autoinc.so
+%{bbfpginstdir}/lib/pgsql/auto_explain.so
+%{bbfpginstdir}/lib/pgsql/basebackup_to_shell.so
+%{bbfpginstdir}/lib/pgsql/basic_archive.so
+%{bbfpginstdir}/lib/pgsql/bloom.so
+%{bbfpginstdir}/lib/pgsql/btree_gin.so
+%{bbfpginstdir}/lib/pgsql/btree_gist.so
+%{bbfpginstdir}/lib/pgsql/citext.so
+%{bbfpginstdir}/lib/pgsql/cube.so
+%{bbfpginstdir}/lib/pgsql/dblink.so
+%{bbfpginstdir}/lib/pgsql/earthdistance.so
+%{bbfpginstdir}/lib/pgsql/file_fdw.so*
+%{bbfpginstdir}/lib/pgsql/fuzzystrmatch.so
+%{bbfpginstdir}/lib/pgsql/insert_username.so
+%{bbfpginstdir}/lib/pgsql/isn.so
+%{bbfpginstdir}/lib/pgsql/hstore.so
 %if %plperl
-%{bbfpginstdir}/lib/hstore_plperl.so
-%{bbfpginstdir}/lib/jsonb_plperl.so
-%{bbfpginstdir}/share/extension/jsonb_plperl*.sql
-%{bbfpginstdir}/share/extension/jsonb_plperl*.control
+%{bbfpginstdir}/lib/pgsql/hstore_plperl.so
+%{bbfpginstdir}/lib/pgsql/jsonb_plperl.so
+%{bbfpginstdir}/share/pgsql/extension/jsonb_plperl*.sql
+%{bbfpginstdir}/share/pgsql/extension/jsonb_plperl*.control
 %endif
 %if %plpython3
-%{bbfpginstdir}/lib/hstore_plpython3.so
-%{bbfpginstdir}/lib/jsonb_plpython3.so
-%{bbfpginstdir}/lib/ltree_plpython3.so
+%{bbfpginstdir}/lib/pgsql/hstore_plpython3.so
+%{bbfpginstdir}/lib/pgsql/jsonb_plpython3.so
+%{bbfpginstdir}/lib/pgsql/ltree_plpython3.so
 %endif
-%{bbfpginstdir}/lib/lo.so
-%{bbfpginstdir}/lib/ltree.so
-%{bbfpginstdir}/lib/moddatetime.so
-%{bbfpginstdir}/lib/pageinspect.so
-%{bbfpginstdir}/lib/passwordcheck.so
+%{bbfpginstdir}/lib/pgsql/lo.so
+%{bbfpginstdir}/lib/pgsql/ltree.so
+%{bbfpginstdir}/lib/pgsql/moddatetime.so
+%{bbfpginstdir}/lib/pgsql/pageinspect.so
+%{bbfpginstdir}/lib/pgsql/passwordcheck.so
 %if %ssl
-%{bbfpginstdir}/lib/pgcrypto.so
+%{bbfpginstdir}/lib/pgsql/pgcrypto.so
 %endif
-%{bbfpginstdir}/lib/pgrowlocks.so
-%{bbfpginstdir}/lib/pgstattuple.so
-%{bbfpginstdir}/lib/pg_buffercache.so
-%{bbfpginstdir}/lib/pg_freespacemap.so
-%{bbfpginstdir}/lib/pg_logicalinspect.so
-%{bbfpginstdir}/lib/pg_overexplain.so
-%{bbfpginstdir}/lib/pg_prewarm.so
-%{bbfpginstdir}/lib/pg_stat_statements.so
-%{bbfpginstdir}/lib/pg_surgery.so
-%{bbfpginstdir}/lib/pg_trgm.so
-%{bbfpginstdir}/lib/pg_visibility.so
-%{bbfpginstdir}/lib/pg_walinspect.so
-%{bbfpginstdir}/lib/postgres_fdw.so
-%{bbfpginstdir}/lib/refint.so
-%{bbfpginstdir}/lib/seg.so
+%{bbfpginstdir}/lib/pgsql/pgrowlocks.so
+%{bbfpginstdir}/lib/pgsql/pgstattuple.so
+%{bbfpginstdir}/lib/pgsql/pg_buffercache.so
+%{bbfpginstdir}/lib/pgsql/pg_freespacemap.so
+%{bbfpginstdir}/lib/pgsql/pg_logicalinspect.so
+%{bbfpginstdir}/lib/pgsql/pg_overexplain.so
+%{bbfpginstdir}/lib/pgsql/pg_prewarm.so
+%{bbfpginstdir}/lib/pgsql/pg_stat_statements.so
+%{bbfpginstdir}/lib/pgsql/pg_surgery.so
+%{bbfpginstdir}/lib/pgsql/pg_trgm.so
+%{bbfpginstdir}/lib/pgsql/pg_visibility.so
+%{bbfpginstdir}/lib/pgsql/pg_walinspect.so
+%{bbfpginstdir}/lib/pgsql/postgres_fdw.so
+%{bbfpginstdir}/lib/pgsql/refint.so
+%{bbfpginstdir}/lib/pgsql/seg.so
 %if %ssl
-%{bbfpginstdir}/lib/sslinfo.so
+%{bbfpginstdir}/lib/pgsql/sslinfo.so
 %endif
-%{bbfpginstdir}/lib/tablefunc.so
-%{bbfpginstdir}/lib/tcn.so
-%{bbfpginstdir}/lib/test_decoding.so
-%{bbfpginstdir}/lib/tsm_system_rows.so
-%{bbfpginstdir}/lib/tsm_system_time.so
-%{bbfpginstdir}/lib/unaccent.so
+%{bbfpginstdir}/lib/pgsql/tablefunc.so
+%{bbfpginstdir}/lib/pgsql/tcn.so
+%{bbfpginstdir}/lib/pgsql/test_decoding.so
+%{bbfpginstdir}/lib/pgsql/tsm_system_rows.so
+%{bbfpginstdir}/lib/pgsql/tsm_system_time.so
+%{bbfpginstdir}/lib/pgsql/unaccent.so
 %if %xml
-%{bbfpginstdir}/lib/pgxml.so
+%{bbfpginstdir}/lib/pgsql/pgxml.so
 %endif
 %if %uuid
-%{bbfpginstdir}/lib/uuid-ossp.so
+%{bbfpginstdir}/lib/pgsql/uuid-ossp.so
 %endif
-%{bbfpginstdir}/share/extension/amcheck*
-%{bbfpginstdir}/share/extension/autoinc*
-%{bbfpginstdir}/share/extension/bloom*
-%{bbfpginstdir}/share/extension/btree_gin*
-%{bbfpginstdir}/share/extension/btree_gist*
-%{bbfpginstdir}/share/extension/citext*
-%{bbfpginstdir}/share/extension/cube*
-%{bbfpginstdir}/share/extension/dblink*
-%{bbfpginstdir}/share/extension/dict_int*
-%{bbfpginstdir}/share/extension/dict_xsyn*
-%{bbfpginstdir}/share/extension/earthdistance*
-%{bbfpginstdir}/share/extension/file_fdw*
-%{bbfpginstdir}/share/extension/fuzzystrmatch*
-%{bbfpginstdir}/share/extension/hstore.control
-%{bbfpginstdir}/share/extension/hstore--*.sql
+%{bbfpginstdir}/share/pgsql/extension/amcheck*
+%{bbfpginstdir}/share/pgsql/extension/autoinc*
+%{bbfpginstdir}/share/pgsql/extension/bloom*
+%{bbfpginstdir}/share/pgsql/extension/btree_gin*
+%{bbfpginstdir}/share/pgsql/extension/btree_gist*
+%{bbfpginstdir}/share/pgsql/extension/citext*
+%{bbfpginstdir}/share/pgsql/extension/cube*
+%{bbfpginstdir}/share/pgsql/extension/dblink*
+%{bbfpginstdir}/share/pgsql/extension/dict_int*
+%{bbfpginstdir}/share/pgsql/extension/dict_xsyn*
+%{bbfpginstdir}/share/pgsql/extension/earthdistance*
+%{bbfpginstdir}/share/pgsql/extension/file_fdw*
+%{bbfpginstdir}/share/pgsql/extension/fuzzystrmatch*
+%{bbfpginstdir}/share/pgsql/extension/hstore.control
+%{bbfpginstdir}/share/pgsql/extension/hstore--*.sql
 %if %plperl
-%{bbfpginstdir}/share/extension/hstore_plperl*
+%{bbfpginstdir}/share/pgsql/extension/hstore_plperl*
 %endif
-%{bbfpginstdir}/share/extension/insert_username*
-%{bbfpginstdir}/share/extension/intagg*
-%{bbfpginstdir}/share/extension/intarray*
-%{bbfpginstdir}/share/extension/isn*
-%{bbfpginstdir}/share/extension/lo*
-%{bbfpginstdir}/share/extension/ltree.control
-%{bbfpginstdir}/share/extension/ltree--*.sql
-%{bbfpginstdir}/share/extension/moddatetime*
-%{bbfpginstdir}/share/extension/pageinspect*
-%{bbfpginstdir}/share/extension/pg_buffercache*
-%{bbfpginstdir}/share/extension/pg_freespacemap*
-%{bbfpginstdir}/share/extension/pg_logicalinspect*
-%{bbfpginstdir}/share/extension/pg_prewarm*
-%{bbfpginstdir}/share/extension/pg_stat_statements*
-%{bbfpginstdir}/share/extension/pg_surgery*
-%{bbfpginstdir}/share/extension/pg_trgm*
-%{bbfpginstdir}/share/extension/pg_visibility*
-%{bbfpginstdir}/share/extension/pg_walinspect*
+%{bbfpginstdir}/share/pgsql/extension/insert_username*
+%{bbfpginstdir}/share/pgsql/extension/intagg*
+%{bbfpginstdir}/share/pgsql/extension/intarray*
+%{bbfpginstdir}/share/pgsql/extension/isn*
+%{bbfpginstdir}/share/pgsql/extension/lo*
+%{bbfpginstdir}/share/pgsql/extension/ltree.control
+%{bbfpginstdir}/share/pgsql/extension/ltree--*.sql
+%{bbfpginstdir}/share/pgsql/extension/moddatetime*
+%{bbfpginstdir}/share/pgsql/extension/pageinspect*
+%{bbfpginstdir}/share/pgsql/extension/pg_buffercache*
+%{bbfpginstdir}/share/pgsql/extension/pg_freespacemap*
+%{bbfpginstdir}/share/pgsql/extension/pg_logicalinspect*
+%{bbfpginstdir}/share/pgsql/extension/pg_prewarm*
+%{bbfpginstdir}/share/pgsql/extension/pg_stat_statements*
+%{bbfpginstdir}/share/pgsql/extension/pg_surgery*
+%{bbfpginstdir}/share/pgsql/extension/pg_trgm*
+%{bbfpginstdir}/share/pgsql/extension/pg_visibility*
+%{bbfpginstdir}/share/pgsql/extension/pg_walinspect*
 %if %ssl
-%{bbfpginstdir}/share/extension/pgcrypto*
+%{bbfpginstdir}/share/pgsql/extension/pgcrypto*
 %endif
-%{bbfpginstdir}/share/extension/pgrowlocks*
-%{bbfpginstdir}/share/extension/pgstattuple*
-%{bbfpginstdir}/share/extension/postgres_fdw*
-%{bbfpginstdir}/share/extension/refint*
-%{bbfpginstdir}/share/extension/seg*
+%{bbfpginstdir}/share/pgsql/extension/pgrowlocks*
+%{bbfpginstdir}/share/pgsql/extension/pgstattuple*
+%{bbfpginstdir}/share/pgsql/extension/postgres_fdw*
+%{bbfpginstdir}/share/pgsql/extension/refint*
+%{bbfpginstdir}/share/pgsql/extension/seg*
 %if %ssl
-%{bbfpginstdir}/share/extension/sslinfo*
+%{bbfpginstdir}/share/pgsql/extension/sslinfo*
 %endif
-%{bbfpginstdir}/share/extension/tablefunc*
-%{bbfpginstdir}/share/extension/tcn*
-%{bbfpginstdir}/share/extension/tsm_system_rows*
-%{bbfpginstdir}/share/extension/tsm_system_time*
-%{bbfpginstdir}/share/extension/unaccent*
+%{bbfpginstdir}/share/pgsql/extension/tablefunc*
+%{bbfpginstdir}/share/pgsql/extension/tcn*
+%{bbfpginstdir}/share/pgsql/extension/tsm_system_rows*
+%{bbfpginstdir}/share/pgsql/extension/tsm_system_time*
+%{bbfpginstdir}/share/pgsql/extension/unaccent*
 %if %uuid
-%{bbfpginstdir}/share/extension/uuid-ossp*
+%{bbfpginstdir}/share/pgsql/extension/uuid-ossp*
 %endif
 %if %xml
-%{bbfpginstdir}/share/extension/xml2*
+%{bbfpginstdir}/share/pgsql/extension/xml2*
 %endif
 %{bbfpginstdir}/bin/oid2name
 %{bbfpginstdir}/bin/pg_amcheck
@@ -1035,9 +1037,9 @@ fi
 %{bbfpginstdir}/include/libpq*.h
 %{bbfpginstdir}/include/pg_config*.h
 %{bbfpginstdir}/include/postgres_ext.h
-%{bbfpginstdir}/include/internal
+%{bbfpginstdir}/include/pgsql/internal
 %{bbfpginstdir}/include/libpq
-%{bbfpginstdir}/include/server
+%{bbfpginstdir}/include/pgsql/server
 
 %{bbfpginstdir}/lib/libpq.so
 %{bbfpginstdir}/lib/libpq.a
@@ -1046,7 +1048,7 @@ fi
 %{bbfpginstdir}/lib/libpgcommon_shlib.a
 %{bbfpginstdir}/lib/libpgport.a
 %{bbfpginstdir}/lib/libpgport_shlib.a
-%{bbfpginstdir}/lib/pgxs
+%{bbfpginstdir}/lib/pgsql/pgxs
 %dir %{bbfpginstdir}/lib/pkgconfig
 %{bbfpginstdir}/lib/pkgconfig/libpq.pc
 
@@ -1077,7 +1079,7 @@ fi
 %dir %{bbfpginstdir}/bin
 %{bbfpginstdir}/bin/ecpg
 %dir %{bbfpginstdir}/include
-%{bbfpginstdir}/include/informix
+%{bbfpginstdir}/include/pgsql/informix
 %{bbfpginstdir}/include/pgtypes*h
 %{bbfpginstdir}/include/ecpg*.h
 %{bbfpginstdir}/include/sql3types.h
@@ -1093,7 +1095,7 @@ fi
 %dir %{bbfpginstdir}/lib
 %dir %{bbfpginstdir}/share
 %{bbfpginstdir}/lib/libpq.so.*
-%{bbfpginstdir}/lib/libpqwalreceiver.so
+%{bbfpginstdir}/lib/pgsql/libpqwalreceiver.so
 
 %files libs-oauth
 %defattr(-,root,root)
@@ -1102,33 +1104,33 @@ fi
 %if %llvm
 %files llvmjit
 %defattr(-,root,root)
-%{bbfpginstdir}/lib/bitcode/*
-%{bbfpginstdir}/lib/llvmjit.so
-%{bbfpginstdir}/lib/llvmjit_types.bc
+%{bbfpginstdir}/lib/pgsql/bitcode/*
+%{bbfpginstdir}/lib/pgsql/llvmjit.so
+%{bbfpginstdir}/lib/pgsql/llvmjit_types.bc
 %endif
 
 %if %plperl
 %files plperl -f pg_plperl.lst
 %defattr(-,root,root)
-%{bbfpginstdir}/lib/bool_plperl.so
-%{bbfpginstdir}/lib/plperl.so
-%{bbfpginstdir}/share/extension/plperl*
-%{bbfpginstdir}/share/extension/bool_plperl*
+%{bbfpginstdir}/lib/pgsql/bool_plperl.so
+%{bbfpginstdir}/lib/pgsql/plperl.so
+%{bbfpginstdir}/share/pgsql/extension/plperl*
+%{bbfpginstdir}/share/pgsql/extension/bool_plperl*
 %endif
 
 %if %pltcl
 %files pltcl -f pg_pltcl.lst
 %defattr(-,root,root)
-%{bbfpginstdir}/lib/pltcl.so
-%{bbfpginstdir}/share/extension/pltcl*
+%{bbfpginstdir}/lib/pgsql/pltcl.so
+%{bbfpginstdir}/share/pgsql/extension/pltcl*
 %endif
 
 %if %plpython3
 %files plpython3 -f pg_plpython3.lst
 %defattr(-,root,root)
-%{bbfpginstdir}/share/extension/plpython3*
-%{bbfpginstdir}/lib/plpython3.so
-%{bbfpginstdir}/share/extension/*_plpython3u*
+%{bbfpginstdir}/share/pgsql/extension/plpython3*
+%{bbfpginstdir}/lib/pgsql/plpython3.so
+%{bbfpginstdir}/share/pgsql/extension/*_plpython3u*
 %endif
 
 %files server -f pg_server.lst
@@ -1166,27 +1168,27 @@ fi
 %{bbfpginstdir}/share/man/man1/pg_upgrade.1
 %{bbfpginstdir}/share/man/man1/pg_verifybackup.*
 %{bbfpginstdir}/share/man/man1/postgres.*
-%{bbfpginstdir}/share/postgres.bki
-%{bbfpginstdir}/share/system_constraints.sql
-%{bbfpginstdir}/share/system_functions.sql
-%{bbfpginstdir}/share/system_views.sql
-%{bbfpginstdir}/share/*.sample
-%{bbfpginstdir}/share/timezonesets
-%dir %{bbfpginstdir}/share/tsearch_data
-%{bbfpginstdir}/share/tsearch_data/*.affix
-%{bbfpginstdir}/share/tsearch_data/*.dict
-%{bbfpginstdir}/share/tsearch_data/*.ths
-%{bbfpginstdir}/share/tsearch_data/*.rules
-%{bbfpginstdir}/share/tsearch_data/*.stop
-%{bbfpginstdir}/share/tsearch_data/*.syn
-%{bbfpginstdir}/lib/dict_int.so
-%{bbfpginstdir}/lib/dict_snowball.so
-%{bbfpginstdir}/lib/dict_xsyn.so
-%{bbfpginstdir}/lib/euc2004_sjis2004.so
-%{bbfpginstdir}/lib/pgoutput.so
-%{bbfpginstdir}/lib/plpgsql.so
-%dir %{bbfpginstdir}/share/extension
-%{bbfpginstdir}/share/extension/plpgsql*
+%{bbfpginstdir}/share/pgsql/postgres.bki
+%{bbfpginstdir}/share/pgsql/system_constraints.sql
+%{bbfpginstdir}/share/pgsql/system_functions.sql
+%{bbfpginstdir}/share/pgsql/system_views.sql
+%{bbfpginstdir}/share/pgsql/*.sample
+%{bbfpginstdir}/share/pgsql/timezonesets
+%dir %{bbfpginstdir}/share/pgsql/tsearch_data
+%{bbfpginstdir}/share/pgsql/tsearch_data/*.affix
+%{bbfpginstdir}/share/pgsql/tsearch_data/*.dict
+%{bbfpginstdir}/share/pgsql/tsearch_data/*.ths
+%{bbfpginstdir}/share/pgsql/tsearch_data/*.rules
+%{bbfpginstdir}/share/pgsql/tsearch_data/*.stop
+%{bbfpginstdir}/share/pgsql/tsearch_data/*.syn
+%{bbfpginstdir}/lib/pgsql/dict_int.so
+%{bbfpginstdir}/lib/pgsql/dict_snowball.so
+%{bbfpginstdir}/lib/pgsql/dict_xsyn.so
+%{bbfpginstdir}/lib/pgsql/euc2004_sjis2004.so
+%{bbfpginstdir}/lib/pgsql/pgoutput.so
+%{bbfpginstdir}/lib/pgsql/plpgsql.so
+%dir %{bbfpginstdir}/share/pgsql/extension
+%{bbfpginstdir}/share/pgsql/extension/plpgsql*
 
 %attr(700,postgres,postgres) %dir /var/lib/pgsql
 %attr(700,postgres,postgres) %dir /var/lib/babelfish
@@ -1195,10 +1197,10 @@ fi
 %attr(700,postgres,postgres) %dir /var/lib/babelfish/%{pgmajorversion}/backups
 %attr(755,postgres,postgres) %dir %{_rundir}/postgresql
 
-%{bbfpginstdir}/lib/*_and_*.so
-%{bbfpginstdir}/share/information_schema.sql
-%{bbfpginstdir}/share/snowball_create.sql
-%{bbfpginstdir}/share/sql_features.txt
+%{bbfpginstdir}/lib/pgsql/*_and_*.so
+%{bbfpginstdir}/share/pgsql/information_schema.sql
+%{bbfpginstdir}/share/pgsql/snowball_create.sql
+%{bbfpginstdir}/share/pgsql/sql_features.txt
 
 %files static
 %{bbfpginstdir}/lib/libpgfeutils.a
@@ -1216,6 +1218,10 @@ fi
   /var/lib/babelfish/18/data (also the backups, initdb and pg_upgrade log
   directories and the setup script defaults). The postgres user's home
   directory stays /var/lib/pgsql.
+- The prefix no longer contains "pgsql", so PostgreSQL installs the
+  loadable modules and pgxs under lib/pgsql, the server and internal headers
+  under include/pgsql, and the extension and other data files under
+  share/pgsql. Adjust %%install and %%files accordingly.
 
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 18.7-7PGDG
 - Install under /usr/babelfish-18 instead of /usr/pgsql-18-babelfish.

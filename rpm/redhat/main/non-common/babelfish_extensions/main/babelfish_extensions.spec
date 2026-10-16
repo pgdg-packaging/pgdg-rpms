@@ -11,6 +11,9 @@
 %global bbfpginstdir	/usr/babelfish-%{pgmajorversion}
 %global pginstdir	%{bbfpginstdir}
 
+# No LLVM bitcode, and no -Werror=stringop-overflow (see the changelog)
+%global bbfmake	%{__make} with_llvm=no COPT=-Wno-error=stringop-overflow
+
 # Babelfish extensions are tied to one PostgreSQL major version.
 %if 0%{?pgmajorversion} != 18
 %{error:%{sname} is only packaged for PostgreSQL 18 for now}
@@ -34,6 +37,8 @@ Patch0:		%{sname}-%{version}-newer-toolchain.patch
 BuildRequires:	babelfish_postgresql%{pgmajorversion}-devel
 BuildRequires:	gcc gcc-c++ make cmake bison flex perl
 BuildRequires:	libicu-devel libxml2-devel openssl-devel
+# The server headers of the engine, built with GSSAPI, include gssapi/gssapi.h
+BuildRequires:	krb5-devel
 BuildRequires:	antlr4-cpp-runtime-devel >= 4.13.2
 Requires:	babelfish_postgresql%{pgmajorversion}-server
 # uuid-ossp is a run-time dependency of Babelfish
@@ -50,8 +55,11 @@ BuildRequires:	java-17-openjdk-headless
 %if 0%{?rhel} == 10
 BuildRequires:	java-21-openjdk-headless
 %endif
-%if 0%{?fedora}
+%if 0%{?fedora} && !0%{?amzn}
 BuildRequires:	java-latest-openjdk-headless
+%endif
+%if 0%{?amzn}
+BuildRequires:	java-17-amazon-corretto-headless
 %endif
 
 %description
@@ -85,12 +93,20 @@ export PATH=%{pginstdir}/bin:$PATH
 # prerequisite of the final link (antlr/libantlr_tsql.a), not of the objects
 # that include them, so with -j the tsql objects compile before they exist.
 # Generate them first.
-%{__make} -C contrib/babelfishpg_tsql antlr/libantlr_tsql.a
+%{bbfmake} -C contrib/babelfishpg_tsql antlr/libantlr_tsql.a
+
+# Likewise the bison/flex generated headers (gram-backend.h, pl_gram.h and the
+# keyword lists) are not prerequisites of the objects that include them, so
+# generate them before the parallel build.
+%{bbfmake} -C contrib/babelfishpg_tsql \
+	src/backend_parser/gram-backend.h src/backend_parser/scan-backend.c \
+	src/backend_parser/kwlist_d.h src/pl_gram.h src/plerrcodes.h \
+	src/pl_reserved_kwlist_d.h src/pl_unreserved_kwlist_d.h
 
 # Same order as upstream's build instructions.
 for ext in babelfishpg_money babelfishpg_common babelfishpg_tsql babelfishpg_tds
 do
-	%{__make} -C contrib/$ext %{?_smp_mflags}
+	%{bbfmake} -C contrib/$ext %{?_smp_mflags}
 done
 
 %install
@@ -102,22 +118,35 @@ export PATH=%{pginstdir}/bin:$PATH
 
 for ext in babelfishpg_money babelfishpg_common babelfishpg_tsql babelfishpg_tds
 do
-	%{__make} -C contrib/$ext DESTDIR=%{buildroot} install
+	%{bbfmake} -C contrib/$ext DESTDIR=%{buildroot} install
 done
 
 %files
 %defattr(-,root,root,-)
 %license LICENSE.PostgreSQL LICENSE.Apache2 NOTICE
 %doc README.md
-%{pginstdir}/lib/babelfishpg_*.so
-%{pginstdir}/share/extension/babelfishpg_*.control
-%{pginstdir}/share/extension/babelfishpg_*.sql
-%{pginstdir}/share/extension/fixeddecimal*.sql
+%{pginstdir}/lib/pgsql/babelfishpg_*.so
+%{pginstdir}/share/pgsql/extension/babelfishpg_*.control
+%{pginstdir}/share/pgsql/extension/babelfishpg_*.sql
+%{pginstdir}/share/pgsql/extension/fixeddecimal*.sql
 
 %changelog
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 6.3.0-6PGDG
 - Build against the Babelfish engine in /usr/babelfish-18 (was
   /usr/pgsql-18-babelfish).
+- Package the modules from lib/pgsql and the extension files from
+  share/pgsql/extension, as the engine installs them there.
+- Use Amazon Corretto 17 for the ANTLR tool on Amazon Linux 2023.
+- Add krb5-devel to BuildRequires: the engine server headers include
+  gssapi/gssapi.h.
+- Generate the bison/flex headers before the parallel build, to fix a race
+  that failed the tsql build with a missing gram-backend.h.
+- Build without the LLVM bitcode (with_llvm=no): the bitcode rules compile
+  the C++ sources without PG_CXXFLAGS (no -std=c++17, no ANTLR include path)
+  and llvm-lto rejects the result on Fedora. Only JIT inlining of the
+  extensions is lost.
+- Do not fail the build on gcc's stringop-overflow warning in the TDS fault
+  injection test code under LTO (-Werror upstream).
 
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 6.3.0-5PGDG
 - Require the -server and -contrib subpackages of the Babelfish engine, which
