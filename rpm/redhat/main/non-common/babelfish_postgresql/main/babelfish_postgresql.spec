@@ -190,8 +190,10 @@ BuildRequires:	tcl-devel
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
-Requires:	openssl-libs >= 1.1.1k
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+Requires:	openssl-libs >= 3.2.2
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 BuildRequires:	openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
@@ -293,11 +295,14 @@ version of the documentation.
 %package ecpg-libs
 Summary:	Run-time libraries for ECPG programs
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
-Requires:	openssl-libs >= 1.1.1k
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+Requires:	openssl-libs >= 3.2.2
 %endif
 
 %description ecpg-libs
@@ -316,11 +321,14 @@ the preprocessor program ecpg.
 %package libs
 Summary:	The shared libraries required for any PostgreSQL clients (Babelfish)
 
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 Requires:	libopenssl3
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8 || 0%{?amzn}
-Requires:	openssl-libs >= 1.1.1k
+%if 0%{?suse_version} == 1600
+Requires:	libopenssl3
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+Requires:	openssl-libs >= 3.2.2
 %endif
 
 %description libs
@@ -1222,6 +1230,9 @@ fi
   loadable modules and pgxs under lib/pgsql, the server and internal headers
   under include/pgsql, and the extension and other data files under
   share/pgsql. Adjust %%install and %%files accordingly.
+- Build against openssl-devel only on Fedora 43 and later, RHEL 9 and later and
+  Amazon Linux 2023.
+- Require openssl-libs >= 3.2.2 on the same distributions.
 
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 18.7-7PGDG
 - Install under /usr/babelfish-18 instead of /usr/pgsql-18-babelfish.
