@@ -16,7 +16,7 @@ Name:		python%{python3_pkgversion}-%{sname}
 Name:		python3-%{sname}
 %endif
 Version:	2.8.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Epoch:		1
 Summary:	Python library for building backup tools for databases
 
@@ -50,17 +50,31 @@ Recommends:	python%{python3_pkgversion}-httplib2
 %endif
 %if 0%{?suse_version}
 # SUSE does not generate requirements from the Python metadata, so list
-# them. The modules of the storage backends are weak dependencies, as
-# rohmu only imports them when that backend is used (SUSE has no
-# azure-storage-blob, oauth2client and swiftclient packages, for instance):
-Requires:	python3-cryptography python3-pydantic python3-python-dateutil
-Requires:	python3-requests python3-typing_extensions python3-zstandard
-Recommends:	python3-azure-common python3-azure-storage-blob python3-botocore
-Recommends:	python3-google-api-python-client python3-httplib2 python3-oauth2client
-Recommends:	python3-paramiko python3-python-swiftclient python3-snappy
+# them. Use the pythonX.Ydist() names, which both SUSE's and our packages of
+# the same module provide (e.g. our python313-systemd, which patroni needs,
+# does not provide SUSE's python3-<module> names):
+Requires:	python%{python3_version}dist(cryptography)
+Requires:	python%{python3_version}dist(pydantic)
+Requires:	python%{python3_version}dist(python-dateutil)
+Requires:	python%{python3_version}dist(requests)
+Requires:	python%{python3_version}dist(typing-extensions)
+Requires:	python%{python3_version}dist(zstandard)
 %endif
-%if ! 0%{?amzn} && ! 0%{?suse_version}
-Requires:	python3-azure-storage-blob
+%if ! 0%{?amzn}
+# The modules of the storage backends are weak dependencies (see %%prep):
+# rohmu only imports them when that backend is used, and the distributions
+# do not have all of them (e.g. EPEL 9 has no azure-storage-blob,
+# google-api-python-client and swiftclient, SUSE no azure-storage-blob,
+# oauth2client and swiftclient).
+Recommends:	python%{python3_version}dist(azure-common)
+Recommends:	python%{python3_version}dist(azure-storage-blob)
+Recommends:	python%{python3_version}dist(botocore)
+Recommends:	python%{python3_version}dist(google-api-python-client)
+Recommends:	python%{python3_version}dist(httplib2)
+Recommends:	python%{python3_version}dist(oauth2client)
+Recommends:	python%{python3_version}dist(paramiko)
+Recommends:	python%{python3_version}dist(python-snappy)
+Recommends:	python%{python3_version}dist(python-swiftclient)
 %endif
 BuildArch:	noarch
 
@@ -81,6 +95,27 @@ sed -i 's/^source = "vcs"$/source = "env"\nvariable = "PGDG_PACKAGE_VERSION"/' p
 # rohmu imports typing_extensions on every Python version, but only requires
 # it before Python 3.12:
 sed -i "s/^\( *\)\"typing_extensions; python_version<'3.12'\",/\1\"typing_extensions\",/" pyproject.toml
+# The pydantic.v1 of pydantic < 2.13 cannot infer the types of fields with
+# defaults on Python 3.14, where annotations are evaluated lazily (e.g.
+# Fedora 43 and 44, with pydantic 2.12). The other modules that define
+# models already use postponed (string) annotations; do it in this one, too:
+sed -i '1a from __future__ import annotations' rohmu/common/models.py
+grep -q '^from __future__ import annotations' rohmu/common/models.py
+%if ! 0%{?amzn} && ! 0%{?suse_version}
+# Make the modules of the storage backends weak dependencies (Recommends
+# above) instead of generated requirements:
+sed -i -E '/^ *"(azure-common|azure-storage-blob|botocore|google-api-python-client|httplib2|oauth2client|paramiko|python-snappy|python-swiftclient)[ ",]/d' pyproject.toml
+%endif
+%if 0%{?rhel} == 9
+# EPEL 9 has pydantic 1.10.14, which is the v1 API itself: the pydantic.v1
+# namespace rohmu imports was added in 1.10.17. Import pydantic there, and
+# require a 1.x version:
+sed -i 's/^\( *\)"pydantic >= 1.10.17",/\1"pydantic >= 1.10.14, < 2",/' pyproject.toml
+grep -q '"pydantic >= 1.10.14, < 2"' pyproject.toml
+sed -i -e 's/^import pydantic\.v1 as pyd$/import pydantic as pyd/' -e 's/^from pydantic\.v1 import /from pydantic import /' \
+	rohmu/common/models.py rohmu/common/statsd.py rohmu/delta/common.py rohmu/object_storage/config.py
+! grep -rq 'pydantic\.v1' rohmu
+%endif
 %if 0%{?amzn} == 2023
 # google-api-python-client needs a newer google-api-core than the
 # distribution has. On Amazon Linux 2023 both are in the private PGDG Python
@@ -130,6 +165,20 @@ export PGDG_PACKAGE_VERSION=%{version}
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-5PGDG
+- Make the modules of the storage backends weak dependencies on all
+  distributions but Amazon Linux 2023: they do not all exist there (EPEL
+  has no azure-storage-blob, google-api-python-client and swiftclient for
+  RHEL 9, for instance), and rohmu only imports them when that backend is
+  used. Do not require azure-storage-blob any more.
+- On SUSE, require the pythonX.Ydist() names, which both SUSE's and our
+  packages provide.
+- Use the pydantic 1.10.14 of EPEL 9 on RHEL 9: it has no pydantic.v1
+  namespace, but is the v1 API itself.
+- Use postponed annotations in rohmu/common/models.py, like in rohmu's
+  other modules with pydantic models: rohmu failed to start on Python 3.14
+  with pydantic < 2.13 (Fedora 43 and 44).
+
 * Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-4PGDG
 - Build for Python 3.13 on Amazon Linux 2023 (python3.13-rohmu), whose
   default python3 has no hatchling. The Python 3.13 packages of the cloud

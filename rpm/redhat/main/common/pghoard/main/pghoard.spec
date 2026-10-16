@@ -8,7 +8,7 @@
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
 Version:	2.8.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	Apache License 2.0
 Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		pghoard-pyproject.toml.patch
@@ -22,10 +22,17 @@ BuildRequires:	python%{python3_pkgversion}-pip
 Requires:	python3-snappy python3-cryptography
 Requires:	python3-rohmu
 %if 0%{?suse_version}
-# SUSE does not generate requirements from the Python metadata:
-Requires:	python3-packaging python3-psycopg2 python3-pydantic
-Requires:	python3-python-dateutil python3-requests python3-systemd
-Requires:	python3-zstandard
+# SUSE does not generate requirements from the Python metadata. Use the
+# pythonX.Ydist() names, which both SUSE's and our packages of the same
+# module provide (our python313-systemd, which patroni needs, does not
+# provide python3-systemd):
+Requires:	python%{python3_version}dist(packaging)
+Requires:	python%{python3_version}dist(psycopg2)
+Requires:	python%{python3_version}dist(pydantic)
+Requires:	python%{python3_version}dist(python-dateutil)
+Requires:	python%{python3_version}dist(requests)
+Requires:	python%{python3_version}dist(systemd-python)
+Requires:	python%{python3_version}dist(zstandard)
 %endif
 BuildRequires:	python3-devel python3-build python3-hatchling python3-pip
 %endif
@@ -67,6 +74,11 @@ sed -i -e 's|^path = "pghoard/__init__.py"$|path = "pghoard/version.py"|' -e '/^
 # psycopg2 instead of psycopg2-binary, and systemd-python (python-systemd on
 # PyPI is a different project).
 sed -i -e 's/"psycopg2-binary /"psycopg2 /' -e 's/^\( *\)"python-systemd",/\1"systemd-python",/' pyproject.toml
+# pghoard requires Python >= 3.8, but pghoard/object_store.py has "X | Y"
+# return annotations, which Python < 3.10 cannot evaluate (RHEL 9). Postpone
+# their evaluation, like the other modules that use them do:
+sed -i '0,/^import /s/^import /from __future__ import annotations\nimport /' pghoard/object_store.py
+grep -q '^from __future__ import annotations' pghoard/object_store.py
 # pghoard imports packaging, but does not list it:
 sed -i 's/^\( *\)"pydantic",/\1"packaging",\n\1"pydantic",/' pyproject.toml
 
@@ -89,6 +101,13 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %license LICENSE
 
 %changelog
+* Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-4PGDG
+- Postpone the evaluation of the annotations of pghoard/object_store.py:
+  pghoard failed to start on Python 3.9 (RHEL 9).
+- On SUSE, require the pythonX.Ydist() names, which both SUSE's and our
+  packages provide: our python313-systemd, which patroni needs, does not
+  provide python3-systemd.
+
 * Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-3PGDG
 - Fix the generated dependencies, which could not be satisfied: require
   psycopg2 instead of psycopg2-binary, and systemd-python instead of
