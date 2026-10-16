@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	1.39.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Easy, practical library for making terminal apps, by providing an elegant, well- documented interface to Colors, Keyboard input, and screen Positioning capabilities
 
 License:	MIT
@@ -59,6 +59,14 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 %autosetup -n %{sname}-%{version}
 # Remove bundled egg-info
 %{__rm} -rf %{sname}.egg-info
+# Upstream needs flit-core 3.11 or newer for the SPDX license expression
+# and license-files, which are not available on all platforms (e.g. RHEL 10).
+# Use the license table, which older flit-core versions understand:
+%{__sed} -i -e "s|^license = 'MIT'$|license = { text = 'MIT' }|" \
+	-e '/^license-files = /d' \
+	-e "s|'flit_core >=3.11,<4'|'flit_core >=3.4,<4'|" pyproject.toml
+grep -q "^license = { text = 'MIT' }$" pyproject.toml
+if grep -q '^license-files' pyproject.toml; then exit 1; fi
 
 %build
 %pyproject_wheel
@@ -73,6 +81,11 @@ Terminal term Terminal() print(term.home + term.clear + term.move_y(term.height
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-3PGDG
+- Fix build on RHEL 10: use the license table form in pyproject.toml and
+  remove license-files, as flit-core < 3.11 does not support the SPDX
+  license expression. Also relax the flit_core >= 3.11 build requirement.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
