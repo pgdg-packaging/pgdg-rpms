@@ -22,7 +22,7 @@
 Summary:	SQL Server compatibility extensions for PostgreSQL (Babelfish)
 Name:		%{sname}_%{pgmajorversion}
 Version:	6.3.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 # Dual licensed: either license may be used.
 License:	Apache-2.0 OR PostgreSQL
 Source0:	https://github.com/babelfish-for-postgresql/%{sname}/archive/%{bbfcommit}.tar.gz#/%{sname}-%{bbfcommit}.tar.gz
@@ -36,7 +36,19 @@ Patch0:		%{sname}-%{version}-newer-toolchain.patch
 # (postgresql_modified_for_babelfish), packaged as babelfish_postgresqlNN.
 BuildRequires:	babelfish_postgresql%{pgmajorversion}-devel
 BuildRequires:	gcc gcc-c++ make cmake bison flex perl
-BuildRequires:	libicu-devel libxml2-devel openssl-devel
+BuildRequires:	libicu-devel libxml2-devel
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+Requires:	openssl-libs >= 3.2.2
+BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
+BuildRequires:	openssl-devel-engine
+%endif
+
 # The server headers of the engine, built with GSSAPI, include gssapi/gssapi.h
 BuildRequires:	krb5-devel
 BuildRequires:	antlr4-cpp-runtime-devel >= 4.13.2
@@ -131,6 +143,9 @@ done
 %{pginstdir}/share/pgsql/extension/fixeddecimal*.sql
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 6.3.0-7PGDG
+- Fix the OpenSSL dependencies
+
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 6.3.0-6PGDG
 - Build against the Babelfish engine in /usr/babelfish-18 (was
   /usr/pgsql-18-babelfish).
