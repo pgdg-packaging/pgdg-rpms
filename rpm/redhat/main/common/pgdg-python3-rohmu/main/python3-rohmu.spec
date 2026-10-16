@@ -122,7 +122,8 @@ export PGDG_PACKAGE_VERSION=%{version}
   is installed into the private PGDG Python tree, with the google-api-core
   it needs, and the Google Cloud backend adds that tree to sys.path. The
   modules that only that backend needs are weak dependencies there.
-- Stop building on RHEL 8: its python3 has no hatchling either.
+- Stop building on RHEL 8 and SLES 15: their python3 (3.6) has no
+  hatchling either, and rohmu needs Python >= 3.8.
 - Require typing_extensions on all Python versions, rohmu imports it
   unconditionally.
 
