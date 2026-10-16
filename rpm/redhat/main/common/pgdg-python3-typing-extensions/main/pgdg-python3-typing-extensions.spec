@@ -2,7 +2,7 @@
 #
 # - On RHEL 8 and RHEL 9: the python3.12 alt-stack flavor
 #   (python3.12-typing-extensions), for pg_statviz and grpcio (bigquery_fdw).
-# - On SLES: the default python3 flavor (python3-typing-extensions), for
+# - On SLES 16: the default python3 flavor (python3-typing-extensions), for
 #   psycopg3. This used to be the separate python3-typing-extensions
 #   directory, merged here per
 #   https://github.com/pgdg-packaging/pgdg-rpms/issues/369
@@ -25,10 +25,10 @@
 Name:		python%{python3_pkgversion}-%{modname}
 %if %{pgdg_altstack}
 Version:	4.12.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %else
 Version:	4.16.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 Summary:	Backported and experimental type hints for Python
 
@@ -88,20 +88,25 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %pyproject_install
 %endif
 
-%if %{pgdg_altstack}
 %files
-%else
-%files -f %{pyproject_files}
-%endif
 %license LICENSE
 %doc README.md CHANGELOG.md
-%if %{pgdg_altstack}
 %{python3_sitelib}/%{pymodname}.py
 %{python3_sitelib}/__pycache__/%{pymodname}.*
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
-%endif
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-3PGDG
+- Fix SLES 16 build: list the files explicitly, as the SUSE macros have
+  no %%pyproject_files.
+- Stop building on SLES 15: typing-extensions needs Python >= 3.9 and the
+  python3 of SLES 15 is 3.6. grpcio uses python311-typing_extensions of
+  SLES there.
+
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 4.12.2-2PGDG
+- Rebuild for the spec changes for SLES. No functional change on RHEL 8
+  and RHEL 9.
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 4.12.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   psycopg dependency (for pg_statviz) on RHEL 9 (python3.12). Per
