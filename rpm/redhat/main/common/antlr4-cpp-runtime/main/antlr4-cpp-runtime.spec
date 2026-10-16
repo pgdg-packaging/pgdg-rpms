@@ -6,7 +6,7 @@
 
 Name:		antlr4-cpp-runtime
 Version:	4.13.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	ANTLR runtime for C++
 License:	BSD-3-Clause
 URL:		https://www.antlr.org/
@@ -59,6 +59,10 @@ rm -rf %{buildroot}%{_docdir}/libantlr4
 %doc runtime/Cpp/README.md
 %license LICENSE.txt
 %{_libdir}/libantlr4-runtime.so.%{version}
+%if 0%{?suse_version} >= 1500
+%{_datadir}/doc/libantlr4/README.md
+%{_datadir}/doc/libantlr4/VERSION
+%endif
 
 %files devel
 %doc runtime/Cpp/cmake/Antlr4Package.md runtime/Cpp/cmake/README.md
@@ -68,6 +72,9 @@ rm -rf %{buildroot}%{_docdir}/libantlr4
 %{_libdir}/cmake/antlr4-runtime/
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 4.13.2-2PGDG
+- Add/fix SLES support.
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 4.13.2-1PGDG
 - Initial packaging of the ANTLR 4 C++ runtime for RHEL and Amazon Linux
   2023, which do not ship it. Needed by babelfish_extensions.
