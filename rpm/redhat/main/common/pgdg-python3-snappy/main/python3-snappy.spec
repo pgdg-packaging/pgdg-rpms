@@ -28,25 +28,38 @@
 %global	python3_pkgversion 313
 %endif
 
+%if 0%{?amzn} == 2023
+Name:		python%{python3_pkgversion}-snappy
+%else
 Name:		python3-snappy
+%endif
 Epoch:		1
 Version:	0.6.1
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
 Source:		https://files.pythonhosted.org/packages/source/p/python-snappy/python-snappy-%{version}.tar.gz
 
+%if 0%{?amzn} == 2023
+BuildRequires:	gcc-c++ pkgconfig snappy-devel
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-packaging
+BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-cffi python%{python3_pkgversion}-wheel
+%else
 BuildRequires:	gcc-c++ pkgconfig python3-packaging python3-pip
 BuildRequires:	python3-setuptools snappy-devel python3-cffi python3-wheel python3-devel
+%endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
 
+%if ! 0%{?amzn}
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
+%endif
 
 %description
 Python library for the snappy compression library from Google.
@@ -67,6 +80,10 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.6.1-3PGDG
+- Build python3.13-snappy on Amazon Linux 2023, for rohmu and pghoard,
+  which are built for Python 3.13 there.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-2PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per

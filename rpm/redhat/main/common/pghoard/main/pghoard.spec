@@ -1,3 +1,10 @@
+# Amazon Linux 2023: build for Python 3.13, its default python3 (3.9) has no
+# hatchling, and rohmu is built for 3.13 there.
+%if 0%{?amzn} == 2023
+%global	__python3 %{_bindir}/python3.13
+%global	python3_pkgversion 3.13
+%endif
+
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
 Version:	2.8.0
@@ -7,9 +14,15 @@ Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.
 Patch0:		pghoard-pyproject.toml.patch
 URL:		https://github.com/Aiven-Open/%{name}
 BuildArch:	noarch
-Requires:	python3-snappy python3-cryptography python3-boto
+%if 0%{?amzn} == 2023
+Requires:	python%{python3_pkgversion}-rohmu
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-hatchling
+BuildRequires:	python%{python3_pkgversion}-pip
+%else
+Requires:	python3-snappy python3-cryptography
 Requires:	python3-rohmu
 BuildRequires:	python3-devel python3-build python3-hatchling python3-pip
+%endif
 BuildRequires:	systemd-rpm-macros
 
 %if 0%{?suse_version} >= 1500
@@ -39,7 +52,17 @@ Features:
 %prep
 %setup -q
 %patch -P 0 -p0
-echo "version = '%{version}'" >> pghoard/__init__.py
+# pghoard reads its version from pghoard/version.py (pghoard.version.__version__),
+# which hatch-vcs would generate. Write it here and let hatchling read the
+# version from it.
+echo "__version__ = '%{version}'" > pghoard/version.py
+sed -i -e 's|^path = "pghoard/__init__.py"$|path = "pghoard/version.py"|' -e '/^pattern = "version = /d' pyproject.toml
+# Use the distribution names of the packages that provide these modules:
+# psycopg2 instead of psycopg2-binary, and systemd-python (python-systemd on
+# PyPI is a different project).
+sed -i -e 's/"psycopg2-binary /"psycopg2 /' -e 's/^\( *\)"python-systemd",/\1"systemd-python",/' pyproject.toml
+# pghoard imports packaging, but does not list it:
+sed -i 's/^\( *\)"pydantic",/\1"packaging",\n\1"pydantic",/' pyproject.toml
 
 %build
 SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
@@ -62,6 +85,14 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %changelog
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-2PGDG
 - Add missing BR
+- Fix the generated dependencies, which could not be satisfied: require
+  psycopg2 instead of psycopg2-binary, and systemd-python instead of
+  python-systemd. Add the missing packaging dependency. Remove the
+  python3-boto dependency, pghoard does not use boto.
+- Write pghoard/version.py, which pghoard imports its version from. The
+  version line that was appended to pghoard/__init__.py instead shadowed
+  that module, and pghoard failed to start.
+- Build for Python 3.13 on Amazon Linux 2023, like rohmu.
 
 * Thu Jul 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-1PGDG
 - Update to 2.8.0 per changes described at:

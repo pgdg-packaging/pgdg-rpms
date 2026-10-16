@@ -10,7 +10,7 @@
 
 ARCH=`rpm --eval "%{_arch}"`
 DIR=`pwd`
-SPECFILE="python3-rohmu.spec"
+SPECFILE="pgdg-python3-swiftclient.spec"
 
 # Now, include global Makefile
 include ../../../../global/Makefile.global
