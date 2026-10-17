@@ -196,7 +196,14 @@ failed=("$WORK_DIR"/*.failed)
 if (( ${#failed[@]} > 0 )); then
 	for f in "${failed[@]}"; do
 		f="${f##*/}"
-		log "[ERROR] Sync failed for ${f%.failed}"
+		jobname="${f%.failed}"
+		# Architectures reported by sync_pgdg_rpms.sh as "[FAILED] os ver arch"
+		archs="$(awk '$1 == "[FAILED]" { print $4 }' "${WORK_DIR}/${jobname}.log" | sort -u | paste -sd ' ' -)"
+		if [[ -n "$archs" ]]; then
+			log "[ERROR] Sync failed for ${jobname} (${archs})"
+		else
+			log "[ERROR] Sync failed for ${jobname}"
+		fi
 	done
 fi
 

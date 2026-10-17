@@ -72,6 +72,14 @@ contains() {
 	return 1
 }
 
+# Record a failed rsync for an OS/version/arch target (each target once)
+declare -a failed_targets=()
+record_failure() {
+	local target="$1 $2 $3"
+	sync_had_errors=1
+	contains "$target" "${failed_targets[@]}" || failed_targets+=("$target")
+}
+
 # Parse arguments
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -380,7 +388,7 @@ process_os() {
 
 					if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$RPM_DIR/ $BASE_DIR_OS/$pgrelease/$osdistro/$osname-$distrover-$osarch; then
 						echo "  [ERROR] Rsync failed for PG $pgrelease ($osname-$distrover-$osarch)" >&2
-						sync_had_errors=1
+						record_failure "$OS" "$VER" "$osarch"
 					fi
 				done
 			fi
@@ -392,7 +400,7 @@ process_os() {
 
 				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$COMMON_RPM_DIR/ $BASE_DIR_OS/common/$osdistro/$osname-$distrover-$osarch; then
 					echo "  [ERROR] Rsync failed for common repo ($osname-$distrover-$osarch)" >&2
-					sync_had_errors=1
+					record_failure "$OS" "$VER" "$osarch"
 				fi
 			fi
 
@@ -403,7 +411,7 @@ process_os() {
 
 				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$EXTRAS_RPM_DIR/ $BASE_DIR_OS/extras/$osdistro/$osname-$distrover-$osarch; then
 					echo "  [ERROR] Rsync failed for Extras repo ($osname-$distrover-$osarch)" >&2
-					sync_had_errors=1
+					record_failure "$OS" "$VER" "$osarch"
 				fi
 			fi
 
@@ -414,7 +422,7 @@ process_os() {
 
 				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$COMMONTESTING_RPM_DIR/ $BASE_DIR_OS/testing/common/$osdistro/$osname-$distrover-$osarch; then
 					echo "  [ERROR] Rsync failed for commontesting repo ($osname-$distrover-$osarch)" >&2
-					sync_had_errors=1
+					record_failure "$OS" "$VER" "$osarch"
 				fi
 
 				# Sync extras testing repo
@@ -424,7 +432,7 @@ process_os() {
 
 					if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$EXTRASTESTING_RPM_DIR/ $BASE_DIR_OS/testing/extras/$osdistro/$osname-$distrover-$osarch; then
 						echo "  [ERROR] Rsync failed for extras testing repo ($osname-$distrover-$osarch)" >&2
-						sync_had_errors=1
+						record_failure "$OS" "$VER" "$osarch"
 					fi
 				fi
 
@@ -449,7 +457,7 @@ process_os() {
 
 					if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$TESTING_RPM_DIR/ $BASE_DIR_OS/testing/$pgtestrelease/$osdistro/$osname-$distrover-$osarch; then
 						echo "  [ERROR] Rsync failed for PG $pgtestrelease testing repo ($osname-$distrover-$osarch)" >&2
-						sync_had_errors=1
+						record_failure "$OS" "$VER" "$osarch"
 					fi
 				done
 			fi
@@ -458,9 +466,9 @@ process_os() {
 			# exists for this OS/version/arch combination)
 			if [[ "$os_sync_nonfree" -eq 1 ]]; then
 				if ! contains "$VER" "${VALID_NONFREE_VER[@]}"; then
-					$DEBUG && echo "  [DEBUG] Non-free repo not available for $OS $VER, skipping"
+					if $DEBUG; then echo "  [DEBUG] Non-free repo not available for $OS $VER, skipping"; fi
 				elif ! contains "$osarch" "${VALID_NONFREE_ARCH[@]}"; then
-					$DEBUG && echo "  [DEBUG] Non-free repo not available for $OS $VER ($osarch), skipping"
+					if $DEBUG; then echo "  [DEBUG] Non-free repo not available for $OS $VER ($osarch), skipping"; fi
 				else
 					# Determine non-free source host based on OS and arch
 					if [[ "$OS" == "redhat" ]]; then
@@ -481,7 +489,7 @@ process_os() {
 
 						if ! rsync -ave ssh --delete --delete-missing-args "$NONFREE_SOURCE_HOST":$NONFREE_RPM_DIR/ $BASE_DIR_OS/non-free/$pgnonfreerelease/$osdistro/$osname-$distrover-$osarch; then
 							echo "  [ERROR] Rsync failed for PG $pgnonfreerelease non-free repo ($osname-$distrover-$osarch)" >&2
-							sync_had_errors=1
+							record_failure "$OS" "$VER" "$osarch"
 						fi
 					done
 				fi
@@ -498,6 +506,11 @@ done
 
 if [[ "$sync_had_errors" -eq 1 ]]; then
 	echo "[WARN] One or more sync operations failed."
+	# One "[FAILED] <os> <ver> <arch>" line per failed target;
+	# sync_pgdg_rpms_cron.sh parses these for its summary.
+	for target in "${failed_targets[@]}"; do
+		echo "[FAILED] $target"
+	done
 	exit 1
 else
 	echo "All syncs completed successfully."
