@@ -31,13 +31,16 @@
 %{!?runselftest:%global runselftest 0}
 
 Name:		pgspot
-Version:	0.9.2
-Release:	3PGDG%{?dist}
+Version:	0.9.3
+Release:	1PGDG%{?dist}
 Summary:	Spot vulnerabilities in PostgreSQL extension scripts
 License:	PostgreSQL
 Url:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/%{version}.tar.gz
 BuildArch:	noarch
+# Not every distribution generates the requirements from the Python metadata,
+# and pgspot needs this exact pglast version:
+Requires:	pglast = 8.5
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -49,7 +52,7 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 %if %runselftest
-BuildRequires:	pglast python%{python3_pkgversion}-pytest
+BuildRequires:	pglast >= 8.5 python%{python3_pkgversion}-pytest
 %endif
 
 %description
@@ -95,6 +98,12 @@ done
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.3-1PGDG
+- Update to 0.9.3 per changes described at:
+  https://github.com/timescale/pgspot/releases/tag/0.9.3
+- This version requires pglast 8.5. Require it explicitly, as RHEL and
+  SUSE do not generate the requirements from the Python metadata.
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.2-3PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
