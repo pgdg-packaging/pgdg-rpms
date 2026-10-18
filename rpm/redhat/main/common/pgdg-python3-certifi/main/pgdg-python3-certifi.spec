@@ -31,7 +31,7 @@
 %global	pymodname certifi
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2026.7.22
+Version:	2026.10.18
 Release:	1PGDG%{?dist}
 Summary:	System CA bundle for Python
 
@@ -96,6 +96,9 @@ PYEOF2
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 2026.10.18-1PGDG
+- Update to 2026.10.18
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.7.22-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   httpx and requests dependency (for pg_statviz) on Amazon Linux 2023. Per
