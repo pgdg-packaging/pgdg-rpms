@@ -16,8 +16,8 @@
 %endif
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.2.0
-Release:	4PGDG%{?dist}
+Version:	1.3.0
+Release:	1PGDG%{?dist}
 Summary:	RoaringBitmap extension for PostgreSQL
 License:	Apache 2.0
 URL:		https://github.com/ChenHuajun/%{sname}
@@ -91,6 +91,15 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.0-1PGDG
+- Update to 1.3.0 per changes described at:
+  https://github.com/ChenHuajun/pg_roaringbitmap/releases/tag/v1.3.0
+- Note that this release has some behaviour changes: the jaccard functions
+  return 1 instead of NaN for two empty bitmaps, rb64_fill() and
+  rb64_flip() cap the range at 2^32 values and no longer treat
+  range_end = 0 as unlimited, and rb_range(), rb_range_cardinality() and
+  rb_select() clamp range_start to 2^32. See the release notes for details.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
