@@ -5,7 +5,7 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.59.3
+Version:	2.60.0
 Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
@@ -141,6 +141,13 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.0-1PGDG
+- Update to 2.60.0 per changes described at:
+  https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.60.0
+- Note that restore now errors out on invalid page checksums, and expire
+  refuses to run if the oldest retained backup has them. Set
+  checksum-page-error=n to warn instead.
+
 * Sun Oct 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.59.3-1PGDG
 - Update to 2.59.3 per changes described at:
   https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.59.3
