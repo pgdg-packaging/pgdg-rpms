@@ -30,7 +30,7 @@
 %global	modname pillow
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	11.1.0
+Version:	13.0.0
 Release:	1PGDG%{?dist}
 Summary:	Python image processing library
 
@@ -57,6 +57,19 @@ file formats.
 %prep
 %autosetup -n %{modname}-%{version}
 
+# The setuptools of RHEL 9 (68) and Amazon Linux 2023 (69) supports neither
+# PEP 639 license strings nor license-files (setuptools >= 77 does), so use
+# the old license table. pybind11 is only used for its ParallelCompile helper,
+# which RHEL 9 does not have for python3.12, so drop it. Also drop the
+# Python 3.15 classifier, which older trove-classifiers reject.
+sed -i -e 's/^license = "MIT-CMU"/license = { text = "MIT-CMU" }/' \
+	-e '/^license-files = /d' \
+	-e 's/"setuptools>=77"/"setuptools>=67.8"/' \
+	-e '/^  "pybind11",$/d' \
+	-e '/"Programming Language :: Python :: 3.15",/d' pyproject.toml
+sed -i -e '/^from pybind11.setup_helpers import ParallelCompile$/d' \
+	-e '/^ParallelCompile(/d' setup.py
+
 %build
 %pyproject_wheel
 
@@ -70,6 +83,12 @@ file formats.
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 13.0.0-1PGDG
+- Update to 13.0.0 per changes described at:
+  https://github.com/python-pillow/Pillow/releases/tag/13.0.0
+- Patch pyproject.toml and setup.py so that it builds with the setuptools
+  of RHEL 9 and Amazon Linux 2023, and without pybind11.
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 11.1.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.
