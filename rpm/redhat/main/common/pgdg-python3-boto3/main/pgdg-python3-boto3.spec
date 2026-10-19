@@ -48,6 +48,12 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	hardlink
 
 Requires:	python%{python3_pkgversion}-botocore
+# The Python dependency generator of RHEL 8 does not run for python3.12,
+# so add the runtime dependencies explicitly there.
+%if 0%{?rhel} == 8
+Requires:	python%{python3_pkgversion}-jmespath >= 0.7.1
+Requires:	python%{python3_pkgversion}-s3transfer >= 0.19.0
+%endif
 
 %description
 Boto3 is the Amazon Web Services (AWS) Software Development Kit (SDK) for
@@ -105,6 +111,8 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 - Update to 1.43.115 per changes described at:
   https://pypi.org/project/boto3/1.43.115/
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/405
+- Add explicit runtime dependencies on RHEL 8, where the Python
+  dependency generator does not run for python3.12.
 
 * Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.114-1PGDG
 - Update to 1.43.114 per changes described at:

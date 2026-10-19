@@ -44,6 +44,14 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %endif
+# The Python dependency generator of RHEL 8 does not run for python3.12,
+# so add the runtime dependencies explicitly there.
+%if 0%{?rhel} == 8
+Requires:	python%{python3_pkgversion}-dateutil >= 2.1
+Requires:	python%{python3_pkgversion}-jmespath >= 0.7.1
+Requires:	python%{python3_pkgversion}-urllib3 >= 1.25.4
+%endif
+
 Provides:	bundled(python%{python3_version}-six) = 1.16.0
 Provides:	bundled(python%{python3_version}-requests) = 2.7.0
 
@@ -87,6 +95,8 @@ rm -vr tests/functional/leak
 - Update to 1.43.115 per changes described at:
   https://pypi.org/project/botocore/1.43.115/
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/406
+- Add explicit runtime dependencies on RHEL 8, where the Python
+  dependency generator does not run for python3.12.
 
 * Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.114-1PGDG
 - Update to 1.43.114 per changes described at:
