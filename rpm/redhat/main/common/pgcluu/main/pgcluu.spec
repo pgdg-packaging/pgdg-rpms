@@ -1,22 +1,36 @@
 %global		pgcluudatadir		/var/lib/pgcluu/data
 %global		pgcluureportdir		/var/lib/pgcluu/report
 
+%{!?runselftest:%global runselftest 0}
+
 Summary:	PostgreSQL performance monitoring and auditing tool
 Name:		pgcluu
-Version:	4.0
-Release:	4PGDG%{?dist}
+Version:	5.0
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/darold/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	%{name}_collectd.service
 Source3:	%{name}.timer
 Source4:	%{name}-httpd.conf
-Patch0:		%{name}-systemd-rpm-paths.patch
 URL:		http://%{name}.darold.net/
 BuildArch:	noarch
-BuildRequires:	make perl-ExtUtils-MakeMaker perl-devel perl-interpreter
-BuildRequires:	perl-macros
+BuildRequires:	make perl(ExtUtils::MakeMaker) perl-macros
 BuildRequires:	systemd-rpm-macros
+%if 0%{?suse_version}
+BuildRequires:	perl
+%else
+BuildRequires:	perl-devel perl-interpreter
+%endif
+%if %runselftest
+# Modules used by the offline test suite and by the scripts it runs. The
+# pgcluu.cgi tests are skipped without CGI.pm.
+BuildRequires:	perl(CGI) perl(Cwd) perl(Exporter) perl(Fcntl)
+BuildRequires:	perl(File::Basename) perl(File::Copy) perl(File::Path)
+BuildRequires:	perl(File::Temp) perl(FindBin) perl(Getopt::Long)
+BuildRequires:	perl(IO::File) perl(JSON::PP) perl(POSIX) perl(Storable)
+BuildRequires:	perl(Test::Harness) perl(Test::More) perl(Time::Local)
+%endif
 %if 0%{?rhel} && 0%{?rhel} == 7
 %else
 Recommends:	httpd sysstat
@@ -30,11 +44,17 @@ of the PostgreSQL cluster and the system utilization
 
 %prep
 %setup -q
-%patch -P 0 -p0
 
 %build
 %{__perl} Makefile.PL INSTALLDIRS=vendor
 %{__make} %{?_smp_mflags}
+
+%check
+%if %runselftest
+# Upstream's offline tests run on the bundled statistics fixtures; the
+# live collect test is skipped unless PGCLUU_TEST_LIVE is set.
+%{__make} test
+%endif
 
 %install
 %{__rm} -rf %{buildroot}
@@ -76,6 +96,17 @@ of the PostgreSQL cluster and the system utilization
 %{_unitdir}/%{name}.timer
 
 %changelog
+* Mon Oct 19 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0-1PGDG
+- Update to 5.0 per changes described at:
+  https://github.com/darold/pgcluu/releases/tag/v5.0 . Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/403
+- Remove the systemd paths patch: upstream's unit files now use
+  /usr/bin, and we install our own unit files anyway.
+- Fix build on SUSE, which has no perl-devel or perl-interpreter
+  packages.
+- Add %%check, running upstream's new offline test suite. It is
+  disabled by default; enable it with --define 'runselftest 1'.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0-4PGDG
 - Add missing BR
 
