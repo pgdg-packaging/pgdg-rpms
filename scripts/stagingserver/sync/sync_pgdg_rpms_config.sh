@@ -10,7 +10,7 @@ PG_TEST_VERSIONS=(20 19 18 17 16 15 14)    # Versions available in testing repos
 # Maximum number of OS/version syncs that sync_pgdg_rpms_cron.sh runs at the
 # same time (1 = sequential). Each OS/version pair uses its own source hosts
 # and destination directories, so they do not interfere with each other.
-MAX_PARALLEL=4
+MAX_PARALLEL=6
 
 # Lock file used by sync_pgdg_rpms_cron.sh so that a run which overruns into
 # the next cron slot does not start a second, overlapping sync.
@@ -102,6 +102,8 @@ OSDISTRO_amzn="amzn"
 # Example:
 #   [redhat:10.0]="x86_64 aarch64"    # ppc64le not yet available for 10.0
 declare -A VALID_ARCH_OVERRIDES=(
+	[redhat:10.0]="aarch64 x86_64"	# no ppc64le builds for 10.0
+	[redhat:9.6]="aarch64 x86_64"	# no ppc64le builds for 9.6
 )
 
 # Resolve the valid architecture list for a given OS/version pair into the
