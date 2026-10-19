@@ -31,7 +31,7 @@
 %{!?runselftest:%global runselftest 0}
 
 Name:		pgspot
-Version:	0.9.3
+Version:	0.9.4
 Release:	1PGDG%{?dist}
 Summary:	Spot vulnerabilities in PostgreSQL extension scripts
 License:	PostgreSQL
@@ -40,7 +40,7 @@ Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/%{version}.tar.
 BuildArch:	noarch
 # Not every distribution generates the requirements from the Python metadata,
 # and pgspot needs this exact pglast version:
-Requires:	pglast = 8.5
+Requires:	pglast = 7.21
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -52,7 +52,7 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 %if %runselftest
-BuildRequires:	pglast >= 8.5 python%{python3_pkgversion}-pytest
+BuildRequires:	pglast >= 7.21 python%{python3_pkgversion}-pytest
 %endif
 
 %description
@@ -98,10 +98,10 @@ done
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
-* Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.3-1PGDG
-- Update to 0.9.3 per changes described at:
-  https://github.com/timescale/pgspot/releases/tag/0.9.3
-- This version requires pglast 8.5. Require it explicitly, as RHEL and
+* Mon Oct 19 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.4-1PGDG
+- Update to 0.9.4 per changes described at:
+  https://github.com/timescale/pgspot/releases/tag/0.9.4
+- This version requires pglast 7.21. Require it explicitly, as RHEL and
   SUSE do not generate the requirements from the Python metadata.
 
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.2-3PGDG
