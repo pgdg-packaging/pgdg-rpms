@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
-Version:	1.43.114
+Version:	1.43.115
 Release:	1PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
@@ -83,6 +83,11 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Mon Oct 19 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.115-1PGDG
+- Update to 1.43.115 per changes described at:
+  https://pypi.org/project/botocore/1.43.115/
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/406
+
 * Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.114-1PGDG
 - Update to 1.43.114 per changes described at:
   https://pypi.org/project/botocore/1.43.114/
