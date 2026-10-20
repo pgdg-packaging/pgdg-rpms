@@ -32,14 +32,14 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.8.3
-Release:	5PGDG%{?dist}
+Version:	0.9.3
+Release:	1PGDG%{?dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
 License:	MIT AND HPND-Markus-Kuhn
 URL:		https://github.com/jquast/%{modname}
-Source:		https://files.pythonhosted.org/packages/source/w/%{modname}/%{modname}-%{version}.tar.gz
+Source:		https://github.com/jquast/%{modname}/archive/refs/tags/%{version}.tar.gz#/%{modname}-%{version}.tar.gz
 BuildArch:	noarch
 
 %if 0%{?suse_version} >= 1500
@@ -55,8 +55,9 @@ BuildRequires:	pyproject-rpm-macros
 # it, neither python(abi) nor pythonX.Ydist(...) get generated. Per
 # https://github.com/pgdg-packaging/pgdg-rpms/issues/228
 BuildRequires:	python%{python3_pkgversion}-devel
-BuildRequires:	python%{python3_pkgversion}-flit-core
 BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 %description
 This API is mainly for Terminal Emulator implementors, or those writing programs
@@ -67,26 +68,14 @@ printable width of a string on a Terminal.
 %setup -q -n %{modname}-%{version}
 # skip coverage checks
 sed -i -e 's|--cov[^[:space:]]*||g' tox.ini
-# The hatchling on SLES 16 does not know the Python 3.15 trove classifier
-# yet, and refuses to build with it. Classifiers are informational only.
+# Classifiers are informational only; drop the Python 3.15 one, which older
+# trove-classifiers releases do not know yet.
 sed -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
-# hatchling is not available on RHEL 8, and too old for the SPDX license
-# expression and license-files on RHEL 9 and Amazon Linux 2023. Build with
-# flit-core instead, which is available everywhere, and use the license
-# table, which flit-core < 3.11 understands:
-sed -i -e '/^\[build-system\]$/,/^requires = \[ "hatchling" \]$/d' \
-	-e 's|^license = "MIT"$|license = { text = "MIT" }|' \
-	-e '/^license-files = /d' pyproject.toml
-cat >> pyproject.toml << 'BUILDSYSTEM'
-
-[build-system]
-build-backend = "flit_core.buildapi"
-requires = [ "flit_core >=3.4,<4" ]
-BUILDSYSTEM
-grep -q '^license = { text = "MIT" }$' pyproject.toml
-if grep -qE '^license-files|hatchling' pyproject.toml; then exit 1; fi
 
 %build
+# 0.9.0 and later ship an optional C extension. Skip it, so that the package
+# stays noarch; the pure Python implementation is used at runtime.
+export WCWIDTH_NO_EXTENSION=1
 %pyproject_wheel
 
 %install
@@ -99,6 +88,16 @@ if grep -qE '^license-files|hatchling' pyproject.toml; then exit 1; fi
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.3-1PGDG
+- Update to 0.9.3 per changes described at:
+  https://github.com/jquast/wcwidth/releases/tag/0.9.3
+- Upstream switched the build backend to setuptools: drop the flit-core
+  workaround, and BuildRequire setuptools and wheel instead.
+- Build without the optional C extension, which was added in 0.9.0, so
+  that the package stays noarch.
+- Use the GitHub tarball, as 0.9.3 is not on PyPI yet.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/412
+
 * Wed Sep 23 2026 Devrim Gunduz <devrim@gunduz.org> - 0.8.3-5PGDG
 - Drop the explicit dist() Provides, which was python313dist(wcwidth) on
   SLES 16 instead of python3.13dist(wcwidth). The Python dependency
