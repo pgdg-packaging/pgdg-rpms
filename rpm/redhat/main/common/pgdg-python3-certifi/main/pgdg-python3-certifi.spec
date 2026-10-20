@@ -31,7 +31,7 @@
 %global	pymodname certifi
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2026.10.18
+Version:	2026.10.19
 Release:	1PGDG%{?dist}
 Summary:	System CA bundle for Python
 
@@ -96,6 +96,10 @@ PYEOF2
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Tue Oct 20 2026 Devrim Gündüz <devrim@gunduz.org> - 2026.10.19-1PGDG
+- Update to 2026.10.19. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/410
+
 * Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 2026.10.18-1PGDG
 - Update to 2026.10.18
 
