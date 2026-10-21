@@ -49,10 +49,10 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc1_6PGDG%{?dist}
+Release:	rc3_1PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc1.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc1-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc3.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc3-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
@@ -242,7 +242,7 @@ This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}rc1
+%setup -q -n %{sname}-%{version}rc3
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -430,6 +430,10 @@ fi
 %endif
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc3_1PGDG
+- Update to 3.7.0 rc3 per:
+  https://postgis.net/2026/10/PostGIS-3.7.0rc3/
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc1_6PGDG
 - Add Amazon Linux 2023 support: build without the GTK GUI there, and
   with SFCGAL from our new CGAL61 and nlohmann_json packages. Also fix
