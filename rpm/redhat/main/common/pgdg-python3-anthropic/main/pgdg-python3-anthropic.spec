@@ -28,12 +28,17 @@ Name:		python%{python3_pkgversion}-anthropic
 Version:	0.40.0
 Release:	2PGDG%{dist}
 %else
-Version:	1.17.0
+Version:	2.1.0
 Release:	1PGDG%{dist}
 %endif
 Summary:	The official Python library for the anthropic API
 
+# 2.0.0 and later are Apache-2.0; code from before the change stays MIT:
+%if %{oldsdk}
 License:	MIT
+%else
+License:	Apache-2.0 AND MIT
+%endif
 URL:		https://github.com/anthropics/anthropic-sdk-python
 Source:		https://files.pythonhosted.org/packages/source/a/anthropic/anthropic-%{version}.tar.gz
 %if ! %{oldsdk}
@@ -104,8 +109,21 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %doc README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md api.md helpers.md tools.md examples/
 %endif
 %license LICENSE
+%if ! %{oldsdk}
+%license LICENSE-MIT
+%endif
 
 %changelog
+* Thu Oct 22 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.0-1PGDG
+- Update to 2.1.0 on Fedora, per changes described at:
+  https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.1.0
+  https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.0.0
+  2.0.0 switched to API version 2026-10-21 and sends the API key in the
+  Authorization header; pg_statviz only calls messages.create() with a
+  top-level system prompt and one user message, which 2.x still accepts. The license is now Apache-2.0, with the code from
+  before the change under MIT (LICENSE-MIT).
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/426
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-1PGDG
 - Update to 1.17.0 on Fedora, per changes described at:
   https://github.com/anthropics/anthropic-sdk-python/releases/tag/v1.17.0
