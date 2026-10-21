@@ -12,8 +12,8 @@ ExcludeArch:	ppc64le
 %endif
 
 Name:		consul-template
-Version:	0.43.0
-Release:	2PGDG%{?dist}
+Version:	0.43.1
+Release:	1PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
 License:	MPLv2.0
@@ -81,6 +81,13 @@ unless the -once flag is specified.
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> 0.43.1-1PGDG
+- Update to 0.43.1 per changes described at
+  https://github.com/hashicorp/consul-template/releases/tag/v0.43.1
+  This release is built with Go 1.26.10, which fixes CVE-2026-111943,
+  CVE-2026-78663 and CVE-2026-78669.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/420
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 0.43.0-2PGDG
 - Add missing BR
 
