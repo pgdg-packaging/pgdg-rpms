@@ -33,6 +33,11 @@
 
 %{!?runselftest:%global runselftest 0}
 %{!?utils:%global	utils 1}
+# Amazon Linux 2023 has no GTK 2 and no SFCGAL:
+%if 0%{?amzn}
+%{!?shp2pgsqlgui:%global	shp2pgsqlgui 0}
+%{!?sfcgal:%global	sfcgal 0}
+%endif
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
 
@@ -43,7 +48,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc1_5PGDG%{?dist}
+Release:	rc1_6PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc1.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc1-en.pdf
@@ -65,7 +70,7 @@ BuildRequires:	cunit-devel
 BuildRequires:	CUnit-devel
 %endif
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
@@ -119,7 +124,9 @@ BuildRequires:	protobuf-c-devel >= 1.1.0
 Requires:	postgresql%{pgmajorversion} geos%{geosmajorversion} >= %{geosfullversion}
 Requires:	postgresql%{pgmajorversion}-contrib proj%{projmajorversion} >= %{projfullversion}
 Requires:	libgeotiff%{libgeotiffmajorversion}
+%if ! 0%{?amzn}
 Requires:	hdf5
+%endif
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %if 0%{?suse_version} == 1500
 Requires:	libjson-c5
@@ -134,6 +141,9 @@ BuildRequires:	libxerces-c-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
 Requires:	json-c xerces-c
 BuildRequires:	xerces-c-devel
+%endif
+%if 0%{?amzn}
+Requires:	json-c
 %endif
 Requires(post):	%{_sbindir}/update-alternatives
 
@@ -267,7 +277,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500 || 0%{?amzn}
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -419,6 +429,11 @@ fi
 %endif
 
 %changelog
+* Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc1_6PGDG
+- Add Amazon Linux 2023 support: build without SFCGAL and the GTK GUI
+  there, and fix the Requires and the protobuf option that the
+  Fedora/RHEL conditionals missed (AL2023 defines %%fedora as 34).
+
 * Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0rc1-5PGDG
 - Rebuild against GEOS 3.15. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/359

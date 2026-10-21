@@ -48,6 +48,11 @@
 
 %{!?runselftest:%global runselftest 0}
 %{!?utils:%global	utils 1}
+# Amazon Linux 2023 has no GTK 2 and no SFCGAL:
+%if 0%{?amzn}
+%{!?shp2pgsqlgui:%global	shp2pgsqlgui 0}
+%{!?sfcgal:%global	sfcgal 0}
+%endif
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
 
@@ -65,7 +70,7 @@
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.6
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -89,7 +94,7 @@ BuildRequires:	cunit-devel
 BuildRequires:	CUnit-devel
 %endif
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
@@ -141,7 +146,9 @@ BuildRequires:	protobuf-c-devel >= 1.1.0
 Requires:	postgresql%{pgmajorversion} geos%{geosmajorversion} >= %{geosfullversion}
 Requires:	postgresql%{pgmajorversion}-contrib proj%{projmajorversion} >= %{projfullversion}
 Requires:	libgeotiff%{libgeotiffmajorversion}
+%if ! 0%{?amzn}
 Requires:	hdf5
+%endif
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
 %if 0%{?suse_version} == 1500
 Requires:	libjson-c5
@@ -156,6 +163,9 @@ BuildRequires:	libxerces-c-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
 Requires:	json-c xerces-c
 BuildRequires:	xerces-c-devel
+%endif
+%if 0%{?amzn}
+Requires:	json-c
 %endif
 Requires(post):	%{_sbindir}/update-alternatives
 
@@ -283,7 +293,7 @@ autoconf
 %if %{shp2pgsqlgui}
 	--with-gui \
 %endif
-%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} >= 39 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500 || 0%{?amzn}
 	--with-protobuf \
 %else
 	--without-protobuf \
@@ -447,6 +457,11 @@ fi
 %endif
 
 %changelog
+* Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.6-9PGDG
+- Add Amazon Linux 2023 support: build without SFCGAL and the GTK GUI
+  there, and fix the Requires and the protobuf option that the
+  Fedora/RHEL conditionals missed (AL2023 defines %%fedora as 34).
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - %{postgismajorversion}.6-8PGDG
 - Rebuild against GEOS 3.15, and add a patch to support it, backported
   from the stable branch of PostGIS. Without it, ST_Split() of a line by

@@ -1,0 +1,1 @@
+../main/postgis36.spec
