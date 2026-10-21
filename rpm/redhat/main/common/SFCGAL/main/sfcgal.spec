@@ -31,7 +31,14 @@ BuildRequires:	CGAL-devel >= 5.6
 BuildRequires:	json-devel >= 3.11
 %endif
 
-Release:	2PGDG%{?dist}
+# Amazon Linux 2023 does not ship CGAL and nlohmann_json, so we package them:
+%if 0%{?amzn} == 2023
+Version:	2.3.0
+BuildRequires:	CGAL-devel >= 6.1
+BuildRequires:	nlohmann_json-devel >= 3.11
+%endif
+
+Release:	3PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
@@ -54,7 +61,7 @@ BuildRequires:	libboost_date_time1_86_0 libboost_thread1_86_0
 BuildRequires:	libboost_system1_86_0-devel libboost_serialization1_86_0
 BuildRequires:	libboost_serialization1_86_0-devel libboost_atomic1_86_0-devel
 %endif
-%if 0%{?rhel} || 0%{?fedora}
+%if 0%{?rhel} || 0%{?fedora} || 0%{?amzn}
 BuildRequires:	boost-thread boost-date-time boost-serialization
 %endif
 
@@ -123,9 +130,9 @@ Development headers and libraries for SFCGAL.
 
 %files devel
 %{_includedir}/%{name}/
-%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500
+%if 0%{?fedora} || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1500 || 0%{?amzn}
 %{_libdir}/pkgconfig/sfcgal.pc
-%if 0%{?suse_version} == 1600 || 0%{?rhel} >= 9 || 0%{?fedora} >= 41
+%if 0%{?suse_version} == 1600 || 0%{?rhel} >= 9 || 0%{?fedora} >= 41 || 0%{?amzn}
 %{_libdir}/cmake/%{name}/%{name}*cmake
 %endif
 %endif
@@ -134,6 +141,10 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-3PGDG
+- Add Amazon Linux 2023 support, using our CGAL61 and nlohmann_json
+  packages there.
+
 * Tue Sep 1 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-2PGDG
 - Add missing BR
 
