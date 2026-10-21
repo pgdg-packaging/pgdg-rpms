@@ -40,8 +40,12 @@
 %{!?xml:%global xml 1}
 
 # Filter out some Perl "dependencies"
-%global __requires_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
+%global __requires_exclude ^(perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)|(libpq|libecpg|libecpg_compat|libpgtypes)\\.so)
 %global __provides_exclude ^perl\\((PostgresVersion|PostgresNode|RecursiveCopy|SimpleTee|TestLib|PostgreSQL::Test::BackgroundPsql)
+# The libraries under the private prefix are found through the rpath only, so
+# they must not satisfy the libpq.so.5 etc. dependencies of other packages.
+# The subpackages require -libs and -ecpg-libs explicitly instead:
+%global __provides_exclude_from ^%{bbfpginstdir}/
 
 Summary:	PostgreSQL client programs and libraries, patched for Babelfish
 Name:		%{sname}%{pgmajorversion}
@@ -49,9 +53,9 @@ Version:	18.7
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200005PGDG%{?dist}
+Release:	4200006PGDG%{?dist}
 %else
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 %endif
 License:	PostgreSQL
 URL:		https://github.com/babelfish-for-postgresql/postgresql_modified_for_babelfish
@@ -193,7 +197,7 @@ BuildRequires:	libopenssl-3-devel
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 Requires:	openssl-libs >= 3.2.2
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} || 0%{?amzn}
 BuildRequires:	openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
@@ -294,6 +298,7 @@ version of the documentation.
 
 %package ecpg-libs
 Summary:	Run-time libraries for ECPG programs
+Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %if 0%{?suse_version} == 1500
 Requires:	libopenssl3
@@ -1221,6 +1226,14 @@ fi
 %endif
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 18.7-9PGDG
+- Do not provide the libraries under /usr/babelfish-18 (libpq.so.5,
+  libecpg.so.6 etc.): they are only found through the rpath, but dnf used
+  them to satisfy the libpq.so.5 dependency of other packages, like GDAL
+  on Amazon Linux 2023. Also filter out the matching automatic Requires,
+  and make -ecpg-libs require -libs explicitly.
+- BuildRequire openssl-devel on RHEL 8 again.
+
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 18.7-8PGDG
 - Move PGDATA from /var/lib/pgsql/18-babelfish/data to
   /var/lib/babelfish/18/data (also the backups, initdb and pg_upgrade log
