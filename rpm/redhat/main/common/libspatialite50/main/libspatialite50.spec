@@ -25,7 +25,7 @@
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	17PGDG%{?dist}
+Release:	18PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
@@ -45,6 +45,9 @@ BuildRequires:	minizip-ng-compat-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} >= 41
 BuildRequires:	minizip-ng-compat-devel
+%endif
+%if 0%{?amzn}
+BuildRequires:	minizip-compat-devel
 %endif
 
 BuildRequires:	geos%{geosmajorversion}-devel >= %{geosfullversion}
@@ -133,6 +136,10 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-18PGDG
+- Add Amazon Linux 2023 support: BuildRequire minizip-compat-devel
+  there.
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-17PGDG
 - Rebuild against GEOS 3.15. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/359

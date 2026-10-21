@@ -1,0 +1,1 @@
+../main/libgeotiff17.spec

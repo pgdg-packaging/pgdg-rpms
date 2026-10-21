@@ -16,7 +16,7 @@
 %endif
 Name:		%{sname}%{libgeotiffversion}
 Version:	1.7.4
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	GeoTIFF format library
 License:	MIT
 URL:		https://github.com/OSGeo/%{sname}
@@ -25,7 +25,7 @@ Source2:	%{name}-pgdg-libs.conf
 Patch0:		%{sname}_cmake.patch
 Patch1:		%{sname}-1.7.4-proj.patch
 BuildRequires:	libtiff-devel libjpeg-devel proj%{projmajorversion}-devel zlib-devel
-BuildRequires:	pgdg-srpm-macros >= 1.0.53 cmake gcc gcc-c++ ccache
+BuildRequires:	pgdg-srpm-macros >= 1.0.53 cmake gcc gcc-c++
 
 %description
 GeoTIFF represents an effort by over 160 different remote sensing,
@@ -67,7 +67,7 @@ set -x
 
 %{__install} -d build
 pushd build
-cmake .. -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+cmake .. \
 	-DPROJ_LIBRARY=%{projinstdir}/lib64/libproj.so \
 	-DPROJ_INCLUDE_DIR=%{projinstdir}/include \
 	-DCMAKE_INSTALL_INCLUDEDIR=%{libgeotiff17instdir}/include \
@@ -139,6 +139,10 @@ EOF
 %{libgeotiff17instdir}/lib/pkgconfig/%{name}.pc
 
 %changelog
+* Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.4-6PGDG
+- Do not build with ccache, which is not available on Amazon Linux 2023
+  and has no use in clean build roots.
+
 * Thu Apr 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.4-5PGDG
 - Rebuild against PROJ 9.8 on all platforms except RHEL 8.
 

@@ -1,7 +1,7 @@
 %global sname gdal
 %global gdalmajorversion 3.13
 
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1600
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1600 || 0%{?amzn} == 2023
 %global gdal_python_enabled 1
 %{!?gdaljava:%global gdaljava 1}
 %else
@@ -13,7 +13,7 @@
 %global __ospython %{_bindir}/python3.15
 %global python3_pkgversion 3.15
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
+%if 0%{?fedora} && 0%{?fedora} <= 44 && ! 0%{?amzn}
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
 %endif
@@ -23,6 +23,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} == 1500
@@ -73,7 +74,7 @@
 
 Name:		%{sname}313
 Version:	%{gdalmajorversion}.3
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -95,7 +96,7 @@ Patch0:		%{name}-cleanup.patch
 BuildRequires:	liblz4-devel bash-completion-devel
 Requires:	liblz4-1
 %endif
-%if 0%{?rhel} || 0%{?fedora}
+%if 0%{?rhel} || 0%{?fedora} || 0%{?amzn}
 BuildRequires:	lz4-devel bash-completion
 Requires:	lz4
 %endif
@@ -106,12 +107,19 @@ BuildRequires:	ant cmake gcc-c++ bison pgdg-srpm-macros >= 1.0.52
 BuildRequires:	gcc13 gcc13-c++
 %endif
 
+# Amazon Linux 2023 does not have armadillo, cfitsio, freexl, libarrow,
+# libdeflate, libkml, netcdf, shapelib, SFCGAL and gpsbabel. GDAL builds
+# without the drivers that need them there.
+%if ! 0%{?amzn}
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
+%endif
 BuildRequires:	chrpath
 BuildRequires:	doxygen
 BuildRequires:	fontconfig-devel
+%if ! 0%{?amzn}
 BuildRequires:	freexl-devel
+%endif
 %if 0%{?g2clib_enabled}
 BuildRequires:	g2clib-devel
 BuildRequires:	g2clib-static
@@ -119,20 +127,22 @@ BuildRequires:	g2clib-static
 BuildRequires:	geos%{geosmajorversion}-devel >= 3.13.3
 BuildRequires:	ghostscript
 BuildRequires:	jpackage-utils
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499 || 0%{?amzn} == 2023
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
 %ifnarch %{ppc64le}
+%if ! 0%{?amzn}
 %if 0%{?rhel} || 0%{?fedora}
 BuildRequires:	libarrow-devel
 %endif
 BuildRequires:	libdeflate-devel
 %endif
+%endif
 # For 'mvn_artifact' and 'mvn_install'
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel >= 1.6.0
-%if 0%{?fedora}
+%if 0%{?fedora} && ! 0%{?amzn}
 BuildRequires:	libkml-devel
 %endif
 BuildRequires:	libspatialite%{libspatialitemajorversion}-devel >= 5.1.0-16
@@ -141,11 +151,13 @@ BuildRequires:	libtiff-devel >= 4.1
 BuildRequires:	libwebp-devel
 BuildRequires:	libtool
 BuildRequires:	giflib-devel
+%if ! 0%{?amzn}
 BuildRequires:	netcdf-devel >= 4.7
+%endif
 %if 0%{?rhel}
 BuildRequires:	mariadb-devel
 %endif
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?amzn}
 BuildRequires:	mariadb-connector-c-devel
 %endif
 
@@ -233,6 +245,11 @@ BuildRequires:	perl-generators
 BuildRequires:	python3-devel >= 3.8
 BuildRequires:	xerces-c-devel
 %endif
+%if 0%{?amzn} == 2023
+BuildRequires:	expat-devel jasper-devel json-c-devel
+BuildRequires:	java-21-amazon-corretto-devel
+BuildRequires:	perl-devel perl-generators
+%endif
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 BuildRequires:	libtirpc-devel
@@ -241,19 +258,26 @@ BuildRequires:	qhull-devel
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %else
+%if ! 0%{?amzn}
 BuildRequires:	SFCGAL-devel
+%endif
 %endif
 %if 0%{?suse_version} == 1500
 %endif
 
-BuildRequires:	shapelib-devel curl-devel >= 7.68
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1600
+%if ! 0%{?amzn}
+BuildRequires:	shapelib-devel
+%endif
+BuildRequires:	curl-devel >= 7.68
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} >= 1600 || 0%{?amzn} == 2023
 BuildRequires:	openjpeg2-devel >= 2.3.1
 %endif
 
 # Run time dependencies
+%if ! 0%{?amzn}
 Requires:	gpsbabel
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%endif
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?amzn} == 2023
 Requires:	libarchive >= 3.5.0
 %endif
 %if 0%{?suse_version} >= 1499
@@ -287,9 +311,15 @@ Summary:	GDAL file format library
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
 Requires:	geos%{geosmajorversion} >= %{geosfullversion}
+%if ! 0%{?amzn}
 Requires:	netcdf >= 4.7 gpsbabel
+%endif
 Requires:	libgeotiff%{libgeotiffmajorversion}
 Requires:	libspatialite%{libspatialitemajorversion} >= 5.1.0-16
+# Require the libpq that we build against: libpq.so.5 is also provided
+# by other packages (e.g. babelfish_postgresqlNN-libs), from directories
+# that are not in the linker path.
+Requires:	libpq5
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} <= 1499
@@ -381,9 +411,13 @@ export CFLAGS="$RPM_OPT_FLAGS -fpic"
 export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include"
 export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include"
 # SLES 15 has -Itirpc on /usr/include, so use the following only on Fedora and RHEL:
-%if 0%{?fedora} >= 30 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 9 || 0%{?amzn}
 export CXXFLAGS="$CFLAGS -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{_includedir}/tirpc"
+%endif
+# ant does not find the Corretto JDK on Amazon Linux 2023 by itself:
+%if 0%{?amzn}
+export JAVA_HOME=%{_jvmdir}/java-21-amazon-corretto
 %endif
 LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{_libdir} -Wl,-rpath,%{projinstdir}/lib64:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
 
@@ -549,6 +583,17 @@ done
 %endif
 
 %changelog
+* Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-7PGDG
+- Add Amazon Linux 2023 support: skip the BuildRequires and Requires
+  that are not available there (armadillo, cfitsio, freexl, libarrow,
+  libdeflate, libkml, netcdf, shapelib, SFCGAL and gpsbabel), add the
+  ones that the Fedora/RHEL conditionals miss there (AL2023 defines
+  %%fedora as 34), and enable the Python and Java bindings, building
+  the latter with the Corretto 21 JDK.
+- Require libpq5 in the -libs subpackage: libpq.so.5 is also provided by
+  babelfish_postgresqlNN-libs, which dnf may pick instead, and whose
+  libpq is not in the linker path.
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-6PGDG
 - Update download URL
 
