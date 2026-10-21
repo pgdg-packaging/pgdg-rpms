@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.0.0
+Version:	2.1.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,13 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Thu Oct 22 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
+- Update to 2.1.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.1.0
+- Adds the versionless install prefixes of the new pgdg-* packages, which
+  replace the EPEL packages of the GIS stack on RHEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.0-1PGDG
 - Update to 2.0.0 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.0.0
