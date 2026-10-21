@@ -48,10 +48,11 @@
 
 %{!?runselftest:%global runselftest 0}
 %{!?utils:%global	utils 1}
-# Amazon Linux 2023 has no GTK 2 and no SFCGAL:
+# Amazon Linux 2023 has no GTK 2. SFCGAL is built from our own
+# CGAL61 and nlohmann_json packages there:
 %if 0%{?amzn}
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 0}
-%{!?sfcgal:%global	sfcgal 0}
+%{!?sfcgal:%global	sfcgal 1}
 %endif
 %{!?shp2pgsqlgui:%global	shp2pgsqlgui 1}
 %{!?raster:%global	raster 1}
@@ -119,7 +120,7 @@ BuildRequires:	libxml2-devel
 BuildRequires:	gtk2-devel > 2.8.0
 %endif
 %if %{sfcgal}
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 BuildRequires:	SFCGAL SFCGAL-devel >= 2.1.0
 %endif
 %if 0%{?rhel} == 8 || 0%{?suse_version} >= 1500
@@ -462,8 +463,9 @@ fi
 
 %changelog
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.4-6PGDG
-- Add Amazon Linux 2023 support: build without SFCGAL and the GTK GUI
-  there, and fix the Requires and the protobuf option that the
+- Add Amazon Linux 2023 support: build without the GTK GUI there, and
+  with SFCGAL from our new CGAL61 and nlohmann_json packages. Also fix
+  the Requires and the protobuf option that the
   Fedora/RHEL conditionals missed (AL2023 defines %%fedora as 34).
 
 * Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.4-5PGDG
