@@ -1,11 +1,11 @@
 Summary:	a unix pager optimized for psql
 Name:		pspg
-Version:	5.8.16
-Release:	43PGDG%{?dist}
+Version:	5.9.0
+Release:	42PGDG%{?dist}
 License:	BSD
 URL:		https://github.com/okbob/%{name}
 Source:		https://github.com/okbob/%{name}/archive/%{version}.tar.gz
-BuildRequires:	gcc
+BuildRequires:	gcc make
 BuildRequires:	ncurses-devel readline-devel
 Requires:	ncurses readline
 
@@ -36,6 +36,11 @@ CFLAGS="%{optflags} -I/usr/include/ncurses/"
 %{_bindir}/*
 
 %changelog
+* Thu Oct 22 2026 Devrim Gündüz <devrim@gunduz.org> - 5.9.0-42PGDG
+- Update to 5.9.0 per changes described at:
+  https://github.com/okbob/pspg/releases/tag/5.9.0
+- Add missing make BR
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 5.8.16-43PGDG
 - Add missing BR
 
