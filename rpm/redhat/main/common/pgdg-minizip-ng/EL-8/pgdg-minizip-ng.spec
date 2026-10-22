@@ -1,0 +1,1 @@
+../main/pgdg-minizip-ng.spec

@@ -1,0 +1,1 @@
+../main/pgdg-libgta.spec

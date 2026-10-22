@@ -1,0 +1,1 @@
+../main/pgdg-opencv.spec

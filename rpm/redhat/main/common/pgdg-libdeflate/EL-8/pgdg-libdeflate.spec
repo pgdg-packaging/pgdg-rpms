@@ -1,0 +1,1 @@
+../main/pgdg-libdeflate.spec

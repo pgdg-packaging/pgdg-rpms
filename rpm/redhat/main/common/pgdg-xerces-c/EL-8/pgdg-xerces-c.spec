@@ -1,0 +1,1 @@
+../main/pgdg-xerces-c.spec

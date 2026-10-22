@@ -1,0 +1,1 @@
+../main/pgdg-gtk2.spec
