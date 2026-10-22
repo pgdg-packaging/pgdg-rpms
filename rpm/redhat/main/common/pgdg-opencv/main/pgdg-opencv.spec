@@ -23,7 +23,7 @@ License:	Apache-2.0
 URL:		https://opencv.org
 # The upstream tarball without the "Lena" image, made with opencv-clean.sh,
 # as in the Fedora package:
-Source0:	%{sname}-clean-%{version}.tar.gz
+Source0:	https://download.postgresql.org/pub/repos/yum/sources/opencv/%{sname}-clean-%{version}.tar.gz
 
 BuildRequires:	pgdg-srpm-macros >= 2.1.0
 BuildRequires:	cmake gcc-c++ ninja-build
