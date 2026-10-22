@@ -7,6 +7,12 @@
 
 %global	libspatialitemajorversion	50
 
+# RHEL: minizip comes from our pgdg-minizip-ng package, which is found
+# through the rpath; require it by name, not by soname:
+%if 0%{?rhel}
+%global __requires_exclude ^libminizip\\.so
+%endif
+
 %pgdg_set_gis_variables
 
 # Override some variables.
@@ -25,23 +31,21 @@
 
 Name:		%{sname}%{libspatialitemajorversion}
 Version:	5.1.0
-Release:	18PGDG%{?dist}
+Release:	19PGDG%{?dist}
 Summary:	Enables SQLite to support spatial data
 License:	MPLv1.1 or GPLv2+ or LGPLv2+
 URL:		https://www.gaia-gis.it/fossil/libspatialite
 Source0:	http://www.gaia-gis.it/gaia-sins/%{sname}-sources/%{sname}-%{version}.tar.gz
 Source1:	%{name}-pgdg-libs.conf
 
-BuildRequires:	gcc librttopo-devel >= 1.1.0-44
-BuildRequires:	pgdg-srpm-macros >= 1.0.53
-%if 0%{?rhel} && 0%{?rhel} <= 9
-BuildRequires:	minizip-devel
+BuildRequires:	gcc make librttopo-devel >= 1.1.0-44
+BuildRequires:	pgdg-srpm-macros >= 2.1.0
+%if 0%{?rhel}
+BuildRequires:	pgdg-minizip-ng-devel
+Requires:	pgdg-minizip-ng%{?_isa}
 %endif
 %if 0%{?suse_version} || 0%{?suse_version} >= 1500
 BuildRequires:	minizip-devel
-%endif
-%if 0%{?rhel} && 0%{?rhel} >= 10
-BuildRequires:	minizip-ng-compat-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} >= 41
 BuildRequires:	minizip-ng-compat-devel
@@ -83,6 +87,11 @@ CFLAGS="$CFLAGS -I%{geosinstdir}/include"; export CFLAGS
 
 # PROJ 9x uses lib64 as the library path.
 LDFLAGS="$LDFLAGS -L%{geosinstdir}/lib64 -L%{projinstdir}/lib64 -Wl,-rpath,%{geosinstdir}/lib64:%{projinstdir}/lib64"; export LDFLAGS
+%if 0%{?rhel}
+CFLAGS="$CFLAGS -I%{pgdg_minizipnginstdir}/include"; export CFLAGS
+CPPFLAGS="$CPPFLAGS -I%{pgdg_minizipnginstdir}/include"; export CPPFLAGS
+LDFLAGS="$LDFLAGS -L%{pgdg_minizipnginstdir}/lib64 -Wl,-rpath,%{pgdg_minizipnginstdir}/lib64"; export LDFLAGS
+%endif
 ./configure \
 	--prefix=%{libspatialiteinstdir} \
 	--libdir=%{libspatialiteinstdir}/lib \
@@ -136,6 +145,11 @@ find %{buildroot} -type f -name "*.la" -delete
 %{libspatialiteinstdir}/lib/pkgconfig/spatialite.pc
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-19PGDG
+- Build against our pgdg-minizip-ng package on RHEL, instead of the EPEL
+  minizip packages. Also BuildRequire make. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 5.1.0-18PGDG
 - Add Amazon Linux 2023 support: BuildRequire minizip-compat-devel
   there.

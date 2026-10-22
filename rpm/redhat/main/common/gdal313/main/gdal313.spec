@@ -74,7 +74,7 @@
 
 Name:		%{sname}313
 Version:	%{gdalmajorversion}.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -110,14 +110,27 @@ BuildRequires:	gcc13 gcc13-c++
 # Amazon Linux 2023 does not have armadillo, cfitsio, freexl, libarrow,
 # libdeflate, libkml, netcdf, shapelib, SFCGAL and gpsbabel. GDAL builds
 # without the drivers that need them there.
-%if ! 0%{?amzn}
+# RHEL: our pgdg-* packages under /usr/pgdg-*, instead of the EPEL ones:
+%if 0%{?rhel}
+BuildRequires:	pgdg-armadillo-devel pgdg-cfitsio-devel pgdg-freexl-devel
+BuildRequires:	pgdg-hdf-devel pgdg-hdf5-devel pgdg-libdeflate-devel
+BuildRequires:	pgdg-libgta-devel pgdg-libkml-devel pgdg-netcdf-devel
+BuildRequires:	pgdg-xerces-c-devel
+%ifnarch %{ppc64le}
+BuildRequires:	pgdg-libarrow-devel
+%endif
+%if 0%{?rhel} >= 10
+BuildRequires:	pgdg-qhull-devel
+%endif
+%endif
+%if ! 0%{?amzn} && ! 0%{?rhel}
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
 %endif
 BuildRequires:	chrpath
 BuildRequires:	doxygen
 BuildRequires:	fontconfig-devel
-%if ! 0%{?amzn}
+%if ! 0%{?amzn} && ! 0%{?rhel}
 BuildRequires:	freexl-devel
 %endif
 %if 0%{?g2clib_enabled}
@@ -131,8 +144,8 @@ BuildRequires:	jpackage-utils
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
 %ifnarch %{ppc64le}
-%if ! 0%{?amzn}
-%if 0%{?rhel} || 0%{?fedora}
+%if ! 0%{?amzn} && ! 0%{?rhel}
+%if 0%{?fedora}
 BuildRequires:	libarrow-devel
 %endif
 BuildRequires:	libdeflate-devel
@@ -151,7 +164,7 @@ BuildRequires:	libtiff-devel >= 4.1
 BuildRequires:	libwebp-devel
 BuildRequires:	libtool
 BuildRequires:	giflib-devel
-%if ! 0%{?amzn}
+%if ! 0%{?amzn} && ! 0%{?rhel}
 BuildRequires:	netcdf-devel >= 4.7
 %endif
 %if 0%{?rhel}
@@ -221,9 +234,10 @@ BuildRequires:	libxerces-c-devel
 BuildRequires:	java-21-openjdk-devel
 %endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
-BuildRequires:	libdap-devel
+%if 0%{?fedora}
+BuildRequires:	libdap-devel hdf-devel hdf-static hdf5-devel >= 1.10
+%endif
 BuildRequires:	expat-devel
-BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
 BuildRequires:	jasper-devel
 %if 0%{?rhel} == 8
 BuildRequires:	java-11-openjdk-devel
@@ -239,11 +253,15 @@ BuildRequires:	java-devel >= 1:1.6.0
 %endif
 %endif
 BuildRequires:	json-c-devel
+%if 0%{?fedora}
 BuildRequires:	libdap-devel libgta-devel
+%endif
 BuildRequires:	perl-devel
 BuildRequires:	perl-generators
 BuildRequires:	python3-devel >= 3.8
+%if 0%{?fedora}
 BuildRequires:	xerces-c-devel
+%endif
 %endif
 %if 0%{?amzn} == 2023
 BuildRequires:	expat-devel jasper-devel json-c-devel
@@ -254,7 +272,10 @@ BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
 BuildRequires:	libtirpc-devel
 
+# RHEL 10 has no qhull; RHEL 8 and 9 ship it in CRB:
+%if ! 0%{?rhel} || 0%{?rhel} < 10
 BuildRequires:	qhull-devel
+%endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
 BuildRequires:	SFCGAL-devel >= 2.0.0
 %else
@@ -265,7 +286,7 @@ BuildRequires:	SFCGAL-devel
 %if 0%{?suse_version} == 1500
 %endif
 
-%if ! 0%{?amzn}
+%if ! 0%{?amzn} && ! 0%{?rhel}
 BuildRequires:	shapelib-devel
 %endif
 BuildRequires:	curl-devel >= 7.68
@@ -274,7 +295,10 @@ BuildRequires:	openjpeg2-devel >= 2.3.1
 %endif
 
 # Run time dependencies
-%if ! 0%{?amzn}
+%if 0%{?rhel}
+Requires:	pgdg-gpsbabel
+%endif
+%if ! 0%{?amzn} && ! 0%{?rhel}
 Requires:	gpsbabel
 %endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?amzn} == 2023
@@ -311,7 +335,21 @@ Summary:	GDAL file format library
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
 Requires:	geos%{geosmajorversion} >= %{geosfullversion}
-%if ! 0%{?amzn}
+%if 0%{?rhel}
+# These are found through the rpath, so require them by name (their sonames
+# are filtered out below):
+Requires:	pgdg-armadillo%{?_isa} pgdg-cfitsio%{?_isa} pgdg-freexl%{?_isa}
+Requires:	pgdg-hdf%{?_isa} pgdg-hdf5%{?_isa} pgdg-libdeflate%{?_isa}
+Requires:	pgdg-libgta%{?_isa} pgdg-libkml%{?_isa} pgdg-netcdf%{?_isa}
+Requires:	pgdg-xerces-c%{?_isa} pgdg-gpsbabel
+%ifnarch %{ppc64le}
+Requires:	pgdg-libarrow%{?_isa}
+%endif
+%if 0%{?rhel} >= 10
+Requires:	pgdg-qhull%{?_isa}
+%endif
+%endif
+%if ! 0%{?amzn} && ! 0%{?rhel}
 Requires:	netcdf >= 4.7 gpsbabel
 %endif
 Requires:	libgeotiff%{libgeotiffmajorversion}
@@ -326,7 +364,7 @@ Requires:	libpq5
 Requires:	libarmadillo10
 %endif
 %endif
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9
+%if 0%{?fedora} >= 42
 Requires:	armadillo
 %endif
 
@@ -382,6 +420,15 @@ manipulating GDAL file format library
 %global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\.so$
 %global __provides_exclude_from ^%{python3_sitearch}/.*\.so$
 
+%if 0%{?rhel} >= 10
+%global rhel_qhull_re |qhull[a-z_]*
+%endif
+# RHEL: do not require the sonames of the pgdg-* libraries, which are not
+# provided (they are found through the rpath); see the Requires above:
+%if 0%{?rhel}
+%global __requires_exclude ^lib(armadillo|arrow[a-z_]*|parquet|cfitsio|freexl|hdf|mfhdf|hdf5[a-z_]*|sz|aec|deflate|gta|kml[a-z]*|minizip|netcdf|uriparser|xerces-c[-0-9.]*|blosc|arpack|superlu%{?rhel_qhull_re})\\.so
+%endif
+
 %prep
 %setup -q -n %{sname}-%{version}-fedora
 
@@ -420,6 +467,15 @@ export CPPFLAGS="$CPPFLAGS -I%{_includedir}/tirpc"
 export JAVA_HOME=%{_jvmdir}/java-21-amazon-corretto
 %endif
 LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{_libdir} -Wl,-rpath,%{projinstdir}/lib64:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
+# RHEL: our pgdg-* packages, instead of the EPEL ones:
+%if 0%{?rhel}
+for p in armadillo arpack arrow blosc cfitsio freexl hdf hdf5 libaec libdeflate libgta libkml minizip-ng netcdf qhull superlu uriparser xerces-c; do
+	PGDGPREFIXES="${PGDGPREFIXES};/usr/pgdg-$p"
+	PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}/usr/pgdg-$p/lib64/pkgconfig"
+	LDFLAGS="$LDFLAGS -Wl,-rpath,/usr/pgdg-$p/lib64"
+done
+export PKG_CONFIG_PATH LDFLAGS
+%endif
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} >= 1500
@@ -435,7 +491,7 @@ LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinst
  -DHAVE_SPATIALITE=ON \
  -DSPATIALITE_INCLUDE_DIR=%{libspatialiteinstdir}/include \
  -DSPATIALITE_LIBRARY=%{libspatialiteinstdir}/lib/libspatialite.so \
- -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}" \
+ -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}${PGDGPREFIXES}" \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
 %if %gdal_python_enabled
   -DBUILD_PYTHON_BINDINGS:BOOL=ON \
@@ -583,6 +639,13 @@ done
 %endif
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-8PGDG
+- RHEL: build against our pgdg-* packages (armadillo, cfitsio, freexl,
+  hdf, hdf5, libarrow, libdeflate, libgta, libkml, netcdf, qhull on RHEL 10,
+  xerces-c) instead of the EPEL ones, and require pgdg-gpsbabel. Do not
+  BuildRequire libdap and shapelib there, which this build does not use.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-7PGDG
 - Add Amazon Linux 2023 support: skip the BuildRequires and Requires
   that are not available there (armadillo, cfitsio, freexl, libarrow,

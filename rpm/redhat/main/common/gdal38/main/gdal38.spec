@@ -41,7 +41,8 @@
 %global sqlitepname	sqlite
 %global sqlitelibdir	%{_libdir}
 
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 8 || 0%{?suse_version} <= 1499
+# RHEL: GDAL uses its bundled g2lib; g2clib is only in EPEL there:
+%if 0%{?fedora} >= 37 || ( 0%{?suse_version} && 0%{?suse_version} <= 1499 )
 %global g2clib_enabled 1
 %else
 %global g2clib_enabled 0
@@ -59,7 +60,7 @@
 
 Name:		%{sname}38
 Version:	%{gdalmajorversion}.5
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -87,13 +88,25 @@ Requires:	lz4
 BuildRequires:	cmake gcc-c++ pgdg-srpm-macros >= 1.0.37
 
 BuildRequires:	ant
+# RHEL: our pgdg-* packages under /usr/pgdg-*, instead of the EPEL ones:
+%if 0%{?rhel}
+BuildRequires:	pgdg-armadillo-devel pgdg-cfitsio-devel pgdg-freexl-devel
+BuildRequires:	pgdg-hdf-devel pgdg-hdf5-devel pgdg-libdeflate-devel
+BuildRequires:	pgdg-libgta-devel pgdg-netcdf-devel pgdg-xerces-c-devel
+%ifnarch %{ppc64le}
+BuildRequires:	pgdg-libarrow-devel
+%endif
+%else
 BuildRequires:	armadillo-devel
 BuildRequires:	cfitsio-devel
+%endif
 BuildRequires:	chrpath
 BuildRequires:	curl-devel
 BuildRequires:	doxygen
 BuildRequires:	fontconfig-devel
+%if ! 0%{?rhel}
 BuildRequires:	freexl-devel
+%endif
 %if 0%{?g2clib_enabled}
 BuildRequires:	g2clib-devel
 %endif
@@ -103,11 +116,13 @@ BuildRequires:	jpackage-utils
 %if 0%{?fedora} >= 38 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
+%if ! 0%{?rhel}
 %ifnarch %{ppc64le}
-%if 0%{?rhel} || 0%{?fedora}
+%if 0%{?fedora}
 BuildRequires:	libarrow-devel
 %endif
 BuildRequires:	libdeflate-devel
+%endif
 %endif
 # For 'mvn_artifact' and 'mvn_install'
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel
@@ -122,7 +137,9 @@ BuildRequires:	libtiff-devel
 BuildRequires:	libwebp-devel
 BuildRequires:	libtool
 BuildRequires:	giflib-devel
+%if ! 0%{?rhel}
 BuildRequires:	netcdf-devel
+%endif
 %if 0%{?rhel}
 BuildRequires:	mariadb-devel
 %endif
@@ -175,18 +192,24 @@ BuildRequires:	libjasper-devel
 BuildRequires:	libxerces-c-devel
 BuildRequires:	python3-numpy-devel
 %else
+%if ! 0%{?rhel}
 BuildRequires:	g2clib-static
 BuildRequires:	libdap-devel
-BuildRequires:	expat-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel
+%endif
+BuildRequires:	expat-devel
 BuildRequires:	jasper-devel
 BuildRequires:	java-devel >= 1:1.6.0
 BuildRequires:	json-c-devel
+%if ! 0%{?rhel}
 BuildRequires:	libdap-devel libgta-devel
 BuildRequires:	librx-devel
+%endif
 BuildRequires:	perl-devel
 BuildRequires:	perl-generators
+%if ! 0%{?rhel}
 BuildRequires:	xerces-c-devel
+%endif
 %endif
 BuildRequires:	xz-devel
 BuildRequires:	zlib-devel
@@ -204,7 +227,11 @@ BuildRequires:	python3-setuptools
 BuildRequires:	qhull-devel
 
 # Run time dependencies
+%if 0%{?rhel}
+Requires:	pgdg-gpsbabel
+%else
 Requires:	gpsbabel
+%endif
 %if 0%{?fedora} >= 38 || 0%{?rhel} >= 9
 Requires:	libarchive >= 3.5.0
 %endif
@@ -239,16 +266,32 @@ Summary:	GDAL file format library
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
 Requires:	geos%{geosmajorversion} >= %{geosfullversion} ogdi%{ogdimajorversion}
+%if 0%{?rhel}
+# These are found through the rpath, so require them by name (their sonames
+# are filtered out below):
+Requires:	pgdg-armadillo%{?_isa} pgdg-cfitsio%{?_isa} pgdg-freexl%{?_isa}
+Requires:	pgdg-hdf%{?_isa} pgdg-hdf5%{?_isa} pgdg-libdeflate%{?_isa}
+Requires:	pgdg-libgta%{?_isa} pgdg-netcdf%{?_isa} pgdg-xerces-c%{?_isa}
+Requires:	pgdg-gpsbabel
+%ifnarch %{ppc64le}
+Requires:	pgdg-libarrow%{?_isa}
+%endif
+%else
 Requires:	netcdf gpsbabel
+%endif
 Requires:	libgeotiff%{libgeotiffmajorversion}-devel
 Requires:	libspatialite%{libspatialitemajorversion}-devel >= 5.1.0-16
+# Require the libpq that we build against: libpq.so.5 is also provided
+# by other packages (e.g. babelfish_postgresqlNN-libs), from directories
+# that are not in the linker path.
+Requires:	libpq5
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} <= 1499
 Requires:	libarmadillo10
 %endif
 %endif
-%if 0%{?fedora} >= 37 || 0%{?rhel} >= 7
+%if 0%{?fedora} >= 37
 Requires:	armadillo
 %endif
 
@@ -301,6 +344,12 @@ manipulating GDAL file format library
 %global __provides_exclude_from ^(%{python2_sitearch}|%{python3_sitearch})/.*\.so$
 %global __provides_exclude_from ^%{python3_sitearch}/.*\.so$
 
+# RHEL: do not require the sonames of the pgdg-* libraries, which are not
+# provided (they are found through the rpath); see the Requires above:
+%if 0%{?rhel}
+%global __requires_exclude ^lib(armadillo|arrow[a-z_]*|parquet|cfitsio|freexl|hdf|mfhdf|hdf5[a-z_]*|sz|aec|deflate|gta|minizip|netcdf|uriparser|xerces-c[-0-9.]*|blosc|arpack|superlu)\\.so
+%endif
+
 %prep
 %setup -q -n %{sname}-%{version}-fedora
 
@@ -325,6 +374,19 @@ export CFLAGS="$RPM_OPT_FLAGS -fpic"
 export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
 export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
 LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{ogdiinstdir}/lib -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{sqlitelibdir} -Wl,-rpath,%{projinstdir}/lib64:%{ogdiinstdir}/lib:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
+# RHEL: our pgdg-* packages, instead of the EPEL ones:
+%if 0%{?rhel}
+# netCDF 4.9.3 and later do not define _FillValue anymore (NC_FillValue is
+# the same attribute name), which GDAL 3.8 still uses:
+export CXXFLAGS="$CXXFLAGS -D_FillValue=NC_FillValue"
+export CFLAGS="$CFLAGS -D_FillValue=NC_FillValue"
+for p in armadillo arpack arrow blosc cfitsio freexl hdf hdf5 libaec libdeflate libgta minizip-ng netcdf superlu uriparser xerces-c; do
+	PGDGPREFIXES="${PGDGPREFIXES};/usr/pgdg-$p"
+	PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}/usr/pgdg-$p/lib64/pkgconfig"
+	LDFLAGS="$LDFLAGS -Wl,-rpath,/usr/pgdg-$p/lib64"
+done
+export PKG_CONFIG_PATH LDFLAGS
+%endif
 export OGDI_CFLAGS='-I%{ogdiinstdir}/include/ogdi'
 export OGDI_INCLUDE='-I%{ogdiinstdir}/include/ogdi'
 export OGDI_LIBS='-L%{ogdiinstdir}/lib'
@@ -350,7 +412,7 @@ export PYTHON=/usr/bin/python3.12
  -DSPATIALITE_INCLUDE_DIR=%{libspatialiteinstdir}/include \
  -DSPATIALITE_LIBRARY=%{libspatialiteinstdir}/lib/libspatialite.so \
  -DGDAL_JAVA_INSTALL_DIR=%{_jnidir}/%{name} \
- -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}" \
+ -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}${PGDGPREFIXES}" \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
 %if 0%{?rhel} == 8
  -DGDAL_USE_ARCHIVE=OFF \
@@ -477,6 +539,15 @@ done
 %endif
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-12PGDG
+- RHEL: build against our pgdg-* packages (armadillo, cfitsio, freexl,
+  hdf, hdf5, libarrow, libdeflate, libgta, netcdf, xerces-c) instead of the
+  EPEL ones, and require pgdg-gpsbabel. Do not BuildRequire g2clib, libdap
+  and librx there, which this build does not use. Define _FillValue for
+  netCDF 4.10. Require libpq5, so that dnf does not pick another libpq.so.5
+  provider, like gdal313.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-11PGDG
 - Update download URL
 
