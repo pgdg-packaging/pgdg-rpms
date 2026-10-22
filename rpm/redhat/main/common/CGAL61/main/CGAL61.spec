@@ -4,19 +4,23 @@
 
 Name:		CGAL
 Version:	6.1.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Computational Geometry Algorithms Library
 License:	GPL-3.0-or-later AND LGPL-3.0-or-later
 URL:		https://www.cgal.org/
 Source0:	https://github.com/CGAL/cgal/releases/download/v%{version}/CGAL-%{version}.tar.xz
 Source1:	https://github.com/CGAL/cgal/releases/download/v%{version}/CGAL-%{version}-doc_html.tar.xz
-BuildRequires:	blas-devel cmake >= 3.14 fdupes gmp-devel
+BuildRequires:	blas-devel cmake >= 3.14 gmp-devel
+# fdupes is not available on RHEL without EPEL; it only links duplicate files:
+%if ! 0%{?rhel}
+BuildRequires:	fdupes
+%endif
 BuildRequires:	lapack-devel mpfr-devel xz zlib-devel
 %if 0%{?suse_version}
 BuildRequires:	glu-devel libboost_atomic-devel >= 1.74
 BuildRequires:	libboost_thread-devel >= 1.74
 %endif
-%if 0%{?amzn}
+%if 0%{?amzn} || 0%{?rhel} >= 9
 BuildRequires:	boost-devel >= 1.74 mesa-libGLU-devel
 %endif
 Requires:	libcgal-devel = %{version}
@@ -42,7 +46,7 @@ Requires:	blas cmake gmp-devel lapack mpfr-devel zlib-devel
 %if 0%{?suse_version}
 Requires:	libboost_atomic-devel >= 1.72 libboost_thread-devel >= 1.72
 %endif
-%if 0%{?amzn}
+%if 0%{?amzn} || 0%{?rhel} >= 9
 Requires:	boost-devel >= 1.72
 %endif
 #For compatibility with package looking for our old name
@@ -83,7 +87,7 @@ export CXX="g++-13"
 %cmake -DCGAL_INSTALL_LIB_DIR=%{_lib} \
 	 -DCGAL_INSTALL_DOC_DIR=%{_docdir}/%{name}-doc
 
-%if 0%{?amzn}
+%if 0%{?amzn} || 0%{?rhel} >= 9
 %cmake_build
 %else
 %make_build
@@ -106,9 +110,11 @@ export CXX="g++-13"
 %{__rm} %{buildroot}%{_docdir}/%{name}-doc/LICENSE*
 
 %{__cp} -a doc_html %{buildroot}/%{_docdir}/%{name}-doc/
+%if ! 0%{?rhel}
 %fdupes %{buildroot}%{_docdir}/%{name}-doc/
 
 %fdupes %{buildroot}/%{_datadir}
+%endif
 
 %files devel
 %license LICENSE*
@@ -131,6 +137,10 @@ export CXX="g++-13"
 %doc %{_docdir}/%{name}-doc/CHANGES.md
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1.2-3PGDG
+- Add RHEL 9 and 10 support, so that SFCGAL does not need the EPEL CGAL
+  package there. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 6.1.2-2PGDG
 - Add Amazon Linux 2023 support, to build SFCGAL there.
 

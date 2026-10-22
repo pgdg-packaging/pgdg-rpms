@@ -19,10 +19,11 @@ Requires:	CGAL >= 4.7
 BuildRequires:	CGAL-devel >= 5.4
 %endif
 
+# RHEL 9 and 10: our CGAL61 and nlohmann_json packages, not the EPEL ones:
 %if 0%{?rhel} && 0%{?rhel} >= 9
 Version:	2.3.0
-BuildRequires:	CGAL-devel >= 5.6
-BuildRequires:	json-devel >= 3.11
+BuildRequires:	CGAL-devel >= 6.1
+BuildRequires:	nlohmann_json-devel >= 3.11
 %endif
 
 %if 0%{?fedora} && 0%{?fedora} >= 41
@@ -38,7 +39,7 @@ BuildRequires:	CGAL-devel >= 6.1
 BuildRequires:	nlohmann_json-devel >= 3.11
 %endif
 
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
@@ -141,6 +142,11 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-4PGDG
+- Build against our CGAL61 and nlohmann_json packages on RHEL 9 and 10 too,
+  instead of the EPEL CGAL and json packages.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-3PGDG
 - Add Amazon Linux 2023 support, using our CGAL61 and nlohmann_json
   packages there.
