@@ -148,7 +148,6 @@ BuildRequires:	mariadb-connector-c-devel
 %endif
 BuildRequires:	libpq5-devel
 BuildRequires:	pcre2-devel
-BuildRequires:	ogdi%{ogdimajorversion}-devel
 BuildRequires:	openjpeg2-devel
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	%{_bindir}/pkg-config
@@ -265,7 +264,7 @@ Summary:	GDAL file format library
 # See frmts/grib/degrib/README.TXT
 Provides:	bundled(g2lib) = 1.6.0
 Provides:	bundled(degrib) = 2.14
-Requires:	geos%{geosmajorversion} >= %{geosfullversion} ogdi%{ogdimajorversion}
+Requires:	geos%{geosmajorversion} >= %{geosfullversion}
 %if 0%{?rhel}
 # These are found through the rpath, so require them by name (their sonames
 # are filtered out below):
@@ -371,9 +370,9 @@ export CFLAGS="$RPM_OPT_FLAGS -fPIC"
 %else
 export CFLAGS="$RPM_OPT_FLAGS -fpic"
 %endif
-export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
-export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{ogdiinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
-LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{ogdiinstdir}/lib -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{sqlitelibdir} -Wl,-rpath,%{projinstdir}/lib64:%{ogdiinstdir}/lib:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
+export CXXFLAGS="$CFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
+export CPPFLAGS="$CPPFLAGS -I%{projinstdir}/include -I%{libgeotiffinstdir}/include -I%{geosinstdir}/include -I%{libspatialiteinstdir}/include -I%{_includedir}/tirpc"
+LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinstdir}/lib64 -L%{libspatialiteinstdir}/lib -L%{sqlitelibdir} -Wl,-rpath,%{projinstdir}/lib64:%{libgeotiffinstdir}/lib:%{geosinstdir}/lib64:%{libspatialiteinstdir}/lib"; export LDFLAGS
 # RHEL: our pgdg-* packages, instead of the EPEL ones:
 %if 0%{?rhel}
 # netCDF 4.9.3 and later do not define _FillValue anymore (NC_FillValue is
@@ -387,9 +386,6 @@ for p in armadillo arpack arrow blosc cfitsio freexl hdf hdf5 libaec libdeflate 
 done
 export PKG_CONFIG_PATH LDFLAGS
 %endif
-export OGDI_CFLAGS='-I%{ogdiinstdir}/include/ogdi'
-export OGDI_INCLUDE='-I%{ogdiinstdir}/include/ogdi'
-export OGDI_LIBS='-L%{ogdiinstdir}/lib'
 
 %if 0%{?rhel} == 8
 export PYTHON=/usr/bin/python3.12
@@ -416,6 +412,7 @@ export PYTHON=/usr/bin/python3.12
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
 %if 0%{?rhel} == 8
  -DGDAL_USE_ARCHIVE=OFF \
+ -DGDAL_USE_OGDI=OFF \
 %endif
 %if %gdaljava
  -DBUILD_JAVA_BINDINGS=ON \
@@ -545,7 +542,8 @@ done
   EPEL ones, and require pgdg-gpsbabel. Do not BuildRequire g2clib, libdap
   and librx there, which this build does not use. Define _FillValue for
   netCDF 4.10. Require libpq5, so that dnf does not pick another libpq.so.5
-  provider, like gdal313.
+  provider, like gdal313. Do not build the OGDI driver anymore, as the
+  ogdi41 package is obsolete.
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-11PGDG
