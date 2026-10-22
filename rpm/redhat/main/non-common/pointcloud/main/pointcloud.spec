@@ -18,21 +18,22 @@
 Summary:	A PostgreSQL extension for storing point cloud (LIDAR) data
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pointcloudmajorversion}.5
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 URL:		https://github.com/pgpointcloud/%{sname}
 Source0:	https://github.com/pgpointcloud/%{sname}/archive/v%{version}.tar.gz
 Patch0:		%{sname}-zlib-ng-memsize-tests.patch
 License:	BSD
-%if 0%{?suse_version} >= 1500
-Requires:	cunit-devel
-%else
-Requires:	CUnit-devel
-%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel libxml2-devel
 BuildRequires:	automake autoconf
 Requires:	postgresql%{pgmajorversion}-server postgis3_%{pgmajorversion}
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+# The C unit tests; only needed to run the tests:
+%if 0%{?suse_version} >= 1500
+BuildRequires:	cunit-devel
+%else
+BuildRequires:	CUnit-devel
+%endif
 %endif
 
 %description
@@ -112,6 +113,11 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.5-9PGDG
+- Do not Require CUnit-devel at runtime; it is only needed to run the
+  tests, so BuildRequire it with runselftest instead. On RHEL it comes from
+  CRB. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.5-8PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

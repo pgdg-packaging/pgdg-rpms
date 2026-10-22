@@ -18,7 +18,7 @@
 Summary:	Import map data from OpenStreetMap to a PostgreSQL database
 Name:		%{sname}
 Version:	2.3.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/%{sname}-dev/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/%{sname}-dev/%{sname}
@@ -42,9 +42,15 @@ BuildRequires:	libexpat-devel nlohmann_json-devel
 BuildRequires:	lua54-devel
 %endif
 
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43
 BuildRequires:	boost-devel bzip2-devel catch2-devel
 BuildRequires:	clang-tools-extra expat-devel json-devel lua-devel
+%endif
+# RHEL: nlohmann_json from our package instead of the EPEL json package.
+# Catch2 (EPEL) is only needed for the tests, which are not built:
+%if 0%{?rhel} >= 8
+BuildRequires:	boost-devel bzip2-devel
+BuildRequires:	clang-tools-extra expat-devel lua-devel nlohmann_json-devel
 %endif
 
 # osm2pgsql-gen is built when OpenCV and Potrace are found. Not on Fedora: its
@@ -52,7 +58,10 @@ BuildRequires:	clang-tools-extra expat-devel json-devel lua-devel
 # RHPG_* symbols), not libpq5, so osm2pgsql-gen would not link, or would link
 # only when a PGDG GDAL with the same soname happens to be installed:
 %if 0%{?rhel} >= 10
-BuildRequires:	opencv-devel potrace-devel
+# OpenCV from our pgdg-opencv package, found through the rpath:
+%global __requires_exclude ^libopencv_.*\\.so
+BuildRequires:	pgdg-srpm-macros >= 2.1.0 pgdg-opencv-devel potrace-devel
+Requires:	pgdg-opencv%{?_isa}
 %endif
 
 Requires:	libpq5
@@ -75,7 +84,12 @@ cmake .. \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DPROJ_LIBRARY=%{projinstdir}/lib64/libproj.so \
 	-DPROJ6_INCLUDE_DIR=%{projinstdir}/include \
+%if 0%{?rhel} >= 10
+	-DCMAKE_INSTALL_RPATH="%{projinstdir}/lib64;%{pgdg_opencvinstdir}/lib64" \
+	-DOpenCV_DIR=%{pgdg_opencvinstdir}/lib64/cmake/opencv4 \
+%else
 	-DCMAKE_INSTALL_RPATH=%{projinstdir}/lib64 \
+%endif
 %if 0%{?fedora}
 	-DCMAKE_DISABLE_FIND_PACKAGE_OpenCV=ON \
 %endif
@@ -119,6 +133,12 @@ popd
 %{_datadir}/%{sname}/*.style
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.1-4PGDG
+- RHEL: build against our nlohmann_json package instead of the EPEL json
+  package, and do not BuildRequire Catch2, which is only used by the tests.
+- RHEL 10: build osm2pgsql-gen against our pgdg-opencv package instead of
+  the EPEL opencv. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.1-3PGDG
 - Link the binaries with an RPATH to PROJ, instead of relying on the
   ld.so.conf.d file of PROJ. Per

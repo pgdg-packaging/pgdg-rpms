@@ -69,9 +69,14 @@
 %endif
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
+# RHEL 10: GTK 2 comes from our pgdg-gtk2 package, found through the rpath:
+%if 0%{?rhel} >= 10
+%global __requires_exclude ^lib(gtk-x11-2\\.0|gdk-x11-2\\.0|gailutil)\\.so
+%endif
+
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.6
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -85,7 +90,7 @@ URL:		https://www.postgis.net/
 
 BuildRequires:	postgresql%{pgmajorversion}-devel geos%{geosmajorversion}-devel >= %{geosfullversion}
 BuildRequires:	libgeotiff%{libgeotiffmajorversion}-devel libxml2 libxslt autoconf
-BuildRequires:	pgdg-srpm-macros >= 1.0.54 gmp-devel pcre2-devel
+BuildRequires:	pgdg-srpm-macros >= 2.1.0 gmp-devel pcre2-devel
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 BuildRequires:	pgdg-srpm-macros >= 2.0.0
@@ -114,7 +119,12 @@ BuildRequires:	proj%{projmajorversion}-devel >= %{projfullversion} flex json-c-d
 %endif
 BuildRequires:	libxml2-devel
 %if %{shp2pgsqlgui}
+# RHEL 10 does not ship GTK 2; use our pgdg-gtk2 package there:
+%if 0%{?rhel} >= 10
+BuildRequires:	pgdg-gtk2-devel > 2.8.0
+%else
 BuildRequires:	gtk2-devel > 2.8.0
+%endif
 %endif
 %if %{sfcgal}
 %if 0%{?fedora} >= 39 || 0%{?rhel} >= 9 || 0%{?amzn}
@@ -147,7 +157,7 @@ BuildRequires:	protobuf-c-devel >= 1.1.0
 Requires:	postgresql%{pgmajorversion} geos%{geosmajorversion} >= %{geosfullversion}
 Requires:	postgresql%{pgmajorversion}-contrib proj%{projmajorversion} >= %{projfullversion}
 Requires:	libgeotiff%{libgeotiffmajorversion}
-%if ! 0%{?amzn}
+%if 0%{?suse_version}
 Requires:	hdf5
 %endif
 Requires:	gdal%{gdalmajorversion}-libs >= %{gdalfullversion}
@@ -162,8 +172,7 @@ Requires:	libxerces-c-3_3
 BuildRequires:	libxerces-c-devel
 %endif
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
-Requires:	json-c xerces-c
-BuildRequires:	xerces-c-devel
+Requires:	json-c
 %endif
 %if 0%{?amzn}
 Requires:	json-c
@@ -218,6 +227,10 @@ The %{name}-docs package includes PDF documentation of PostGIS.
 Summary:	GUI for PostGIS
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 
+%if 0%{?rhel} >= 10
+Requires:	pgdg-gtk2%{?_isa}
+%endif
+
 %description	gui
 The %{name}-gui package provides a gui for PostGIS.
 %endif
@@ -270,6 +283,10 @@ This package provides JIT support for PostGIS 3.4
 
 %build
 LDFLAGS="-Wl,-rpath,%{geosinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
+%if %{shp2pgsqlgui} && 0%{?rhel} >= 10
+LDFLAGS="-Wl,-rpath,%{pgdg_gtk2instdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
+PKG_CONFIG_PATH="%{pgdg_gtk2instdir}/lib64/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"; export PKG_CONFIG_PATH
+%endif
 LDFLAGS="-Wl,-rpath,%{projinstdir}/lib64 ${LDFLAGS}" ; export LDFLAGS
 SHLIB_LINK="$SHLIB_LINK -Wl,-rpath,%{geosinstdir}/lib64" ; export SHLIB_LINK
 SFCGAL_LDFLAGS="$SFCGAL_LDFLAGS -L/usr/lib64"; export SFCGAL_LDFLAGS
@@ -458,6 +475,11 @@ fi
 %endif
 
 %changelog
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.6-10PGDG
+- Remove the hdf5 and xerces-c dependencies, which PostGIS does not use.
+- RHEL 10: build the GUI against our pgdg-gtk2 package, as RHEL 10 does not
+  ship GTK 2. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.6-9PGDG
 - Add Amazon Linux 2023 support: build without the GTK GUI there, and
   with SFCGAL from our new CGAL61 and nlohmann_json packages. Also fix
