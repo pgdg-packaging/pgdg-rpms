@@ -45,7 +45,7 @@ Release:	1PGDG%{?dist}
 Summary:	A toolbox for accelerated data interchange and in-memory processing
 License:	Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND MIT AND BSL-1.0 AND Unicode-3.0
 URL:		https://arrow.apache.org/
-Source0:	https://downloads.apache.org/arrow/arrow-%{version}/apache-arrow-%{version}.tar.gz
+Source0:	https://archive.apache.org/dist/arrow/arrow-%{version}/apache-arrow-%{version}.tar.gz
 Source1:	https://github.com/google/re2/archive/%{re2version}.tar.gz#/re2-%{re2version}.tar.gz
 Source2:	https://github.com/miloyip/rapidjson/archive/%{rapidjsoncommit}.tar.gz#/rapidjson-%{rapidjsoncommit}.tar.gz
 %if 0%{?rhel} != 8
