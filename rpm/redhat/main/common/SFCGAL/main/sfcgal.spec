@@ -13,13 +13,16 @@ BuildRequires:	CGAL-devel >= 6.1
 BuildRequires:	nlohmann_json-devel >= 3.11
 %endif
 
+# RHEL: our CGAL and nlohmann_json packages, not the EPEL ones. RHEL 8
+# ships Boost 1.66, which CGAL 6 and SFCGAL 2 do not support, so it gets
+# SFCGAL 1.5 (the latest 1.x release) and CGAL 5.6 (our CGAL56 package):
 %if 0%{?rhel} && 0%{?rhel} == 8
-Version:	1.4.1
-Requires:	CGAL >= 4.7
-BuildRequires:	CGAL-devel >= 5.4
+Version:	1.5.2
+BuildRequires:	CGAL-devel >= 5.6
+# Boost 1.66 cannot byte swap floating point values in the WKB writer:
+Patch0:		sfcgal-1.5-boost-endian.patch
 %endif
 
-# RHEL 9 and 10: our CGAL61 and nlohmann_json packages, not the EPEL ones:
 %if 0%{?rhel} && 0%{?rhel} >= 9
 Version:	2.3.0
 BuildRequires:	CGAL-devel >= 6.1
@@ -96,6 +99,9 @@ Development headers and libraries for SFCGAL.
 
 %prep
 %setup -q -n SFCGAL-v%{version}
+%if 0%{?rhel} && 0%{?rhel} == 8
+%patch -P 0 -p1
+%endif
 
 %build
 
@@ -145,6 +151,10 @@ Development headers and libraries for SFCGAL.
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-4PGDG
 - Build against our CGAL61 and nlohmann_json packages on RHEL 9 and 10 too,
   instead of the EPEL CGAL and json packages.
+- Update to 1.5.2 on RHEL 8, built against our new CGAL56 (CGAL 5.6)
+  package, instead of the EPEL CGAL package. RHEL 8 ships Boost 1.66,
+  which CGAL 6 and SFCGAL 2 do not support. Add a patch for the WKB writer,
+  as Boost 1.66 cannot byte swap floating point values.
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-3PGDG

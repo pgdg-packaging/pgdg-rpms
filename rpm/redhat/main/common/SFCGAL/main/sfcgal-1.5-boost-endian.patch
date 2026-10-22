@@ -1,0 +1,21 @@
+--- SFCGAL-v1.5.2/src/detail/io/WkbWriter.h	2024-07-25 15:09:01.000000000 +0200
++++ SFCGAL-v1.5.2.new/src/detail/io/WkbWriter.h	2026-10-22 22:36:11.195177502 +0200
+@@ -4,6 +4,7 @@
+ #ifndef _SFCGAL_IO_WKBWRITER_H_
+ #define _SFCGAL_IO_WKBWRITER_H_
+ 
++#include <algorithm>
+ #include <boost/endian/conversion.hpp>
+ #include <cstddef>
+ #include <iomanip>
+@@ -147,7 +148,9 @@
+   {
+     T y = x;
+     if (boost::endian::order::native != byteOrder) {
+-      boost::endian::endian_reverse_inplace(y);
++      // Boost < 1.71 cannot reverse floating point values:
++      auto *bytes = reinterpret_cast<unsigned char *>(&y);
++      std::reverse(bytes, bytes + sizeof(T));
+     }
+     toStream(*reinterpret_cast<std::array<std::byte, sizeof(T)> *>(&y));
+   }

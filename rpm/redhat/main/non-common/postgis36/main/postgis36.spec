@@ -482,7 +482,9 @@ fi
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.4-7PGDG
 - Remove the hdf5 and xerces-c dependencies, which PostGIS does not use.
 - RHEL 10: build the GUI against our pgdg-gtk2 package, as RHEL 10 does not
-  ship GTK 2. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+  ship GTK 2.
+- RHEL 8: build against SFCGAL 1.5, which no longer needs the EPEL CGAL
+  package. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.4-6PGDG
 - Add Amazon Linux 2023 support: build without the GTK GUI there, and
