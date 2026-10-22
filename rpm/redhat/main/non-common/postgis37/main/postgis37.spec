@@ -54,7 +54,7 @@ Summary:	Geographic Information Systems Extensions to PostgreSQL
 
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc3_1PGDG%{?dist}
+Release:	rc3_2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc3.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc3-en.pdf
@@ -447,12 +447,14 @@ fi
 %endif
 
 %changelog
-* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc3_1PGDG
-- Update to 3.7.0 rc3 per:
-  https://postgis.net/2026/10/PostGIS-3.7.0rc3/
+* Thu Oct 22 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc3_2PGDG
 - Remove the hdf5 and xerces-c dependencies, which PostGIS does not use.
 - RHEL 10: build the GUI against our pgdg-gtk2 package, as RHEL 10 does not
   ship GTK 2. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
+* Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc3_1PGDG
+- Update to 3.7.0 rc3 per:
+  https://postgis.net/2026/10/PostGIS-3.7.0rc3/
 
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc1_6PGDG
 - Add Amazon Linux 2023 support: build without the GTK GUI there, and
