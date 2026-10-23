@@ -38,8 +38,14 @@ Source0:	https://github.com/ymattw/%{name}/archive/%{version}/%{name}-%{version}
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not. Leap 15.6 does not have it.
+BuildRequires:	python-rpm-packaging
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
+%endif
 # python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
 # into the buildroot on RHEL/Fedora; pyproject-rpm-macros alone does not.
 # Without it, neither python(abi) nor python%%{python3_pkgversion}dist(...)
@@ -48,7 +54,6 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
-%endif
 
 BuildArch:	noarch
 
@@ -100,6 +105,9 @@ Python library that implements API used by ydiff tool.
   subpackage, which ydiff requires: nothing provided it on RHEL 8 and 9,
   and on Amazon Linux 2023 ydiff provided it itself, so the module was not
   installed. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- SLES: BuildRequire python%%{python3_pkgversion}-devel, -pip, -setuptools
+  and -wheel there, too, and python-rpm-packaging for the SUSE dependency
+  generators on SLES 16: the build failed in a clean build root.
 
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-55PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
