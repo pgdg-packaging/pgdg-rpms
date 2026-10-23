@@ -42,7 +42,7 @@ BuildRequires:	CGAL-devel >= 6.1
 BuildRequires:	nlohmann_json-devel >= 3.11
 %endif
 
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	GLPLv2
 Source:		https://gitlab.com/sfcgal/SFCGAL/-/archive/v%{version}/SFCGAL-v%{version}.tar.gz
 
@@ -102,6 +102,15 @@ Development headers and libraries for SFCGAL.
 %if 0%{?rhel} && 0%{?rhel} == 8
 %patch -P 0 -p1
 %endif
+# CGAL 6 disables Boost.Multiprecision, and so CORE, on POWER with Boost
+# older than 1.80 (RHEL 9 has 1.75), but the CGAL::CGAL_Core target still
+# defines CGAL_USE_CORE, which breaks the build. SFCGAL does not use CORE:
+%if 0%{?rhel} == 9
+%ifarch ppc64le
+sed -i -e 's/COMPONENTS Core REQUIRED/REQUIRED/' \
+	-e 's/CGAL::CGAL CGAL::CGAL_Core/CGAL::CGAL/' CMakeLists.txt
+%endif
+%endif
 
 %build
 
@@ -148,6 +157,12 @@ Development headers and libraries for SFCGAL.
 %{_libdir}/libSFCGAL.so*
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-5PGDG
+- Fix the build on RHEL 9 - ppc64le: CGAL 6 disables its CORE number
+  types on POWER with Boost older than 1.80, but CGAL::CGAL_Core still
+  defines CGAL_USE_CORE. Do not use CGAL Core there, SFCGAL does not
+  need it. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-4PGDG
 - Build against our CGAL61 and nlohmann_json packages on RHEL 9 and 10 too,
   instead of the EPEL CGAL and json packages.
