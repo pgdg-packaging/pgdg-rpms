@@ -149,7 +149,9 @@ rpmspec_extra_args=()
 
 # Print the file names of the binary RPMs that the spec file in the current
 # directory produces, named exactly the way rpmbuild names them, one per
-# line (e.g. "foo-1.0-1PGDG.f45.x86_64.rpm").
+# line (e.g. "foo-1.0-1PGDG.f45.x86_64.rpm"). --builtrpms leaves out the
+# (sub)packages without a %files section, which rpmbuild does not produce
+# (e.g. the main CGAL package of CGAL56, which only has subpackages).
 # Usage: spec_rpm_files <pgmajorversion>
 spec_rpm_files() {
 	local pg_version="$1"
@@ -161,7 +163,7 @@ spec_rpm_files() {
 	rpmspec "${rpmspec_extra_args[@]}" --define "pgmajorversion ${pg_version}" \
 		--define "pginstdir /usr/pgsql-${pg_version}" \
 		--define "pgpackageversion ${pg_version}" \
-		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null
+		-q --builtrpms --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null
 }
 
 # rpmspec lists a -debuginfo RPM for every arch dependent (sub)package and a
@@ -341,7 +343,7 @@ spec_rpm_patterns() {
 	[ -z "$version_release" ] && return 1
 
 	{
-		rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
+		rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" -q --builtrpms --qf "%{NAME}\n" "$specfile" 2>/dev/null
 		rpmspec "${rpmspec_extra_args[@]}" --srpm "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
 	} | sort -u | while IFS= read -r name; do
 		[ -z "$name" ] && continue
