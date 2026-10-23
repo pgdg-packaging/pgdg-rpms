@@ -15,9 +15,18 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# On RHEL, libbson comes from pgdg-libmongoc (EPEL is not needed), which
+# does not provide its soname; it is found through the rpath:
+%if 0%{?rhel}
+%global __requires_exclude ^libbson-1\\.0\\.so
+%global bson_rpath -Wl,-rpath,%{pgdg_libmongocinstdir}/lib64
+%else
+%global bson_rpath %{nil}
+%endif
+
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	BSON data type for PostgreSQL
 License:	MIT
 URL:		https://github.com/buzzm/%{sname}
@@ -28,7 +37,12 @@ Patch0:		%{sname}-libbson2.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel unzip pkgconfig
 # Not built on SLES and Amazon Linux 2023: they do not ship libbson.
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.3.0 pgdg-libmongoc-devel
+Requires:	pgdg-libmongoc-libs%{?_isa}
+%else
 BuildRequires:	libbson-devel
+%endif
 Requires:	postgresql%{pgmajorversion}-server
 
 %description
@@ -72,6 +86,9 @@ This package provides JIT support for postgresbson
 sed -i 's:^#include "bson.h":#include <bson/bson.h>:' %{pname}.c
 
 %build
+%if 0%{?rhel}
+export PKG_CONFIG_PATH=%{pgdg_libmongocinstdir}/lib64/pkgconfig
+%endif
 # libbson 2.x renamed the pkg-config module and the library:
 if pkg-config --exists bson2; then
 	bsonpc=bson2
@@ -83,7 +100,7 @@ fi
 # to clang when building the bitcode, so use PG_CPPFLAGS instead:
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} \
 	BSON_INCLUDES= PG_CPPFLAGS="$(pkg-config --cflags $bsonpc)" \
-	BSON_SHLIB="$(pkg-config --libs $bsonpc)"
+	BSON_SHLIB="$(pkg-config --libs $bsonpc) %{bson_rpath}"
 
 %install
 %{__rm} -rf %{buildroot}
@@ -104,6 +121,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-2PGDG
+- RHEL: build against the libbson of pgdg-libmongoc (installed under
+  /usr/pgdg-libmongoc), so that postgresbson does not need the EPEL
+  libbson package anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/418

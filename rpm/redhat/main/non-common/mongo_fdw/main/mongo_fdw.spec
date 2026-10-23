@@ -19,6 +19,13 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# On RHEL, mongo-c-driver and libbson come from pgdg-libmongoc (EPEL is not
+# needed), which does not provide their sonames; they are found through the
+# rpath:
+%if 0%{?rhel}
+%global __requires_exclude ^lib(mongoc|bson)-1\\.0\\.so
+%endif
+
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
@@ -36,10 +43,15 @@ Requires:		libsnappy1 libbson-1_0-0 libmongoc-1_0-0 libjson-c5
 BuildRequires:		snappy-devel libbson-1_0-0-devel libmongoc-1_0-0-devel
 %else
 Requires:	snappy
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.3.0 pgdg-libmongoc-devel
+Requires:	pgdg-libmongoc-libs%{?_isa}
+%else
 Requires:	mongo-c-driver-libs libbson
-BuildRequires:	mongo-c-driver-devel snappy-devel json-c-devel
+BuildRequires:	mongo-c-driver-devel libbson-devel
+%endif
+BuildRequires:	snappy-devel json-c-devel
 BuildRequires:	cyrus-sasl-devel krb5-devel
-BuildRequires:	libbson-devel
 %endif
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
@@ -104,6 +116,11 @@ sed -i "s:\(^#include \"bson.h\"\)://\1:g" mongo_wrapper.h
 %endif
 
 export LIBJSON=%{_includedir}/json-c
+%if 0%{?rhel}
+export PKG_CONFIG_PATH=%{pgdg_libmongocinstdir}/lib64/pkgconfig
+sed -i "s:^\(SHLIB_LINK = .*\)$:\1 -Wl,-rpath,%{pgdg_libmongocinstdir}/lib64:" Makefile
+grep -q '^SHLIB_LINK = .*-Wl,-rpath,%{pgdg_libmongocinstdir}/lib64$' Makefile
+%endif
 
 PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
 
@@ -141,6 +158,10 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
   dropped the llvm BuildRequires/subpackage/files while the build still
   invoked clang regardless, per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/51
+- RHEL: build against pgdg-libmongoc (installed under /usr/pgdg-libmongoc),
+  so that mongo_fdw does not need the EPEL mongo-c-driver and libbson
+  packages anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Mon Aug 24 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.3-5PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023

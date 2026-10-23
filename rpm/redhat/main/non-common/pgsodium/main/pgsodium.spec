@@ -14,6 +14,18 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# On RHEL, libsodium comes from pgdg-libsodium (EPEL is not needed), which
+# does not provide its soname; it is found through the rpath. The Makefile
+# sets these variables, so override them on the make command line:
+%if 0%{?rhel}
+%global __requires_exclude ^libsodium\\.so
+%global sodium_includedir %{pgdg_libsodiuminstdir}/include
+%global sodium_make_args PG_CPPFLAGS="-O0 -I%{sodium_includedir}" SHLIB_LINK="-L%{pgdg_libsodiuminstdir}/lib64 -Wl,-rpath,%{pgdg_libsodiuminstdir}/lib64 -lsodium"
+%else
+%global sodium_includedir %{_includedir}
+%global sodium_make_args %{nil}
+%endif
+
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.11
@@ -22,18 +34,24 @@ License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
 # The ipcrypt functions need libsodium 1.0.21 or newer. Build them as stubs that
-# raise an error with an older libsodium (RHEL 8 and 9, SLES 15), so that the
+# raise an error with an older libsodium (SLES 15), so that the
 # rest of pgsodium can still be built there. From upstream PR
 # https://github.com/michelp/pgsodium/pull/125 ; remove when it is released:
 Patch0:		%{sname}-ipcrypt-old-libsodium.patch
-BuildRequires:	postgresql%{pgmajorversion}-devel libsodium-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.3.0 pgdg-libsodium-devel
+Requires:	pgdg-libsodium%{?_isa}
+%else
+BuildRequires:	libsodium-devel
+%endif
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 BuildRequires:	pgtap_%{pgmajorversion}
 %endif
 
-%if 0%{?fedora} || 0%{?rhel}
+%if 0%{?fedora}
 Requires:	libsodium
 %endif
 %if 0%{?suse_version} == 1500
@@ -85,10 +103,10 @@ This package provides JIT support for pgsodium
 
 %build
 
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{sodium_make_args}
 
 %install
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{sodium_make_args} install DESTDIR=%{buildroot}
 # Install documentation with a better name:
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__cp} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
@@ -102,7 +120,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %pgdg_check_init
 mkdir -p tmp_check
 # Without the ipcrypt functions of libsodium (see Patch0), skip their tests:
-if ! grep -qs '^#define crypto_ipcrypt_KEYBYTES' %{_includedir}/sodium/crypto_ipcrypt.h; then
+if ! grep -qs '^#define crypto_ipcrypt_KEYBYTES' %{sodium_includedir}/sodium/crypto_ipcrypt.h; then
 	sed -i '/^\\ir ipcrypt\.sql$/d' test/test.sql
 	if grep -q 'ipcrypt\.sql' test/test.sql; then exit 1; fi
 fi
@@ -136,6 +154,10 @@ pg_prove -d postgres -p $(pgdg_check_port plain) test/test.sql
 - Use the patch from upstream PR https://github.com/michelp/pgsodium/pull/125
   to build the ipcrypt functions as stubs with libsodium older than 1.0.21,
   instead of our own one, which does the same.
+- RHEL: build against pgdg-libsodium 1.0.22 (installed under
+  /usr/pgdg-libsodium), so that pgsodium does not need the EPEL libsodium
+  package anymore. This also enables the ipcrypt functions on RHEL 8 and 9.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-6PGDG
 - Add %%check, running the pgTAP tests of upstream with pg_prove and the

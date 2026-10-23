@@ -14,6 +14,12 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# On RHEL, uriparser comes from pgdg-uriparser (EPEL is not needed), which
+# does not provide its soname; it is found through the rpath:
+%if 0%{?rhel}
+%global __requires_exclude ^liburiparser\\.so
+%endif
+
 Summary:	uri type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.20251029
@@ -22,8 +28,15 @@ License:	BSD
 Source0:	https://github.com/petere/%{sname}/archive/%{version}.tar.gz
 Patch0:		%{sname}-fix-pg_cppflags.patch
 URL:		https://github.com/petere/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel uriparser-devel
-Requires:	postgresql%{pgmajorversion}-server uriparser
+BuildRequires:	postgresql%{pgmajorversion}-devel
+Requires:	postgresql%{pgmajorversion}-server
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.1.0 pgdg-uriparser-devel
+Requires:	pgdg-uriparser%{?_isa}
+%else
+BuildRequires:	uriparser-devel
+Requires:	uriparser
+%endif
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 %endif
@@ -76,6 +89,11 @@ This package provides JIT support for pguri
 
 %build
 #export PG_CPPFLAGS="$PG_CPPFLAGS -Wno-int-conversion"
+%if 0%{?rhel}
+export PKG_CONFIG_PATH=%{pgdg_uriparserinstdir}/lib64/pkgconfig
+# The Makefile appends the pkg-config flags to this:
+export SHLIB_LINK="-Wl,-rpath,%{pgdg_uriparserinstdir}/lib64"
+%endif
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
 
 %install
@@ -110,6 +128,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
   with --define 'runselftest 1'.
+- RHEL: build against pgdg-uriparser (installed under /usr/pgdg-uriparser),
+  so that pguri does not need the EPEL uriparser package anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.20251029-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass

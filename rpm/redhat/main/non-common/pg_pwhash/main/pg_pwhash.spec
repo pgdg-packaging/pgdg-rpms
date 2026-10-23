@@ -2,6 +2,13 @@
 
 %{!?runselftest:%global runselftest 0}
 
+# On RHEL, libargon2 and libscrypt come from pgdg-libargon2 and
+# pgdg-libscrypt (EPEL is not needed), which do not provide their sonames;
+# they are found through the rpath:
+%if 0%{?rhel}
+%global __requires_exclude ^lib(argon2|scrypt)\\.so
+%endif
+
 Summary:	A PostgreSQL extension which provides advanced password hashing methods based on adaptive implementations.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
@@ -24,7 +31,11 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} <= 9
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.3.0
+BuildRequires:	pgdg-libargon2-devel pgdg-libscrypt-devel
+Requires:	pgdg-libargon2%{?_isa} pgdg-libscrypt%{?_isa}
+%else
 Requires:	libscrypt
 BuildRequires:	libscrypt-devel
 %endif
@@ -32,7 +43,7 @@ BuildRequires:	libscrypt-devel
 BuildRequires:	argon2-devel libscrypt-devel
 Requires:	libargon2-1 libscrypt0
 %endif
-%if 0%{?fedora} >= 41 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 41
 BuildRequires:	libargon2-devel
 Requires:	libargon2
 %endif
@@ -50,6 +61,10 @@ requirements are met:
 
 %build
 export PATH=%{pginstdir}/bin:$PATH
+%if 0%{?rhel}
+export CFLAGS="%{build_cflags} -I%{pgdg_libargon2instdir}/include -I%{pgdg_libscryptinstdir}/include"
+export LDFLAGS="%{build_ldflags} -L%{pgdg_libargon2instdir}/lib64 -L%{pgdg_libscryptinstdir}/lib64 -Wl,-rpath,%{pgdg_libargon2instdir}/lib64:%{pgdg_libscryptinstdir}/lib64"
+%endif
 %{__install} -d build
 %meson
 %meson_build
@@ -83,6 +98,11 @@ export PATH=%{pginstdir}/bin:$PATH
   with --define 'runselftest 1'.
 - Add gcc to BuildRequires: the meson build needs a C compiler, which
   nothing else pulls in, so the build failed in a clean build root.
+- RHEL: build against pgdg-libargon2 and pgdg-libscrypt (installed under
+  /usr/pgdg-libargon2 and /usr/pgdg-libscrypt), so that pg_pwhash does not
+  need the EPEL libargon2 and libscrypt packages anymore. This also enables
+  the libscrypt support on RHEL 10, where EPEL does not have libscrypt. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-3PGDG
 - Add missing meson BR, as the spec uses %%meson and %%meson_build.
