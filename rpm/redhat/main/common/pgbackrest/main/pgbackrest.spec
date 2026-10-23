@@ -3,10 +3,16 @@
 
 %{!?runselftest:%global runselftest 0}
 
+# On RHEL, libssh2 comes from pgdg-libssh2 (EPEL is not needed), which does
+# not provide its soname; it is found through the rpath:
+%if 0%{?rhel}
+%global __requires_exclude ^libssh2\\.so
+%endif
+
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.60.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -16,7 +22,13 @@ Source4:	%{name}.service
 Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
 
-BuildRequires:	gcc libpq5-devel libssh2-devel libxml2-devel
+BuildRequires:	gcc libpq5-devel libxml2-devel
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.2.0 pgdg-libssh2-devel
+Requires:	pgdg-libssh2%{?_isa}
+%else
+BuildRequires:	libssh2-devel
+%endif
 BuildRequires:	libzstd-devel meson zlib-devel
 %if %runselftest
 # The smoke test runs a backup/restore cycle against the PostgreSQL it finds
@@ -32,8 +44,11 @@ Requires:	openssl-libs >= 1.1.1k systemd-libs
 BuildRequires:	openssl-devel
 %endif
 
+%if 0%{?fedora} >= 42
+Requires:	libssh2
+%endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
-Requires:	lz4-libs libzstd libssh2
+Requires:	lz4-libs libzstd
 BuildRequires:	lz4-devel bzip2-devel ninja-build
 %endif
 %if 0%{?suse_version} && 0%{?suse_version} >= 1500
@@ -66,7 +81,12 @@ are required to perform a backup which increases security.
 
 %build
 %{__install} -d build
-%meson
+%if 0%{?rhel}
+export PKG_CONFIG_PATH=%{pgdg_libssh2instdir}/lib64/pkgconfig
+export LDFLAGS="%{build_ldflags} -Wl,-rpath,%{pgdg_libssh2instdir}/lib64"
+%endif
+# Fail, rather than silently building without SFTP support:
+%meson -Dlibssh2=enabled
 %meson_build
 
 %install
@@ -141,6 +161,11 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.0-2PGDG
+- RHEL: build against pgdg-libssh2 (installed under /usr/pgdg-libssh2),
+  so that pgBackRest does not need the EPEL libssh2 package anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.0-1PGDG
 - Update to 2.60.0 per changes described at:
   https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.60.0
