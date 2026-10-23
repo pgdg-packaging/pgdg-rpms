@@ -19,7 +19,12 @@ License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
 Source2:	%{sname}.service
 URL:		https://powa.readthedocs.io/
-Requires:	python3-tornado python3-sqlalchemy
+# It runs with Python 3.12 on RHEL 8:
+%if 0%{?rhel} == 8
+Requires:	python3.12-tornado python3.12-psycopg2
+%else
+Requires:	python3-tornado python3-psycopg2
+%endif
 
 Requires:		systemd
 Requires(post):		systemd
@@ -78,7 +83,11 @@ This is the user interface of POWA.
 %changelog
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-5PGDG
 - RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
-  build with Python 3.12 there, not with the default python3 (3.6). Per
+  build with Python 3.12 there, not with the default python3 (3.6), and
+  require the python3.12 tornado and psycopg2 packages there, as it runs
+  with Python 3.12.
+- Require psycopg2, which powa-web uses, and not SQLAlchemy, which it has not
+  used since 5.0. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-4PGDG

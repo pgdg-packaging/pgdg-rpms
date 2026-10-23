@@ -37,8 +37,13 @@ BuildRequires:	python3-devel python3-pip python3-setuptools
 
 BuildRequires:	python3-six >= 1.4
 
+# The client runs with Python 3.12 on RHEL 8:
+%if 0%{?rhel} == 8
+Requires:	python3.12 python3.12-psycopg2
+%else
 Requires:	python3
 Requires:	python3-psycopg2
+%endif
 Obsoletes:	%{sname}_18-client < 4.2.5-5 %{sname}_17-client < 4.2.5-5
 Obsoletes:	%{sname}_16-client < 4.2.5-5 %{sname}_15-client < 4.2.5-5
 Obsoletes:	%{sname}_14-client < 4.2.5-5
@@ -71,8 +76,9 @@ cd ..
 %changelog
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-9PGDG
 - RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
-  build with Python 3.12 there, not with the default python3 (3.6). Per
-  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+  build with Python 3.12 there, not with the default python3 (3.6), and
+  require python3.12-psycopg2 there, as the client runs with Python 3.12.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-8PGDG
 - Add missing BR

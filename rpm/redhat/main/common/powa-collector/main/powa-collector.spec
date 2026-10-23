@@ -26,7 +26,12 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
+# The collector runs with Python 3.12 on RHEL 8:
+%if 0%{?rhel} == 8
+Requires:	python3.12-psycopg2
+%else
 Requires:	python3-psycopg2
+%endif
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 Requires(post):		systemd
@@ -87,8 +92,9 @@ database (in the powa_servers table).
 %changelog
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-5PGDG
 - RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
-  build with Python 3.12 there, not with the default python3 (3.6). Per
-  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+  build with Python 3.12 there, not with the default python3 (3.6), and
+  require python3.12-psycopg2 there, as the collector runs with Python 3.12.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-4PGDG
 - Add missing BR
