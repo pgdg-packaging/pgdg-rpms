@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.2.0
+Version:	2.3.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,14 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-1PGDG
+- Update to 2.3.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.3.0
+- Adds the install prefixes of pgdg-libargon2, pgdg-libmongoc,
+  pgdg-libscrypt and pgdg-libsodium, which replace EPEL packages for
+  pg_pwhash, mongo_fdw, postgresbson and pgsodium on RHEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-1PGDG
 - Update to 2.2.0 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.2.0
