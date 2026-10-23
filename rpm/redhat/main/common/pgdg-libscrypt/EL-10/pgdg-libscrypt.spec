@@ -1,0 +1,1 @@
+../main/pgdg-libscrypt.spec

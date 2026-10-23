@@ -1,0 +1,42 @@
+From da48d4408fb5364ab20ef98696bb5b0f0388f6f9 Mon Sep 17 00:00:00 2001
+From: Sam James <sam@gentoo.org>
+Date: Wed, 27 Nov 2024 03:09:46 +0000
+Subject: [PATCH 2/3] b64: fix -Wold-style-definition
+
+Drop K&R decls. Most of the codebase uses ISO decls anyway.
+---
+ b64.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/b64.c b/b64.c
+index b797dd0..4ebbd9a 100644
+--- a/b64.c
++++ b/b64.c
+@@ -120,11 +120,7 @@ static const char Pad64 = '=';
+ */
+ 
+ int
+-libscrypt_b64_encode(src, srclength, target, targsize)
+-	unsigned char const *src;
+-	size_t srclength;
+-	char *target;
+-	size_t targsize;
++libscrypt_b64_encode(unsigned char const *src, size_t srclength, char *target, size_t targsize)
+ {
+ 	size_t datalength = 0;
+ 	unsigned char input[3];
+@@ -184,10 +180,7 @@ libscrypt_b64_encode(src, srclength, target, targsize)
+  */
+ 
+ int
+-libscrypt_b64_decode(src, target, targsize)
+-	char const *src;
+-	unsigned char *target;
+-	size_t targsize;
++libscrypt_b64_decode(char const *src, unsigned char *target, size_t targsize)
+ {
+ 	int state, ch;
+     unsigned int tarindex;
+-- 
+2.53.0
+
