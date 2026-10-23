@@ -1,0 +1,89 @@
+# Mock-build the packages changed on a ci/<name> branch.
+#
+# Work in progress is pushed to a ci/<name> branch on git.postgresql.org;
+# the GitHub mirror copies it here, and this workflow builds every package
+# changed against master with the matrix from scripts/ci/mock-ci-matrix.py.
+# A "CI-Packages: pkg1 pkg2" trailer in the last commit overrides the list.
+#
+# Per https://github.com/pgdg-packaging/pgdg-rpms/issues/442
+
+name: mock build
+
+on:
+  push:
+    branches:
+      - 'ci/**'
+
+env:
+  PGDG_REPO_RPM: https://download.postgresql.org/pub/repos/yum/reporpms/F-44-x86_64/pgdg-fedora-repo-latest.noarch.rpm
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    container: fedora:44
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Install tools
+        run: |
+          dnf -y install git python3 $PGDG_REPO_RPM
+          dnf -y --disablerepo='pgdg[0-9]*' install pgdg-mock-configs
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: matrix
+        name: Compute the build matrix
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch origin master
+          # A "CI-Packages: pkg1 pkg2" trailer in the last commit builds
+          # those packages instead of the changed ones.
+          pkgs=$(git log -1 --format='%(trailers:key=CI-Packages,valueonly,separator=%x20)')
+          matrix=$(python3 scripts/ci/mock-ci-matrix.py --base origin/master $pkgs)
+          echo "$matrix" | python3 -m json.tool
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: matrix
+    if: fromJSON(needs.matrix.outputs.matrix).include[0] != null
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.matrix.outputs.matrix) }}
+    name: ${{ matrix.package }} ${{ matrix.distro }} PG${{ matrix.pg }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+            /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          df -h /
+      - uses: actions/checkout@v4
+      - name: Mock build
+        run: |
+          docker run --rm --privileged -v "$GITHUB_WORKSPACE:/src" -w /src \
+            -e PGDG_REPO_RPM fedora:44 bash -c '
+              set -e
+              dnf -y install git mock rpmdevtools podman $PGDG_REPO_RPM
+              dnf -y --disablerepo="pgdg[0-9]*" install pgdg-mock-configs pgdg-srpm-macros
+              git config --global --add safe.directory /src
+              scripts/ci/mock-ci-build.sh "${{ matrix.package }}" \
+                "${{ matrix.distro }}" "${{ matrix.pg }}" /src/ci-result
+            '
+      - name: Summary
+        if: always()
+        run: |
+          if ls ci-result/*.rpm 2>/dev/null | grep -qv 'src\.rpm$'; then
+            result=PASS
+          else
+            result=FAIL
+          fi
+          echo "**$result**: ${{ matrix.package }} on ${{ matrix.distro }}, PG${{ matrix.pg }}" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ${{ matrix.package }}-${{ matrix.distro }}-pg${{ matrix.pg }}
+          path: |
+            ci-result/*.log
+            ci-result/*.rpm
+          retention-days: 7
