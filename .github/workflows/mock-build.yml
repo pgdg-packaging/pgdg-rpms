@@ -4,6 +4,7 @@
 # the GitHub mirror copies it here, and this workflow builds every package
 # changed against master with the matrix from scripts/ci/mock-ci-matrix.py.
 # A "CI-Packages: pkg1 pkg2" trailer in the last commit overrides the list.
+# The results are posted on the issues the commits refer to.
 #
 # Per https://github.com/pgdg-packaging/pgdg-rpms/issues/442
 
@@ -87,3 +88,48 @@ jobs:
             ci-result/*.log
             ci-result/*.rpm
           retention-days: 7
+
+  # Post the results on the issues the branch's commits refer to with
+  # "Per https://github.com/<this repo>/issues/<n>".
+  report:
+    needs: [matrix, build]
+    if: always() && fromJSON(needs.matrix.outputs.matrix).include[0] != null
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Comment on the related issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch origin master
+          issues=$(git log --format=%B origin/master..HEAD |
+            grep -oE "https://github\.com/$GITHUB_REPOSITORY/issues/[0-9]+" |
+            sed 's|.*/||' | sort -un)
+          if [ -z "$issues" ]; then
+            echo "No related issues in the commit messages."
+            exit 0
+          fi
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs" \
+            --jq '.jobs[] | select(.name != "matrix" and .name != "report") | [.name, .conclusion, .html_url] | @tsv' \
+            > jobs.tsv
+          total=$(wc -l < jobs.tsv)
+          passed=$(awk -F'\t' '$2 == "success"' jobs.tsv | wc -l)
+          {
+            echo "Mock builds for \`${GITHUB_REF_NAME}\` ($(git rev-parse --short HEAD)): $passed of $total passed. [Run]($run_url)"
+            if [ "$passed" -ne "$total" ]; then
+              echo
+              echo "Failed:"
+              awk -F'\t' '$2 != "success" { printf "- [%s](%s): %s\n", $1, $3, $2 }' jobs.tsv
+            fi
+          } > comment.md
+          cat comment.md
+          for n in $issues; do
+            gh issue comment "$n" -R "$GITHUB_REPOSITORY" --body-file comment.md
+          done
