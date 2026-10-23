@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.1.0
+Version:	2.2.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,14 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-1PGDG
+- Update to 2.2.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.2.0
+- Adds the install prefix of pgdg-libssh2, which replaces the EPEL libssh2
+  package for pgBackRest on RHEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- Removes the OGDI macros, as the ogdi41 package is obsolete.
+
 * Thu Oct 22 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.0-1PGDG
 - Update to 2.1.0 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.1.0
