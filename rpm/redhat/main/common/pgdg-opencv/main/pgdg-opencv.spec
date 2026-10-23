@@ -15,6 +15,15 @@
 %undefine __cmake_in_source_build
 %endif
 
+# The SSE baseline options are x86 only; OpenCV fails to configure on the
+# other architectures with them ("Required baseline optimization is not
+# supported: SSE2"), and picks their own baseline (e.g. VSX, NEON) instead.
+%ifarch x86_64
+%global		cpu_baseline_opts -DCPU_BASELINE_DISABLE=SSE3 -DCPU_BASELINE_REQUIRE=SSE2
+%else
+%global		cpu_baseline_opts %{nil}
+%endif
+
 Name:		pgdg-%{sname}
 Version:	4.14.0
 Release:	1PGDG%{?dist}
@@ -88,7 +97,7 @@ will use the OpenCV library.
 	-DWITH_PROTOBUF:BOOL=OFF -DWITH_OPENCL:BOOL=OFF -DWITH_LAPACK:BOOL=OFF \
 	-DWITH_CAROTENE:BOOL=OFF -DWITH_KLEIDICV:BOOL=OFF \
 	-DOPENCV_DOWNLOAD_TRIES_LIST=0 \
-	-DCPU_BASELINE_DISABLE=SSE3 -DCPU_BASELINE_REQUIRE=SSE2
+	%{cpu_baseline_opts}
 %cmake_build
 
 %install
