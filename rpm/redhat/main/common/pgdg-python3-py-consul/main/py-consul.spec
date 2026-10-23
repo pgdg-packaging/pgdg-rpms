@@ -49,6 +49,11 @@ BuildArch:	noarch
 
 Obsoletes:	python3-consul <= 1.1.0-42
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
+# The python3.12 packages of RHEL 8 get no automatic python3.12dist()
+# requires:
+%if 0%{?rhel} == 8
+Requires:	python3.12-requests >= 2.0
+%endif
 
 %description
 Python client for Consul
@@ -75,7 +80,9 @@ Python client for Consul
 %changelog
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-48PGDG
 - Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
-  (68) cannot build wheels without it. Per
+  (68) cannot build wheels without it.
+- RHEL 8: require python3.12-requests, which the module imports: the
+  python3.12 packages there get no automatic requires. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-47PGDG
