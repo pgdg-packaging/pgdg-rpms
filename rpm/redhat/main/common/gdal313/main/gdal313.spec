@@ -74,7 +74,7 @@
 
 Name:		%{sname}313
 Version:	%{gdalmajorversion}.3
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -493,6 +493,9 @@ export PKG_CONFIG_PATH LDFLAGS
  -DSPATIALITE_LIBRARY=%{libspatialiteinstdir}/lib/libspatialite.so \
  -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}${PGDGPREFIXES}" \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
+%if 0%{?rhel} >= 9
+ -DCMAKE_CXX_STANDARD=20 \
+%endif
 %if %gdal_python_enabled
   -DBUILD_PYTHON_BINDINGS:BOOL=ON \
   -DPython_ROOT=/usr \
@@ -639,6 +642,12 @@ done
 %endif
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-9PGDG
+- Build with C++20 on RHEL 9 and 10: the headers of Arrow 26
+  (pgdg-libarrow) need it, and GDAL defaults to C++17, which broke
+  the Arrow and Parquet drivers. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-8PGDG
 - RHEL: build against our pgdg-* packages (armadillo, cfitsio, freexl,
   hdf, hdf5, libarrow, libdeflate, libgta, libkml, netcdf, qhull on RHEL 10,
