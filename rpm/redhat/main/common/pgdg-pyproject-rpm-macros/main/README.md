@@ -163,43 +163,6 @@ The `%pyproject_buildrequires` macro also accepts the `-r` flag for backward com
 it means "include runtime dependencies" which has been the default since version 0-53.
 
 
-Passing config settings to build backends
------------------------------------------
-
-The `%pyproject_buildrequires` and `%pyproject_wheel` macros accept a `-C` flag
-to pass [configuration settings][config_settings] to the build backend.
-Options take the form of `-C KEY`, `-C KEY=VALUE`, or `-C--option-with-dashes`.
-Pass `-C` multiple times to specify multiple options.
-This option is equivalent to pip's `--config-settings` flag.
-These are passed on to PEP 517 hooks' `config_settings` argument as a Python
-dictionary.
-
-The `%pyproject_buildrequires` macro passes these options to the
-`get_requires_for_build_wheel` and `prepare_metadata_for_build_wheel` hooks.
-Passing `-C` to `%pyproject_buildrequires` is incompatible with `-N` which does
-not call these hooks at all.
-
-The `%pyproject_wheel` macro passes these options to the `build_wheel` hook.
-
-Consult the project's upstream documentation and/or the corresponding build
-backend's documentation for more information.
-Note that some projects don't use config settings at all
-and other projects may only accept config settings for one of the two steps.
-
-Note that the current implementation of the macros uses `pip` to build wheels.
-On some systems (notably on RHEL 9 with Python 3.9),
-`pip` is too old to understand `--config-settings`.
-Using the `-C` option for `%pyproject_wheel` (or `%pyproject_buildrequires -w`)
-is not supported there and will result to an error like:
-
-    Usage:   
-      /usr/bin/python3 -m pip wheel [options] <requirement specifier> ...
-      ...
-    no such option: --config-settings
-
-[config_settings]: https://peps.python.org/pep-0517/#config-settings
-
-
 Running tox based tests
 -----------------------
 
@@ -288,6 +251,12 @@ However, in Fedora packages, always list executables explicitly to avoid uninten
 and  language (`*.mo`) files with `%lang` macro and appropriate language code.
 Only license files declared via [PEP 639] `License-File` field are detected.
 [PEP 639] is still a draft and can be changed in the future.
+It is possible to use the `-l` flag to declare that a missing license should
+terminate the build or `-L` (the default) to explicitly disable this check.
+Packagers are encouraged to use the `-l` flag when the `%license` file is not manually listed in `%files`
+to avoid accidentally losing the file in a future version.
+When the `%license` file is manually listed in `%files`,
+packagers can use the `-L` flag to ensure future compatibility in case the `-l` behavior eventually becomes a default.
 
 Note that `%pyproject_save_files` uses data from the [RECORD file](https://www.python.org/dev/peps/pep-0627/).
 If you wish to rename, remove or otherwise change the installed files of a package
@@ -341,6 +310,12 @@ The reason should be documented in a comment.
 The `%pyproject_check_import` macro also accepts positional arguments with
 additional qualified module names to check, useful for example if some modules are installed manually.
 Note that filtering by `-t`/`-e` also applies to the positional arguments.
+
+Another macro, `%_pyproject_check_import_allow_no_modules` allows to pass the import check,
+even if no Python modules are detected in the package.
+This may be a valid case for packages containing e.g. typing stubs.
+Don't use this macro in Fedora packages.
+It's only intended to be used in automated build environments such as Copr.
 
 
 Generating Extras subpackages
