@@ -61,11 +61,7 @@
 %{!?sfcgal:%global	sfcgal 1}
 %endif
 %if 0%{?rhel} == 8
-%ifarch ppc64 ppc64le
-%{!?sfcgal:%global	sfcgal 0}
-%else
 %{!?sfcgal:%global	sfcgal 1}
-%endif
 %endif
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
@@ -76,7 +72,7 @@ Summary:	Geographic Information Systems Extensions to PostgreSQL
 
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.4
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -310,6 +306,8 @@ autoconf
 %endif
 %if %{sfcgal}
 	--with-sfcgal=%{_bindir}/sfcgal-config \
+%else
+	--without-sfcgal \
 %endif
 %if %{shp2pgsqlgui}
 	--with-gui \
@@ -479,6 +477,12 @@ fi
 %endif
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.4-8PGDG
+- Enable SFCGAL support on RHEL 8 - ppc64le, which now has SFCGAL 1.5.
+- Pass --without-sfcgal to configure when building without SFCGAL, so that
+  it does not pick up an installed SFCGAL by itself.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.4-7PGDG
 - Remove the hdf5 and xerces-c dependencies, which PostGIS does not use.
 - RHEL 10: build the GUI against our pgdg-gtk2 package, as RHEL 10 does not
