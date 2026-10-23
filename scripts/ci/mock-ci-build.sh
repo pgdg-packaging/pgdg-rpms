@@ -4,7 +4,8 @@
 #
 # Build the SRPM of a PGDG package from its OS directory (as the builders
 # do, so a missing patch symlink there fails here too) and mock-build it
-# with the pgdg-<distro>-pg<NN>-x86_64 config.
+# with the pgdg-<distro>-pg<NN>-x86_64 config, with runselftest enabled so
+# that %check runs.
 #
 # Runs as root in a privileged Fedora container on GitHub Actions; see
 # .github/workflows/mock-build.yml. Needs mock, rpmdevtools,
@@ -62,11 +63,19 @@ rpmbuild --define "_sourcedir $PWD" --define "_specdir $PWD" \
     --define "_builddir $PWD" --define "_srcrpmdir $RESULT_DIR/srpm" \
     --define "_buildrootdir $RESULT_DIR/BUILDROOT" \
     --define "pgmajorversion $PGVER" --define "pginstdir /usr/pgsql-$PGVER" \
-    --define "pgpackageversion $PGVER" \
+    --define "pgpackageversion $PGVER" --define "runselftest 1" \
     --nodeps -bs "$SPECFILE"
 
 MOCK_ARGS=(-r "pgdg-${DISTRO}-pg${PGVER}-x86_64" --resultdir "$RESULT_DIR"
-           --isolation=simple)
+           --isolation=simple --define "runselftest 1")
+
+# Mock builds as the user who runs it, and the test suites refuse to run
+# as root, so run mock as an unprivileged member of the mock group.
+if ! id mockci >/dev/null 2>&1; then
+    useradd -m -G mock mockci
+fi
+chown -R mockci: "$RESULT_DIR"
+MOCK=(runuser -u mockci -- mock)
 
 # Fedora 45 packages are only in the testing repos for now.
 if [ "$DISTRO" = "fedora-45" ]; then
@@ -75,7 +84,7 @@ if [ "$DISTRO" = "fedora-45" ]; then
 fi
 
 SRPM="$(ls "$RESULT_DIR"/srpm/*.src.rpm)"
-if mock "${MOCK_ARGS[@]}" --rebuild "$SRPM"; then
+if "${MOCK[@]}" "${MOCK_ARGS[@]}" --rebuild "$SRPM"; then
     exit 0
 fi
 
@@ -88,6 +97,6 @@ if [ -z "$OSPYTHON" ]; then
     exit 1
 fi
 echo "=== $OSPYTHON is needed at spec parse time; retrying with it installed ==="
-mock "${MOCK_ARGS[@]}" --init
-mock "${MOCK_ARGS[@]}" --install "$OSPYTHON"
-mock "${MOCK_ARGS[@]}" --no-clean --rebuild "$SRPM"
+"${MOCK[@]}" "${MOCK_ARGS[@]}" --init
+"${MOCK[@]}" "${MOCK_ARGS[@]}" --install "$OSPYTHON"
+"${MOCK[@]}" "${MOCK_ARGS[@]}" --no-clean --rebuild "$SRPM"
