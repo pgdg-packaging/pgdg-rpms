@@ -5,7 +5,7 @@
 
 Name:		powa-collector
 Version:	1.3.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -13,7 +13,11 @@ Source0:	https://github.com/powa-team/%{name}/archive/%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	%{sname}-tmpfiles.d
 
+%if 0%{?rhel} == 8
+BuildRequires:	python3.12-devel python3.12-pip python3.12-setuptools python3.12-wheel
+%else
 BuildRequires:	python3-devel python3-wheel python3-pip python3-setuptools
+%endif
 BuildRequires:		systemd systemd-devel systemd-rpm-macros
 
 %if 0%{?suse_version} >= 1500
@@ -81,6 +85,11 @@ database (in the powa_servers table).
 %{python3_sitelib}/%{pname}-%{version}.dist-info/
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-5PGDG
+- RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
+  build with Python 3.12 there, not with the default python3 (3.6). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-4PGDG
 - Add missing BR
 

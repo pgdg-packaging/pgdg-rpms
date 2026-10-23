@@ -30,7 +30,7 @@
 
 Name:		ydiff
 Version:	1.4.2
-Release:	55PGDG%{?dist}
+Release:	56PGDG%{?dist}
 Summary:	View colored, incremental diff
 URL:		https://github.com/ymattw/%{name}
 License:	BSD
@@ -47,6 +47,7 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 
 BuildArch:	noarch
@@ -55,9 +56,6 @@ Requires:	less
 Requires:	python%{python3_pkgversion}-%{name}
 
 Provides:	python%{python3_pkgversion}dist(ydiff)
-%if 0%{?amzn} == 2023
-Provides:	python%{python3_pkgversion}-ydiff
-%endif
 
 %description
 Term based tool to view colored, incremental diff in a Git/Mercurial/Svn
@@ -66,6 +64,8 @@ pager support.
 
 %package -n	python3-%{name}
 Summary:	%{summary}
+# ydiff requires the module under this name:
+Provides:	python%{python3_pkgversion}-%{name} = %{version}-%{release}
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1500
 %{?python_provide:%python_provide python3-%{name}}
 %endif
@@ -93,6 +93,14 @@ Python library that implements API used by ydiff tool.
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-56PGDG
+- Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
+  (68) cannot build wheels without it.
+- Provide python%%{python3_pkgversion}-ydiff in the python3-ydiff
+  subpackage, which ydiff requires: nothing provided it on RHEL 8 and 9,
+  and on Amazon Linux 2023 ydiff provided it itself, so the module was not
+  installed. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.2-55PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per

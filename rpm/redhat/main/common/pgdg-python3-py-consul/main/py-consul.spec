@@ -25,7 +25,7 @@
 
 Name:		py-consul
 Version:	1.7.1
-Release:	47PGDG%{?dist}
+Release:	48PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -42,6 +42,7 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 
 BuildArch:	noarch
@@ -72,6 +73,11 @@ Python client for Consul
 %{python3_sitelib}/consul/
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-48PGDG
+- Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
+  (68) cannot build wheels without it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-47PGDG
 - Package the consul directory itself, so that the __pycache__ files
   that SLES 16 creates are packaged, too. Per

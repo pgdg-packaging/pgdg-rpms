@@ -22,7 +22,7 @@
 
 Name:		python%{python3_pkgversion}-six
 Version:	1.17.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	Python 2 and 3 compatibility utilities
 
 License:	MIT
@@ -34,6 +34,7 @@ BuildArch:	noarch
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -63,6 +64,11 @@ of writing Python code that is compatible on both Python versions.}
 %pycached %{python3_sitelib}/six.py
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-6PGDG
+- Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
+  (68) cannot build wheels without it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.17.0-5PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)

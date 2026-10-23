@@ -33,7 +33,7 @@
 
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	9PGDG%{dist}
+Release:	10PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
@@ -50,6 +50,7 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 Requires:	nagios-plugins
 Provides:	%{sname} = %{version}
@@ -76,6 +77,11 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-10PGDG
+- Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
+  (68) cannot build wheels without it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-9PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per

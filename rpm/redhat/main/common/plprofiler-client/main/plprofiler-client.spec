@@ -11,7 +11,7 @@
 
 Name:		%{sname}-client
 Version:	%{ppmajorver}.5
-Release:	8PGDG%{dist}
+Release:	9PGDG%{dist}
 Summary:	Command Line Tool for the PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -28,7 +28,11 @@ BuildRequires:	pyproject-rpm-macros
 # on RHEL/Fedora; pyproject-rpm-macros alone does not. Without it,
 # neither python(abi) nor python3dist(...) get generated. Per
 # https://github.com/pgdg-packaging/pgdg-rpms/issues/228
+%if 0%{?rhel} == 8
+BuildRequires:	python3.12-devel python3.12-pip python3.12-setuptools python3.12-wheel
+%else
 BuildRequires:	python3-devel python3-pip python3-setuptools
+%endif
 %endif
 
 BuildRequires:	python3-six >= 1.4
@@ -65,6 +69,11 @@ cd ..
 %{python3_sitelib}/%{sname}/lib/*
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-9PGDG
+- RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
+  build with Python 3.12 there, not with the default python3 (3.6). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-8PGDG
 - Add missing BR
 

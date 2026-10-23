@@ -35,7 +35,7 @@
 
 Name:		python%{python3_pkgversion}-systemd
 Version:	235
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 Summary:	Python module wrapping libsystemd functionality
 
 License:	LGPL-2.1-or-later
@@ -48,6 +48,7 @@ BuildRequires:	make gcc systemd-devel
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -82,6 +83,11 @@ sed -i 's/py\.test/pytest/' Makefile
 %{python3_sitearch}/systemd_python-%{version}.dist-info
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 235-46PGDG
+- Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
+  (68) cannot build wheels without it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 235-45PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
