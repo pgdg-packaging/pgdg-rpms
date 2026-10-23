@@ -93,7 +93,7 @@ BuildRequires:	ant
 BuildRequires:	pgdg-armadillo-devel pgdg-cfitsio-devel pgdg-freexl-devel
 BuildRequires:	pgdg-hdf-devel pgdg-hdf5-devel pgdg-libdeflate-devel
 BuildRequires:	pgdg-libgta-devel pgdg-netcdf-devel pgdg-xerces-c-devel
-%ifnarch %{ppc64le}
+%ifnarch ppc64le
 BuildRequires:	pgdg-libarrow-devel
 %endif
 %else
@@ -117,7 +117,7 @@ BuildRequires:	jpackage-utils
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
 %if ! 0%{?rhel}
-%ifnarch %{ppc64le}
+%ifnarch ppc64le
 %if 0%{?fedora}
 BuildRequires:	libarrow-devel
 %endif
@@ -272,7 +272,7 @@ Requires:	pgdg-armadillo%{?_isa} pgdg-cfitsio%{?_isa} pgdg-freexl%{?_isa}
 Requires:	pgdg-hdf%{?_isa} pgdg-hdf5%{?_isa} pgdg-libdeflate%{?_isa}
 Requires:	pgdg-libgta%{?_isa} pgdg-netcdf%{?_isa} pgdg-xerces-c%{?_isa}
 Requires:	pgdg-gpsbabel
-%ifnarch %{ppc64le}
+%ifnarch ppc64le
 Requires:	pgdg-libarrow%{?_isa}
 %endif
 %else
@@ -545,6 +545,10 @@ done
   provider, like gdal313. Do not build the OGDI driver anymore, as the
   ogdi41 package is obsolete.
   Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- Fix the ppc64le conditionals: %%{ppc64le} is not defined, so %%ifnarch
+  never matched and the build needed pgdg-libarrow (which is ExcludeArch
+  ppc64le) there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-11PGDG
 - Update download URL

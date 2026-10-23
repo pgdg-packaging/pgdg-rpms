@@ -116,7 +116,7 @@ BuildRequires:	pgdg-armadillo-devel pgdg-cfitsio-devel pgdg-freexl-devel
 BuildRequires:	pgdg-hdf-devel pgdg-hdf5-devel pgdg-libdeflate-devel
 BuildRequires:	pgdg-libgta-devel pgdg-libkml-devel pgdg-netcdf-devel
 BuildRequires:	pgdg-xerces-c-devel
-%ifnarch %{ppc64le}
+%ifnarch ppc64le
 BuildRequires:	pgdg-libarrow-devel
 %endif
 %if 0%{?rhel} >= 10
@@ -143,7 +143,7 @@ BuildRequires:	jpackage-utils
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} >= 1499 || 0%{?amzn} == 2023
 BuildRequires:	libarchive-devel >= 3.5.0
 %endif
-%ifnarch %{ppc64le}
+%ifnarch ppc64le
 %if ! 0%{?amzn} && ! 0%{?rhel}
 %if 0%{?fedora}
 BuildRequires:	libarrow-devel
@@ -342,7 +342,7 @@ Requires:	pgdg-armadillo%{?_isa} pgdg-cfitsio%{?_isa} pgdg-freexl%{?_isa}
 Requires:	pgdg-hdf%{?_isa} pgdg-hdf5%{?_isa} pgdg-libdeflate%{?_isa}
 Requires:	pgdg-libgta%{?_isa} pgdg-libkml%{?_isa} pgdg-netcdf%{?_isa}
 Requires:	pgdg-xerces-c%{?_isa} pgdg-gpsbabel
-%ifnarch %{ppc64le}
+%ifnarch ppc64le
 Requires:	pgdg-libarrow%{?_isa}
 %endif
 %if 0%{?rhel} >= 10
@@ -646,6 +646,10 @@ done
 - Build with C++20 on RHEL 9 and 10: the headers of Arrow 26
   (pgdg-libarrow) need it, and GDAL defaults to C++17, which broke
   the Arrow and Parquet drivers. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- Fix the ppc64le conditionals: %%{ppc64le} is not defined, so %%ifnarch
+  never matched and the build needed pgdg-libarrow (which is ExcludeArch
+  ppc64le) there. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-8PGDG
