@@ -24,13 +24,27 @@
 %global __ospython %{_bindir}/python3.13
 %global python3_sitearch %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
 %else
+%if 0%{?rhel} == 8
+# RHEL 8's python3 is 3.6, so build against python3.12, for pgcli:
+%global __python3 %{_bindir}/python3.12
+%global python3_pkgversion 3.12
+%global python3_runtimes python3.12
+%global __ospython %{_bindir}/python3.12
+%global python3_sitearch %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
+%else
 %global python3_runtimes python3
 %global __ospython %{_bindir}/python3
 %endif
+%endif
 
+%if 0%{?rhel} == 8
+# There is no distutils in Python 3.12:
+%global python3_sitelib %(%{__ospython} -Ic "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
+%else
 %global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%endif
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?rhel} == 8 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %else
 %{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
@@ -47,7 +61,7 @@ Version:	3.2.13
 Release:	3PGDG%{?dist}
 %else
 Version:	3.3.6
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 %endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
@@ -66,12 +80,18 @@ BuildRequires:	python3.13-wheel
 BuildRequires:	python3.13-devel python3.13-pip python3.13-setuptools
 BuildRequires:	python3.13-cython
 %else
+%if 0%{?rhel} == 8
+BuildRequires:	python3.12-wheel
+BuildRequires:	python3.12-devel python3.12-pip python3.12-setuptools
+BuildRequires:	python3.12-Cython
+%else
 BuildRequires:	python3-wheel
 BuildRequires:	python3-devel python3-pip python3-setuptools
 %if 0%{?suse_version} == 1600
 BuildRequires:	python313-Cython
 %else
 BuildRequires:	python3-cython
+%endif
 %endif
 %endif
 
@@ -83,14 +103,22 @@ BuildRequires:	python%{alt_pyver}-setuptools python%{alt_pyver}-wheel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
-BuildRequires:	pyproject-rpm-macros pyproject-srpm-macros
+BuildRequires:	pyproject-rpm-macros
+%if 0%{?rhel} != 8
+# There is no pyproject-srpm-macros on RHEL 8:
+BuildRequires:	pyproject-srpm-macros
+%endif
 %endif
 
 Requires:	libpq5 >= 10.0
 # psycopg only needs typing-extensions on Python < 3.13. We build against
 # python3.13 on Amazon Linux 2023, where python3-typing-extensions is the
 # module for the OS Python (3.9):
-%if ! 0%{?amzn}
+%if 0%{?rhel} == 8
+# RHEL 8 has no automatic python3.12dist() requires:
+Requires:	python3.12-typing-extensions >= 4.6
+%endif
+%if ! 0%{?amzn} && 0%{?rhel} != 8
 Requires:	python3-typing-extensions
 %endif
 
@@ -310,7 +338,7 @@ fi
 %{python3_sitelib}/psycopg/types/*.py*
 %{python3_sitelib}/psycopg/py.typed
 
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 9 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
+%if 0%{?fedora} >= 42 || 0%{?rhel} >= 8 || 0%{?suse_version} == 1600 || 0%{?amzn} == 2023
 %{python3_sitelib}/psycopg/__pycache__/*.pyc
 %{python3_sitelib}/psycopg/crdb/__pycache__/*.py*
 %{python3_sitelib}/psycopg/pq/__pycache__/*.py*
@@ -354,6 +382,11 @@ fi
 %endif
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-45PGDG
+- Add RHEL 8 support again, built against python3.12 (as on Amazon Linux
+  2023 against python3.13), for pgcli. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 1:3.2.13-3PGDG
 - Merge the pgdg-python3-psycopg3 spec (the pure Python python3.12 flavor)
   into this one: on RHEL 9, build python3.12-psycopg3 in the same build as

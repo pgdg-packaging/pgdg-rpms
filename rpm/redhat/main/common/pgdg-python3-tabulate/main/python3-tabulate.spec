@@ -1,11 +1,11 @@
 %global sname tabulate
 
-# Our consumers (pg_chameleon, cli-helpers) use python3.12 on RHEL 9 and
-# python3.13 on Amazon Linux 2023, not the system python3 (3.9), so
-# build that flavor there. Elsewhere the system python3 is already the
+# Our consumers (pg_chameleon, cli-helpers) use python3.12 on RHEL 8 and 9
+# and python3.13 on Amazon Linux 2023, not the system python3 (3.6, 3.9),
+# so build that flavor there. Elsewhere the system python3 is already the
 # one our consumers use, so keep the python3-tabulate name.
 %global pyname python3
-%if 0%{?rhel} == 9
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9
 %global __ospython %{_bindir}/python3.12
 %global python3_pkgversion 3.12
 %global pyname python3.12
@@ -22,7 +22,7 @@
 
 Name:		%{pyname}-%{sname}
 Version:	0.10.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Pretty-print tabular data in Python, a library and a command-line utility
 
 License:	MIT
@@ -105,6 +105,10 @@ EOF
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-4PGDG
+- Add RHEL 8 support (python3.12), for cli-helpers, so that it does not
+  need EPEL. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-3PGDG
 - Build the python3.12 flavor on RHEL 9 and the python3.13 flavor on
   Amazon Linux 2023, as python3.12-tabulate and python3.13-tabulate.

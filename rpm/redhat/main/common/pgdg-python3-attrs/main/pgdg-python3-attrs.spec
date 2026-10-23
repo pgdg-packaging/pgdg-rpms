@@ -55,8 +55,15 @@ object protocols.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
+# The PEP 639 license-files list needs hatchling 1.27; RHEL 8 and 9 have our
+# 1.25 (see python3.12-hatchling). Its default license file patterns pick
+# up the same file:
+%{__sed} -i '/^license-files = \["LICENSE"\]$/d' pyproject.toml
+if grep -q '^license-files' pyproject.toml; then exit 1; fi
 
 %build
+# There is no git metadata in the tarball for hatch-vcs:
+export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
 %pyproject_wheel
 
 %install
@@ -80,6 +87,9 @@ object protocols.
 - Switch to pyproject builds
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
+- Remove the PEP 639 license-files list from pyproject.toml, which needs
+  hatchling 1.27: RHEL 8 and 9 have 1.25. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-1PGDG
 - Update to 26.1.0 per changes described at:

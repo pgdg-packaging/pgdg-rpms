@@ -55,6 +55,13 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 BuildRequires:	python%{python3_pkgversion}-wheel
 
+%if 0%{?rhel} == 8
+# RHEL 8 has no automatic python3.12dist() requires:
+Requires:	python3.12dist(click) >= 4.1
+Requires:	python3.12dist(sqlparse) >= 0.1.19
+Requires:	python3.12dist(psycopg) >= 3.0.10
+%endif
+
 BuildArch:	noarch
 
 %description
@@ -86,6 +93,9 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
   that is the same Python. Drop the local %%python3_sitelib override.
 - BuildRequire python-rpm-packaging on SUSE, which python313-devel does
   not pull in, so that the Python dependency generators run there.
+- RHEL 8: Require click, sqlparse and psycopg, which are not generated
+  there, and build with our python3.12-setuptools_scm instead of the EPEL
+  one. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Mon Sep 14 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.2.1-3PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module to
