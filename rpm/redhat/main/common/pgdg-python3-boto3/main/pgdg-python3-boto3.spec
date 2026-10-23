@@ -29,7 +29,7 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.43.115
+Version:	1.43.118
 Release:	1PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
@@ -107,6 +107,11 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-1PGDG
+- Update to 1.43.118 per changes described at:
+  https://pypi.org/project/boto3/1.43.118/
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/433
+
 * Mon Oct 19 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.115-1PGDG
 - Update to 1.43.115 per changes described at:
   https://pypi.org/project/boto3/1.43.115/
