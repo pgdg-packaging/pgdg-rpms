@@ -5,13 +5,12 @@
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
 Version:	4.1.3
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 License:	BSD
 URL:		https://gitlab.com/%{sname}/%{sname}
 Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
 BuildRequires:	gcc
 BuildRequires:	libpq5-devel ncurses-devel cmake
-BuildRequires:	libbsd-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libelf-devel
 %else
@@ -35,6 +34,10 @@ pg_top allows you to monitor PostgreSQL processes. It also allows you to:
 
 %prep
 %setup -q -n %{sname}-v%{version}
+# libbsd is only used on the BSDs (strlcpy/strlcat), but CMakeLists.txt
+# requires it on all platforms; on RHEL it comes from EPEL:
+sed -i 's/^find_library(LIBBSD bsd REQUIRED)$/find_library(LIBBSD bsd)/' CMakeLists.txt
+grep -q '^find_library(LIBBSD bsd)$' CMakeLists.txt
 
 
 %build
@@ -70,6 +73,11 @@ popd
 %{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-45PGDG
+- Do not build against libbsd: pg_top only uses it on the BSDs, and it
+  comes from EPEL on RHEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 4 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-44PGDG
 - Undefine _package_note_file macro. This is needed for AL 2023.
 - Fix builds on SLES: run cmake in %%build, and pass %%{optflags} to it so

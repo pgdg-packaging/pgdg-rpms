@@ -18,9 +18,9 @@ BuildRequires:	gcc cmake make python3-docutils zlib-devel ncurses-devel
 BuildRequires:	libzstd-devel lz4-devel bzip2-devel liburing-devel
 BuildRequires:	libyaml-devel
 BuildRequires:	libev-devel openssl-devel systemd-devel
-BuildRequires:	libssh-devel libarchive-devel cjson-devel libatomic
+BuildRequires:	libssh-devel libarchive-devel libatomic
 Requires:	libev openssl systemd zlib libzstd lz4 bzip2 libssh
-Requires:	libarchive cjson liburing
+Requires:	libarchive liburing
 %if %runselftest
 # The test runner (test/pgmoneta-test) is only built when Check is found,
 # and always with AddressSanitizer and UBSan
@@ -150,6 +150,9 @@ fi
 - Add %%check, running the upstream tests (test/pgmoneta-test) against a
   PostgreSQL server from the %%check helpers of pgdg-srpm-macros 2.0.0.
   It is disabled by default; enable it with --define 'runselftest 1'.
+- Remove the cjson dependencies: pgmoneta does not use cJSON anymore, and
+  cjson comes from EPEL on RHEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> 0.21.0-3PGDG
 - Add missing BR
