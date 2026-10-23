@@ -82,7 +82,7 @@ fi
 # Specs that run %{__ospython} at parse time fail before mock installs the
 # BuildRequires, as the interpreter is not in the chroot yet. Install it
 # first, then rebuild in that chroot.
-OSPYTHON="$(sed -n 's|^sh: line [0-9]*: \(/usr/bin/python3[.0-9]*\): No such file or directory$|\1|p' \
+OSPYTHON="$(sed -n 's|^sh: \(line [0-9]*: \)\?\(/usr/bin/python3[.0-9]*\): No such file or directory$|\2|p' \
     "$RESULT_DIR/build.log" | head -1)"
 if [ -z "$OSPYTHON" ]; then
     exit 1
