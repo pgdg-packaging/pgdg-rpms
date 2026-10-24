@@ -79,19 +79,23 @@ usage() {
 }
 
 # Function to check that the RPMs whose file names are read from stdin (one
-# per line) are signed. Repo files have pkg_gpgcheck=1, so clients refuse
-# unsigned packages; they must never get into the repos. This only checks
-# that a PGP signature is present, not who made it or whether it is valid.
-# Returns 1 if any RPM is unsigned or cannot be read.
+# per line) are signed and not corrupt. Repo files have pkg_gpgcheck=1, so
+# clients refuse unsigned packages; they must never get into the repos. This
+# only checks that a PGP signature is present, not who made it or whether it
+# is valid. The header and payload digests of each RPM are checked as well, so
+# that a truncated RPM (e.g. from an interrupted rpmbuild) is not synced.
+# Returns 1 if any RPM is unsigned, cannot be read or is corrupt.
 verify_signed() {
-	local line output total=0 bad=0
+	local line paths output corrupt total queried=0 unsigned=0 bad=0
 	local qf='%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{(none)}|}| %{NAME}-%{VERSION}-%{RELEASE}.%|SOURCERPM?{%{ARCH}}:{src}|.rpm\n'
 
 	# Both stdout and stderr are read, so that an RPM which cannot be read
 	# is reported (rpm prints "error: ..." for it) and not skipped. A here-string,
 	# not process substitution, as the scripts also run under "sh" (POSIX mode),
 	# where process substitution does not exist in bash 4.4:
-	output=$(xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>&1)
+	paths=$(cat)
+	total=$(echo "$paths" | grep -c .)
+	output=$(echo "$paths" | xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>&1)
 	while IFS= read -r line
 	do
 		case "$line" in
@@ -100,26 +104,38 @@ verify_signed() {
 				;;
 			"(none) "*)
 				echo "${red}UNSIGNED:${reset} ${line#"(none) "}"
-				total=$((total + 1))
-				bad=$((bad + 1))
+				queried=$((queried + 1))
+				unsigned=$((unsigned + 1))
 				;;
 			error:*)
+				# rpm can print more than one error for an RPM:
 				echo "${red}UNREADABLE:${reset} ${line}"
-				total=$((total + 1))
-				bad=$((bad + 1))
 				;;
 			*)
-				total=$((total + 1))
+				queried=$((queried + 1))
 				;;
 		esac
 	done <<< "$output"
 
+	# The RPMs which rpm could not read printed no line:
+	bad=$((unsigned + total - queried))
 	if [ $bad -gt 0 ]; then
 		echo "${red}ERROR:${reset} $bad of $total new RPMs are unsigned or unreadable."
+	fi
+
+	echo "${green}Checking the digests of the $total new RPMs...${reset}"
+	corrupt=$(echo "$paths" | list_corrupt_rpms)
+	if [ -n "$corrupt" ]; then
+		echo "$corrupt" | sed "s/^/${red}CORRUPT:${reset} /"
+		echo "${red}ERROR:${reset} $(echo "$corrupt" | grep -c .) of $total new RPMs are corrupt (rpm -K: digests NOT OK). Rebuild them."
+		bad=1
+	fi
+
+	if [ $bad -gt 0 ]; then
 		return 1
 	fi
 
-	echo "${green}All $total new RPMs are signed.${reset}"
+	echo "${green}All $total new RPMs are signed and not corrupt.${reset}"
 	return 0
 }
 
@@ -152,16 +168,18 @@ sync_source_dir() {
 # sync would add. The debuginfo/debugsource RPMs live in ALLDEBUGRPMS after a
 # sync, hence that directory is compared as well. RPMs which are staged
 # already were checked when they were staged, so they are not checked again.
-# RPMs are compared by file name only.
+# RPMs are compared by file name, size and modification time (rsync -a keeps
+# it), as rsync --checksum also replaces a staged RPM with a rebuilt one which
+# has the same file name, and that one has to be checked, too.
 list_new_rpms() {
 	local base="$1"
 
-	# One stream for awk, staged names ("S") first, then the candidates ("C"),
+	# One stream for awk, staged RPMs ("S") first, then the candidates ("C"),
 	# so that it also works when the staging directories are empty:
 	{
-		find "$base/ALLRPMS" "$base/ALLDEBUGRPMS" "$base/ALLSRPMS" -name '*.rpm' -printf 'S\t%f\n' 2>/dev/null
-		find "$base/RPMS/$osarch" "$base/RPMS/noarch" "$base/SRPMS" -name '*.rpm' -printf 'C\t%f\t%p\n' 2>/dev/null
-	} | awk -F'\t' '$1 == "S" { staged[$2]; next } !($2 in staged) { print $3 }'
+		find "$base/ALLRPMS" "$base/ALLDEBUGRPMS" "$base/ALLSRPMS" -name '*.rpm' -printf 'S\t%f\t%s\t%T@\n' 2>/dev/null
+		find "$base/RPMS/$osarch" "$base/RPMS/noarch" "$base/SRPMS" -name '*.rpm' -printf 'C\t%f\t%s\t%T@\t%p\n' 2>/dev/null
+	} | awk -F'\t' '{ key = $2 "\t" $3 "\t" int($4) } $1 == "S" { staged[key]; next } !(key in staged) { print $5 }'
 }
 
 # Check the signatures of the RPMs that are about to be added to the staging
@@ -198,7 +216,7 @@ preflight_signature_check() {
 
 	if ! echo "$new_list" | verify_signed
 	then
-		echo "${red}ERROR:${reset} Not syncing anything. Sign the packages above (see signallpackages.sh) and run this script again."
+		echo "${red}ERROR:${reset} Not syncing anything. Sign (see signallpackages.sh) or rebuild the packages above and run this script again."
 		exit 1
 	fi
 }

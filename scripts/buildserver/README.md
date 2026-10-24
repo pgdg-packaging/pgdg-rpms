@@ -126,6 +126,14 @@ failure affects every package (for example when the passphrase is not
 preset in the agent), `rpmsign` is tried on each of them, and may prompt
 for the passphrase for each one, instead of giving up at the first failure.
 
+Before signing, the RPMs to be signed are checked with `rpm -K --nosignature`
+(`list_corrupt_rpms`), which verifies their header and payload digests.
+Corrupt ones, e.g. truncated by an interrupted `rpmbuild`, are reported as
+`Not signing ...: it is corrupt` and are not signed, so `packagesync.sh` does
+not sync them either. Rebuild them. `rpm -q` only reads the header, so it
+does not notice a truncated payload; this check reads each RPM in full, hence
+it only runs on the RPMs that are about to be signed.
+
 ### `check_gpg_agent`
 
 Returns 1 with an error message if no `gpg-agent` is running. `sign_package`
@@ -464,28 +472,35 @@ packagesync.sh --testing --sync=18           # version 18 in testing repos
 packagesync.sh --testing --sync=pg           # all versions in testing repos
 ```
 
-### Signature check
+### Signature and corruption check
 
 Before anything is synced, the script checks that the RPMs it is about to
-add are signed. "New" means an RPM (binary, debuginfo/debugsource or source)
+add are signed and not corrupt. "New" means an RPM (binary, debuginfo/debugsource or source)
 under `RPMS/<arch>`, `RPMS/noarch` or `SRPMS` of a requested target whose
-file name is not yet in that target's `ALLRPMS`, `ALLDEBUGRPMS` or
-`ALLSRPMS` staging directories. `ALLDEBUGRPMS` is compared as well because
+file name, size and modification time are not yet in that target's
+`ALLRPMS`, `ALLDEBUGRPMS` or `ALLSRPMS` staging directories (rsync `-a`
+keeps the modification time). `ALLDEBUGRPMS` is compared as well because
 the debuginfo/debugsource RPMs are moved there after every sync. RPMs which
 are staged already were checked when they were staged, and are not checked
-again. This is by file name only, so it assumes an RPM is not rebuilt under
-the same name after it was staged, unless it is signed before the next sync.
+again. An RPM which was rebuilt under the same file name after it was
+staged is new, as `rsync --checksum` would replace the staged one with it.
+Before this, such an RPM was not checked: etcd-3.7.0-1PGDG was rebuilt and
+interrupted after it was staged, and the truncated RPMs went to the repos.
+
+The signature is read from the header (`rpm -qp`), and then each new RPM is
+read in full with `rpm -K --nosignature` to verify its header and payload
+digests. A corrupt RPM is listed as `CORRUPT:`.
 
 This runs for all requested targets up front, so a single unsigned package
 blocks the whole run: nothing is copied to the `ALL*` directories, no repo
 metadata is created and nothing goes to S3. The script prints each
-`UNSIGNED:` (or `UNREADABLE:`) package and exits with status 1. Because the
+`UNSIGNED:`, `UNREADABLE:` or `CORRUPT:` package and exits with status 1. Because the
 staging directories stay untouched, the same packages are checked again on
 the next run.
 
 The repo files set `pkg_gpgcheck=1`, so clients would refuse an unsigned
-package anyway. Sign the listed packages (see `signallpackages.sh`) and run
-the sync again. RPMs that were already staged before this check existed are
+package anyway. Sign the listed packages (see `signallpackages.sh`), or
+rebuild the corrupt ones, and run the sync again. RPMs that were already staged before this check existed are
 not covered; `signallpackages.sh` covers every RPM in the build directories.
 
 The check only looks for the presence of a signature (`rpm -qp` reports

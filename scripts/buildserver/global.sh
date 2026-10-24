@@ -252,6 +252,22 @@ list_unsigned_rpms() {
 	fi
 }
 
+# Read RPM paths from stdin (one per line) and print the ones which are
+# corrupt: their header or payload digests do not match, e.g. because rpmbuild
+# was interrupted while writing the RPM, so that it is truncated. rpm -q only
+# reads the header, so it does not notice a truncated payload. This reads each
+# RPM in full, so only pass the RPMs which are about to be signed or synced.
+# The signature is not checked here. rpm runs once per RPM, as its output
+# cannot be matched to the paths when it cannot open one of them.
+list_corrupt_rpms() {
+	local rpm_path
+
+	while IFS= read -r rpm_path; do
+		[ -z "$rpm_path" ] && continue
+		rpm -K --nosignature "$rpm_path" > /dev/null 2>&1 || echo "$rpm_path"
+	done
+}
+
 # Check that a gpg-agent is running to sign with. The build scripts call this
 # at the start, so that a long build is not wasted on packages which then
 # cannot be signed.
@@ -281,7 +297,7 @@ clean_signing_leftovers() {
 # A package that cannot be signed does not stop the others from being signed.
 # The ones that failed are listed at the end, and the function returns 1.
 sign_rpm_files() {
-	local all_packages to_sign failed_list="" rpm_path
+	local all_packages to_sign corrupt failed_list="" rpm_path
 
 	all_packages=$(grep -v '^$')
 	if [ "${FORCE_RESIGN:-0}" == 1 ]; then
@@ -291,7 +307,17 @@ sign_rpm_files() {
 		echo "Already signed, skipping: $(( $(echo "$all_packages" | grep -c .) - $(echo "$to_sign" | grep -c .) ))"
 	fi
 
+	# Do not sign corrupt RPMs, so that they cannot be synced:
+	corrupt=$(echo "$to_sign" | list_corrupt_rpms)
+	for rpm_path in $corrupt; do
+		echo "${red}ERROR:${reset} Not signing $rpm_path: it is corrupt (rpm -K: digests NOT OK). Rebuild it."
+		failed_list="$failed_list $rpm_path"
+	done
+
 	for rpm_path in $to_sign; do
+		case " $(echo $corrupt) " in
+			*" $rpm_path "*) continue ;;
+		esac
 		echo "Signing: $rpm_path"
 		if ! rpmsign --addsign "$rpm_path"; then
 			echo "${red}ERROR:${reset} Failed to sign $rpm_path"
