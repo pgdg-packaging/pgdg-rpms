@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.1.3
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Poetry PEP 517 build backend
 
 License:	MIT
@@ -45,6 +45,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	pyproject-rpm-macros
 %endif
 BuildRequires:	python%{python3_pkgversion}-pip
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-poetry-core < %{version}-%{release}
+%endif
 
 %description
 poetry-core is the PEP 517 build backend of Poetry. It is only needed to
@@ -66,6 +71,12 @@ build packages that use it, such as rsa.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.3-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL
+  python3-poetry-core package there. Start the release from 42, so that our
+  packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.3-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   the build of rsa (for pg_statviz) on Amazon Linux 2023. Per

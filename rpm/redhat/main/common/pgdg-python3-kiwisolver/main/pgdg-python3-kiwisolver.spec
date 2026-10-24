@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.5.1
-Release:	3PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	A fast implementation of the Cassowary constraint solver
 
 License:	BSD-3-Clause
@@ -48,6 +48,11 @@ BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 BuildRequires:	python%{python3_pkgversion}-wheel
 BuildRequires:	python%{python3_pkgversion}-cppy >= 1.3.0
 BuildRequires:	gcc-c++
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-kiwisolver < %{version}-%{release}
+%endif
 
 %description
 Kiwi is an efficient C++ implementation of the Cassowary constraint solving
@@ -74,6 +79,11 @@ sed -i '/^  classifiers = \[/,/^  \]/d' pyproject.toml
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-kiwisolver
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-3PGDG
 - Remove all classifiers, not only Python 3.15: older trove-classifiers
   releases do not know the GraalPy classifier either.

@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	4.16.0
-Release:	3PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -57,6 +57,11 @@ Requires:	python%{python3_pkgversion}
 This modest package contains various common humanization utilities, like turning\
 a number into a fuzzy human readable duration ('3 minutes ago') or into a human\
 readable size or throughput.\
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-humanize < %{version}-%{release}
+%endif
 
 %description %_description
 
@@ -93,6 +98,11 @@ find -name '*.po' -delete
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-humanize
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-3PGDG
 - Fix build on RHEL 9: remove the PEP 639 license-files list from
   pyproject.toml, which the hatchling there does not support.

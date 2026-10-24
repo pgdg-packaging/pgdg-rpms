@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	5.4.5
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	A Python module that tries to figure out what your local timezone is
 
 License:	MIT
@@ -45,6 +45,11 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-setuptools >= 64
 BuildRequires:	python%{python3_pkgversion}-wheel
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-tzlocal < %{version}-%{release}
+%endif
 
 %description
 This Python module returns the IANA time zone name for your local time
@@ -71,6 +76,11 @@ grep -q '^license = { text = "MIT" }$' pyproject.toml
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 5.4.5-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-tzlocal
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 5.4.5-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for pgcli on
   RHEL 8 (python3.12), without EPEL. Per

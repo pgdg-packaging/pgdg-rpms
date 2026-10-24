@@ -27,7 +27,7 @@
 
 Name:		python%{python3_pkgversion}-click
 Version:	8.5.0
-Release:	2PGDG%{?dist}.1
+Release:	42PGDG%{?dist}.1
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -41,6 +41,11 @@ BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
 BuildRequires:	pyproject-rpm-macros
 
 Provides:	python%{python3_pkgversion}dist(click)
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-click < %{version}-%{release}
+%endif
 
 %description
 click is a Python package for creating beautiful command line\
@@ -78,6 +83,11 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 %{pgdg_python3_sitearch}/%{modname}/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-click
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-2PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)

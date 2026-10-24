@@ -1,5 +1,5 @@
-# Built for the python3.13 alt-stack of Amazon Linux 2023 only, for
-# the SFTP storage backend of rohmu (pghoard).
+# Built for the python3.13 alt-stack of Amazon Linux 2023, for the SFTP
+# storage backend of rohmu (pghoard), and for RHEL 10 (the OS Python there).
 # paramiko needs it.
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
@@ -12,7 +12,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.0.3
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Pythonic task execution
 
 License:	BSD-2-Clause
@@ -48,6 +48,11 @@ Invoke is a Python task execution tool and library. paramiko uses it.
 %doc README.rst
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.3-42PGDG
+- Add RHEL 10 support, without EPEL. Start the release from 42, so that our
+  packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.3-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for
   the SFTP storage backend of rohmu (pghoard) on Amazon Linux 2023.

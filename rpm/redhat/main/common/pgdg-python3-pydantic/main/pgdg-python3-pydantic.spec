@@ -31,8 +31,16 @@
 %global	pymodname pydantic
 
 Name:		python%{python3_pkgversion}-%{modname}
+# RHEL 10: 2.10 and later need typing-extensions >= 4.12.2, RHEL 10 has
+# 4.9.0 (in BaseOS, for python3.12 itself). 2.9.2 needs >= 4.6.1.
+%if 0%{?rhel} == 10
+Version:	2.9.2
+%global	coreversion 2.23.4
+%else
 Version:	2.11.10
-Release:	1PGDG%{?dist}
+%global	coreversion 2.33.2
+%endif
+Release:	42PGDG%{?dist}
 Summary:	Data validation using Python type hints
 
 License:	MIT
@@ -49,9 +57,17 @@ BuildRequires:	python%{python3_pkgversion}-hatchling
 BuildRequires:	python%{python3_pkgversion}-hatch-fancy-pypi-readme
 
 Requires:	python%{python3_pkgversion}-annotated-types >= 0.6.0
-Requires:	python%{python3_pkgversion}-pydantic-core = 2.33.2
+Requires:	python%{python3_pkgversion}-pydantic-core = %{coreversion}
+%if 0%{?rhel} == 10
+Requires:	python%{python3_pkgversion}-typing-extensions >= 4.6.1
+%else
 Requires:	python%{python3_pkgversion}-typing-extensions >= 4.12.2
 Requires:	python%{python3_pkgversion}-typing-inspection >= 0.4.0
+%endif
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-%{modname} < %{version}-%{release}
+%endif
 
 %description
 Data validation using Python type hints. Fast and extensible, Pydantic plays
@@ -59,7 +75,7 @@ nicely with your linters/IDE/brain. Define how data should be in pure,
 canonical Python; validate it with Pydantic.
 
 This is the 2.11 series, the newest one that works with typing-extensions
-4.12.2 of Amazon Linux 2023.
+4.12.2 of Amazon Linux 2023 (2.9 on RHEL 10).
 
 %prep
 %autosetup -n %{pymodname}-%{version}
@@ -77,6 +93,13 @@ This is the 2.11 series, the newest one that works with typing-extensions
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.10-42PGDG
+- Add RHEL 10 support, without EPEL: use 2.9.2 there, the newest release
+  that works with the typing-extensions 4.9.0 of RHEL 10, and obsolete the
+  EPEL python3-pydantic package. Start the release from 42, so that our
+  packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.10-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   anthropic and ollama dependency (for pg_statviz) on Amazon Linux 2023. Per

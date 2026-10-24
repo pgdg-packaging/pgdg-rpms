@@ -1,6 +1,7 @@
-# Built for the python3.12 stack of RHEL 8 and 9 only, where the
-# OS package is built for the default Python. boto3 needs it.
-%if 0%{?rhel} && 0%{?rhel} <= 9
+# Built for the python3.12 stack of RHEL 8 and 9, where the OS package is
+# built for the default Python, and for RHEL 10, which has none. boto3
+# needs it.
+%if 0%{?rhel} && 0%{?rhel} <= 10
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
@@ -12,7 +13,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.19.3
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	An Amazon S3 Transfer Manager
 
 License:	Apache-2.0
@@ -24,6 +25,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
 
 Requires:	python%{python3_pkgversion}-botocore
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-s3transfer < %{version}-%{release}
+%endif
 
 %description
 S3transfer is a Python library for managing Amazon S3 transfers.
@@ -44,6 +50,12 @@ S3transfer is a Python library for managing Amazon S3 transfers.
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.19.3-42PGDG
+- Add RHEL 10 support, for boto3 without EPEL.
+- RHEL 10: Obsolete the EPEL python3-s3transfer package. Start the release
+  from 42, so that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.19.3-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for boto3
   on RHEL 9 and 8.

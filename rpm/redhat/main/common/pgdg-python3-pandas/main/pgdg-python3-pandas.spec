@@ -38,7 +38,7 @@ Version:	2.1.4
 %else
 Version:	2.3.3
 %endif
-Release:	2PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Python library providing high-performance data analysis tools
 
 License:	BSD-3-Clause
@@ -69,6 +69,12 @@ BuildRequires:	ninja-build
 BuildRequires:	python%{python3_pkgversion}-cython >= 3.0
 BuildRequires:	python%{python3_pkgversion}-numpy >= 2.0
 %endif
+# RHEL 10 has Cython 3.0 and numpy 1.26, which 2.3 still supports:
+%if 0%{?rhel} >= 10
+BuildRequires:	ninja-build
+BuildRequires:	python%{python3_pkgversion}-cython >= 3.0
+BuildRequires:	python%{python3_pkgversion}-numpy >= 1.26.0
+%endif
 
 %if 0%{?rhel} == 9
 Requires:	python%{python3_pkgversion}-numpy >= 1.24.4
@@ -81,6 +87,11 @@ Requires:	python%{python3_pkgversion}-python-dateutil >= 2.8.2
 Requires:	python%{python3_pkgversion}-tzdata
 %else
 Requires:	python%{python3_pkgversion}-dateutil >= 2.8.2
+%endif
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-pandas < %{version}-%{release}
 %endif
 
 %description
@@ -122,6 +133,11 @@ export CYTHON=%{_bindir}/cython-%{python3_pkgversion}
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-pandas
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-2PGDG
 - Add SLES 16 support, for pg_statviz: SLES 16 has no pandas. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249

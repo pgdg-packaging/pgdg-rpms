@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	13.0.0
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Python image processing library
 
 License:	MIT-CMU
@@ -46,8 +46,22 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools >= 67.8
 BuildRequires:	python%{python3_pkgversion}-wheel
 BuildRequires:	gcc
-BuildRequires:	freetype-devel lcms2-devel libimagequant-devel libjpeg-turbo-devel
+BuildRequires:	freetype-devel lcms2-devel libjpeg-turbo-devel
+# On RHEL, libimagequant comes from pgdg-libimagequant (EPEL is not needed),
+# which is found through the rpath:
+%if 0%{?rhel}
+BuildRequires:	pgdg-srpm-macros >= 2.4.0 pgdg-libimagequant-devel
+Requires:	pgdg-libimagequant%{?_isa}
+%global __requires_exclude ^libimagequant\\.so
+%else
+BuildRequires:	libimagequant-devel
+%endif
 BuildRequires:	libtiff-devel libwebp-devel libxcb-devel openjpeg2-devel zlib-devel
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-pillow < %{version}-%{release}
+%endif
 
 %description
 Pillow is the friendly PIL fork. PIL is the Python Imaging Library. It adds
@@ -71,7 +85,13 @@ sed -i -e '/^from pybind11.setup_helpers import ParallelCompile$/d' \
 	-e '/^ParallelCompile(/d' setup.py
 
 %build
+%if 0%{?rhel}
+export IMAGEQUANT_ROOT=%{pgdg_libimagequantinstdir}
+export LDFLAGS="%{build_ldflags} -Wl,-rpath,%{pgdg_libimagequantinstdir}/lib"
+%pyproject_wheel -C imagequant=enable
+%else
 %pyproject_wheel
+%endif
 
 %install
 %pyproject_install
@@ -83,6 +103,13 @@ sed -i -e '/^from pybind11.setup_helpers import ParallelCompile$/d' \
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 13.0.0-42PGDG
+- RHEL: Build against pgdg-libimagequant, found through the rpath, instead
+  of the EPEL libimagequant, and add RHEL 10 support, for pg_statviz.
+- RHEL 10: Obsolete the EPEL python3-pillow package. Start the release from
+  42, so that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 13.0.0-1PGDG
 - Update to 13.0.0 per changes described at:
   https://github.com/python-pillow/Pillow/releases/tag/13.0.0

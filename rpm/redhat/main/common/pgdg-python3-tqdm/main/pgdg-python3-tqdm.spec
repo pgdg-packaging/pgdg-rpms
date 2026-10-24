@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.67.1
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Fast, extensible progress bar for Python
 
 License:	MPL-2.0 AND MIT
@@ -48,6 +48,11 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-tqdm < %{version}-%{release}
+%endif
 
 %description
 tqdm shows a smart progress meter for loops and iterables.
@@ -71,6 +76,11 @@ tqdm shows a smart progress meter for loops and iterables.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.1-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-tqdm
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   openai dependency (for pg_statviz) on Amazon Linux 2023. Per

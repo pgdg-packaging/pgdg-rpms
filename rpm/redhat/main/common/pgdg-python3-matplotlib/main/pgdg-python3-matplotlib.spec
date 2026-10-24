@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.9.4
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Python 2D plotting library
 
 License:	PSF-2.0 AND MIT AND CC0-1.0 AND OFL-1.1 AND Bitstream-Vera AND Public-Domain
@@ -46,13 +46,22 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-meson-python >= 0.13.1
 BuildRequires:	python%{python3_pkgversion}-pybind11 >= 2.6
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm >= 7
-%if 0%{?rhel} == 9
+# RHEL 9 and 10 have numpy 1.x:
+%if 0%{?rhel} >= 9
 BuildRequires:	python%{python3_pkgversion}-numpy
 %else
 BuildRequires:	python%{python3_pkgversion}-numpy >= 2.0.0
 %endif
 BuildRequires:	gcc gcc-c++ ninja-build pkgconfig
-BuildRequires:	freetype-devel qhull-devel
+BuildRequires:	freetype-devel
+# RHEL 10 has no qhull; use ours, found through the rpath:
+%if 0%{?rhel} >= 10
+BuildRequires:	pgdg-qhull-devel pgdg-srpm-macros >= 2.1.0
+Requires:	pgdg-qhull%{?_isa}
+%global __requires_exclude ^libqhull_r\\.so
+%else
+BuildRequires:	qhull-devel
+%endif
 
 Requires:	python%{python3_pkgversion}-contourpy >= 1.0.1
 Requires:	python%{python3_pkgversion}-cycler >= 0.10
@@ -63,6 +72,11 @@ Requires:	python%{python3_pkgversion}-numpy >= 1.23
 Requires:	python%{python3_pkgversion}-packaging >= 20.0
 Requires:	python%{python3_pkgversion}-pillow >= 8
 Requires:	python%{python3_pkgversion}-pyparsing >= 2.3.1
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-matplotlib < %{version}-%{release}
+%endif
 
 %description
 Matplotlib is a Python 2D plotting library which produces publication
@@ -80,6 +94,12 @@ grep -q "version: '%{version}'," meson.build
 
 %build
 export PKG_CONFIG_PATH=$(%{__python3} -m pybind11 --pkgconfigdir)
+%if 0%{?rhel} >= 10
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:%{pgdg_qhullinstdir}/lib64/pkgconfig
+export CFLAGS="%{build_cflags} -I%{pgdg_qhullinstdir}/include"
+export CXXFLAGS="%{build_cxxflags} -I%{pgdg_qhullinstdir}/include"
+export LDFLAGS="%{build_ldflags} -L%{pgdg_qhullinstdir}/lib64 -Wl,-rpath,%{pgdg_qhullinstdir}/lib64"
+%endif
 %pyproject_wheel -C setup-args=-Dsystem-freetype=true -C setup-args=-Dsystem-qhull=true
 
 %install
@@ -95,6 +115,13 @@ export PKG_CONFIG_PATH=$(%{__python3} -m pybind11 --pkgconfigdir)
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.9.4-42PGDG
+- Add RHEL 10 support, without EPEL: build against numpy 1.26 from RHEL, as
+  on RHEL 9, and against pgdg-qhull, found through the rpath.
+- RHEL 10: Obsolete the EPEL python3-matplotlib package. Start the release
+  from 42, so that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 3.9.4-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.

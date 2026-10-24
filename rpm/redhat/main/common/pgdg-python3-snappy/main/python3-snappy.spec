@@ -35,7 +35,7 @@ Name:		python3-snappy
 %endif
 Epoch:		1
 Version:	0.6.1
-Release:	3PGDG%{dist}
+Release:	42PGDG%{dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
@@ -80,6 +80,11 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-42PGDG
+- Add RHEL 10 support, without EPEL. Start the release from 42, so that our
+  packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.6.1-3PGDG
 - Build python3.13-snappy on Amazon Linux 2023, for rohmu and pghoard,
   which are built for Python 3.13 there.

@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.9.0
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	High level compatibility layer for multiple asynchronous event loop implementations
 
 License:	MIT
@@ -51,6 +51,11 @@ BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 
 Requires:	python%{python3_pkgversion}-idna >= 2.8
 Requires:	python%{python3_pkgversion}-sniffio >= 1.1
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-anyio < %{version}-%{release}
+%endif
 
 %description
 AnyIO is an asynchronous networking and concurrency library that works on top
@@ -72,6 +77,11 @@ of either asyncio or trio.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.0-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-anyio
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   httpx and anthropic dependency (for pg_statviz) on Amazon Linux 2023. Per

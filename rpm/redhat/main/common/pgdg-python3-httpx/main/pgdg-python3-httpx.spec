@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.28.1
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	The next generation HTTP client
 
 License:	BSD-3-Clause
@@ -52,6 +52,11 @@ Requires:	python%{python3_pkgversion}-anyio
 Requires:	python%{python3_pkgversion}-certifi
 Requires:	python%{python3_pkgversion}-httpcore >= 1.0
 Requires:	python%{python3_pkgversion}-idna
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-httpx < %{version}-%{release}
+%endif
 
 %description
 HTTPX is a fully featured HTTP client library for Python 3, which provides
@@ -75,6 +80,11 @@ sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.28.1-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-httpx
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.28.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   anthropic and ollama dependency (for pg_statviz) on Amazon Linux 2023. Per

@@ -26,7 +26,7 @@
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.4.5
-Release:	4PGDG%{?dist}
+Release:	42PGDG%{?dist}
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
@@ -56,7 +56,9 @@ BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 # This is what the published packages effectively were: built with the bundled lz4.
 Provides:	bundled(lz4) = 1.9.4
 %else
+%if 0%{?rhel} != 10
 BuildRequires:	python%{python3_pkgversion}-pkgconfig
+%endif
 %endif
 %if 0%{?rhel} && 0%{?rhel} >= 8
 BuildRequires:	lz4-devel
@@ -68,13 +70,24 @@ BuildRequires:	lz4-devel
 BuildRequires:	liblz4-devel
 %endif
 
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-lz4 < %{version}-%{release}
+%endif
+
 %description
 Python 3 bindings for the lz4 compression library.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?amzn} == 2023 || 0%{?suse_version} == 1500
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9 || 0%{?rhel} == 10 || 0%{?amzn} == 2023 || 0%{?suse_version} == 1500
 %patch -P0 -p0
+%endif
+%if 0%{?rhel} == 10
+# No pkgconfig module on RHEL 10 either, but RHEL's lz4 is recent enough:
+# build against it instead of the bundled copy.
+sed -i "s/^    liblz4_found = pkgconfig_installed_check('liblz4', LZ4_REQUIRED_VERSION, default=False)$/    liblz4_found = True/" setup.py
+grep -q '^    liblz4_found = True$' setup.py
 %endif
 %if 0%{?rhel} == 8
 %patch -P1 -p0
@@ -114,6 +127,14 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-42PGDG
+- RHEL 10: Build without EPEL: there is no python3-pkgconfig, so drop it
+  from setup_requires, and build against RHEL's lz4 instead of the bundled
+  copy.
+- RHEL 10: Obsolete the EPEL python3-lz4 package. Start the release from 42,
+  so that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-4PGDG
 - There is no python311-pkgconfig on SLES 15 either, so drop pkgconfig
   from setup_requires there, too, and build with the bundled lz4. Per
