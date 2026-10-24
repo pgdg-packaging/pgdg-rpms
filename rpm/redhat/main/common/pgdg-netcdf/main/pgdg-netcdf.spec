@@ -11,7 +11,7 @@
 # and our packages must not pick the OS or EPEL libraries. Consumers require
 # pgdg-netcdf by name instead:
 %global		__provides_exclude_from ^(%{netcdfinstdir}|%{plugin_dir})/
-%global		__requires_exclude ^lib(netcdf|hdf5.*|hdf|df|mfhdf|sz|aec|blosc|_+nc[a-z0-9]*)\\.so
+%global		__requires_exclude ^lib(netcdf|hdf5.*|hdf|mfhdf|sz|aec|blosc|_+nc[a-z0-9]*)\\.so
 
 %{!?runselftest:%global runselftest 0}
 
@@ -21,7 +21,7 @@
 
 Name:		pgdg-%{sname}
 Version:	4.10.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Libraries for the Unidata network Common Data Form
 License:	BSD-3-Clause
 URL:		https://www.unidata.ucar.edu/software/netcdf/
@@ -83,6 +83,8 @@ export PKG_CONFIG_PATH=%{pgdg_bloscinstdir}/lib64/pkgconfig
 	-DCMAKE_PREFIX_PATH:STRING="%{pgdg_hdf5instdir};%{pgdg_hdfinstdir};%{pgdg_libaecinstdir};%{pgdg_bloscinstdir}" \
 	-DHDF5_ROOT:PATH=%{pgdg_hdf5instdir} \
 	-DMFHDF_H_INCLUDE_DIR:PATH=%{pgdg_hdfinstdir}/include \
+	-DHDF4_DF_LIB:FILEPATH=%{pgdg_hdfinstdir}/lib64/libhdf.so \
+	-DHDF4_MFHDF_LIB:FILEPATH=%{pgdg_hdfinstdir}/lib64/libmfhdf.so \
 	-DCMAKE_INSTALL_RPATH:STRING="%{netcdfinstdir}/lib64;%{pgdg_hdf5instdir}/lib64;%{pgdg_hdfinstdir}/lib64;%{pgdg_libaecinstdir}/lib64;%{pgdg_bloscinstdir}/lib64" \
 	-DCMAKE_INSTALL_RPATH_USE_LINK_PATH:BOOL=ON \
 	-DNETCDF_ENABLE_DAP_REMOTE_TESTS:BOOL=OFF \
@@ -130,6 +132,14 @@ export PKG_CONFIG_PATH=%{pgdg_bloscinstdir}/lib64/pkgconfig
 %{netcdfinstdir}/share/man/man3/*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.10.1-3PGDG
+- Link libnetcdf against libhdf of pgdg-hdf: CMake looks for the HDF4
+  library as "df" first, and picked the EPEL libdf.so.0 from /usr/lib64
+  when hdf-devel is installed, so postgis_raster could not be loaded.
+  Pass HDF4_DF_LIB and HDF4_MFHDF_LIB explicitly, and drop the libdf
+  filter of 4.10.1-2, which only hid the problem.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.10.1-2PGDG
 - Also filter libdf.so.0 (HDF4) out of the automatic Requires: it is not
   provided by pgdg-hdf, which is required by name, so pgdg-netcdf and
