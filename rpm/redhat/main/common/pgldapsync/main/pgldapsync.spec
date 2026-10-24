@@ -28,24 +28,37 @@
 
 # The package is built with %%{__python3}, so the egg-info directory name has
 # its version, which is not always the one of %%{__ospython} (SLES 15):
-%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write('.'.join(map(str, sys.version_info[:2])))"`)}
+# %%define, so that it is only expanded in %%files, once python is installed:
+%define pyver %(%{__python3} -c "import sys; sys.stdout.write('.'.join(map(str, sys.version_info[:2])))")
 
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	18PGDG%{?dist}
+Release:	19PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
+# RHEL 9 and Amazon Linux 2023 build and run it with a newer Python than
+# their default python3, so require the modules of that one:
+%if 0%{?rhel} == 9 || 0%{?amzn} == 2023
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
+%else
 BuildRequires:	python3-devel >= 3.5 python3-setuptools
+%endif
 %if 0%{?amzn} == 2023
 BuildRequires:	python-rpm-macros
 %endif
 
-Requires:	libpq5 >= 10.0 python3-psycopg2
+Requires:	libpq5 >= 10.0
+%if 0%{?rhel} == 9 || 0%{?amzn} == 2023
+Requires:	python%{python3_pkgversion}-psycopg2
+Requires:	python%{python3_pkgversion}-ldap3
+%else
+Requires:	python3-psycopg2
 Requires:	python3-ldap3
+%endif
 
 %description
 This Python module allows you to synchronise Postgres login roles with users
@@ -55,6 +68,10 @@ pgldapsync requires Python 3.5 or later.
 
 %prep
 %setup -q -n %{sname}-%{sname}-%{version}
+# requirements.txt asks for psycopg2-binary, which the dependency generator
+# turns into a requirement that no package provides. Require psycopg2:
+sed -i 's/^psycopg2-binary>=/psycopg2>=/' requirements.txt
+grep -q '^psycopg2>=' requirements.txt
 
 %build
 
@@ -96,6 +113,19 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-19PGDG
+- Require psycopg2 instead of psycopg2-binary, which requirements.txt asks
+  for and no package provides, so the package could not be installed.
+- RHEL 9 and Amazon Linux 2023: BuildRequire and Require the modules of
+  the Python version that the package is built with and runs with (3.12 and
+  3.13), not the ones of the default python3. The build failed without
+  python3.12 / python3.13 in the build root, and the tool could not import
+  psycopg2 and ldap3 at run time.
+- Expand pyver lazily, so that the spec file can be parsed before python is
+  installed in the build root (the SRPM build in mock failed on RHEL 9,
+  SLES 16 and Amazon Linux 2023). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-18PGDG
 - Get the Python version of the egg-info directory name from %%{__python3},
   which builds the package, instead of %%{__ospython}. On SLES 15 they
