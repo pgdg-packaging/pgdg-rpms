@@ -33,7 +33,7 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	18PGDG%{?dist}
+Release:	19PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -55,6 +55,10 @@ pgldapsync requires Python 3.5 or later.
 
 %prep
 %setup -q -n %{sname}-%{sname}-%{version}
+# requirements.txt asks for psycopg2-binary, which the dependency generator
+# turns into a requirement that no package provides. Require psycopg2:
+sed -i 's/^psycopg2-binary>=/psycopg2>=/' requirements.txt
+grep -q '^psycopg2>=' requirements.txt
 
 %build
 
@@ -96,6 +100,11 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-19PGDG
+- Require psycopg2 instead of psycopg2-binary, which requirements.txt asks
+  for and no package provides, so the package could not be installed.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-18PGDG
 - Get the Python version of the egg-info directory name from %%{__python3},
   which builds the package, instead of %%{__ospython}. On SLES 15 they
