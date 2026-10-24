@@ -1,1 +1,0 @@
-../main/../main/postgresql-9.4.spec

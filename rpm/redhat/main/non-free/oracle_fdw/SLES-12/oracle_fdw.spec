@@ -1,1 +1,0 @@
-../main/../main/oracle_fdw.spec

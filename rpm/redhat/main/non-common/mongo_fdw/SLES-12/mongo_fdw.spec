@@ -1,1 +1,0 @@
-../main/../main/mongo_fdw.spec

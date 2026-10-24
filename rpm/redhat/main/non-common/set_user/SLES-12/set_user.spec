@@ -1,1 +1,0 @@
-../main/set_user.spec

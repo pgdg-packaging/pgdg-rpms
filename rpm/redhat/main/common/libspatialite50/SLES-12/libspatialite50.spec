@@ -1,1 +1,0 @@
-../main/../main/libspatialite50.spec

@@ -1,1 +1,0 @@
-../main/plprofiler.spec
