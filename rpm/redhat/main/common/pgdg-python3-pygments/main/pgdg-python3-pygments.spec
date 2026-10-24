@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.21.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Syntax highlighting engine written in Python
 
 License:	BSD-2-Clause
@@ -62,15 +62,27 @@ if grep -q '^license-files\|hatchling>=1.27' pyproject.toml; then exit 1; fi
 
 %install
 %pyproject_install
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9
+# The OS python3-pygments ships pygmentize; only the module is needed:
+%{__rm} -f %{buildroot}%{_bindir}/pygmentize
+%endif
 
 %files
 %license LICENSE AUTHORS
 %doc README.rst
+%if 0%{?rhel} != 8 && 0%{?rhel} != 9
 %{_bindir}/pygmentize
+%endif
 %{python3_sitelib}/%{pymodname}/
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.21.0-2PGDG
+- Add RHEL 9 support, for pgcli.
+- RHEL 8 and 9: Do not ship pygmentize, which conflicts with the one
+  in the OS python3-pygments package. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 2.21.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for pgcli on
   RHEL 8 (python3.12), without EPEL. Per

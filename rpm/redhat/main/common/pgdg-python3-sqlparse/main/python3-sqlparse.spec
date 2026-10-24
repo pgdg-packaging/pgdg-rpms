@@ -9,6 +9,9 @@
 %if 0%{?rhel} && 0%{?rhel} <= 10
 %global python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 9
+%global __python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global __python3 %{_bindir}/python3.13
 %global python3_pkgversion 3.13
@@ -22,7 +25,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	0.6.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Non-validating SQL parser module for Python
 
 License:	BSD-3-Clause
@@ -61,15 +64,28 @@ support for parsing, splitting and formatting SQL statements.
 
 %install
 %pyproject_install
+%if 0%{?rhel} == 8 || 0%{?rhel} == 9
+# Only the module is needed there, for pgcli. The python3-sqlparse package
+# of EPEL also ships sqlformat:
+%{__rm} -f %{buildroot}%{_bindir}/sqlformat
+%endif
 
 %files
 %license LICENSE
 %doc AUTHORS CHANGELOG README.md
+%if 0%{?rhel} != 8 && 0%{?rhel} != 9
 %{_bindir}/sqlformat
+%endif
 %{python3_sitelib}/%{sname}/
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-4PGDG
+- Add RHEL 8 and 9 support, for pgcli. Build with python3.12 on RHEL 9,
+  whose python3 is 3.9, and do not ship sqlformat there, which conflicts
+  with the one of EPEL's python3-sqlparse. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-3PGDG
 - BuildRequire python-rpm-packaging on SUSE, which python313-devel does
   not pull in, so that the Python dependency generators run there.

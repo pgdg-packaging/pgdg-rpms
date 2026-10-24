@@ -2,8 +2,9 @@
 %global pname python-%{sname}
 
 # This spec builds the python3 flavor of the OS (python3-psycopg3 and
-# python3-psycopg3-c) everywhere, and on RHEL 9 also the pure Python
-# python3.12 flavor (python3.12-psycopg3) in the same build, for pg_statviz.
+# python3-psycopg3-c) everywhere, and on RHEL 9 also the python3.12 flavor
+# (python3.12-psycopg3 and python3.12-psycopg3-c) in the same build, for
+# pg_statviz and pgcli.
 # The python3.12 flavor used to be the separate pgdg-python3-psycopg3 spec,
 # merged here per https://github.com/pgdg-packaging/pgdg-rpms/issues/369
 %global	with_alt 0
@@ -12,6 +13,7 @@
 %global	alt_pyver 3.12
 %global	alt_python %{_bindir}/python%{alt_pyver}
 %global	alt_sitelib %{_prefix}/lib/python%{alt_pyver}/site-packages
+%global	alt_sitearch %{_libdir}/python%{alt_pyver}/site-packages
 %endif
 
 %{!?with_docs:%global with_docs 0}
@@ -58,7 +60,7 @@ Name:		python3-%{sname}
 # 3.3.6-42PGDG packages that were already published for RHEL 9.
 Epoch:		1
 Version:	3.2.13
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %else
 Version:	3.3.6
 Release:	45PGDG%{?dist}
@@ -183,6 +185,16 @@ language.
 This is the pure Python implementation for python%{alt_pyver}, for the
 packages that need a newer Python than python3 of RHEL 9, such as
 pg_statviz.
+
+%package -n python%{alt_pyver}-%{sname}-c
+Summary:	C extensions for Psycopg 3, for Python %{alt_pyver}
+Requires:	libpq5
+# The C module only works with the Python part of the same release:
+Requires:	python%{alt_pyver}-%{sname} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n python%{alt_pyver}-%{sname}-c
+This package contains the C extensions for enhanced performance in Psycopg 3,
+for python%{alt_pyver}. pgcli needs them.
 %endif
 
 %prep
@@ -261,9 +273,10 @@ SETUP_PY_EOF
 %endif
 
 %if %{with_alt}
-# The python3.12 flavor is built from a copy of the pure Python part:
-%{__rm} -rf ../psycopg-alt ../psycopg-alt-dist
+# The python3.12 flavor is built from copies of the pure Python and C parts:
+%{__rm} -rf ../psycopg-alt ../psycopg-c-alt ../psycopg-alt-dist
 %{__cp} -a psycopg ../psycopg-alt
+%{__cp} -a psycopg_c ../psycopg-c-alt
 %endif
 
 %build
@@ -276,6 +289,11 @@ SETUP_PY_EOF
 find . -iname "*.py" -exec sed -i "s/\/usr\/bin\/env python/\/usr\/bin\/python3/g" {} \;
 
 export PATH=%{pginstdir}/bin:$PATH
+%if %{with_alt}
+# The C part runs pg_config, so build it after setting PATH:
+%{alt_python} -m pip wheel --no-deps --no-build-isolation --no-index \
+	--disable-pip-version-check -w ../psycopg-alt-dist ../psycopg-c-alt
+%endif
 pushd psycopg
 %pyproject_wheel
 popd
@@ -307,7 +325,9 @@ popd
 	--root %{buildroot} --prefix %{_prefix} ../psycopg-alt-dist/*.whl
 # As %%pyproject_install does:
 %{__rm} -f %{buildroot}%{alt_sitelib}/*.dist-info/{direct_url.json,RECORD,REQUESTED}
+%{__rm} -f %{buildroot}%{alt_sitearch}/*.dist-info/{direct_url.json,RECORD,REQUESTED}
 echo rpm > $(echo %{buildroot}%{alt_sitelib}/psycopg-%{version}.dist-info)/INSTALLER
+echo rpm > $(echo %{buildroot}%{alt_sitearch}/psycopg_c-%{version}.dist-info)/INSTALLER
 %endif
 
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{sname}/
@@ -363,6 +383,11 @@ fi
 %doc psycopg/README.rst
 %{alt_sitelib}/psycopg/
 %{alt_sitelib}/psycopg-%{version}.dist-info/
+
+%files -n python%{alt_pyver}-%{sname}-c
+%license psycopg_c/LICENSE.txt
+%{alt_sitearch}/psycopg_c/
+%{alt_sitearch}/psycopg_c-%{version}.dist-info/
 %endif
 
 %files c
@@ -382,6 +407,11 @@ fi
 %endif
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1:3.2.13-4PGDG
+- RHEL 9: Also build the C extensions for python3.12, in the new
+  python3.12-psycopg3-c subpackage, which pgcli needs. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.6-45PGDG
 - Add RHEL 8 support again, built against python3.12 (as on Amazon Linux
   2023 against python3.13), for pgcli. Per
