@@ -83,6 +83,15 @@ if [ "$DISTRO" = "fedora-45" ]; then
                 --enablerepo="pgdg${PGVER}-updates-testing")
 fi
 
+# EPEL 10 is split per minor release, and the template's [epel] follows the
+# newest one, which can carry newer packages than the builders see. Use the
+# EPEL minor the EL 10 builders are on instead.
+EL10_EPEL_MINOR="${EL10_EPEL_MINOR:-10.2}"
+if [ "$DISTRO" = "rocky-10" ]; then
+    MOCK_ARGS+=(--disablerepo=epel
+                --addrepo="https://dl.fedoraproject.org/pub/epel/${EL10_EPEL_MINOR}/Everything/x86_64/")
+fi
+
 SRPM="$(ls "$RESULT_DIR"/srpm/*.src.rpm)"
 if "${MOCK[@]}" "${MOCK_ARGS[@]}" --rebuild "$SRPM"; then
     exit 0
