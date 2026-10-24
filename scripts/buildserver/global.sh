@@ -227,21 +227,29 @@ is_already_built() {
 # Read RPM paths from stdin (one per line) and print the ones which are not
 # signed yet, so that rpmsign only runs for those. Starting rpmsign for every
 # RPM is much slower than this, as the RPMs are queried in batches and only
-# the header of each RPM is read. Anything that cannot be confirmed as signed (unsigned,
-# unreadable, or a file name that is not NAME-VERSION-RELEASE.ARCH.rpm) is
-# printed as well, so it goes to rpmsign, which then signs it or reports why not.
+# the header of each RPM is read. Each answer is matched to its path, not to
+# its file name, as the same RPM can be in more than one directory (e.g. rpm14
+# and rpm14testing) with only one of the copies signed. Anything that cannot be
+# confirmed as signed (unsigned or unreadable) is printed as well, so it goes
+# to rpmsign, which then signs it or reports why not.
 list_unsigned_rpms() {
-	local paths
-	local qf='%|RSAHEADER?{s}:{%|DSAHEADER?{s}:{n}|}| %{NAME}-%{VERSION}-%{RELEASE}.%|SOURCERPM?{%{ARCH}}:{src}|.rpm\n'
+	local paths answers rpm_path
+	local qf='%|RSAHEADER?{s}:{%|DSAHEADER?{s}:{n}|}|\n'
 
 	paths=$(grep -v '^$')
 	[ -z "$paths" ] && return 0
 
-	# One stream for awk: the names of the signed RPMs ("S") first, then the paths ("P").
-	{
-		echo "$paths" | xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>/dev/null | sed -n 's/^s /S\t/p'
-		echo "$paths" | awk -F/ '{ print "P\t" $NF "\t" $0 }'
-	} | awk -F'\t' '$1 == "S" { signed[$2]; next } !($2 in signed) { print $3 }'
+	# rpm prints one line per RPM, in the order of the paths, unless an RPM
+	# cannot be read. Then the lines cannot be matched to the paths, so ask
+	# for each RPM on its own.
+	if answers=$(echo "$paths" | xargs -d '\n' -r rpm -qp --nosignature --qf "$qf" 2>/dev/null) \
+		&& [ "$(echo "$answers" | grep -c .)" -eq "$(echo "$paths" | grep -c .)" ]; then
+		paste -d '\t' <(echo "$answers") <(echo "$paths") | awk -F'\t' '$1 != "s" { print $2 }'
+	else
+		while IFS= read -r rpm_path; do
+			[ "$(rpm -qp --nosignature --qf "$qf" "$rpm_path" 2>/dev/null)" == "s" ] || echo "$rpm_path"
+		done <<< "$paths"
+	fi
 }
 
 # Check that a gpg-agent is running to sign with. The build scripts call this

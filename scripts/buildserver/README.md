@@ -109,8 +109,10 @@ them. Reading the signature from the header is much cheaper: with RPM 6.0.2,
 the RPM itself, as it "already contains an identical signature"), while
 `list_unsigned_rpms` queries the RPMs in batches at about 0.4 ms per RPM.
 Other RPM versions were not measured. `list_unsigned_rpms` also passes on
-anything it cannot confirm as signed (unreadable RPMs, or file names that
-are not `NAME-VERSION-RELEASE.ARCH.rpm`), so those still reach `rpmsign`.
+anything it cannot confirm as signed (e.g. unreadable RPMs), so those still
+reach `rpmsign`. It checks every path on its own, so a signed copy of an RPM
+in one directory (e.g. `rpm14testing`) does not hide an unsigned copy with
+the same file name in another (e.g. `rpm14`).
 Set `FORCE_RESIGN=1` to run `rpmsign` on every RPM anyway:
 
 ```bash
