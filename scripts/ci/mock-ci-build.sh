@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
 # mock-ci-build.sh <package> <distro> <pg-version> <result-dir>
+# mock-ci-build.sh --init <distro>
 #
 # Build the SRPM of a PGDG package from its OS directory (as the builders
 # do, so a missing patch symlink there fails here too) and mock-build it
@@ -12,19 +13,30 @@
 # .github/workflows/mock-build.yml. Needs mock and pgdg-mock-configs
 # installed.
 #
+# With --init, only set up the distro's chroot, so that mock saves its root
+# cache; see .github/workflows/ci-branch-cleanup.yml.
+#
 # Per https://github.com/pgdg-packaging/pgdg-rpms/issues/442
 
 set -euo pipefail
 
-if [ $# -ne 4 ]; then
+INIT_ONLY=""
+if [ $# -eq 2 ] && [ "$1" = "--init" ]; then
+    # The pgdg-<distro>-pg<NN> configs all share one chroot.
+    INIT_ONLY=1
+    DISTRO="$2"
+    PGVER=18
+    RESULT_DIR="$(mktemp -d)"
+elif [ $# -eq 4 ]; then
+    PKG="$1"
+    DISTRO="$2"
+    PGVER="$3"
+    RESULT_DIR="$(realpath -m "$4")"
+else
     echo "Usage: $0 <package> <distro> <pg-version> <result-dir>" >&2
+    echo "       $0 --init <distro>" >&2
     exit 1
 fi
-
-PKG="$1"
-DISTRO="$2"
-PGVER="$3"
-RESULT_DIR="$(realpath -m "$4")"
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 MAIN_ROOT="$REPO_ROOT/rpm/redhat/main"
@@ -40,20 +52,22 @@ declare -A DISTRO_MARKER=(
     [amazonlinux-2023]="AL-2023"
 )
 
-PKG_ROOT=""
-for kind in common non-common non-free extras; do
-    if [ -d "$MAIN_ROOT/$kind/$PKG/main" ]; then
-        PKG_ROOT="$MAIN_ROOT/$kind/$PKG"
-        break
+if [ -z "$INIT_ONLY" ]; then
+    PKG_ROOT=""
+    for kind in common non-common non-free extras; do
+        if [ -d "$MAIN_ROOT/$kind/$PKG/main" ]; then
+            PKG_ROOT="$MAIN_ROOT/$kind/$PKG"
+            break
+        fi
+    done
+    if [ -z "$PKG_ROOT" ]; then
+        echo "Could not find '$PKG/main' under rpm/redhat/main." >&2
+        exit 1
     fi
-done
-if [ -z "$PKG_ROOT" ]; then
-    echo "Could not find '$PKG/main' under rpm/redhat/main." >&2
-    exit 1
-fi
 
-OS_NAME="${DISTRO_MARKER[$DISTRO]}"
-SPECFILE="$(sed -n 's/^SPECFILE="\(.*\)"/\1/p' "$PKG_ROOT/$OS_NAME/Makefile")"
+    OS_NAME="${DISTRO_MARKER[$DISTRO]}"
+    SPECFILE="$(sed -n 's/^SPECFILE="\(.*\)"/\1/p' "$PKG_ROOT/$OS_NAME/Makefile")"
+fi
 
 mkdir -p "$RESULT_DIR"
 
@@ -70,12 +84,15 @@ MOCK=(runuser -u mockci -- mock)
 
 # A slow mirror can stretch a 5 minute build to an hour. Make dnf give up
 # on a mirror that sends less than 256 KiB/s for 30 seconds and move on to
-# the next one.
+# the next one. Mock discards a root cache that is older than its config
+# files, so keep the file's packaged mtime.
 if ! grep -q 'minrate' /etc/mock/site-defaults.cfg; then
+    MTIME="$(stat -c %Y /etc/mock/site-defaults.cfg)"
     cat >> /etc/mock/site-defaults.cfg <<'EOF'
 config_opts['dnf4_common_opts'] += ['--setopt=minrate=262144', '--setopt=timeout=30']
 config_opts['dnf5_common_opts'] += ['--setopt=minrate=262144', '--setopt=timeout=30']
 EOF
+    touch -d "@$MTIME" /etc/mock/site-defaults.cfg
 fi
 
 # Fedora 45 packages are only in the testing repos for now.
@@ -91,6 +108,11 @@ EL10_EPEL_MINOR="${EL10_EPEL_MINOR:-10.2}"
 if [ "$DISTRO" = "rocky-10" ]; then
     MOCK_ARGS+=(--disablerepo=epel
                 --addrepo="https://dl.fedoraproject.org/pub/epel/${EL10_EPEL_MINOR}/Everything/x86_64/")
+fi
+
+if [ -n "$INIT_ONLY" ]; then
+    "${MOCK[@]}" "${MOCK_ARGS[@]}" --init
+    exit 0
 fi
 
 # What "make srpmNN" / "make commonsrpm" do, minus the git pull in prep,

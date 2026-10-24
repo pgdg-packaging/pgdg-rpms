@@ -61,14 +61,15 @@ jobs:
           df -h /
       - uses: actions/checkout@v4
       # Mock's root cache (the chroot tarball it unpacks instead of installing
-      # the buildroot again), per mock config. Saved under a new key after
-      # every build, even a failed one; the restore takes the newest one.
+      # the buildroot again), one per distro. A branch can only restore
+      # caches saved on itself or on master, so ci-branch-cleanup.yml saves
+      # them on master every night, and builds here do not save any.
       - name: Restore the mock root cache
         uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/mock-cache/*/root_cache
-          key: mock-${{ matrix.distro }}-pg${{ matrix.pg }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.package }}
-          restore-keys: mock-${{ matrix.distro }}-pg${{ matrix.pg }}-
+          key: mock-root-${{ matrix.distro }}-
+          restore-keys: mock-root-${{ matrix.distro }}-
       - name: Mock build
         run: |
           mkdir -p "$RUNNER_TEMP/mock-cache"
@@ -82,12 +83,6 @@ jobs:
               scripts/ci/mock-ci-build.sh "${{ matrix.package }}" \
                 "${{ matrix.distro }}" "${{ matrix.pg }}" /src/ci-result
             '
-      - name: Save the mock root cache
-        if: always()
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ runner.temp }}/mock-cache/*/root_cache
-          key: mock-${{ matrix.distro }}-pg${{ matrix.pg }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.package }}
       - name: Summary
         if: always()
         run: |

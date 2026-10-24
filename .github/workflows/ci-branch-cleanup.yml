@@ -1,7 +1,13 @@
-# Delete stale ci/<name> branches from the GitHub mirror.
+# Nightly upkeep for the mock-build workflow.
 #
 # Deleting a branch on git.postgresql.org does not delete it here, so remove
 # every ci/ branch whose last commit is older than MAX_AGE_DAYS.
+#
+# A branch can only restore GitHub Actions caches saved on itself or on the
+# default branch, so ci/ builds cannot share caches with each other. Save
+# mock's root cache for each distro here instead (this workflow runs on
+# master), then keep only the newest one per distro and delete the caches
+# saved on other branches.
 #
 # Per https://github.com/pgdg-packaging/pgdg-rpms/issues/442
 
@@ -12,15 +18,15 @@ on:
     - cron: '17 3 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 env:
   MAX_AGE_DAYS: 7
+  PGDG_REPO_RPM: https://download.postgresql.org/pub/repos/yum/reporpms/F-44-x86_64/pgdg-fedora-repo-latest.noarch.rpm
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Delete stale ci/ branches
         env:
@@ -36,5 +42,62 @@ jobs:
               gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/${ref#refs/}"
             else
               echo "Keeping ${ref#refs/heads/} (last commit $date)"
+            fi
+          done
+
+  root-cache:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # The distros of scripts/ci/mock-ci-matrix.py.
+        distro: [fedora-43, fedora-44, fedora-45, rocky-8, rocky-9, rocky-10,
+                 opensuse-leap-16, amazonlinux-2023]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up the chroot
+        run: |
+          mkdir -p "$RUNNER_TEMP/mock-cache"
+          docker run --rm --privileged -v "$GITHUB_WORKSPACE:/src" -w /src \
+            -v "$RUNNER_TEMP/mock-cache:/var/cache/mock" \
+            -e PGDG_REPO_RPM fedora:44 bash -c '
+              set -e
+              dnf -y install git mock podman $PGDG_REPO_RPM
+              dnf -y --disablerepo="pgdg[0-9]*" install pgdg-mock-configs pgdg-srpm-macros
+              git config --global --add safe.directory /src
+              scripts/ci/mock-ci-build.sh --init "${{ matrix.distro }}"
+            '
+      - name: Save the mock root cache
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/mock-cache/*/root_cache
+          key: mock-root-${{ matrix.distro }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+  prune-caches:
+    needs: root-cache
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Delete superseded caches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Newest first; keep the first mock-root-<distro> cache seen on
+          # master, delete everything else.
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/caches?per_page=100&sort=created_at&direction=desc" \
+            --jq '.actions_caches[] | "\(.id) \(.ref) \(.key)"' |
+          while read -r id ref key; do
+            distro=$(echo "$key" | sed -n 's/^\(mock-root-.*\)-[0-9]*-[0-9]*$/\1/p')
+            if [ "$ref" = "refs/heads/master" ] && [ -n "$distro" ] &&
+               ! grep -qx "$distro" kept 2>/dev/null; then
+              echo "$distro" >> kept
+              echo "Keeping $key"
+            else
+              echo "Deleting $key ($ref)"
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/caches/$id"
             fi
           done
