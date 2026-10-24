@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.3.0
+Version:	2.4.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,13 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Sat Oct 24 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
+- Update to 2.4.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.4.0
+- Adds the install prefix of pgdg-libimagequant, which replaces the EPEL
+  libimagequant package for Pillow on RHEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-1PGDG
 - Update to 2.3.0 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.3.0
