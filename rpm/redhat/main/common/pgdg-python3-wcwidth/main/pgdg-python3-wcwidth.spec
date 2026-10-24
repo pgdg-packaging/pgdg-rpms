@@ -32,8 +32,8 @@
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.9.3
-Release:	2PGDG%{?dist}
+Version:	0.9.4
+Release:	1PGDG%{?dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -91,6 +91,11 @@ export WCWIDTH_NO_EXTENSION=1
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.4-1PGDG
+- Update to 0.9.4 per changes described at:
+  https://github.com/jquast/wcwidth/releases/tag/0.9.4
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/447
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.3-2PGDG
 - BuildRequire python-rpm-packaging on SLES 16 only: on SLES 15 the Python
   dependency generators come with the rpm package, and Leap 15.6 does not
