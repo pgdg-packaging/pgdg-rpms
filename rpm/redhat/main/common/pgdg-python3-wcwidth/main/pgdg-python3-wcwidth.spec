@@ -33,7 +33,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.9.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -44,9 +44,12 @@ BuildArch:	noarch
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+%if 0%{?suse_version} >= 1600
 # SUSE's Python dependency generators. python3-devel pulls this in, but
-# python%%{python3_pkgversion}-devel does not.
+# python%%{python3_pkgversion}-devel does not. On SLES 15 they come with
+# the rpm package, and Leap 15.6 has no python-rpm-packaging.
 BuildRequires:	python-rpm-packaging
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
@@ -88,6 +91,11 @@ export WCWIDTH_NO_EXTENSION=1
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.3-2PGDG
+- BuildRequire python-rpm-packaging on SLES 16 only: on SLES 15 the Python
+  dependency generators come with the rpm package, and Leap 15.6 does not
+  have python-rpm-packaging.
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.3-1PGDG
 - Update to 0.9.3 per changes described at:
   https://github.com/jquast/wcwidth/releases/tag/0.9.3
