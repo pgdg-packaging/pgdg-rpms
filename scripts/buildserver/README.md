@@ -550,6 +550,9 @@ Equivalent of `packagesync.sh` for non-free packages. Key differences:
   before starting.
 - Accepts an optional positional argument to restrict sync to a single
   PostgreSQL version.
+- Runs the same signature and corruption check (`verify_signed` and
+  `list_new_rpms`, in `global.sh`) for the selected versions before anything
+  is synced, after copying the `rpmcommon` packages.
 
 ---
 

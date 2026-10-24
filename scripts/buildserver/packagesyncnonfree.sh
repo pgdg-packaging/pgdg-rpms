@@ -119,6 +119,25 @@ else
     fi
 fi
 
+# Check that the new RPMs of all versions are signed and not corrupt before
+# anything is synced, so that one bad package blocks the whole run: nothing is
+# copied to the ALL* directories, no repo metadata is created and nothing goes
+# to S3. "|| true", as find fails for a version without staging directories:
+log "Checking that the new RPMs to be synced are signed and not corrupt..."
+new_list=""
+for packageSyncVersion in "${pgStableBuilds[@]}"
+do
+    new_list+="$(list_new_rpms /var/lib/pgsql/rpm"${packageSyncVersion}" || true)"$'\n'
+done
+new_list=$(echo "$new_list" | grep -v '^$' || true)
+
+if [ -z "$new_list" ]; then
+    log "No new RPMs to check."
+elif ! echo "$new_list" | verify_signed; then
+    error "Not syncing anything. Sign (see signallpackages.sh) or rebuild the packages above and run this script again."
+    exit 1
+fi
+
 # Start sync process:
 
 sync_failed=0
