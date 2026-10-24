@@ -77,6 +77,16 @@ fi
 chown -R mockci: "$RESULT_DIR"
 MOCK=(runuser -u mockci -- mock)
 
+# A slow mirror can stretch a 5 minute build to an hour. Make dnf give up
+# on a mirror that sends less than 256 KiB/s for 30 seconds and move on to
+# the next one.
+if ! grep -q 'minrate' /etc/mock/site-defaults.cfg; then
+    cat >> /etc/mock/site-defaults.cfg <<'EOF'
+config_opts['dnf4_common_opts'] += ['--setopt=minrate=262144', '--setopt=timeout=30']
+config_opts['dnf5_common_opts'] += ['--setopt=minrate=262144', '--setopt=timeout=30']
+EOF
+fi
+
 # Fedora 45 packages are only in the testing repos for now.
 if [ "$DISTRO" = "fedora-45" ]; then
     MOCK_ARGS+=(--enablerepo=pgdg-common-testing
