@@ -1,1 +1,0 @@
-../main/../main/postgresql-96-ecpg_config.h

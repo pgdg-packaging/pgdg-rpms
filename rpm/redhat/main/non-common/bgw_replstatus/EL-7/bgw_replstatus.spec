@@ -1,1 +1,0 @@
-../main/../main/bgw_replstatus.spec

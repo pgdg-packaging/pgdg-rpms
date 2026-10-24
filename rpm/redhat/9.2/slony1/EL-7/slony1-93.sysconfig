@@ -1,2 +1,0 @@
-SLONCONNINFO='host=/tmp port=5432 user=slony'
-SLONCLUSTERNAME='sloncluster'
