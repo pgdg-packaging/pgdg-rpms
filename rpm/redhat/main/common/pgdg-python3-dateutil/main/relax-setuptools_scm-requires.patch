@@ -1,10 +1,10 @@
 diff -U 3 -dHrN a/pyproject.toml b/pyproject.toml
---- a/pyproject.toml	2024-03-01 19:35:19.000000000 +0100
-+++ b/pyproject.toml	2025-05-08 17:56:27.011526557 +0200
-@@ -3,7 +3,7 @@
+--- a/pyproject.toml	2026-10-21 23:20:00.000000000 +0000
++++ b/pyproject.toml	2026-10-24 19:00:00.000000000 +0000
+@@ -2,7 +2,7 @@
+ requires = [
      "setuptools; python_version != '3.3'",
      "setuptools<40.0; python_version == '3.3'",
-     "wheel",
 -    "setuptools_scm<8.0"
 +    "setuptools_scm"
  ]

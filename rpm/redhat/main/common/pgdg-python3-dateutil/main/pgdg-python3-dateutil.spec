@@ -25,12 +25,12 @@
 %global pgdg_python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2.9.0.post0
-Release:	7PGDG%{?dist}
+Version:	3.0.0
+Release:	1PGDG%{?dist}
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
-Source:		%{pypi_source python-dateutil}
+Source:		%{pypi_source python_dateutil}
 # Allow setuptools-scm dependency greater than v8.0
 Patch:		relax-setuptools_scm-requires.patch
 
@@ -52,9 +52,13 @@ BuildRequires:	python3-pip
 BuildRequires:	python%{python3_pkgversion}-pip
 %endif
 
+# Time zone data is read from the system first:
 Requires:	tzdata
-# The dependency generator does not add this on RHEL 8:
-Requires:	python%{python3_pkgversion}-six >= 1.5
+# The dependency generator does not add these on RHEL 8. dateutil uses the
+# tzdata module when a time zone is not found on the system, and for the
+# deprecated dateutil.zoneinfo module:
+Requires:	python%{python3_pkgversion}-six >= 1.6
+Requires:	python%{python3_pkgversion}-tzdata
 
 Provides:	python%{python3_pkgversion}dist(python-dateutil)
 
@@ -63,9 +67,7 @@ The dateutil module provides powerful extensions to the standard datetime\
 module available in Python.
 
 %prep
-%autosetup -p1 -n python-%{modname}-%{version}
-iconv --from=ISO-8859-1 --to=UTF-8 NEWS > NEWS.new
-%{__mv} NEWS.new NEWS
+%autosetup -p1 -n python_%{modname}-%{version}
 %if 0%{?rhel} == 8
 # There is no python3.12-setuptools_scm on RHEL 8. Give setup.py the version
 # directly (the sdist already has src/dateutil/_version.py):
@@ -99,10 +101,20 @@ if grep -q 'scm' setup.py setup.cfg; then exit 1; fi
 %{pgdg_python3_sitearch}/%{modname}/tz/__pycache__/*.py*
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/__pycache__/*.py*
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/*.py*
-%{pgdg_python3_sitearch}/%{modname}/zoneinfo/%{modname}-zoneinfo.tar.gz
 %{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-1PGDG
+- Update to 3.0.0 per changes described at:
+  https://github.com/dateutil/dateutil/releases/tag/3.0.0
+- dateutil no longer ships its own copy of the time zone database, and
+  uses the tzdata module instead when a time zone is not found on the
+  system: Require python3-tzdata, and six >= 1.6.
+- The sdist is now named python_dateutil.
+- NEWS is UTF-8 now: do not convert it anymore.
+- Refresh the setuptools_scm patch for the new pyproject.toml.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0.post0-7PGDG
 - Add an explicit Requires on six: the dependency generator does not add
   it on RHEL 8, so dateutil could not be imported there. Per
