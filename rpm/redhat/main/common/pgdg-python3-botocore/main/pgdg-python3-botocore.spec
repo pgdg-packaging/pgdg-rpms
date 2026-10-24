@@ -31,7 +31,7 @@
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.43.118
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -67,6 +67,10 @@ rm -vr tests/integration
 # unable to import "botocore". I'm not 100% sure why this happened but for now
 # just exclude this one test and run all the other functional tests.
 rm -vr tests/functional/leak
+# Allow dateutil 3.x. botocore only uses dateutil.parser, tzutc and tzlocal,
+# which did not change in 3.0.0:
+sed -i 's/python-dateutil>=2.1,<3.0.0/python-dateutil>=2.1/' setup.py setup.cfg
+grep -q "'python-dateutil>=2.1'," setup.py
 
 %build
 %{__ospython} setup.py build
@@ -91,6 +95,11 @@ rm -vr tests/functional/leak
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-2PGDG
+- Allow dateutil 3.x: the generated "python-dateutil < 3" Requires
+  would make python3.12-dateutil 3.0.0 conflict with botocore on RHEL 9.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-1PGDG
 - Update to 1.43.118 per changes described at:
   https://pypi.org/project/botocore/1.43.118/
