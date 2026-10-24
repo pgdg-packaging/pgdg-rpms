@@ -31,7 +31,7 @@
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.43.118
-Release:	2PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -54,6 +54,11 @@ Requires:	python%{python3_pkgversion}-urllib3 >= 1.25.4
 
 Provides:	bundled(python%{python3_version}-six) = 1.16.0
 Provides:	bundled(python%{python3_version}-requests) = 2.7.0
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-botocore < %{version}-%{release}
+%endif
 
 %description
 A low-level interface to a growing number of Amazon Web Services. The
@@ -95,6 +100,11 @@ grep -q "'python-dateutil>=2.1'," setup.py
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-botocore
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-2PGDG
 - Allow dateutil 3.x: the generated "python-dateutil < 3" Requires
   would make python3.12-dateutil 3.0.0 conflict with botocore on RHEL 9.

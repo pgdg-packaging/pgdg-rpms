@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.0.9
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	A minimal low-level HTTP client
 
 License:	BSD-3-Clause
@@ -50,6 +50,11 @@ BuildRequires:	python%{python3_pkgversion}-hatch-fancy-pypi-readme
 
 Requires:	python%{python3_pkgversion}-certifi
 Requires:	python%{python3_pkgversion}-h11 >= 0.16
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-httpcore < %{version}-%{release}
+%endif
 
 %description
 The HTTP Core package provides a minimal low-level HTTP client, which does
@@ -71,6 +76,11 @@ one thing only: sending HTTP requests. It is used by httpx.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.9-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-httpcore
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.9-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   httpx dependency (for pg_statviz) on Amazon Linux 2023. Per

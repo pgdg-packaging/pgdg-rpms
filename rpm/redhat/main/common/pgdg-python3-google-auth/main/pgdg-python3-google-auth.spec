@@ -37,7 +37,7 @@ Version:	2.47.0
 %else
 Version:	2.62.0
 %endif
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Google Authentication Library
 
 License:	Apache-2.0
@@ -65,6 +65,14 @@ Requires:	python%{python3_pkgversion}-cryptography >= 38.0.3
 %if 0%{?rhel} == 8
 # The RHEL 8 dependency generator may not create this for python3.12:
 Provides:	python%{python3_pkgversion}dist(google-auth) = %{version}
+%endif
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-google-auth < %{version}-%{release}
+# Its google-auth[requests] metapackage requires that exact version.
+# Our +requests subpackage replaces it (that macro takes no Obsoletes):
+Obsoletes:	python3-google-auth+requests < %{version}-%{release}
 %endif
 
 %description
@@ -112,6 +120,12 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.62.0-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL
+  python3-google-auth package there. Start the release from 42, so that our
+  packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.62.0-1PGDG
 - Update to 2.62.0 per changes
   described at https://pypi.org/project/google-auth/2.62.0/ . Upstream

@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2026.5
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Provider of IANA time zone data for Python
 
 License:	Apache-2.0
@@ -69,6 +69,11 @@ location), as a part of PEP 615.
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.5-42PGDG
+- Add RHEL 10 support, for pandas, without EPEL. Start the release from 42,
+  as for the other Python packages built for RHEL 10. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.5-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pandas dependency (for pg_statviz) on Amazon Linux 2023.

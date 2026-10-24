@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.9.1
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Pure-Python RSA implementation
 
 License:	Apache-2.0
@@ -48,6 +48,11 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-poetry-core
 
 Requires:	python%{python3_pkgversion}-pyasn1 >= 0.1.3
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-rsa < %{version}-%{release}
+%endif
 
 %description
 Python-RSA is a pure-Python RSA implementation. It supports encryption and
@@ -72,6 +77,11 @@ decryption, signing and verifying signatures, and key generation.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.1-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-rsa
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   google-auth dependency (for pg_statviz) on Amazon Linux 2023. Per

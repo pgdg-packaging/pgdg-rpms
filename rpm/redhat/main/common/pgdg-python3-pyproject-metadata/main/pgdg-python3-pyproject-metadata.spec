@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.9.1
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	PEP 621 metadata parsing
 
 License:	MIT
@@ -48,6 +48,11 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-flit-core
 
 Requires:	python%{python3_pkgversion}-packaging
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-pyproject-metadata < %{version}-%{release}
+%endif
 
 %description
 Dataclass for PEP 621 metadata with support for core metadata generation.
@@ -73,6 +78,12 @@ PEP 643-compliant metadata file (e.g. PKG-INFO).
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.1-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL
+  python3-pyproject-metadata package there. Start the release from 42, so
+  that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.

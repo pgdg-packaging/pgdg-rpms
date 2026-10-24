@@ -30,7 +30,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.43.118
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -53,6 +53,11 @@ Requires:	python%{python3_pkgversion}-botocore
 %if 0%{?rhel} == 8
 Requires:	python%{python3_pkgversion}-jmespath >= 0.7.1
 Requires:	python%{python3_pkgversion}-s3transfer >= 0.19.0
+%endif
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-boto3 < %{version}-%{release}
 %endif
 
 %description
@@ -107,6 +112,11 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-boto3
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-1PGDG
 - Update to 1.43.118 per changes described at:
   https://pypi.org/project/boto3/1.43.118/

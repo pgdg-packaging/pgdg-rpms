@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.16.0
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Meson Python build backend (PEP 517)
 
 License:	MIT
@@ -45,12 +45,21 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	pyproject-rpm-macros
 %endif
 BuildRequires:	python%{python3_pkgversion}-pip
+# RHEL 10: python3.12 is the OS Python there, and CRB has a new enough
+# meson for it; use that one.
+%if 0%{?rhel} >= 10
+BuildRequires:	meson >= 1.2.3
+Requires:	meson >= 1.2.3
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-%{modname} < %{version}-%{release}
+%else
 BuildRequires:	python%{python3_pkgversion}-meson >= 1.2.3
+Requires:	python%{python3_pkgversion}-meson >= 1.2.3
+%endif
 BuildRequires:	python%{python3_pkgversion}-packaging
 BuildRequires:	python%{python3_pkgversion}-pyproject-metadata
 BuildRequires:	ninja-build
 
-Requires:	python%{python3_pkgversion}-meson >= 1.2.3
 Requires:	python%{python3_pkgversion}-packaging
 Requires:	python%{python3_pkgversion}-pyproject-metadata
 Requires:	ninja-build
@@ -63,13 +72,17 @@ Python packages.
 %prep
 %autosetup -n %{pymodname}-%{version}
 
+%if ! 0%{?rhel} || 0%{?rhel} < 10
 # Use our python%{python3_pkgversion}-meson by default, instead of the
 # (older) meson package of the OS:
 sed -i "s|meson = os.environ.get('MESON', meson or 'meson')|meson = os.environ.get('MESON', meson or 'meson-%{python3_pkgversion}')|" mesonpy/__init__.py
 grep -q "'meson-%{python3_pkgversion}'" mesonpy/__init__.py
+%endif
 
 %build
+%if ! 0%{?rhel} || 0%{?rhel} < 10
 export MESON=%{_bindir}/meson-%{python3_pkgversion}
+%endif
 %pyproject_wheel
 
 %install
@@ -82,6 +95,13 @@ export MESON=%{_bindir}/meson-%{python3_pkgversion}
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.16.0-42PGDG
+- Add RHEL 10 support, without EPEL: use meson from CRB there, which is
+  built for python3.12, the OS Python, and obsolete the EPEL
+  python3-meson-python package. Start the release from 42, so that our
+  packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 0.16.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.

@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.3.1
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	C++ headers for C extension development
 
 License:	BSD-3-Clause
@@ -49,6 +49,11 @@ BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 BuildRequires:	python%{python3_pkgversion}-wheel
 
 Requires:	python%{python3_pkgversion}-setuptools
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-cppy < %{version}-%{release}
+%endif
 
 %description
 A small C++ header library which makes it easier to write Python extension
@@ -72,6 +77,11 @@ common object operations.
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.1-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-cppy
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   pg_statviz dependency on Amazon Linux 2023.

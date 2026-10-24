@@ -1,13 +1,13 @@
 # This spec builds two flavors, depending on the distribution:
 #
-# - On RHEL 9 and Amazon Linux 2023: the python3.12 / python3.13 alt-stack
+# - On RHEL 9 and 10 and Amazon Linux 2023: the python3.12 / python3.13
 #   flavor (python3.12-fonttools, python3.13-fonttools), for pg_statviz:
 #   noarch, without the optional Cython extensions.
 # - On SLES: the default python3 flavor (python3-fontTools), with the Cython
 #   extensions. This used to be the separate python3-fonttools directory,
 #   merged here per https://github.com/pgdg-packaging/pgdg-rpms/issues/369
 %global	pgdg_altstack 0
-%if ( 0%{?rhel} && 0%{?rhel} <= 9 ) || 0%{?amzn} == 2023
+%if ( 0%{?rhel} && 0%{?rhel} <= 10 ) || 0%{?amzn} == 2023
 %global	pgdg_altstack 1
 %endif
 
@@ -30,7 +30,7 @@
 %if %{pgdg_altstack}
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.67.0
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
 Version:	4.63.0
@@ -64,6 +64,11 @@ Requires:	python3-munkres
 Requires:	python3-lxml
 Requires:	python3-scipy
 Requires:	python3-fs
+%endif
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-fonttools < %{version}-%{release}
 %endif
 
 %description
@@ -127,6 +132,12 @@ export FONTTOOLS_WITH_CYTHON=1
 %endif
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-42PGDG
+- Add RHEL 10 support, without EPEL: build the python3.12 flavor there, as
+  on RHEL 9, and obsolete the EPEL python3-fonttools package. Start the
+  release from 42, so that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 4.63.0-3PGDG
 - SLES: Fix "unknown compiler directive: freethreading_compatible" build
   failure with Python 3.13: do not pass that directive to Cython, it needs

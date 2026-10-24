@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.15.0
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Build and publish crates with pyo3, cffi and uniffi bindings as Python packages
 # maturin is MIT OR Apache-2.0. The licenses of the crates that are compiled
 # into the binary (without the default features, as setup.py builds it),
@@ -57,6 +57,11 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	rust >= 1.89
 BuildRequires:	cargo >= 1.89
 BuildRequires:	gcc
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	maturin < %{version}-%{release}
+%endif
 
 %description
 maturin builds and publishes crates with pyo3, cffi and uniffi bindings as
@@ -118,6 +123,11 @@ export CARGO_NET_OFFLINE=true
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL maturin package
+  there. Start the release from 42, so that our packages win over EPEL's.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to build pydantic-core
   and jiter (for pg_statviz) on Amazon Linux 2023. Per

@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2026.10.23
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	System CA bundle for Python
 
 License:	MPL-2.0
@@ -49,6 +49,11 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
 Requires:	ca-certificates
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-certifi < %{version}-%{release}
+%endif
 
 %description
 Certifi provides the location of the CA bundle, for validating the
@@ -96,6 +101,11 @@ PYEOF2
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.10.23-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-certifi
+  package there. Start the release from 42, so that our packages win over
+  EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2026.10.23-1PGDG
 - Update to 2026.10.23. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/438

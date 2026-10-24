@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	24.1.0
-Release:	1PGDG%{?dist}
+Release:	42PGDG%{?dist}
 Summary:	Fancy PyPI READMEs with Hatch
 
 License:	MIT
@@ -48,6 +48,11 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-hatchling
 
 Requires:	python%{python3_pkgversion}-hatchling
+
+%if 0%{?rhel} == 10
+# Replace the EPEL package of the same module, which has the same files:
+Obsoletes:	python3-hatch-fancy-pypi-readme < %{version}-%{release}
+%endif
 
 %description
 hatch-fancy-pypi-readme is a Hatch metadata plugin for everyone who cares
@@ -71,6 +76,12 @@ about the first impression of their project's PyPI landing page.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 24.1.0-42PGDG
+- Add RHEL 10 support, without EPEL, and obsolete the EPEL
+  python3-hatch-fancy-pypi-readme package there. Start the release from 42,
+  so that our packages win over EPEL's. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 24.1.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to satisfy
   the build of pydantic, httpx, httpcore and anthropic (for pg_statviz) on Amazon Linux 2023. Per
