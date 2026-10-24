@@ -74,3 +74,5 @@ location), as a part of PEP 615.
   pandas dependency (for pg_statviz) on Amazon Linux 2023.
 - Add RHEL 9 support (python3.12), for pg_statviz. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/249
+- Add RHEL 8 support (python3.12), for dateutil 3.0.0. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
