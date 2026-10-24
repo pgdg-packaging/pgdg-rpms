@@ -30,8 +30,8 @@
 %global	modname jiter
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.17.0
-Release:	2PGDG%{?dist}
+Version:	0.18.0
+Release:	1PGDG%{?dist}
 Summary:	Fast iterable JSON parser
 # jiter is MIT. The licenses of the crates that are compiled into the
 # extension, checked with "cargo tree -p jiter-python -e normal" (40 crates):
@@ -44,7 +44,7 @@ Source0:	https://files.pythonhosted.org/packages/source/j/%{modname}/%{modname}-
 # It has to be made again for every new version.
 # The CDN cached a 404 for the plain URL. The query string makes it fetch
 # the file again; #/ keeps the local file name unchanged.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{modname}-%{version}-vendor.tar.xz?v=2#/%{modname}-%{version}-vendor.tar.xz
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{modname}-%{version}-vendor.tar.xz?v=1#/%{modname}-%{version}-vendor.tar.xz
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -113,6 +113,11 @@ export MATURIN_PEP517_ARGS="--frozen"
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18.0-1PGDG
+- Update to 0.18.0, and make a new tarball of the vendored crates for it.
+  The licenses of the crates did not change.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/441
+
 * Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 0.17.0-2PGDG
 - Amazon Linux 2023 defines %%fedora too, so the Fedora maturin
   BuildRequires was also used there, and the build failed. Use it only on
