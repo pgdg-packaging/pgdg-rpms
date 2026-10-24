@@ -11,7 +11,7 @@
 # and our packages must not pick the OS or EPEL libraries. Consumers require
 # pgdg-netcdf by name instead:
 %global		__provides_exclude_from ^(%{netcdfinstdir}|%{plugin_dir})/
-%global		__requires_exclude ^lib(netcdf|hdf5.*|hdf|mfhdf|sz|aec|blosc|_+nc[a-z0-9]*)\\.so
+%global		__requires_exclude ^lib(netcdf|hdf5.*|hdf|df|mfhdf|sz|aec|blosc|_+nc[a-z0-9]*)\\.so
 
 %{!?runselftest:%global runselftest 0}
 
@@ -21,7 +21,7 @@
 
 Name:		pgdg-%{sname}
 Version:	4.10.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Libraries for the Unidata network Common Data Form
 License:	BSD-3-Clause
 URL:		https://www.unidata.ucar.edu/software/netcdf/
@@ -130,6 +130,12 @@ export PKG_CONFIG_PATH=%{pgdg_bloscinstdir}/lib64/pkgconfig
 %{netcdfinstdir}/share/man/man3/*
 
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.10.1-2PGDG
+- Also filter libdf.so.0 (HDF4) out of the automatic Requires: it is not
+  provided by pgdg-hdf, which is required by name, so pgdg-netcdf and
+  gdal313-libs could not be installed on RHEL 8, 9 and 10.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 4.10.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-netcdf, so that the GIS stack does not need the EPEL netcdf
