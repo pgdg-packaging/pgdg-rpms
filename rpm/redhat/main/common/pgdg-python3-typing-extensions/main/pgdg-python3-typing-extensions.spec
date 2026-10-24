@@ -2,6 +2,8 @@
 #
 # - On RHEL 8 and RHEL 9: the python3.12 alt-stack flavor
 #   (python3.12-typing-extensions), for pg_statviz and grpcio (bigquery_fdw).
+# - On RHEL 9 also the default python3 (3.9) flavor (python3-typing-extensions)
+#   in the same build, for python3-psycopg3: RHEL 9 only has it in EPEL.
 # - On SLES 16: the default python3 flavor (python3-typing-extensions), for
 #   psycopg3. This used to be the separate python3-typing-extensions
 #   directory, merged here per
@@ -9,6 +11,12 @@
 %global	pgdg_altstack 0
 %if 0%{?rhel} && 0%{?rhel} <= 9
 %global	pgdg_altstack 1
+%endif
+%global	with_os_python 0
+%if 0%{?rhel} == 9
+%global	with_os_python 1
+%global	os_python %{_bindir}/python3
+%global	os_sitelib %{_prefix}/lib/python3.9/site-packages
 %endif
 
 %if %{pgdg_altstack}
@@ -25,7 +33,7 @@
 Name:		python%{python3_pkgversion}-%{modname}
 %if %{pgdg_altstack}
 Version:	4.12.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %else
 Version:	4.16.0
 Release:	3PGDG%{?dist}
@@ -52,6 +60,12 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-setuptools
 %endif
 
+%if %{with_os_python}
+BuildRequires:	python3-devel
+BuildRequires:	python3-pip
+BuildRequires:	python3-flit-core
+%endif
+
 %if 0%{?rhel} == 8
 # The RHEL 8 dependency generator may not create this for python3.12:
 Provides:	python%{python3_pkgversion}dist(typing-extensions) = %{version}
@@ -65,10 +79,25 @@ older Python versions, and experimentation with new type system PEPs.
 This is 4.12.2, the newest release that builds with flit-core 3.9 of RHEL 9.
 %endif
 
+%if %{with_os_python}
+%package -n python3-%{modname}
+Summary:	Backported and experimental type hints for Python 3
+
+%description -n python3-%{modname}
+The typing_extensions module enables the use of new type system features on
+older Python versions, and experimentation with new type system PEPs.
+
+This is the flavor for the default python3 of RHEL 9, for python3-psycopg3.
+%endif
+
 %prep
 %autosetup -n %{pymodname}-%{version}
 
 %build
+%if %{with_os_python}
+%{os_python} -m pip wheel --no-deps --no-build-isolation --no-index \
+	--disable-pip-version-check -w ../pgdg-os-dist .
+%endif
 %if 0%{?rhel} == 8
 # There are no pyproject-rpm-macros on RHEL 8:
 %{__python3} -m pip wheel --no-deps --no-build-isolation --no-index \
@@ -87,6 +116,14 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %else
 %pyproject_install
 %endif
+%if %{with_os_python}
+%{os_python} -m pip install --no-deps --no-index --no-compile \
+	--disable-pip-version-check --ignore-installed \
+	--root %{buildroot} --prefix %{_prefix} ../pgdg-os-dist/*.whl
+# As %%pyproject_install does:
+%{__rm} -f %{buildroot}%{os_sitelib}/*.dist-info/{direct_url.json,RECORD,REQUESTED}
+echo rpm > $(echo %{buildroot}%{os_sitelib}/*.dist-info)/INSTALLER
+%endif
 
 %files
 %license LICENSE
@@ -95,7 +132,22 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/__pycache__/%{pymodname}.*
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
+%if %{with_os_python}
+%files -n python3-%{modname}
+%license LICENSE
+%doc README.md CHANGELOG.md
+%{os_sitelib}/%{pymodname}.py
+%{os_sitelib}/__pycache__/%{pymodname}.*
+%{os_sitelib}/%{pymodname}-%{version}.dist-info/
+%endif
+
 %changelog
+* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.12.2-3PGDG
+- RHEL 9: Also build the default python3 (3.9) flavor, in the new
+  python3-typing-extensions subpackage, which python3-psycopg3 needs:
+  RHEL 9 only has it in EPEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-3PGDG
 - Fix SLES 16 build: list the files explicitly, as the SUSE macros have
   no %%pyproject_files.
