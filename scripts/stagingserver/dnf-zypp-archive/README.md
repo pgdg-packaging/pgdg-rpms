@@ -166,6 +166,8 @@ A higher-level script that drives `aws_sync.sh` across multiple OS versions and 
 
 Arch expansion is delegated entirely to `aws_sync.sh`, so `aws_sync_archive.sh` only loops over OS versions and PG versions.
 
+For each OS version, it first syncs the **common repo** (and the extras repo, with `--extras=1`) once, since they are not PG specific, and then each PG version repo. With `--non-free`, only the non-free repos are synced.
+
 ### Usage
 
 ```
@@ -180,7 +182,7 @@ aws_sync_archive.sh --os-name <fedora|redhat> [--arch <arch>] [--os-version <ver
 | `--arch` | No | Pin to one architecture. If omitted, all architectures are synced (via `aws_sync.sh`). |
 | `--os-version` | No | Pin to one OS version. If omitted, all valid versions for the OS are used. |
 | `--pg-version` | No | Pin to one PG major version. If omitted, all versions in `VALID_PG_VERSIONS` are used. |
-| `--extras=1` | No | Pass through to `aws_sync.sh`. |
+| `--extras=1` | No | Also sync the extras repo, once per OS version. |
 | `--non-free` | No | Pass through to `aws_sync.sh`; sync non-free repos for all PG versions (redhat only). Rejected with an error if `--os-name` is not `redhat`. |
 | `--delete-testing` | No | Passed through to `aws_sync.sh`; remove the matching local testing repos after a sync. Off by default. |
 | `--dry-run` | No | Passed through to `aws_sync.sh`. |

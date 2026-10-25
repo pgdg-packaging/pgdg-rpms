@@ -131,21 +131,40 @@ pg_versions=("${PG_VERSION:-}")
 os_versions=("$OS_VERSION")
 [[ -z "$OS_VERSION" ]] && os_versions=("${VALID_OS_VERSIONS[@]}")
 
-# Run syncs — arch is handled inside aws_sync.sh when --arch is omitted.
-for pg in "${pg_versions[@]}"; do
-  for osv in "${os_versions[@]}"; do
-    cmd="$SCRIPT_DIR/aws_sync.sh --os $os --ver $osv --pg $pg"
-    [[ -n "$ARCH"   ]] && cmd+=" --arch $ARCH"
-    [[ -n "$extras"  ]] && cmd+=" --extras=$extras"
-    [[ $non_free -eq 1 ]] && cmd+=" --non-free"
-    [[ $delete_testing -eq 1 ]] && cmd+=" --delete-testing"
-    [[ $DRY_RUN -eq 1 ]] && cmd+=" --dry-run"
-    [[ $DEBUG   -eq 1 ]] && cmd+=" --debug"
+# Run one aws_sync.sh invocation, logging failures instead of aborting.
+# Usage: run_sync <extra aws_sync.sh args>...
+run_sync() {
+  local cmd="$SCRIPT_DIR/aws_sync.sh --os $os --ver $osv $*"
+  [[ -n "$ARCH"   ]] && cmd+=" --arch $ARCH"
+  [[ $delete_testing -eq 1 ]] && cmd+=" --delete-testing"
+  [[ $DRY_RUN -eq 1 ]] && cmd+=" --dry-run"
+  [[ $DEBUG   -eq 1 ]] && cmd+=" --debug"
 
-    echo "Running: $cmd"
-    if ! eval "$cmd"; then
-      echo "[FAIL] $cmd" >> "$SCRIPT_DIR/aws_sync_archive_failures.log"
-    fi
+  echo "Running: $cmd"
+  if ! eval "$cmd"; then
+    echo "[FAIL] $cmd" >> "$SCRIPT_DIR/aws_sync_archive_failures.log"
+  fi
+}
+
+# Run syncs — arch is handled inside aws_sync.sh when --arch is omitted.
+for osv in "${os_versions[@]}"; do
+  if [[ $non_free -eq 1 ]]; then
+    for pg in "${pg_versions[@]}"; do
+      run_sync --pg "$pg" --non-free
+    done
+    continue
+  fi
+
+  # The common and extras repos are not PG specific: sync them once per
+  # OS version. aws_sync.sh syncs the common repo when --pg is omitted.
+  if [[ -n "$extras" ]]; then
+    run_sync "--extras=$extras"
+  else
+    run_sync
+  fi
+
+  for pg in "${pg_versions[@]}"; do
+    run_sync --pg "$pg"
   done
 done
 
