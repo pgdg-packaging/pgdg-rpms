@@ -28,6 +28,12 @@
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
+%if 0%{?suse_version}
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+%endif
+
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.43.118
@@ -43,6 +49,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+%endif
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
 %endif
 # The Python dependency generator of RHEL 8 does not run for python3.12,
 # so add the runtime dependencies explicitly there.
@@ -100,10 +111,15 @@ grep -q "'python-dateutil>=2.1'," setup.py
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
-* Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-42PGDG
+* Sun Oct 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-botocore
   package there. Start the release from 42, so that our packages win over
   EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- SLES 16: Generate the runtime Requires from the Python metadata, and
+  BuildRequire python-rpm-packaging for the Python dependency generators.
+  The package did not require jmespath, dateutil and urllib3 there, so
+  botocore could not be imported. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-2PGDG
 - Allow dateutil 3.x: the generated "python-dateutil < 3" Requires
