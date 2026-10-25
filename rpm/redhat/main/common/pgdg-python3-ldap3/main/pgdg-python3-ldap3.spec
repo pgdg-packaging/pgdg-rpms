@@ -46,6 +46,13 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
+%if 0%{?rhel} == 8
+# The python3.12 packages of RHEL 8 get no automatic python3.12dist()
+# provides and requires:
+Provides:	python%{python3_pkgversion}dist(%{pymodname}) = %{version}
+Requires:	python%{python3_pkgversion}-pyasn1 >= 0.4.6
+%endif
+
 %if 0%{?rhel} == 10
 # Replace the EPEL package of the same module, which has the same files:
 Obsoletes:	python3-ldap3 < %{version}-%{release}
@@ -73,7 +80,7 @@ library. The same codebase runs in Python 2, Python 3, PyPy and PyPy3.
 %changelog
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.1-42PGDG
 - Initial packaging for the PostgreSQL RPM repository, for pgldapsync on
-  RHEL 9 and 10 and Amazon Linux 2023, without EPEL.
+  RHEL 8, 9 and 10 and Amazon Linux 2023, without EPEL.
 - RHEL 10: Obsolete the EPEL python3-ldap3 package. Start the release from
   42, so that our packages win over EPEL's. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/422

@@ -12,6 +12,10 @@
 %global	__ospython %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %endif
+%if 0%{?rhel} == 8
+# Build and run with python3.12, not with platform-python (3.6):
+%global	__python3 %{_bindir}/python3.12
+%endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
 %global	__python3 %{_bindir}/python3.13
@@ -40,9 +44,9 @@ URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
-# RHEL 9 and Amazon Linux 2023 build and run it with a newer Python than
+# RHEL 8, 9 and Amazon Linux 2023 build and run it with a newer Python than
 # their default python3, so require the modules of that one:
-%if 0%{?rhel} == 9 || 0%{?amzn} == 2023
+%if (0%{?rhel} && 0%{?rhel} <= 9) || 0%{?amzn} == 2023
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 %else
 BuildRequires:	python3-devel >= 3.5 python3-setuptools
@@ -52,7 +56,7 @@ BuildRequires:	python-rpm-macros
 %endif
 
 Requires:	libpq5 >= 10.0
-%if 0%{?rhel} == 9 || 0%{?amzn} == 2023
+%if (0%{?rhel} && 0%{?rhel} <= 9) || 0%{?amzn} == 2023
 Requires:	python%{python3_pkgversion}-psycopg2
 Requires:	python%{python3_pkgversion}-ldap3
 %else
@@ -116,11 +120,13 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-19PGDG
 - Require psycopg2 instead of psycopg2-binary, which requirements.txt asks
   for and no package provides, so the package could not be installed.
-- RHEL 9 and Amazon Linux 2023: BuildRequire and Require the modules of
+- RHEL 8, 9 and Amazon Linux 2023: BuildRequire and Require the modules of
   the Python version that the package is built with and runs with (3.12 and
   3.13), not the ones of the default python3. The build failed without
   python3.12 / python3.13 in the build root, and the tool could not import
-  psycopg2 and ldap3 at run time.
+  psycopg2 and ldap3 at run time. RHEL 8: Build and run with python3.12
+  instead of platform-python, so that it does not need python3-ldap3 from
+  EPEL.
 - Expand pyver lazily, so that the spec file can be parsed before python is
   installed in the build root (the SRPM build in mock failed on RHEL 9,
   SLES 16 and Amazon Linux 2023). Per
