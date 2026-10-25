@@ -1,5 +1,9 @@
 %global srcname lz4
 
+%if 0%{?fedora} && 0%{?fedora} == 45
+%global __ospython %{_bindir}/python3.15
+%global python3_pkgversion 3.15
+%endif
 %if 0%{?fedora} && 0%{?fedora} == 44
 %global __ospython %{_bindir}/python3.14
 %global python3_pkgversion 3.14
@@ -16,17 +20,22 @@
 %global	__ospython %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
 %endif
+%if 0%{?suse_version} == 1600
+%global	__ospython %{_bindir}/python3.13
+%global	python3_pkgversion 313
+%endif
 
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+# %%define, so that these are only expanded when used, once python is installed:
+%define pybasever %(%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])")
+%define python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{srcname}
 Version:	4.4.5
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 URL:		https://github.com/python-%{srcname}/python-%{srcname}
 Summary:	LZ4 Bindings for Python
 # Automatically converted from old format: BSD - review is highly recommended.
@@ -68,6 +77,10 @@ BuildRequires:	lz4-devel
 %endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	liblz4-devel
+%endif
+%if 0%{?suse_version} == 1600
+# For the Python dependency generators:
+BuildRequires:	python-rpm-packaging
 %endif
 
 %if 0%{?rhel} == 10
@@ -127,6 +140,16 @@ find %{buildroot}%{python3_sitearch} -name 'lz4*.so' \
 %endif
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-43PGDG
+- SLES 16: Build with python3.13 instead of python3.11, which SLES 16 does
+  not have, and BuildRequire python-rpm-packaging for the Python dependency
+  generators.
+- Expand pybasever and python3_sitearch lazily, so that the spec file can be
+  parsed before python is installed in the build root. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- Add the Fedora 45 Python version (python3.15) to the spec file, for
+  completeness.
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.4.5-42PGDG
 - RHEL 10: Build without EPEL: there is no python3-pkgconfig, so drop it
   from setup_requires, and build against RHEL's lz4 instead of the bundled
