@@ -31,9 +31,15 @@
 
 %global sname check_patroni
 
+%if 0%{?suse_version}
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+%endif
+
 Name:		nagios-plugins-patroni
 Version:	2.2.0
-Release:	10PGDG%{dist}
+Release:	11PGDG%{dist}
 Summary:	Patroni monitoring plugin for Nagios
 License:	PostgreSQL
 Url:		https://github.com/dalibo/%{sname}/
@@ -41,6 +47,15 @@ Source0:	https://github.com/dalibo/%{sname}/archive/refs/tags/v%{version}.tar.gz
 BuildArch:	noarch
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
 # python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
@@ -53,6 +68,14 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 Requires:	nagios-plugins
+%if 0%{?rhel} == 8
+# The Python dependency generator of RHEL 8 does not run for python3.12,
+# so add the runtime dependencies explicitly there.
+Requires:	python%{python3_pkgversion}-attrs
+Requires:	python%{python3_pkgversion}-click >= 7.1
+Requires:	python%{python3_pkgversion}-nagiosplugin >= 1.3.2
+Requires:	python%{python3_pkgversion}-requests
+%endif
 Provides:	%{sname} = %{version}
 
 %description
@@ -77,6 +100,16 @@ check_patroni is a monitoring plugin of patroni for Nagios.
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-11PGDG
+- SLES 16: Generate the runtime Requires from the Python metadata, and
+  BuildRequire python-rpm-packaging for the Python dependency generators.
+  The package did not require attrs, click, nagiosplugin and requests there, so it could not be
+  imported. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+- RHEL 8: Require attrs, click, nagiosplugin and requests, which the
+  Python dependency generator does not add there for python3.12.
+- SUSE: BuildRequire python-devel, pip, setuptools and wheel, which the
+  build needs, so that it builds in a clean build root, too.
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-10PGDG
 - Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
   (68) cannot build wheels without it. Per
