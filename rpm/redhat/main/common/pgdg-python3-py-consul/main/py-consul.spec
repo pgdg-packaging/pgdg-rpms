@@ -30,8 +30,8 @@
 %endif
 
 Name:		py-consul
-Version:	1.7.1
-Release:	49PGDG%{?dist}
+Version:	1.8.0
+Release:	42PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -42,6 +42,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 BuildRequires:	python%{python3_pkgversion}-wheel
 %if 0%{?suse_version} >= 1600
 # SUSE's Python dependency generators. python3-devel pulls this in, but
@@ -57,6 +58,7 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
 
@@ -77,6 +79,8 @@ Python client for Consul
 %setup -q -n %{name}-%{version}
 
 %build
+# The version comes from git, which the GitHub tarball does not have:
+export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
 %pyproject_wheel
 
 %install
@@ -93,6 +97,12 @@ Python client for Consul
 %{python3_sitelib}/consul/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.0-42PGDG
+- Update to 1.8.0 per changes described at:
+  https://github.com/criteo/py-consul/releases/tag/v1.8.0
+- BuildRequire setuptools_scm, which 1.8.0 takes its version from, and
+  pass the version to it, as the GitHub tarball has no git metadata.
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-49PGDG
 - SLES 16: Generate the runtime Requires from the Python metadata, and
   BuildRequire python-rpm-packaging for the Python dependency generators.
