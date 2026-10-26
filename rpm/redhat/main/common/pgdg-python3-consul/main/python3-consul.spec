@@ -32,9 +32,15 @@
 
 %{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
+%if 0%{?suse_version}
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+%endif
+
 Name:		python3-%{sname}
 Version:	1.1.0
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 Summary:	Python client for Consul
 
 License:	MIT
@@ -48,6 +54,11 @@ BuildRequires:	python3-six >= 1.4 python3-requests >= 2.0
 BuildRequires:	python3-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
@@ -77,6 +88,12 @@ Python client for Consul (http://www.consul.io/)
 %{python3_sitelib}/python_%{sname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-12PGDG
+- SLES 16: Generate the runtime Requires from the Python metadata, and
+  BuildRequire python-rpm-packaging for the Python dependency generators.
+  The package did not require requests and six there, so it could not be
+  imported. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-11PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the build failed there. Per
