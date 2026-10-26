@@ -14,6 +14,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global	__ospython %{_bindir}/python3.13
+%global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
 %if 0%{?suse_version} == 1500
@@ -90,6 +91,8 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
 - Remove the PEP 639 license-files list from pyproject.toml, which needs
   hatchling 1.27: RHEL 8 and 9 have 1.25. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- Add Amazon Linux 2023 support (python3.13), for nagios-plugins-patroni.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-1PGDG
 - Update to 26.1.0 per changes described at:
