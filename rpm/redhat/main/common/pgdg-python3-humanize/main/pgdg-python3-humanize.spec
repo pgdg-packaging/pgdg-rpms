@@ -73,6 +73,12 @@ Obsoletes:	python3-humanize < %{version}-%{release}
 # include LICENCE anyway:
 %{__sed} -i -e '/^license-files = /d' -e 's/"hatchling>=1.27"/"hatchling"/' pyproject.toml
 
+%if 0%{?suse_version}
+# Classifiers are informational only; drop the Python 3.15 one, which the
+# trove-classifiers release of SLES 16 does not know yet:
+%{__sed} -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
+%endif
+
 # Remove shebangs from libs.
 for lib in src/humanize/time.py src/humanize/filesize.py src/humanize/number.py; do
  sed '1{\@^#!/usr/bin/env python@d}' $lib > $lib.new &&
@@ -102,6 +108,8 @@ find -name '*.po' -delete
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-humanize
   package there. Start the release from 42, so that our packages win over
   EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- Add SLES 16 support (python313), for pg_activity. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-3PGDG
 - Fix build on RHEL 9: remove the PEP 639 license-files list from
