@@ -23,10 +23,16 @@
 %global	oldsdk 0
 %endif
 
+%if 0%{?suse_version}
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+%endif
+
 Name:		python%{python3_pkgversion}-anthropic
 %if %{oldsdk}
 Version:	0.40.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 %else
 Version:	2.3.0
 Release:	1PGDG%{dist}
@@ -53,6 +59,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 # The SUSE macros have no dynamic BuildRequires:
 BuildRequires:	python-rpm-macros python%{python3_pkgversion}-pip python%{python3_pkgversion}-wheel
 BuildRequires:	python%{python3_pkgversion}-hatchling python%{python3_pkgversion}-hatch-fancy-pypi-readme
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
@@ -114,6 +125,12 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %endif
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.40.0-3PGDG
+- SLES 16: Generate the runtime Requires from the Python metadata, and
+  BuildRequire python-rpm-packaging for the Python dependency generators.
+  The package did not require anyio, distro, httpx, jiter, pydantic, sniffio and typing-extensions there, so it could not be
+  imported. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-1PGDG
 - Update to 2.3.0 on Fedora, per changes described at:
   https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.3.0
