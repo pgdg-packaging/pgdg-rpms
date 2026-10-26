@@ -40,7 +40,7 @@ Version:	2.9.2
 Version:	2.11.10
 %global	coreversion 2.33.2
 %endif
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Data validation using Python type hints
 
 License:	MIT
@@ -77,6 +77,36 @@ canonical Python; validate it with Pydantic.
 This is the 2.11 series, the newest one that works with typing-extensions
 4.12.2 of Amazon Linux 2023 (2.9 on RHEL 10).
 
+%if 0%{?rhel} == 10
+# EPEL ships these extras metapackages, which require its own python3-pydantic
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+email
+Summary:	Metapackage for %{name}: email extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-pydantic+email = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-pydantic+email < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+email
+This is a metapackage bringing in email extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+email
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+timezone
+Summary:	Metapackage for %{name}: timezone extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-pydantic+timezone = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-pydantic+timezone < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+timezone
+This is a metapackage bringing in timezone extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+timezone
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+%endif
+
 %prep
 %autosetup -n %{pymodname}-%{version}
 
@@ -93,6 +123,11 @@ This is the 2.11 series, the newest one that works with typing-extensions
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.10-43PGDG
+- RHEL 10: Add the +email, +timezone extras metapackages, which replace EPEL's.
+  They require EPEL's own python3-pydantic version, so they made dnf
+  upgrade fail. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.11.10-42PGDG
 - Add RHEL 10 support, without EPEL: use 2.9.2 there, the newest release
   that works with the typing-extensions 4.9.0 of RHEL 10, and obsolete the

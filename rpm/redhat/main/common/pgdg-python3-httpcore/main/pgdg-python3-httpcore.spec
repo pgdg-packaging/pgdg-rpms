@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.0.9
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	A minimal low-level HTTP client
 
 License:	BSD-3-Clause
@@ -60,6 +60,36 @@ Obsoletes:	python3-httpcore < %{version}-%{release}
 The HTTP Core package provides a minimal low-level HTTP client, which does
 one thing only: sending HTTP requests. It is used by httpx.
 
+%if 0%{?rhel} == 10
+# EPEL ships these extras metapackages, which require its own python3-httpcore
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+http2
+Summary:	Metapackage for %{name}: http2 extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-httpcore+http2 = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-httpcore+http2 < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+http2
+This is a metapackage bringing in http2 extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+http2
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+socks
+Summary:	Metapackage for %{name}: socks extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-httpcore+socks = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-httpcore+socks < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+socks
+This is a metapackage bringing in socks extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+socks
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+%endif
+
 %prep
 %autosetup -n %{pymodname}-%{version}
 
@@ -76,6 +106,11 @@ one thing only: sending HTTP requests. It is used by httpx.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.9-43PGDG
+- RHEL 10: Add the +http2, +socks extras metapackages, which replace EPEL's.
+  They require EPEL's own python3-httpcore version, so they made dnf
+  upgrade fail. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.9-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-httpcore
   package there. Start the release from 42, so that our packages win over

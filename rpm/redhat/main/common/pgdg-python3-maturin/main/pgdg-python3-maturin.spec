@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.15.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Build and publish crates with pyo3, cffi and uniffi bindings as Python packages
 # maturin is MIT OR Apache-2.0. The licenses of the crates that are compiled
 # into the binary (without the default features, as setup.py builds it),
@@ -75,6 +75,23 @@ well as Rust binaries as Python packages. It is also a PEP 517 build backend.
 This package is built without the default features (no upload, no cross
 compilation), as needed for building Python extensions written in Rust,
 such as pydantic-core and jiter.
+
+%if 0%{?rhel} == 10
+%package -n %{name}+patchelf
+Summary:	Metapackage for %{name}: patchelf extras
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	/usr/bin/patchelf
+# Replace the EPEL metapackage, which requires EPEL's own maturin version, so
+# it made dnf upgrade fail:
+Provides:	maturin+patchelf = %{version}-%{release}
+Obsoletes:	maturin+patchelf < %{version}-%{release}
+
+%description -n %{name}+patchelf
+This is a metapackage bringing in patchelf, which maturin uses to set the
+rpath of the libraries it builds.
+
+%files -n %{name}+patchelf
+%endif
 
 %prep
 %setup -q -n %{modname}-%{version} -a 1
@@ -137,6 +154,12 @@ export CARGO_NET_OFFLINE=true
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-44PGDG
+- RHEL 10: Add the +patchelf metapackage, which replaces EPEL's
+  maturin+patchelf. That requires EPEL's own maturin version, so it made
+  dnf upgrade fail. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-43PGDG
 - Replace the empty errno stub in the vendored crates with the real crate.
   rustix uses its libc backend on ppc64le, which needs errno, and the build

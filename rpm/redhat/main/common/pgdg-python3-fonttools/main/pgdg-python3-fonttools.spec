@@ -30,7 +30,7 @@
 %if %{pgdg_altstack}
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.67.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
 Version:	4.63.0
@@ -81,8 +81,140 @@ OpenType, AFM and to an extent Type 1 and some Mac-specific formats.
 This package is built without the optional Cython extensions.
 %endif
 
+%if 0%{?rhel} == 10
+%package -n %{modname}
+Summary:	Tools to manipulate font files
+Requires:	%{name} = %{version}-%{release}
+# Replace the EPEL package, which requires EPEL's own python3-fonttools
+# version, so it made dnf upgrade fail:
+Obsoletes:	%{modname} < %{version}-%{release}
+
+%description -n %{modname}
+The fonttools, pyftmerge, pyftsubset and ttx command line tools, which
+use %{name}.
+
+%files -n %{modname}
+%{_bindir}/fonttools
+%{_bindir}/pyftmerge
+%{_bindir}/pyftsubset
+%{_bindir}/ttx
+%{_mandir}/man1/ttx.1*
+
+# EPEL ships these extras metapackages, which require its own python3-fonttools
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+graphite
+Summary:	Metapackage for %{name}: graphite extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+graphite = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+graphite < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+graphite
+This is a metapackage bringing in graphite extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+graphite
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+interpolatable
+Summary:	Metapackage for %{name}: interpolatable extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+interpolatable = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+interpolatable < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+interpolatable
+This is a metapackage bringing in interpolatable extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+interpolatable
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+lxml
+Summary:	Metapackage for %{name}: lxml extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+lxml = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+lxml < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+lxml
+This is a metapackage bringing in lxml extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+lxml
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+plot
+Summary:	Metapackage for %{name}: plot extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+plot = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+plot < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+plot
+This is a metapackage bringing in plot extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+plot
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+type1
+Summary:	Metapackage for %{name}: type1 extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+type1 = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+type1 < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+type1
+This is a metapackage bringing in type1 extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+type1
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+ufo
+Summary:	Metapackage for %{name}: ufo extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+ufo = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+ufo < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+ufo
+This is a metapackage bringing in ufo extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+ufo
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+unicode
+Summary:	Metapackage for %{name}: unicode extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+unicode = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+unicode < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+unicode
+This is a metapackage bringing in unicode extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+unicode
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+
+%package -n %{name}+woff
+Summary:	Metapackage for %{name}: woff extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-fonttools+woff = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-fonttools+woff < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+woff
+This is a metapackage bringing in woff extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+woff
+%ghost %{python3_sitelib}/%{modname}-%{version}.dist-info
+%endif
+
 %prep
 %autosetup -n %{modname}-%{version}
+%if 0%{?rhel} == 10
+# The unicode extra wants unicodedata2 >= 18, RHEL 10 (EPEL) has 17. It is
+# optional, and only gives fontTools newer Unicode data than Python's:
+sed -i 's/"unicodedata2 >= 18.0.0; python_version/"unicodedata2 >= 17.0.0; python_version/' setup.py
+grep -q '"unicodedata2 >= 17.0.0; python_version' setup.py
+%endif
 %if ! %{pgdg_altstack}
 %{__rm} -rf *.egg-info
 sed -i '1d' Lib/fontTools/mtiLib/__init__.py
@@ -108,9 +240,15 @@ export FONTTOOLS_WITH_CYTHON=1
 %install
 %if %{pgdg_altstack}
 %pyproject_install
+%if 0%{?rhel} == 10
+# They go into the fonttools subpackage, which replaces EPEL's:
+[ -f %{buildroot}%{_mandir}/man1/ttx.1 ] || \
+	%{__install} -D -m 0644 Doc/man/man1/ttx.1 %{buildroot}%{_mandir}/man1/ttx.1
+%else
 # Remove the scripts and the man page, they conflict with the
 # python3-fonttools package of the OS:
 %{__rm} -rf %{buildroot}%{_bindir} %{buildroot}%{_mandir}
+%endif
 %else
 %{__python3} setup.py install --skip-build --root %{buildroot}
 # Remove unneeded files:
@@ -132,6 +270,14 @@ export FONTTOOLS_WITH_CYTHON=1
 %endif
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-43PGDG
+- RHEL 10: Add the fonttools subpackage with the command line tools, and
+  the +graphite, +interpolatable, +lxml, +plot, +type1, +ufo, +unicode and
+  +woff extras metapackages. They replace EPEL's, which require its own
+  python3-fonttools version, so they made dnf upgrade fail. The +unicode
+  one accepts unicodedata2 17 (EPEL) now. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-42PGDG
 - Add RHEL 10 support, without EPEL: build the python3.12 flavor there, as
   on RHEL 9, and obsolete the EPEL python3-fonttools package. Start the

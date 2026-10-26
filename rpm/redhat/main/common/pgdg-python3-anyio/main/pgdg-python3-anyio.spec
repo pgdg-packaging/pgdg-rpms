@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.9.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	High level compatibility layer for multiple asynchronous event loop implementations
 
 License:	MIT
@@ -61,6 +61,23 @@ Obsoletes:	python3-anyio < %{version}-%{release}
 AnyIO is an asynchronous networking and concurrency library that works on top
 of either asyncio or trio.
 
+%if 0%{?rhel} == 10
+# EPEL ships these extras metapackages, which require its own python3-anyio
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+trio
+Summary:	Metapackage for %{name}: trio extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-anyio+trio = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-anyio+trio < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+trio
+This is a metapackage bringing in trio extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+trio
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+%endif
+
 %prep
 %autosetup -n %{pymodname}-%{version}
 
@@ -77,6 +94,11 @@ of either asyncio or trio.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.0-43PGDG
+- RHEL 10: Add the +trio extras metapackage, which replaces EPEL's.
+  It requires EPEL's own python3-anyio version, so it made dnf
+  upgrade fail. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.0-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-anyio
   package there. Start the release from 42, so that our packages win over

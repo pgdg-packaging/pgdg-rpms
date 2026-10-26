@@ -1,13 +1,14 @@
 # This spec builds the python3.12 / python3.13 alt-stack flavor
-# (python3.12-google-auth, python3.13-google-auth) on RHEL 8, RHEL 9 and
-# Amazon Linux 2023, for pg_statviz and bigquery_fdw.
+# (python3.12-google-auth, python3.13-google-auth) on RHEL 8, 9 and 10 and
+# Amazon Linux 2023, for pg_statviz and bigquery_fdw. On RHEL 10, where
+# Python 3.12 is the default, it replaces EPEL's python3-google-auth and its
+# extras subpackages.
 #
-# It is not built elsewhere: Fedora, RHEL 10 (EPEL) and SUSE ship
-# python3-google-auth (python311-/python313-google-auth on SUSE) themselves,
-# new enough for bigquery_fdw, together with its extras subpackages, which
-# pin it to their own version. The default python3 flavor that this spec used
-# to build there replaced the OS package and broke the updates of those
-# extras.
+# It is not built on Fedora and SUSE: they ship python3-google-auth
+# (python311-/python313-google-auth on SUSE) themselves, new enough for
+# bigquery_fdw, together with its extras subpackages, which pin it to their
+# own version. The default python3 flavor that this spec used to build there
+# replaced the OS package and broke the updates of those extras.
 %if 0%{?rhel}
 %global	__ospython %{_bindir}/python3.12
 %global	__python3 %{_bindir}/python3.12
@@ -24,8 +25,8 @@
 
 # The 2.47 series on RHEL 9 and Amazon Linux 2023 (see the description).
 # RHEL 8 is only used by bigquery_fdw, and its python3.12-cryptography is
-# new enough for the current release:
-%if 0%{?rhel} != 8
+# new enough for the current release, as is the one of RHEL 10:
+%if 0%{?rhel} == 9 || 0%{?amzn} == 2023
 %global	pgdg_gauth247 1
 %else
 %global	pgdg_gauth247 0
@@ -37,7 +38,13 @@ Version:	2.47.0
 %else
 Version:	2.62.0
 %endif
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
+%if 0%{?rhel} == 10
+# EPEL's python3-google-auth has Epoch 1, and obsoletes
+# python3.12-google-auth < 1:<its version>, which matched ours, whatever our
+# version was:
+Epoch:		1
+%endif
 Summary:	Google Authentication Library
 
 License:	Apache-2.0
@@ -69,10 +76,7 @@ Provides:	python%{python3_pkgversion}dist(google-auth) = %{version}
 
 %if 0%{?rhel} == 10
 # Replace the EPEL package of the same module, which has the same files:
-Obsoletes:	python3-google-auth < %{version}-%{release}
-# Its google-auth[requests] metapackage requires that exact version.
-# Our +requests subpackage replaces it (that macro takes no Obsoletes):
-Obsoletes:	python3-google-auth+requests < %{version}-%{release}
+Obsoletes:	python3-google-auth < %{epoch}:%{version}-%{release}
 %endif
 
 %description
@@ -85,8 +89,90 @@ This is the 2.47 series, the newest one that does not need cryptography >=
 %endif
 
 # google-genai (pg_statviz) requires google-auth[requests]:
-%if 0%{?rhel} != 8
+%if 0%{?rhel} == 9 || 0%{?amzn} == 2023
 %pyproject_extras_subpkg -n python%{python3_pkgversion}-%{modname} requests
+%endif
+
+%if 0%{?rhel} == 10
+# EPEL ships these extras metapackages, which require its own python3-google-auth
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+aiohttp
+Summary:	Metapackage for %{name}: aiohttp extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-google-auth+aiohttp = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-google-auth+aiohttp < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+aiohttp
+This is a metapackage bringing in aiohttp extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+aiohttp
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+enterprise_cert
+Summary:	Metapackage for %{name}: enterprise_cert extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-google-auth+enterprise_cert = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-google-auth+enterprise_cert < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+enterprise_cert
+This is a metapackage bringing in enterprise_cert extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+enterprise_cert
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+pyjwt
+Summary:	Metapackage for %{name}: pyjwt extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-google-auth+pyjwt = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-google-auth+pyjwt < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+pyjwt
+This is a metapackage bringing in pyjwt extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+pyjwt
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+pyopenssl
+Summary:	Metapackage for %{name}: pyopenssl extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-google-auth+pyopenssl = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-google-auth+pyopenssl < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+pyopenssl
+This is a metapackage bringing in pyopenssl extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+pyopenssl
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+requests
+Summary:	Metapackage for %{name}: requests extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-google-auth+requests = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-google-auth+requests < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+requests
+This is a metapackage bringing in requests extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+requests
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+urllib3
+Summary:	Metapackage for %{name}: urllib3 extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-google-auth+urllib3 = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-google-auth+urllib3 < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+urllib3
+This is a metapackage bringing in urllib3 extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+urllib3
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
 %endif
 
 %prep
@@ -120,6 +206,16 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.62.0-43PGDG
+- RHEL 10: Add Epoch 1, as EPEL's python3-google-auth has it, and obsoletes
+  python3.12-google-auth < 1:<its version>, which matched our package, so
+  EPEL's replaced ours on updates. Build 2.62.0 there, not the 2.47 series:
+  RHEL 10 has a new enough cryptography.
+- RHEL 10: Add the +aiohttp, +enterprise_cert, +pyjwt, +pyopenssl,
+  +requests and +urllib3 extras metapackages, which replace EPEL's. They
+  require EPEL's own python3-google-auth version, so they made dnf upgrade
+  fail. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.62.0-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL
   python3-google-auth package there. Start the release from 42, so that our
