@@ -11,7 +11,7 @@
 
 Name:		%{sname}-client
 Version:	%{ppmajorver}.5
-Release:	9PGDG%{dist}
+Release:	10PGDG%{dist}
 Summary:	Command Line Tool for the PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -22,6 +22,9 @@ AutoReqProv:	no
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+%if 0%{?suse_version} >= 1600
+BuildRequires:	python313-devel python313-pip python313-setuptools python313-wheel
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
 # python3-devel is what pulls python3-rpm-generators into the buildroot
@@ -42,7 +45,12 @@ BuildRequires:	python3-six >= 1.4
 Requires:	python3.12 python3.12-psycopg2
 %else
 Requires:	python3
+%if 0%{?suse_version} >= 1600
+# SLES 16 has python313-psycopg2 only, nothing provides python3-psycopg2:
+Requires:	python313-psycopg2
+%else
 Requires:	python3-psycopg2
+%endif
 %endif
 Obsoletes:	%{sname}_18-client < 4.2.5-5 %{sname}_17-client < 4.2.5-5
 Obsoletes:	%{sname}_16-client < 4.2.5-5 %{sname}_15-client < 4.2.5-5
@@ -74,6 +82,13 @@ cd ..
 %{python3_sitelib}/%{sname}/lib/*
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.5-10PGDG
+- SLES 16: Require python313-psycopg2: nothing provides python3-psycopg2
+  there, so the package could not be installed. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+- SLES 16: BuildRequire python313-devel, pip, setuptools and wheel, which
+  the build needs, so that it builds in a clean build root, too.
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-9PGDG
 - RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
   build with Python 3.12 there, not with the default python3 (3.6), and
