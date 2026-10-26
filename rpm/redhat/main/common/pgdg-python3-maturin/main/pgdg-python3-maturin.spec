@@ -28,10 +28,11 @@
 %endif
 
 %global	modname maturin
+%global	errnover 0.3.14
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.15.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Build and publish crates with pyo3, cffi and uniffi bindings as Python packages
 # maturin is MIT OR Apache-2.0. The licenses of the crates that are compiled
 # into the binary (without the default features, as setup.py builds it),
@@ -46,6 +47,10 @@ Source0:	https://files.pythonhosted.org/packages/source/m/%{modname}/%{modname}-
 # The CDN cached a 404 for the plain URL. The query string makes it fetch
 # the file again; #/ keeps the local file name unchanged.
 Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{modname}-%{version}-vendor.tar.xz?v=2#/%{modname}-%{version}-vendor.tar.xz
+# cargo-vendor-filterer replaced the errno crate with an empty stub, as it
+# does not know that rustix uses its libc backend (which needs errno) on
+# ppc64le. See %%prep:
+Source2:	https://static.crates.io/crates/errno/errno-%{errnover}.crate
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -73,6 +78,15 @@ such as pydantic-core and jiter.
 
 %prep
 %setup -q -n %{modname}-%{version} -a 1
+
+# rustix uses its libc backend on ppc64le, as inline assembly is not stable on
+# powerpc64 yet, and the libc backend needs errno. The vendor tarball only has
+# an empty stub of it, so replace that with the real crate. The checksum is
+# the one in Cargo.lock:
+rm -rf vendor/errno
+mkdir vendor/errno
+tar -xzf %{SOURCE2} -C vendor/errno --strip-components=1
+echo '{"files":{},"package":"39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"}' > vendor/errno/.cargo-checksum.json
 
 # Use the vendored crates, and nothing from the network:
 mkdir -p .cargo
@@ -123,6 +137,11 @@ export CARGO_NET_OFFLINE=true
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-43PGDG
+- Replace the empty errno stub in the vendored crates with the real crate.
+  rustix uses its libc backend on ppc64le, which needs errno, and the build
+  failed there.
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL maturin package
   there. Start the release from 42, so that our packages win over EPEL's.
