@@ -31,7 +31,7 @@
 
 %global sname check_patroni
 
-%if 0%{?suse_version}
+%if 0%{?suse_version} >= 1600
 # SUSE only generates runtime Requires from the Python metadata when asked
 # to; Fedora and RHEL do it by default.
 %{?python_enable_dependency_generator}

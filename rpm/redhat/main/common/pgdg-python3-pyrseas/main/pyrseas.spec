@@ -16,7 +16,7 @@ BuildArch:	noarch
 
 BuildRequires:	python3-devel python3-setuptools
 
-%if 0%{?suse_version}
+%if 0%{?suse_version} >= 1600
 # SUSE does not generate runtime Requires from the Python metadata by
 # default; Fedora and RHEL do:
 Requires:	python3-psycopg3 >= 3.1
@@ -52,8 +52,8 @@ Andromeda Project. This is Python 3 version.
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-5PGDG
 - Remove the dependency on pgdbconn, which Pyrseas does not use since
   0.10.0 (it uses psycopg 3 directly), and which is not in the repo
-  anymore, so the package could not be installed. SUSE: Require psycopg 3
-  and PyYAML. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+  anymore, so the package could not be installed. SLES 16: Require psycopg
+  3 and PyYAML. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Thu Sep 10 2026 - Devrim Gündüz <devrim@gunduz.org> 0.10.0-4PGDG
 - Add missing BR
