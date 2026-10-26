@@ -47,6 +47,13 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 Requires:	python%{python3_pkgversion}
+%if 0%{?suse_version}
+# SUSE does not generate runtime Requires from the Python metadata by
+# default; Fedora and RHEL do:
+Requires:	python%{python3_pkgversion}-wcwidth >= 0.7
+# SUSE ships the curses module of Python in a separate package:
+Requires:	python%{python3_pkgversion}-curses
+%endif
 
 %description
 Blessed is an easy, practical *library* for making *terminal* apps, by providing
@@ -85,6 +92,8 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 - Fix build on RHEL 10: use the license table form in pyproject.toml and
   remove license-files, as flit-core < 3.11 does not support the SPDX
   license expression. Also relax the flit_core >= 3.11 build requirement.
+- Add SLES 16 support (python313), for pg_activity, and Require wcwidth
+  and curses (a separate package there) on SUSE. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
