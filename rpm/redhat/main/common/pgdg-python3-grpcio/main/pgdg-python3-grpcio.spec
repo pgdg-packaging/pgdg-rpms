@@ -54,8 +54,8 @@
 %global	pymodname grpcio
 
 Name:		%{pgdg_pyname}-%{modname}
-Version:	1.84.0
-Release:	3PGDG%{?dist}
+Version:	1.85.0
+Release:	1PGDG%{?dist}
 Summary:	HTTP/2-based RPC framework
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -66,7 +66,6 @@ Obsoletes:	python%{python3_pkgversion}-%{modname} < %{version}-%{release}
 License:	Apache-2.0 AND BSD-3-Clause AND MIT AND MPL-2.0
 URL:		https://grpc.io
 Source0:	https://files.pythonhosted.org/packages/source/g/%{pymodname}/%{pymodname}-%{version}.tar.gz
-Patch0:	grpcio-1.84.0-openssl4.patch
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -82,6 +81,10 @@ BuildRequires:	openssl-devel zlib-devel
 # support:
 %if 0%{?suse_version} == 1500
 BuildRequires:	gcc13 gcc13-c++
+%endif
+# The bundled abseil needs GCC 10 or newer since 1.85.0, and RHEL 8 has GCC 8:
+%if 0%{?rhel} == 8
+BuildRequires:	gcc-toolset-14-gcc gcc-toolset-14-gcc-c++ gcc-toolset-14-gcc-plugin-annobin
 %endif
 
 Provides:	bundled(abseil-cpp)
@@ -101,10 +104,14 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}, for bigquery_fdw.
 
 %prep
-%autosetup -p1 -n %{pymodname}-%{version}
+%autosetup -n %{pymodname}-%{version}
 # PEP 639 license strings need setuptools >= 77, which RHEL 8, Amazon Linux
 # 2023 and SLES 15 do not have:
 %{__sed} -i 's/^license = "\(.*\)"$/license = { text = "\1" }/' pyproject.toml
+# The bundled abseil includes <bmi2intrin.h> when __BMI2__ is defined (RHEL
+# 10 builds for x86-64-v3), which GCC does not allow: use <immintrin.h>:
+%{__sed} -i 's|^#include <bmi2intrin.h>$|#include <immintrin.h>|' third_party/abseil-cpp/absl/container/internal/raw_hash_set.h
+! grep -q 'bmi2intrin.h' third_party/abseil-cpp/absl/container/internal/raw_hash_set.h
 
 %build
 # Use the system OpenSSL and zlib; abseil, c-ares, re2 and upb are bundled.
@@ -116,13 +123,17 @@ export GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS=${GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS
 export CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" LDFLAGS="%{?build_ldflags}"
 # Fedora 43 and 44 moved openssl/engine.h, which is deprecated, to
 # openssl-devel-engine. Build without the OpenSSL engine support instead, as
-# on Fedora 45, whose OpenSSL 4 defines OPENSSL_NO_ENGINE (Patch0 makes the
-# include conditional):
+# on Fedora 45, whose OpenSSL 4 defines OPENSSL_NO_ENGINE (gRPC only includes
+# it without OPENSSL_NO_ENGINE since 1.85.0):
 %if 0%{?fedora} && 0%{?fedora} <= 44
 CFLAGS="$CFLAGS -DOPENSSL_NO_ENGINE" CXXFLAGS="$CXXFLAGS -DOPENSSL_NO_ENGINE"
 %endif
 %if 0%{?suse_version} == 1500
 export CC=gcc-13 CXX=g++-13
+%endif
+%if 0%{?rhel} == 8
+export PATH=/opt/rh/gcc-toolset-14/root/usr/bin:$PATH
+export CC=/opt/rh/gcc-toolset-14/root/usr/bin/gcc CXX=/opt/rh/gcc-toolset-14/root/usr/bin/g++
 %endif
 %{__python3} -m pip wheel --no-deps --no-build-isolation --no-index \
 	--disable-pip-version-check -w pgdg-dist .
@@ -142,6 +153,16 @@ export CC=gcc-13 CXX=g++-13
 %{pgdg_pysitelib}/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.0-1PGDG
+- Update to 1.85.0 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.0
+- Remove the OpenSSL 4 patch, which is in this release.
+- RHEL 8: Build with gcc-toolset-14, as the bundled abseil needs GCC 10 or
+  newer now.
+- Include <immintrin.h> instead of <bmi2intrin.h> in the bundled abseil,
+  which GCC does not allow, and which broke the build on RHEL 10 (x86-64-v3).
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/454
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.84.0-3PGDG
 - Rename the package to pgdg-python3.X-<module> on all distributions, as
   on SUSE, and obsolete the old python3.X-<module> package. On RHEL 10,

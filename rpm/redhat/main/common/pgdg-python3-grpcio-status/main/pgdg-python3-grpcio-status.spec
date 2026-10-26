@@ -54,8 +54,8 @@
 %global	pymodname grpcio_status
 
 Name:		%{pgdg_pyname}-%{modname}
-Version:	1.84.0
-Release:	3PGDG%{?dist}
+Version:	1.85.0
+Release:	1PGDG%{?dist}
 Summary:	Status proto mapping for gRPC
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -73,7 +73,7 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
-Requires:	pgdg-python%{python3_pkgversion}-grpcio >= 1.84.0
+Requires:	pgdg-python%{python3_pkgversion}-grpcio >= 1.85.0
 Requires:	pgdg-python%{python3_pkgversion}-protobuf >= 7.36.2
 Requires:	pgdg-python%{python3_pkgversion}-googleapis-common-protos >= 1.75.5
 
@@ -108,6 +108,11 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.0-1PGDG
+- Update to 1.85.0 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/454
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.84.0-3PGDG
 - Rename the package to pgdg-python3.X-<module> on all distributions, as
   on SUSE, and obsolete the old python3.X-<module> package. On RHEL 10,
