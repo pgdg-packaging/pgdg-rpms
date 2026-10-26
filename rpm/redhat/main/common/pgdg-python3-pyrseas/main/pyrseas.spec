@@ -1,6 +1,15 @@
+%if 0%{?amzn} == 2023
+# psycopg 3 and PyYAML are only available for the python3.13 alt-stack
+# there, not for the default python3 (3.9):
+%global __ospython3 %{_bindir}/python3.13
+%global __python3 %{_bindir}/python3.13
+%global python3_pkgversion 3.13
+%else
 %global __ospython3 %{_bindir}/python3
+%global python3_pkgversion 3
+%endif
 %{expand: %%global py3ver %(echo `%{__ospython3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%global python3_sitelib %(%{__ospython3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%global python3_sitelib %(%{__ospython3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 %global sname pyrseas
 %global cname Pyrseas
@@ -8,13 +17,13 @@
 Summary:	Compare and synchronize PostgreSQL database schemas
 Name:		python3-%{sname}
 Version:	0.10.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/perseas/%{cname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/perseas/%{cname}/
 BuildArch:	noarch
 
-BuildRequires:	python3-devel python3-setuptools
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
 %if 0%{?suse_version} >= 1600
 # SUSE does not generate runtime Requires from the Python metadata by
@@ -49,6 +58,13 @@ Andromeda Project. This is Python 3 version.
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-6PGDG
+- Amazon Linux 2023: Build with python3.13: psycopg 3 and PyYAML are only
+  available for it there, so the package could not be installed.
+- Get python3_sitelib from sysconfig instead of the removed
+  distutils.sysconfig module. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-5PGDG
 - Remove the dependency on pgdbconn, which Pyrseas does not use since
   0.10.0 (it uses psycopg 3 directly), and which is not in the repo
