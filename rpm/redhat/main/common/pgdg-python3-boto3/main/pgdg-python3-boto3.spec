@@ -28,6 +28,12 @@
 %{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
+%if 0%{?suse_version}
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+%endif
+
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.43.118
 Release:	42PGDG%{?dist}
@@ -42,6 +48,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+%endif
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
 %endif
 
 # Save space by hardlinking duplicate JSON resource files
@@ -116,6 +127,10 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-boto3
   package there. Start the release from 42, so that our packages win over
   EPEL's. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+- SLES 16: Generate the runtime Requires from the Python metadata, and
+  BuildRequire python-rpm-packaging for the Python dependency generators.
+  The package did not require s3transfer and jmespath there, so it could not be
+  imported. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-1PGDG
 - Update to 1.43.118 per changes described at:
