@@ -13,7 +13,7 @@ ExclusiveArch:	x86_64 aarch64
 %endif
 
 Name:		pgwatch
-Version:	6.0.0
+Version:	6.1.0
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL monitoring metrics collector
 License:	BSD-3-Clause
@@ -91,6 +91,10 @@ Grafana dashboards for visualizing the metrics are included.
 %{_unitdir}/%{name}.service
 
 %changelog
+* Mon Oct 26 2026 Devrim Gündüz <devrim@gunduz.org> - 6.1.0-1PGDG
+- Update to 6.1.0 per changes described at:
+  https://github.com/cybertec-postgresql/pgwatch/releases/tag/v6.1.0
+
 * Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 6.0.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/360
