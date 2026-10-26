@@ -35,7 +35,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.2
-Release:	48PGDG%{?dist}
+Release:	49PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -83,11 +83,17 @@ Requires:	python3-wcwidth
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python%{python3_pkgversion}-setuptools >= 67.7.2
+%if 0%{?suse_version} >= 1600
+# blessings does not have the modules that pg_activity needs (e.g.
+# blessings.keyboard); use our blessed package instead:
+Requires:	python%{python3_pkgversion}-blessed
+%else
 Requires:	python%{python3_pkgversion}-blessings
+%endif
 Requires:	python%{python3_pkgversion} python%{python3_pkgversion}-attrs
 Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-psutil
 Requires:	python3-psycopg3 >= 3.1.8
-Requires:	python%{python3_pkgversion}-humanfriendly
+Requires:	python%{python3_pkgversion}-humanize
 Requires:	python%{python3_pkgversion}-wcwidth
 %endif
 
@@ -100,7 +106,7 @@ top like application for PostgreSQL server activity monitoring.
 %build
 # Change the name of the Python module in the source code. SLES packages
 # this module in a different name:
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} == 1500
 find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %endif
 %pyproject_wheel
@@ -120,6 +126,14 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-49PGDG
+- SUSE: Require humanize, which pg_activity uses, instead of
+  humanfriendly, so pg_activity failed to start there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+- SLES 16: Require our blessed package instead of renaming blessed to
+  blessings in the code: blessings does not have the modules that
+  pg_activity needs (e.g. blessings.keyboard).
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-48PGDG
 - Build the python311 flavor on SLES 15. The SUSE pyproject macros built
   for the default python3 (3.6), so the files were not installed under
