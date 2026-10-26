@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.67.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Fast, extensible progress bar for Python
 
 License:	MPL-2.0 AND MIT
@@ -65,17 +65,31 @@ tqdm shows a smart progress meter for loops and iterables.
 
 %install
 %pyproject_install
+%if 0%{?rhel} == 10
+# Keep the command line tool, as EPEL's python3-tqdm, which this package
+# replaces, has it:
+%{__install} -D -m 0644 tqdm/tqdm.1 %{buildroot}%{_mandir}/man1/tqdm.1
+%else
 # Remove the command line tools, they conflict with the package of the OS
 # Python:
 %{__rm} -rf %{buildroot}%{_bindir}
+%endif
 
 %files
 %license LICENCE
 %doc README.rst
 %{python3_sitelib}/%{pymodname}/
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
+%if 0%{?rhel} == 10
+%{_bindir}/tqdm
+%{_mandir}/man1/tqdm.1*
+%endif
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.1-43PGDG
+- RHEL 10: Ship the tqdm command line tool and its man page, as EPEL's
+  python3-tqdm, which this package replaces, does. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.1-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-tqdm
   package there. Start the release from 42, so that our packages win over

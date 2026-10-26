@@ -31,7 +31,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.9.4
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python 2D plotting library
 
 License:	PSF-2.0 AND MIT AND CC0-1.0 AND OFL-1.1 AND Bitstream-Vera AND Public-Domain
@@ -76,12 +76,43 @@ Requires:	python%{python3_pkgversion}-pyparsing >= 2.3.1
 %if 0%{?rhel} == 10
 # Replace the EPEL package of the same module, which has the same files:
 Obsoletes:	python3-matplotlib < %{version}-%{release}
+# EPEL splits these out into subpackages that require its own
+# python3-matplotlib version, which would block the updates. This package
+# has their files:
+Provides:	python3-matplotlib-data = %{version}-%{release}
+Obsoletes:	python3-matplotlib-data < %{version}-%{release}
+Provides:	python3-matplotlib-data-fonts = %{version}-%{release}
+Obsoletes:	python3-matplotlib-data-fonts < %{version}-%{release}
+Provides:	python3-matplotlib-gtk3 = %{version}-%{release}
+Obsoletes:	python3-matplotlib-gtk3 < %{version}-%{release}
+Provides:	python3-matplotlib-gtk4 = %{version}-%{release}
+Obsoletes:	python3-matplotlib-gtk4 < %{version}-%{release}
+Provides:	python3-matplotlib-qt6 = %{version}-%{release}
+Obsoletes:	python3-matplotlib-qt6 < %{version}-%{release}
+# We do not build the documentation and the test data:
+Obsoletes:	python3-matplotlib-doc < %{version}-%{release}
+Obsoletes:	python3-matplotlib-test-data < %{version}-%{release}
 %endif
 
 %description
 Matplotlib is a Python 2D plotting library which produces publication
 quality figures in a variety of hardcopy formats and interactive
 environments across platforms.
+
+%if 0%{?rhel} == 10
+%package tk
+Summary:	Tk backends for matplotlib
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	python%{python3_pkgversion}-pillow-tk
+Requires:	python3-tkinter
+# Replace the EPEL subpackage, which has the same files:
+Provides:	python3-matplotlib-tk = %{version}-%{release}
+Provides:	python3-matplotlib-tk%{?_isa} = %{version}-%{release}
+Obsoletes:	python3-matplotlib-tk < %{version}-%{release}
+
+%description tk
+The Tk backends (TkAgg and TkCairo) for matplotlib.
+%endif
 
 %prep
 %autosetup -n %{modname}-%{version}
@@ -113,8 +144,35 @@ export LDFLAGS="%{build_ldflags} -L%{pgdg_qhullinstdir}/lib64 -Wl,-rpath,%{pgdg_
 %{python3_sitearch}/pylab.py
 %{python3_sitearch}/__pycache__/pylab.*
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
+%if 0%{?rhel} == 10
+%exclude %{python3_sitearch}/%{modname}/backends/_backend_tk.py
+%exclude %{python3_sitearch}/%{modname}/backends/backend_tkagg.py
+%exclude %{python3_sitearch}/%{modname}/backends/backend_tkcairo.py
+%exclude %{python3_sitearch}/%{modname}/backends/_tkagg.*
+%exclude %{python3_sitearch}/%{modname}/backends/__pycache__/_backend_tk.*
+%exclude %{python3_sitearch}/%{modname}/backends/__pycache__/backend_tkagg.*
+%exclude %{python3_sitearch}/%{modname}/backends/__pycache__/backend_tkcairo.*
+
+%files tk
+%{python3_sitearch}/%{modname}/backends/_backend_tk.py
+%{python3_sitearch}/%{modname}/backends/backend_tkagg.py
+%{python3_sitearch}/%{modname}/backends/backend_tkcairo.py
+%{python3_sitearch}/%{modname}/backends/_tkagg.*
+%{python3_sitearch}/%{modname}/backends/__pycache__/_backend_tk.*
+%{python3_sitearch}/%{modname}/backends/__pycache__/backend_tkagg.*
+%{python3_sitearch}/%{modname}/backends/__pycache__/backend_tkcairo.*
+%endif
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 3.9.4-43PGDG
+- RHEL 10: Move the Tk backends into a new -tk subpackage, which requires
+  python3-tkinter and replaces EPEL's python3-matplotlib-tk. Provide and
+  obsolete EPEL's -data, -data-fonts, -gtk3, -gtk4 and -qt6 subpackages,
+  whose files this package has, and obsolete its -doc and -test-data
+  subpackages. They require EPEL's own python3-matplotlib version, so they
+  made dnf upgrade fail. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.9.4-42PGDG
 - Add RHEL 10 support, without EPEL: build against numpy 1.26 from RHEL, as
   on RHEL 9, and against pgdg-qhull, found through the rpath.

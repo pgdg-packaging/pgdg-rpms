@@ -12,7 +12,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	5.0.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	SSH2 protocol library
 
 License:	LGPL-2.1-or-later
@@ -25,6 +25,12 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+
+%if 0%{?rhel} == 10
+# EPEL's python-paramiko-doc requires EPEL's own paramiko version, so it
+# made dnf upgrade fail. We do not build the documentation:
+Obsoletes:	python-paramiko-doc < %{version}-%{release}
+%endif
 
 %description
 Paramiko is a pure-Python implementation of the SSHv2 protocol,
@@ -46,6 +52,10 @@ providing both client and server functionality.
 %doc README.rst
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0.0-43PGDG
+- RHEL 10: Obsolete EPEL's python-paramiko-doc, which requires EPEL's own
+  paramiko version, so it made dnf upgrade fail. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0.0-42PGDG
 - Add RHEL 10 support, without EPEL. Start the release from 42, so that our
   packages win over EPEL's. Per

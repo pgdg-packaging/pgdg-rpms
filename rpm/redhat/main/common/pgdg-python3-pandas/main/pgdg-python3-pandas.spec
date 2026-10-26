@@ -38,7 +38,7 @@ Version:	2.1.4
 %else
 Version:	2.3.3
 %endif
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python library providing high-performance data analysis tools
 
 License:	BSD-3-Clause
@@ -100,6 +100,23 @@ structures designed to make working with "relational" or "labeled" data both
 easy and intuitive. It aims to be the fundamental high-level building block
 for doing practical, real world data analysis in Python.
 
+%if 0%{?rhel} == 10
+# EPEL ships these extras metapackages, which require its own python3-pandas
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+test
+Summary:	Metapackage for %{name}: test extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-pandas+test = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-pandas+test < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+test
+This is a metapackage bringing in test extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+test
+%ghost %{python3_sitearch}/%{modname}-%{version}.dist-info
+%endif
+
 %prep
 %autosetup -n %{modname}-%{version}
 
@@ -133,6 +150,11 @@ export CYTHON=%{_bindir}/cython-%{python3_pkgversion}
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-43PGDG
+- RHEL 10: Add the +test extras metapackage, which replaces EPEL's.
+  It requires EPEL's own python3-pandas version, so it made dnf
+  upgrade fail. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-pandas
   package there. Start the release from 42, so that our packages win over

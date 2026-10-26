@@ -76,6 +76,23 @@ This package is built without the default features (no upload, no cross
 compilation), as needed for building Python extensions written in Rust,
 such as pydantic-core and jiter.
 
+%if 0%{?rhel} == 10
+%package -n %{name}+patchelf
+Summary:	Metapackage for %{name}: patchelf extras
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	/usr/bin/patchelf
+# Replace the EPEL metapackage, which requires EPEL's own maturin version, so
+# it made dnf upgrade fail:
+Provides:	maturin+patchelf = %{version}-%{release}
+Obsoletes:	maturin+patchelf < %{version}-%{release}
+
+%description -n %{name}+patchelf
+This is a metapackage bringing in patchelf, which maturin uses to set the
+rpath of the libraries it builds.
+
+%files -n %{name}+patchelf
+%endif
+
 %prep
 %setup -q -n %{modname}-%{version} -a 1
 
@@ -141,6 +158,10 @@ export CARGO_NET_OFFLINE=true
 - Replace the empty errno stub in the vendored crates with the real crate.
   rustix uses its libc backend on ppc64le, which needs errno, and the build
   failed there.
+- RHEL 10: Add the +patchelf metapackage, which replaces EPEL's
+  maturin+patchelf. That requires EPEL's own maturin version, so it made
+  dnf upgrade fail. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL maturin package

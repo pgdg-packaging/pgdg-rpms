@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.9.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Pure-Python RSA implementation
 
 License:	Apache-2.0
@@ -66,17 +66,32 @@ decryption, signing and verifying signatures, and key generation.
 
 %install
 %pyproject_install
+%if 0%{?rhel} == 10
+# Keep the command line tools, as EPEL's python3-rsa, which this package
+# replaces, has them:
+for f in %{buildroot}%{_bindir}/pyrsa-*; do
+	%{__ln_s} $(basename $f) $f-3
+done
+%else
 # Remove the command line tools, they conflict with the package of the OS
 # Python:
 %{__rm} -rf %{buildroot}%{_bindir}
+%endif
 
 %files
 %license LICENSE
 %doc README.md
 %{python3_sitelib}/%{pymodname}/
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
+%if 0%{?rhel} == 10
+%{_bindir}/pyrsa-*
+%endif
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.1-43PGDG
+- RHEL 10: Ship the pyrsa-* command line tools, as EPEL's python3-rsa,
+  which this package replaces, does. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.1-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-rsa
   package there. Start the release from 42, so that our packages win over

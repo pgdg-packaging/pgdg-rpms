@@ -32,7 +32,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.28.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	The next generation HTTP client
 
 License:	BSD-3-Clause
@@ -62,8 +62,70 @@ Obsoletes:	python3-httpx < %{version}-%{release}
 HTTPX is a fully featured HTTP client library for Python 3, which provides
 sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
 
+%if 0%{?rhel} == 10
+# EPEL ships these extras metapackages, which require its own python3-httpx
+# version, so they made dnf upgrade fail. Replace them with ours:
+%package -n %{name}+brotli
+Summary:	Metapackage for %{name}: brotli extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-httpx+brotli = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-httpx+brotli < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+brotli
+This is a metapackage bringing in brotli extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+brotli
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+cli
+Summary:	Metapackage for %{name}: cli extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-httpx+cli = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-httpx+cli < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+cli
+This is a metapackage bringing in cli extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+cli
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+http2
+Summary:	Metapackage for %{name}: http2 extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-httpx+http2 = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-httpx+http2 < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+http2
+This is a metapackage bringing in http2 extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+http2
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+
+%package -n %{name}+socks
+Summary:	Metapackage for %{name}: socks extras
+Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:	python3-httpx+socks = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	python3-httpx+socks < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description -n %{name}+socks
+This is a metapackage bringing in socks extras requires for
+%{name}. It makes sure the dependencies are installed.
+
+%files -n %{name}+socks
+%ghost %{python3_sitelib}/%{pymodname}-%{version}.dist-info
+%endif
+
 %prep
 %autosetup -n %{pymodname}-%{version}
+%if 0%{?rhel} == 10
+# The cli extra caps rich below 14, RHEL 10 (EPEL) has 14. The CLI works
+# with it:
+sed -i 's/"rich>=10,<14",/"rich>=10",/' pyproject.toml
+grep -q '"rich>=10",' pyproject.toml
+%endif
 
 %build
 %pyproject_wheel
@@ -80,6 +142,12 @@ sync and async APIs, and support for both HTTP/1.1 and HTTP/2.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.28.1-43PGDG
+- RHEL 10: Add the +brotli, +cli, +http2 and +socks extras metapackages,
+  which replace EPEL's. Those require EPEL's own python3-httpx version, so
+  they made dnf upgrade fail. Allow rich 14 (EPEL) for the +cli extra. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.28.1-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-httpx
   package there. Start the release from 42, so that our packages win over
