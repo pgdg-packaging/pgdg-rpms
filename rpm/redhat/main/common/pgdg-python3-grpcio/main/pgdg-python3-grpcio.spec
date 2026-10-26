@@ -54,8 +54,8 @@
 %global	pymodname grpcio
 
 Name:		%{pgdg_pyname}-%{modname}
-Version:	1.84.0
-Release:	3PGDG%{?dist}
+Version:	1.85.0
+Release:	1PGDG%{?dist}
 Summary:	HTTP/2-based RPC framework
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -66,7 +66,6 @@ Obsoletes:	python%{python3_pkgversion}-%{modname} < %{version}-%{release}
 License:	Apache-2.0 AND BSD-3-Clause AND MIT AND MPL-2.0
 URL:		https://grpc.io
 Source0:	https://files.pythonhosted.org/packages/source/g/%{pymodname}/%{pymodname}-%{version}.tar.gz
-Patch0:	grpcio-1.84.0-openssl4.patch
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -101,7 +100,7 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}, for bigquery_fdw.
 
 %prep
-%autosetup -p1 -n %{pymodname}-%{version}
+%autosetup -n %{pymodname}-%{version}
 # PEP 639 license strings need setuptools >= 77, which RHEL 8, Amazon Linux
 # 2023 and SLES 15 do not have:
 %{__sed} -i 's/^license = "\(.*\)"$/license = { text = "\1" }/' pyproject.toml
@@ -116,8 +115,8 @@ export GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS=${GRPC_PYTHON_BUILD_EXT_COMPILER_JOBS
 export CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" LDFLAGS="%{?build_ldflags}"
 # Fedora 43 and 44 moved openssl/engine.h, which is deprecated, to
 # openssl-devel-engine. Build without the OpenSSL engine support instead, as
-# on Fedora 45, whose OpenSSL 4 defines OPENSSL_NO_ENGINE (Patch0 makes the
-# include conditional):
+# on Fedora 45, whose OpenSSL 4 defines OPENSSL_NO_ENGINE (gRPC only includes
+# it without OPENSSL_NO_ENGINE since 1.85.0):
 %if 0%{?fedora} && 0%{?fedora} <= 44
 CFLAGS="$CFLAGS -DOPENSSL_NO_ENGINE" CXXFLAGS="$CXXFLAGS -DOPENSSL_NO_ENGINE"
 %endif
@@ -142,6 +141,12 @@ export CC=gcc-13 CXX=g++-13
 %{pgdg_pysitelib}/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.0-1PGDG
+- Update to 1.85.0 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.0
+- Remove the OpenSSL 4 patch, which is in this release.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/454
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.84.0-3PGDG
 - Rename the package to pgdg-python3.X-<module> on all distributions, as
   on SUSE, and obsolete the old python3.X-<module> package. On RHEL 10,
