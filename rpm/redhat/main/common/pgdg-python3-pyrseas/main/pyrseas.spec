@@ -8,7 +8,7 @@
 Summary:	Compare and synchronize PostgreSQL database schemas
 Name:		python3-%{sname}
 Version:	0.10.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/perseas/%{cname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/perseas/%{cname}/
@@ -16,7 +16,12 @@ BuildArch:	noarch
 
 BuildRequires:	python3-devel python3-setuptools
 
-Requires:	python3-pgdbconn
+%if 0%{?suse_version}
+# SUSE does not generate runtime Requires from the Python metadata by
+# default; Fedora and RHEL do:
+Requires:	python3-psycopg3 >= 3.1
+Requires:	python3-PyYAML >= 5.3
+%endif
 Obsoletes:	python2-%{sname} <= 0.9.0
 
 %description
@@ -44,6 +49,12 @@ Andromeda Project. This is Python 3 version.
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-5PGDG
+- Remove the dependency on pgdbconn, which Pyrseas does not use since
+  0.10.0 (it uses psycopg 3 directly), and which is not in the repo
+  anymore, so the package could not be installed. SUSE: Require psycopg 3
+  and PyYAML. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Thu Sep 10 2026 - Devrim Gündüz <devrim@gunduz.org> 0.10.0-4PGDG
 - Add missing BR
 
