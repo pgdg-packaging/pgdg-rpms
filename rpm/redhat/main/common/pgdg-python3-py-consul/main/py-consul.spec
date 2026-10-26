@@ -23,9 +23,15 @@
 %global	python3_pkgversion 313
 %endif
 
+%if 0%{?suse_version}
+# SUSE only generates runtime Requires from the Python metadata when asked
+# to; Fedora and RHEL do it by default.
+%{?python_enable_dependency_generator}
+%endif
+
 Name:		py-consul
 Version:	1.7.1
-Release:	48PGDG%{?dist}
+Release:	49PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -33,6 +39,15 @@ Source0:	https://github.com/criteo/%{name}/archive/refs/tags/v%{version}.tar.gz
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
+BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools
+BuildRequires:	python%{python3_pkgversion}-wheel
+%if 0%{?suse_version} >= 1600
+# SUSE's Python dependency generators. python3-devel pulls this in, but
+# python%%{python3_pkgversion}-devel does not.
+BuildRequires:	python-rpm-packaging
+%endif
 %else
 BuildRequires:	pyproject-rpm-macros
 # python%%{python3_pkgversion}-devel is what pulls python3-rpm-generators
@@ -78,6 +93,14 @@ Python client for Consul
 %{python3_sitelib}/consul/
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-49PGDG
+- SLES 16: Generate the runtime Requires from the Python metadata, and
+  BuildRequire python-rpm-packaging for the Python dependency generators.
+  The package did not require requests there, so it could not be
+  imported. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+- SUSE: BuildRequire python-devel, pip, setuptools and wheel, which the
+  build needs, so that it builds in a clean build root, too.
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-48PGDG
 - Add the missing python%%{python3_pkgversion}-wheel BR: setuptools on RHEL 8
   (68) cannot build wheels without it.
