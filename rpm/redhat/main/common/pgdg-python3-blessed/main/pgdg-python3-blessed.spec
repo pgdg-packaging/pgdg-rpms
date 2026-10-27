@@ -19,6 +19,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -94,6 +97,8 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
   license expression. Also relax the flit_core >= 3.11 build requirement.
 - Add SLES 16 support (python313), for pg_activity, and Require wcwidth
   and curses (a separate package there) on SUSE. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+- Add SLES 15 support (python311), for pg_activity. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
 
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
