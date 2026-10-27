@@ -32,7 +32,7 @@
 Summary:	CLI tool for time series analysis and visualization of PostgreSQL internal statistics.
 Name:		%{sname}
 Version:	1.2
-Release:	10PGDG%{dist}
+Release:	11PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/vyruss/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/vyruss/%{sname}
@@ -61,6 +61,10 @@ Requires:	python%{python3_pkgversion}-pyparsing python%{python3_pkgversion}-six
 %if 0%{?fedora} >= 43 || 0%{?rhel} >= 10
 Requires:	python3-cycler python3-dateutil python3-pillow
 Requires:	python3-fonttools
+%endif
+%if 0%{?rhel} == 10
+# The Tk backends of matplotlib and pillow are in subpackages there:
+Requires:	python%{python3_pkgversion}-matplotlib-tk python%{python3_pkgversion}-pillow-tk
 %endif
 
 %if 0%{?amzn} == 2023 || 0%{?rhel} == 9
@@ -158,6 +162,11 @@ Best served with pg_statviz extensions package, which includes the extension fil
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-11PGDG
+- RHEL 10: Require the -tk subpackages of matplotlib and pillow, which
+  have the Tk backends now. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-10PGDG
 - Do not require plac on any distro: pg_statviz does not use it, and it
   blocked the installation on Fedora.
