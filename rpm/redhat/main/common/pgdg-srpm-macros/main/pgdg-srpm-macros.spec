@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.4.0
+Version:	2.5.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,13 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-1PGDG
+- Update to 2.5.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.5.0
+- Adds %%pgdg_python3_setup, which replaces the per-distro Python block
+  and the __ospython macro in the PGDG Python packages. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sun Oct 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
 - Update to 2.4.0 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.4.0
