@@ -35,7 +35,7 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.43.118
+Version:	1.43.119
 Release:	42PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
@@ -123,6 +123,10 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.119-42PGDG
+- Update to 1.43.119 per changes described at:
+  https://pypi.org/project/boto3/1.43.119/
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-boto3
   package there. Start the release from 42, so that our packages win over
