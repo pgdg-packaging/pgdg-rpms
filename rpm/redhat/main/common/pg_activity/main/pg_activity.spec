@@ -35,7 +35,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.2
-Release:	49PGDG%{?dist}
+Release:	50PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -83,16 +83,21 @@ Requires:	python3-wcwidth
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python%{python3_pkgversion}-setuptools >= 67.7.2
-%if 0%{?suse_version} >= 1600
 # blessings does not have the modules that pg_activity needs (e.g.
 # blessings.keyboard); use our blessed package instead:
 Requires:	python%{python3_pkgversion}-blessed
-%else
-Requires:	python%{python3_pkgversion}-blessings
-%endif
 Requires:	python%{python3_pkgversion} python%{python3_pkgversion}-attrs
 Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-psutil
+%if 0%{?suse_version} == 1500
+# Our python3-psycopg3 is built for the default python3 (3.6) on SLES 15;
+# use SUSE's psycopg 3 for python311 instead:
+Requires:	python%{python3_pkgversion}-psycopg >= 3.1.8
+# SUSE's psycopg is the pure Python implementation, which loads libpq at
+# run time, but does not require it:
+Requires:	libpq5
+%else
 Requires:	python3-psycopg3 >= 3.1.8
+%endif
 Requires:	python%{python3_pkgversion}-humanize
 Requires:	python%{python3_pkgversion}-wcwidth
 %endif
@@ -104,11 +109,6 @@ top like application for PostgreSQL server activity monitoring.
 %setup -q -n %{name}-%{version}
 %patch -P 0 -p0
 %build
-# Change the name of the Python module in the source code. SLES packages
-# this module in a different name:
-%if 0%{?suse_version} == 1500
-find . -type f -exec sed -i 's/blessed/blessings/g' {} +
-%endif
 %pyproject_wheel
 
 %install
@@ -126,6 +126,16 @@ find . -type f -exec sed -i 's/blessed/blessings/g' {} +
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-50PGDG
+- SLES 15: Require our blessed package too, instead of renaming blessed to
+  blessings in the code, and drop that rename. python311-humanize and
+  python311-blessed are now built for SLES 15, so the package can be
+  installed there again. Require SUSE's python311-psycopg there, as
+  our python3-psycopg3 is built for the default python3 (3.6) on SLES 15.
+  Also Require libpq5, which that psycopg loads at run time, but does not
+  require. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-49PGDG
 - SUSE: Require humanize, which pg_activity uses, instead of
   humanfriendly, so pg_activity failed to start there. Per
