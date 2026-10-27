@@ -71,6 +71,10 @@ Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 %if 0%{?rhel} == 8
 Requires:	python3.12-requests >= 2.0
 %endif
+# SLES 15 does not generate the Requires from the Python metadata:
+%if 0%{?suse_version} == 1500
+Requires:	python311-requests >= 2.0
+%endif
 
 %description
 Python client for Consul
@@ -102,6 +106,8 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
   https://github.com/criteo/py-consul/releases/tag/v1.8.0
 - BuildRequire setuptools_scm, which 1.8.0 takes its version from, and
   pass the version to it, as the GitHub tarball has no git metadata.
+- SLES 15: Require python311-requests, which the module imports: the
+  Requires are not generated from the Python metadata there.
 
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-49PGDG
 - SLES 16: Generate the runtime Requires from the Python metadata, and
