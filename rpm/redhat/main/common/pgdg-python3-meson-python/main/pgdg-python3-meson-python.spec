@@ -31,7 +31,13 @@
 %global	pymodname meson_python
 
 Name:		python%{python3_pkgversion}-%{modname}
+# RHEL 10: at least the version of EPEL, whose python3-meson-python
+# obsoletes python3.12-meson-python < its own version:
+%if 0%{?rhel} == 10
+Version:	0.22.1
+%else
 Version:	0.16.0
+%endif
 Release:	42PGDG%{?dist}
 Summary:	Meson Python build backend (PEP 517)
 
@@ -57,11 +63,11 @@ BuildRequires:	python%{python3_pkgversion}-meson >= 1.2.3
 Requires:	python%{python3_pkgversion}-meson >= 1.2.3
 %endif
 BuildRequires:	python%{python3_pkgversion}-packaging
-BuildRequires:	python%{python3_pkgversion}-pyproject-metadata
+BuildRequires:	python%{python3_pkgversion}-pyproject-metadata >= 0.9.0
 BuildRequires:	ninja-build
 
 Requires:	python%{python3_pkgversion}-packaging
-Requires:	python%{python3_pkgversion}-pyproject-metadata
+Requires:	python%{python3_pkgversion}-pyproject-metadata >= 0.9.0
 Requires:	ninja-build
 
 %description
@@ -95,6 +101,13 @@ export MESON=%{_bindir}/meson-%{python3_pkgversion}
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 0.22.1-42PGDG
+- RHEL 10: Update to 0.22.1, per changes described at:
+  https://github.com/mesonbuild/meson-python/releases/tag/0.22.1
+  EPEL has 0.17.1, and its python3-meson-python obsoletes
+  python3.12-meson-python < 0.17.1, which replaced ours. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.16.0-42PGDG
 - Add RHEL 10 support, without EPEL: use meson from CRB there, which is
   built for python3.12, the OS Python, and obsolete the EPEL

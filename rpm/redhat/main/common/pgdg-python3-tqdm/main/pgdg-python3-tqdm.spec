@@ -31,8 +31,8 @@
 %global	pymodname tqdm
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	4.67.1
-Release:	43PGDG%{?dist}
+Version:	4.70.1
+Release:	42PGDG%{?dist}
 Summary:	Fast, extensible progress bar for Python
 
 License:	MPL-2.0 AND MIT
@@ -86,6 +86,13 @@ tqdm shows a smart progress meter for loops and iterables.
 %endif
 
 %changelog
+* Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 4.70.1-42PGDG
+- Update to 4.70.1, per changes described at:
+  https://github.com/tqdm/tqdm/releases/tag/v4.70.1
+  On RHEL 10, EPEL has 4.68.4, and its python3-tqdm obsoletes
+  python3.12-tqdm < 4.68.4, which replaced ours. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.1-43PGDG
 - RHEL 10: Ship the tqdm command line tool and its man page, as EPEL's
   python3-tqdm, which this package replaces, does. Per
