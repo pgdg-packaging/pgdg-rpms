@@ -36,7 +36,7 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
-Version:	1.43.118
+Version:	1.43.119
 Release:	42PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
@@ -111,6 +111,10 @@ grep -q "'python-dateutil>=2.1'," setup.py
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.119-42PGDG
+- Update to 1.43.119 per changes described at:
+  https://pypi.org/project/botocore/1.43.119/
+
 * Sun Oct 25 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.118-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-botocore
   package there. Start the release from 42, so that our packages win over
