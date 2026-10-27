@@ -19,6 +19,9 @@
 %if 0%{?suse_version} == 1500
 %global	__ospython %{_bindir}/python3.11
 %global	python3_pkgversion 311
+# Build the python311 flavor with the SUSE pyproject macros, instead of
+# the default python3 (3.6):
+%global	pythons python311
 %endif
 %if 0%{?suse_version} == 1600
 %global	__ospython %{_bindir}/python3.13
@@ -31,7 +34,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	4.16.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -79,6 +82,12 @@ Obsoletes:	python3-humanize < %{version}-%{release}
 %{__sed} -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
 %endif
 
+# .gitignore lists src/*/_version.py, which hatch-vcs generates upstream,
+# and hatchling 1.25 (RHEL 8, 9 and SLES 15) then leaves it out of the
+# wheel, so humanize could not be imported. We ship it from the sdist:
+%{__sed} -i '/^src\/\*\/_version\.py$/d' .gitignore
+if grep -q '_version' .gitignore; then exit 1; fi
+
 # Remove shebangs from libs.
 for lib in src/humanize/time.py src/humanize/filesize.py src/humanize/number.py; do
  sed '1{\@^#!/usr/bin/env python@d}' $lib > $lib.new &&
@@ -104,6 +113,13 @@ find -name '*.po' -delete
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-43PGDG
+- Ship src/humanize/_version.py: .gitignore lists it, and hatchling 1.25
+  (RHEL 8, 9 and SLES 15) left it out of the wheel, so humanize could not
+  be imported there.
+- Add SLES 15 support (python311), for pg_activity. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/427
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-humanize
   package there. Start the release from 42, so that our packages win over
