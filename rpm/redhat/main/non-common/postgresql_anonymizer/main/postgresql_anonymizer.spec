@@ -7,10 +7,10 @@
 
 Summary:	Anonymization & Data Masking for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.2.3
-Release:	2PGDG%{?dist}
+Version:	3.3.0
+Release:	1PGDG%{?dist}
 # The extension itself, and the licenses of the Rust crates that are compiled into
-# it (236 crates), checked with "cargo metadata --filter-platform
+# it (245 crates), checked with "cargo metadata --filter-platform
 # x86_64-unknown-linux-gnu", without the dev dependencies:
 License:	PostgreSQL AND MIT AND Apache-2.0 AND BSD-2-Clause AND BSD-3-Clause AND Unicode-3.0 AND ISC AND Zlib AND 0BSD AND Unlicense AND CC0-1.0
 URL:		https://labs.dalibo.com/postgresql_anonymizer
@@ -65,7 +65,10 @@ in the databases that used them.
 %prep
 %setup -q -n %{sname}-%{version} -a 1
 
-# Cargo.lock of this release still has the version of the development branch:
+# Cargo.toml and Cargo.lock of this release still have the version of the
+# development branch. It becomes the version of the extension (anon.control and
+# the name of the SQL script):
+sed -i '0,/^version = /s/^version = .*/version = "%{version}"/' Cargo.toml
 sed -i '/^name = "anon"$/{n;s/^version = .*/version = "%{version}"/}' Cargo.lock
 
 # Use the vendored crates, and nothing from the network:
@@ -111,6 +114,16 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 %{pginstdir}/share/extension/anon/
 
 %changelog
+* Tue Oct 27 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-1PGDG
+- Update to 3.3.0 per changes described at:
+  https://gitlab.com/dalibo/postgresql_anonymizer/-/blob/3.3.0/CHANGELOG.md
+  This is a security release, fixing 12 CVEs.
+- Set the version in Cargo.toml, as the 3.3.0 tag still has 3.3.0-dev.
+- ALTER EXTENSION anon UPDATE is not supported by upstream: the extension
+  has to be dropped and created again after the update (export the masking
+  rules first). Upstream also advises to change the anon.salt parameter. See
+  https://gitlab.com/dalibo/postgresql_anonymizer/-/blob/3.3.0/docs/UPGRADE.md
+
 * Fri Oct 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.2.3-2PGDG
 - Build with pgrx 0.19.3, to match cargo-pgrx019 0.19.3. cargo-pgrx refuses
   pgrx crates that are older than itself.
