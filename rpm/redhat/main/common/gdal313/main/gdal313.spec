@@ -1,3 +1,5 @@
+%pgdg_python3_setup
+
 %global sname gdal
 %global gdalmajorversion 3.13
 
@@ -9,36 +11,10 @@
 %{!?gdaljava:%global gdaljava 0}
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44 && ! 0%{?amzn}
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-
 %pgdg_set_gis_variables
 
 %if %gdal_python_enabled
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 %endif
 
 %global bashcompletiondir %(pkg-config --variable=compatdir bash-completion)
@@ -74,7 +50,7 @@
 
 Name:		%{sname}313
 Version:	%{gdalmajorversion}.3
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -309,7 +285,6 @@ Requires: libarchive13 >= 3.5.0
 %endif
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
-
 %description
 Geospatial Data Abstraction Library (GDAL/OGR) is a cross platform
 C++ translator library for raster and vector geospatial data formats.
@@ -320,14 +295,12 @@ useful commandline utilities for data translation and processing.
 It provides the primary data access engine for many applications.
 GDAL/OGR is the most widely used geospatial data access library.
 
-
 %package devel
 Summary:	Development files for the GDAL file format library
 Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description devel
 This package contains development files for GDAL.
-
 
 %package libs
 Summary:	GDAL file format library
@@ -380,7 +353,6 @@ Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 %description java
 The GDAL Java modules provide support to handle multiple GIS file formats.
 
-
 %package javadoc
 Summary:	Javadocs for %{name}
 Requires:	jpackage-utils
@@ -405,7 +377,6 @@ Requires:	%{name}-libs%{?_isa} = %{version}-%{release}
 
 %description python3
 The GDAL Python 3 modules provide support to handle multiple GIS file formats.
-
 
 %package python-tools
 Summary:	Python tools for the GDAL file format library
@@ -642,6 +613,11 @@ done
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-10PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-9PGDG
 - Build with C++20 on RHEL 9 and 10: the headers of Arrow 26
   (pgdg-libarrow) need it, and GDAL defaults to C++17, which broke
