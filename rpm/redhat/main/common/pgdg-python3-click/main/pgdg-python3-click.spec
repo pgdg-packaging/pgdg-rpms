@@ -1,33 +1,13 @@
+%pgdg_python3_setup
+
 %global modname click
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} >= 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global pgdg_python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global pgdg_python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-click
 Version:	8.5.0
-Release:	42PGDG%{?dist}.1
+Release:	43PGDG%{?dist}
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -73,7 +53,7 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
 # never gets populated. Bytecompile explicitly instead.
-%py_byte_compile %{__ospython} %{buildroot}%{pgdg_python3_sitearch}/%{modname}
+%py_byte_compile %{__python3} %{buildroot}%{pgdg_python3_sitearch}/%{modname}
 %endif
 
 %files
@@ -83,6 +63,11 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 %{pgdg_python3_sitearch}/%{modname}/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-42PGDG
 - Add RHEL 10 support, without EPEL, and obsolete the EPEL python3-click
   package there. Start the release from 42, so that our packages win over
