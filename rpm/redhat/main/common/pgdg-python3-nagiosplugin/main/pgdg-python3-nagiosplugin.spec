@@ -1,25 +1,12 @@
+%pgdg_python3_setup
+
 %global modname nagiosplugin
 
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-
-%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.4.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Class library for writing Nagios (Icinga) plugins
 
 License:	ZPL-2.1
@@ -70,6 +57,11 @@ grep -q '^convert_path = str$' setup.py
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-42PGDG
 - Initial packaging for the PostgreSQL RPM repository, for
   nagios-plugins-patroni (check_patroni), on RHEL 8, 9 and 10, Amazon
