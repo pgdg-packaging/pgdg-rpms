@@ -1,37 +1,14 @@
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%pgdg_python3_setup
 
 %global modname etcd
 %global srcname python-%{modname}
 
-%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.5
-Release:	52PGDG%{?dist}
+Release:	53PGDG%{?dist}
 Summary:	A python client library for etcd
 
 License:	MIT
@@ -79,11 +56,11 @@ election.
 %autosetup -p1 -n %{srcname}-%{version}
 
 %build
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__ospython} setup.py install --root %{buildroot} -O1 --skip-build
+%{__python3} setup.py install --root %{buildroot} -O1 --skip-build
 
 %files
 %doc README.rst
@@ -91,6 +68,11 @@ election.
 %{python3_sitelib}/*
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-53PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.5-52PGDG
 - Remove Fedora <= 42 support
 - Add missing Fedora 44 pin (python3.14)
