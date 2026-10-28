@@ -17,8 +17,8 @@
 
 Summary:	Incremental Data Processing in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5.0
-Release:	2PGDG%{?dist}
+Version:	1.6.1
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Group:		Applications/Databases
 URL:		https://github.com/CrunchyData/%{sname}
@@ -99,6 +99,11 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6.1-1PGDG
+- Update to 1.6.1 per changes described at:
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.6.1
+  https://github.com/CrunchyData/pg_incremental/releases/tag/v1.6.0
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
