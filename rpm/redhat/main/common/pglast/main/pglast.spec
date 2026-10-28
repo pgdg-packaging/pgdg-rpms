@@ -1,37 +1,14 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
+%pgdg_python3_setup
+
 %if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
+# The SUSE macro points to the default python3 (3.6):
 %global	python3_sitearch %{_libdir}/python3.11/site-packages
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
 %endif
 %global sname pglast
 
 Name:		pglast
 Version:	7.21
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL Languages AST and statements prettifier
 License:	GPLv3+
 Url:		https://github.com/lelit/%{sname}
@@ -84,6 +61,11 @@ sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/'
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 7.21-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 19 2026 Devrim Gündüz <devrim@gunduz.org> - 7.21-1PGDG
 - Update to 7.21 per changes described at:
   https://github.com/lelit/pglast/blob/v7/CHANGES.rst
