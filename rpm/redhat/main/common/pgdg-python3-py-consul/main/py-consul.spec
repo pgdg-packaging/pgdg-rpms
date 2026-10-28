@@ -1,27 +1,6 @@
+%pgdg_python3_setup
+
 %global modname py_consul
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
-%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
-%endif
-%if 0%{?suse_version} == 1600
-%global	python3_pkgversion 313
-%endif
 
 %if 0%{?suse_version} >= 1600
 # SUSE only generates runtime Requires from the Python metadata when asked
@@ -31,7 +10,7 @@
 
 Name:		py-consul
 Version:	1.8.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python client for Consul
 License:	MIT
 URL:		https://github.com/criteo/%{name}
@@ -101,6 +80,11 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
 %{python3_sitelib}/consul/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.0-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.8.0-42PGDG
 - Update to 1.8.0 per changes described at:
   https://github.com/criteo/py-consul/releases/tag/v1.8.0
