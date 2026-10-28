@@ -1,43 +1,12 @@
-%global	modname argh
+%pgdg_python3_setup
 
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros:
-%global	pythons python311
-%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%global	modname argh
 
 Name:		python%{python3_pkgversion}-%{modname}
 # pg_statviz (the only consumer) requires argh < 0.30:
 Epoch:		1
 Version:	0.29.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -62,7 +31,6 @@ Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 %description
 Building a command-line interface? Found yourself uttering “argh!” while struggling with the API of argparse? Don’t like the complexity but need the power?
 Argh is a smart wrapper for argparse. Argparse is a very powerful tool; Argh just makes it easy to use.
-
 
 BuildRequires:	python3-devel
 BuildRequires:	python3-mock
@@ -89,6 +57,11 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.29.4-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Tue Oct 06 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.29.4-1PGDG
 - Downgrade to 0.29.4, and add Epoch to make it an upgrade. pg_statviz,
   the only consumer of this package, requires argh < 0.30: newer argh
