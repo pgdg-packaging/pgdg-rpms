@@ -1,36 +1,13 @@
+%pgdg_python3_setup
+
 %global pypi_name attrs
 %global sname attr
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-attrs
 Version:	26.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Python attributes without boilerplate
 
 License:	MIT
@@ -47,7 +24,6 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 Requires:	python%{python3_pkgversion}
-
 
 %description
 attrs is an MIT-licensed Python package with class decorators that
@@ -82,6 +58,11 @@ export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
 %{python3_sitelib}/%{pypi_name}/__pycache__/*.pyc
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 26.1.0-2PGDG
 - Migrate %%python3_sitelib off the removed distutils.sysconfig module
   to sysconfig.get_path()
