@@ -1,42 +1,15 @@
+%pgdg_python3_setup
+
 # Disable internal dependency generator.
 # We will specify dependencies in the spec file.
 %{?python_disable_dependency_generator}
-
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __python3 %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __python3 %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__python3 %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
-%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
-%endif
-%if 0%{?suse_version} == 1600
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
 
 %global debug_package %{nil}
 
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
 Version:	2.0
-Release:	15PGDG%{?dist}
+Release:	16PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
@@ -137,6 +110,11 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-16PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-15PGDG
 - Fix "cannot import name 'bigquery' from 'google.cloud'" on Fedora and
   RHEL 10, when the distribution's Google Cloud packages are installed:
