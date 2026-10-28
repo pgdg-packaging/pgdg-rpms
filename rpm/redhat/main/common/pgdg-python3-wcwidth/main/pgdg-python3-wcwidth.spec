@@ -1,39 +1,12 @@
+%pgdg_python3_setup
+
 %global modname wcwidth
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-
-%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.9.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -91,6 +64,11 @@ export WCWIDTH_NO_EXTENSION=1
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.4-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.4-1PGDG
 - Update to 0.9.4 per changes described at:
   https://github.com/jquast/wcwidth/releases/tag/0.9.4
