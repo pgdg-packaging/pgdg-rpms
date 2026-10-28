@@ -1,17 +1,14 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023 only, for
 # the Google Cloud storage backend of rohmu (pghoard).
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname google-auth-httplib2
 %global	pymodname google_auth_httplib2
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.4.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Google Authentication Library: httplib2 transport
 
 License:	Apache-2.0
@@ -42,6 +39,11 @@ This library provides an httplib2 transport for google-auth.
 %doc README.rst
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.4-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 0.4.4-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for
   the Google Cloud storage backend of rohmu (pghoard) on Amazon Linux 2023.
