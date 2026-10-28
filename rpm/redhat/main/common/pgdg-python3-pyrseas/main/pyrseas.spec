@@ -1,23 +1,15 @@
-%if 0%{?amzn} == 2023
-# psycopg 3 and PyYAML are only available for the python3.13 alt-stack
-# there, not for the default python3 (3.9):
-%global __ospython3 %{_bindir}/python3.13
-%global __python3 %{_bindir}/python3.13
-%global python3_pkgversion 3.13
-%else
-%global __ospython3 %{_bindir}/python3
-%global python3_pkgversion 3
-%endif
-%{expand: %%global py3ver %(echo `%{__ospython3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%global python3_sitelib %(%{__ospython3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%pgdg_python3_setup
+
+%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 %global sname pyrseas
 %global cname Pyrseas
 
 Summary:	Compare and synchronize PostgreSQL database schemas
-Name:		python3-%{sname}
+Name:		python%{python3_pkgversion}-%{sname}
 Version:	0.10.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/perseas/%{cname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/perseas/%{cname}/
@@ -25,12 +17,24 @@ BuildArch:	noarch
 
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 
-%if 0%{?suse_version} >= 1600
+%if 0%{?suse_version}
 # SUSE does not generate runtime Requires from the Python metadata by
 # default; Fedora and RHEL do:
+Requires:	python%{python3_pkgversion}-PyYAML >= 5.3
+%if 0%{?suse_version} >= 1600
+# There is no psycopg 3 for python311 on SLES 15:
 Requires:	python3-psycopg3 >= 3.1
-Requires:	python3-PyYAML >= 5.3
 %endif
+%endif
+%if 0%{?rhel} == 8
+# The python3.12 packages of RHEL 8 get no automatic python3.12dist()
+# Requires either:
+Requires:	python%{python3_pkgversion}dist(psycopg) >= 3.1
+Requires:	python%{python3_pkgversion}-PyYAML >= 5.3
+%endif
+# %%pgdg_python3_setup renamed python3-pyrseas to python%%{python3_pkgversion}-pyrseas:
+Provides:	python3-%{sname} = %{version}-%{release}
+Obsoletes:	python3-%{sname} < %{version}-%{release}
 Obsoletes:	python2-%{sname} <= 0.9.0
 
 %description
@@ -42,11 +46,11 @@ Andromeda Project. This is Python 3 version.
 %setup -q -n %{cname}-%{version}
 
 %build
-%{__ospython3} setup.py build
+%{__python3} setup.py build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__ospython3} setup.py install --root %{buildroot}
+%{__python3} setup.py install --root %{buildroot}
 
 %files
 %defattr(-,root,root,755)
@@ -58,6 +62,14 @@ Andromeda Project. This is Python 3 version.
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-7PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0, and build with its
+  Python everywhere, not only on Amazon Linux 2023. The package is now
+  python%%{python3_pkgversion}-pyrseas, which provides and obsoletes
+  python3-pyrseas. On RHEL 8, require psycopg 3 and PyYAML explicitly,
+  and on SLES 15, PyYAML.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-6PGDG
 - Amazon Linux 2023: Build with python3.13: psycopg 3 and PyYAML are only
   available for it there, so the package could not be installed.
