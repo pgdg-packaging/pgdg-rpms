@@ -1,18 +1,15 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023, for the SFTP
 # storage backend of rohmu (pghoard), and for RHEL 10 (the OS Python there).
 # paramiko needs it.
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname invoke
 %global	pymodname invoke
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.0.3
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Pythonic task execution
 
 License:	BSD-2-Clause
@@ -25,6 +22,12 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+
+%if 0%{?rhel} == 10
+# %%pgdg_python3_setup renamed python3-invoke to python%%{python3_pkgversion}-invoke:
+Provides:	python3-%{modname} = %{version}-%{release}
+Obsoletes:	python3-%{modname} < %{version}-%{release}
+%endif
 
 %description
 Invoke is a Python task execution tool and library. paramiko uses it.
@@ -48,6 +51,13 @@ Invoke is a Python task execution tool and library. paramiko uses it.
 %doc README.rst
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.3-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- On RHEL 10, the package is now python3.12-invoke, which provides
+  and obsoletes python3-invoke.
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.3-42PGDG
 - Add RHEL 10 support, without EPEL. Start the release from 42, so that our
   packages win over EPEL's. Per
