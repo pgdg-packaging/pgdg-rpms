@@ -1,38 +1,11 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 9
-%global	__python3 %{_bindir}/python3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%pgdg_python3_setup
 
 %global	modname setuptools_scm
 %global	pymodname setuptools_scm
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	9.2.2
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Blessed package to manage your versions by SCM tags
 
 License:	MIT
@@ -76,6 +49,11 @@ packaging 26.2; RHEL 8 and 9 have 23.2.
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 9.2.2-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 9.2.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to build the
   packages that use it with python3.12 on RHEL 8 and 9 without EPEL. Per
