@@ -1,3 +1,5 @@
+%pgdg_python3_setup
+
 # This spec builds the python3.12 / python3.13 alt-stack flavor
 # (python3.12-google-auth, python3.13-google-auth) on RHEL 8, 9 and 10 and
 # Amazon Linux 2023, for pg_statviz and bigquery_fdw. On RHEL 10, where
@@ -9,16 +11,6 @@
 # bigquery_fdw, together with its extras subpackages, which pin it to their
 # own version. The default python3 flavor that this spec used to build there
 # replaced the OS package and broke the updates of those extras.
-%if 0%{?rhel}
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname google-auth
 %global	pymodname google_auth
@@ -38,7 +30,7 @@ Version:	2.47.0
 %else
 Version:	2.62.0
 %endif
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 %if 0%{?rhel} == 10
 # EPEL's python3-google-auth has Epoch 1, and obsoletes
 # python3.12-google-auth < 1:<its version>, which matched ours, whatever our
@@ -206,6 +198,11 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.62.0-44PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.62.0-43PGDG
 - RHEL 10: Add Epoch 1, as EPEL's python3-google-auth has it, and obsoletes
   python3.12-google-auth < 1:<its version>, which matched our package, so
