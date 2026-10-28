@@ -1,41 +1,28 @@
-%global __python %{_bindir}/python3
+%pgdg_python3_setup
+
+%global __python %{__python3}
 %global sname powa-web
 %global swebname powa
 
 %global	powawebdir	%{_datadir}/%{name}
 
-%global __ospython %{_bindir}/python3
-%if 0%{?fedora} >= 42 || 0%{?rhel} >= 10 || 0%{?suse_version} == 1600
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%else
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:3])"`)}
-%endif
-
 Summary:	The user interface of PoWA
 Name:		%{sname}
 Version:	5.3.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
 Source2:	%{sname}.service
 URL:		https://powa.readthedocs.io/
-# It runs with Python 3.12 on RHEL 8:
-%if 0%{?rhel} == 8
-Requires:	python3.12-tornado python3.12-psycopg2
-%else
-Requires:	python3-tornado python3-psycopg2
-%endif
+Requires:	python%{python3_pkgversion}-tornado python%{python3_pkgversion}-psycopg2
 
 Requires:		systemd
 Requires(post):		systemd
 Requires(preun):	systemd
 Requires(postun):	systemd
 
-%if 0%{?rhel} == 8
-BuildRequires:	python3.12-devel python3.12-pip python3.12-setuptools python3.12-wheel
-%else
-BuildRequires:		python3-devel python3-pip python3-setuptools python3-wheel
-%endif
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-wheel
 BuildRequires:		systemd-rpm-macros
 
 %if 0%{?suse_version} >= 1500
@@ -81,6 +68,12 @@ This is the user interface of POWA.
 %{_unitdir}/%{sname}.service
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-6PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0, and build and run
+  with its Python everywhere, not only on RHEL 8: require
+  python%%{python3_pkgversion}-* instead of python3-*. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-5PGDG
 - RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
   build with Python 3.12 there, not with the default python3 (3.6), and
