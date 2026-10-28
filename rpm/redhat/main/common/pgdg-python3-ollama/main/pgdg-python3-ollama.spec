@@ -1,26 +1,10 @@
-%global pypi_name ollama
+%pgdg_python3_setup
 
-%if 0%{?rhel} && 0%{?rhel} == 10
-%global python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 9
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%global pypi_name ollama
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.6.2
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	The official Python client for Ollama
 
 License:	MIT
@@ -74,6 +58,11 @@ projects with Ollama.
 %doc README.md
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.2-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.2-2PGDG
 - Add Amazon Linux 2023 support (python3.13), for pg_statviz.
 - Add RHEL 9 support (python3.12), for pg_statviz.
