@@ -1,16 +1,14 @@
+%pgdg_python3_setup
+
 %global sname tornado
 
-# For RHEL 8 only: RHEL 9 and 10 ship tornado, but RHEL 8 (and EPEL 8) only
-# have it for the default python3 (3.6), and our Python packages use Python
-# 3.12 there.
-%if 0%{?rhel} == 8
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
+# For RHEL 8 and 9 only: RHEL 10 ships tornado, but RHEL 8 (and EPEL 8) and
+# RHEL 9 only have it for the default python3 (3.6 and 3.9), and our Python
+# packages use Python 3.12 there.
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	6.6
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Scalable, non-blocking web server and tools
 
 License:	Apache-2.0
@@ -54,6 +52,12 @@ ideal for real-time web services.
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 6.6-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- Build on RHEL 9 too, for powa-web, which now runs with Python 3.12 there.
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 6.6-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for Python 3.12 on
   RHEL 8, where powa-web needs it. Per
