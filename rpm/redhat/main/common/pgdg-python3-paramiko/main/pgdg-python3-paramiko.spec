@@ -1,18 +1,15 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023, for the SFTP
 # storage backend of rohmu (pghoard), and for RHEL 10 (the OS Python there),
 # for sshtunnel.
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname paramiko
 %global	pymodname paramiko
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	5.0.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	SSH2 protocol library
 
 License:	LGPL-2.1-or-later
@@ -30,6 +27,12 @@ BuildRequires:	python%{python3_pkgversion}-wheel
 # EPEL's python-paramiko-doc requires EPEL's own paramiko version, so it
 # made dnf upgrade fail. We do not build the documentation:
 Obsoletes:	python-paramiko-doc < %{version}-%{release}
+%endif
+
+%if 0%{?rhel} == 10
+# %%pgdg_python3_setup renamed python3-paramiko to python%%{python3_pkgversion}-paramiko:
+Provides:	python3-%{modname} = %{version}-%{release}
+Obsoletes:	python3-%{modname} < %{version}-%{release}
 %endif
 
 %description
@@ -52,6 +55,13 @@ providing both client and server functionality.
 %doc README.rst
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0.0-44PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- On RHEL 10, the package is now python3.12-paramiko, which provides
+  and obsoletes python3-paramiko.
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0.0-43PGDG
 - RHEL 10: Obsolete EPEL's python-paramiko-doc, which requires EPEL's own
   paramiko version, so it made dnf upgrade fail. Per
