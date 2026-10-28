@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.5.0
+Version:	2.5.1
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,13 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.1-1PGDG
+- Update to 2.5.1 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.5.1
+- Adds %%pgdg_libmemcachedinstdir (/usr/pgdg-libmemcached), for
+  pgdg-libmemcached-awesome on RHEL 10. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-1PGDG
 - Update to 2.5.0 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.5.0
