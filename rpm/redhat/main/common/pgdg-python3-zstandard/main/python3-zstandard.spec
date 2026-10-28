@@ -1,32 +1,13 @@
+%pgdg_python3_setup
+
 %global pypi_name zstandard
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} >= 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.25.0
-Release:	2PGDG%{?dist}.1
+Release:	3PGDG%{?dist}
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
@@ -49,7 +30,6 @@ Provides:	bundled(zstd) = 1.5.6
 This project provides Python bindings for interfacing with the Zstandard\
 compression library. A C extension and CFFI interface are provided.
 
-
 %prep
 %setup -q -n %{pypi_name}-%{version}
 %if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version} == 1500
@@ -58,15 +38,15 @@ compression library. A C extension and CFFI interface are provided.
 %{__rm} -rf %{pypi_name}.egg-info
 
 %build
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%{__python3} setup.py install --no-compile --root %{buildroot}
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
 # never gets populated. Bytecompile explicitly instead.
-%py_byte_compile %{__ospython} %{buildroot}%{python3_sitearch}/%{pypi_name}
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitearch}/%{pypi_name}
 %endif
 
 %files
@@ -81,6 +61,11 @@ compression library. A C extension and CFFI interface are provided.
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-2PGDG
 - Use the older license metadata form of pyproject.toml with a patch on RHEL,
   AL 2023 and SLES 15, as the setuptools there (68 on RHEL 8/9, 69 on RHEL 10
