@@ -1,37 +1,10 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 9
-%global	__python3 %{_bindir}/python3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%pgdg_python3_setup
 
 %global	modname jiter
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	0.18.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Fast iterable JSON parser
 # jiter is MIT. The licenses of the crates that are compiled into the
 # extension, checked with "cargo tree -p jiter-python -e normal" (40 crates):
@@ -113,6 +86,11 @@ export MATURIN_PEP517_ARGS="--frozen"
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18.0-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18.0-1PGDG
 - Update to 0.18.0, and make a new tarball of the vendored crates for it.
   The licenses of the crates did not change.
