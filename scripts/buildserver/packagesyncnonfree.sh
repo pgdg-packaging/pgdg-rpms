@@ -260,11 +260,7 @@ do
         continue
     fi
 
-    log "Creating CloudFront invalidation for SRPMs..."
-    if ! aws cloudfront create-invalidation --distribution-id "$CF_SRPM_DISTRO_ID" --paths "/srpms/non-free/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*" > /dev/null; then
-        error "Failed to create CloudFront invalidation for SRPMs"
-        # Don't exit, this is not critical
-    fi
+    queue_cf_invalidation srpm "/srpms/non-free/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata"
 
     # S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
     if [ "$osislatest" == 1 ]; then
@@ -275,9 +271,7 @@ do
         if ! aws s3 sync --delete "$SRPM_DIR/repodata/" "$awssrpmurl/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/" --exclude "*.html"; then
             error "Failed to sync SRPM repodata to S3 (major-version path)"
         fi
-        if ! aws cloudfront create-invalidation --distribution-id "$CF_SRPM_DISTRO_ID" --paths "/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*" > /dev/null; then
-            error "Failed to create CloudFront invalidation for SRPMs (major-version path)"
-        fi
+        queue_cf_invalidation srpm "/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata"
     fi
 
     # Sync debug* RPMs to S3 bucket:
@@ -295,11 +289,7 @@ do
         continue
     fi
 
-    log "Creating CloudFront invalidation for debug RPMs..."
-    if ! aws cloudfront create-invalidation --distribution-id "$CF_DEBUG_DISTRO_ID" --paths "/debug/non-free/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*" > /dev/null; then
-        error "Failed to create CloudFront invalidation for debug RPMs"
-        # Don't exit, this is not critical
-    fi
+    queue_cf_invalidation debug "/debug/non-free/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata"
 
     # S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
     if [ "$osislatest" == 1 ]; then
@@ -310,13 +300,20 @@ do
         if ! aws s3 sync --delete "$DEBUG_RPM_DIR/repodata/" "$awsdebuginfourl/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/" --exclude "*.html"; then
             error "Failed to sync debug RPM repodata to S3 (major-version path)"
         fi
-        if ! aws cloudfront create-invalidation --distribution-id "$CF_DEBUG_DISTRO_ID" --paths "/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*" > /dev/null; then
-            error "Failed to create CloudFront invalidation for debug RPMs (major-version path)"
-        fi
+        queue_cf_invalidation debug "/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata"
     fi
 
     log "Successfully completed sync for PostgreSQL $packageSyncVersion"
 done
+
+# When a specific PostgreSQL version was passed, invalidate its CloudFront
+# caches. Otherwise awsupdateindex.sh does it once, after all builders synced:
+if [ "$#" -ne 0 ]; then
+    # Don't exit, this is not critical:
+    flush_cf_invalidations || true
+else
+    log "Not invalidating CloudFront caches: run awsupdateindex.sh after all builders synced."
+fi
 
 if [ "$sync_failed" -ne 0 ]; then
     error "=========================================="

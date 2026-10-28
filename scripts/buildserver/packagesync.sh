@@ -197,9 +197,9 @@ sync_common() {
 		aws s3 sync $COMMON_DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/common/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $COMMON_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/common/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
-		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/common/$osdistro/$osfullversion-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/common/$osdistro/$osfullversion-$osarch/repodata/*
+		# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+		queue_cf_invalidation srpm "/srpms/testing/common/$osdistro/$osfullversion-$osarch/repodata"
+		queue_cf_invalidation debug "/testing/debug/common/$osdistro/$osfullversion-$osarch/repodata"
 
 		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
 		if [ "$osislatest" == 1 ]
@@ -208,9 +208,9 @@ sync_common() {
 			aws s3 sync --delete $COMMON_SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/common/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
 			aws s3 sync $COMMON_DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/common/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
 			aws s3 sync --delete $COMMON_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/common/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-			# Invalidate the caches:
-			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/common/$osdistro/$os-$osarch/repodata/*
-			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/common/$osdistro/$os-$osarch/repodata/*
+			# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+			queue_cf_invalidation srpm "/srpms/testing/common/$osdistro/$os-$osarch/repodata"
+			queue_cf_invalidation debug "/testing/debug/common/$osdistro/$os-$osarch/repodata"
 		fi
 	else
 		# Production mode: sync to production paths
@@ -222,9 +222,9 @@ sync_common() {
 		aws s3 sync $COMMON_DEBUG_RPM_DIR $awsdebuginfourl/debug/common/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $COMMON_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/common/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
-		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/common/$osdistro/$osfullversion-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/common/$osdistro/$osfullversion-$osarch/repodata/*
+		# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+		queue_cf_invalidation srpm "/srpms/common/$osdistro/$osfullversion-$osarch/repodata"
+		queue_cf_invalidation debug "/debug/common/$osdistro/$osfullversion-$osarch/repodata"
 
 		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
 		if [ "$osislatest" == 1 ]
@@ -233,9 +233,9 @@ sync_common() {
 			aws s3 sync --delete $COMMON_SRPM_DIR/repodata/ $awssrpmurl/srpms/common/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
 			aws s3 sync $COMMON_DEBUG_RPM_DIR $awsdebuginfourl/debug/common/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
 			aws s3 sync --delete $COMMON_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/common/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-			# Invalidate the caches:
-			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/common/$osdistro/$os-$osarch/repodata/*
-			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/common/$osdistro/$os-$osarch/repodata/*
+			# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+			queue_cf_invalidation srpm "/srpms/common/$osdistro/$os-$osarch/repodata"
+			queue_cf_invalidation debug "/debug/common/$osdistro/$os-$osarch/repodata"
 		fi
 	fi
 
@@ -291,12 +291,12 @@ sync_extras() {
 		# Sync SRPMs to S3 bucket:
 		aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/testing/extras/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/extras/$osdistro/$osfullversion-$osarch/repodata/*
+		queue_cf_invalidation srpm "/srpms/testing/extras/$osdistro/$osfullversion-$osarch/repodata"
 
 		# Sync debug* RPMs to S3 bucket:
 		aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/extras/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/extras/$osdistro/$osfullversion-$osarch/repodata/*
+		queue_cf_invalidation debug "/testing/debug/extras/$osdistro/$osfullversion-$osarch/repodata"
 
 		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
 		if [ "$osislatest" == 1 ]
@@ -305,20 +305,20 @@ sync_extras() {
 			aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/testing/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
 			aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/extras/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
 			aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-			# Invalidate the caches:
-			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/extras/$osdistro/$os-$osarch/repodata/*
-			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/extras/$osdistro/$os-$osarch/repodata/*
+			# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+			queue_cf_invalidation srpm "/srpms/testing/extras/$osdistro/$os-$osarch/repodata"
+			queue_cf_invalidation debug "/testing/debug/extras/$osdistro/$os-$osarch/repodata"
 		fi
 	else
 		# Sync SRPMs to S3 bucket:
 		aws s3 sync $EXTRAS_SRPM_DIR $awssrpmurl/srpms/extras/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/extras/$osdistro/$osfullversion-$osarch/repodata/*
+		queue_cf_invalidation srpm "/srpms/extras/$osdistro/$osfullversion-$osarch/repodata"
 
 		# Sync debug* RPMs to S3 bucket:
 		aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/debug/extras/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/extras/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/extras/$osdistro/$osfullversion-$osarch/repodata/*
+		queue_cf_invalidation debug "/debug/extras/$osdistro/$osfullversion-$osarch/repodata"
 
 		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
 		if [ "$osislatest" == 1 ]
@@ -327,9 +327,9 @@ sync_extras() {
 			aws s3 sync --delete $EXTRAS_SRPM_DIR/repodata/ $awssrpmurl/srpms/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
 			aws s3 sync $EXTRAS_DEBUG_RPM_DIR $awsdebuginfourl/debug/extras/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
 			aws s3 sync --delete $EXTRAS_DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/extras/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
-			# Invalidate the caches:
-			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/extras/$osdistro/$os-$osarch/repodata/*
-			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/extras/$osdistro/$os-$osarch/repodata/*
+			# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+			queue_cf_invalidation srpm "/srpms/extras/$osdistro/$os-$osarch/repodata"
+			queue_cf_invalidation debug "/debug/extras/$osdistro/$os-$osarch/repodata"
 		fi
 	fi
 
@@ -401,9 +401,9 @@ sync_alpha_beta() {
 	aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/debug/testing/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 	aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/testing/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
-	# Invalidate the caches:
-	aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/$osdistro/$osfullversion-$osarch/repodata/*
-	aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/testing/$osdistro/$osfullversion-$osarch/repodata/*
+	# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+	queue_cf_invalidation srpm "/srpms/testing/$osdistro/$osfullversion-$osarch/repodata"
+	queue_cf_invalidation debug "/debug/testing/$osdistro/$osfullversion-$osarch/repodata"
 
 	# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
 	if [ "$osislatest" == 1 ]
@@ -413,9 +413,9 @@ sync_alpha_beta() {
 		aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/debug/testing/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/testing/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
 
-		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/$osdistro/$os-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/testing/$osdistro/$os-$osarch/repodata/*
+		# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+		queue_cf_invalidation srpm "/srpms/testing/$osdistro/$os-$osarch/repodata"
+		queue_cf_invalidation debug "/debug/testing/$osdistro/$os-$osarch/repodata"
 	fi
 
 	echo "${green}=== PostgreSQL $packageSyncVersion $build_type RPMs sync completed ===${reset}"
@@ -474,11 +474,11 @@ sync_pg_version() {
 		aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
-		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/testing/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*
+		# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+		queue_cf_invalidation srpm "/srpms/testing/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata"
+		queue_cf_invalidation debug "/testing/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata"
 	else
-		# Production mode: Use standard S3 sync with CloudFront invalidation
+		# Production mode: Use standard S3 sync
 		# Sync SRPMs to S3 bucket:
 		aws s3 sync $SRPM_DIR $awssrpmurl/srpms/$packageSyncVersion/$osdistro/$osfullversion-$osarch --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $SRPM_DIR/repodata/ $awssrpmurl/srpms/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
@@ -487,9 +487,9 @@ sync_pg_version() {
 		aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/ --exclude "*.html" --exclude "repodata"
 		aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/ --exclude "*.html"
 
-		# Invalidate the caches:
-		aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*
-		aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata/*
+		# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+		queue_cf_invalidation srpm "/srpms/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata"
+		queue_cf_invalidation debug "/debug/$packageSyncVersion/$osdistro/$osfullversion-$osarch/repodata"
 
 		# S3 does not allow symlinks, so we have to sync the packages once again to the OS major version directory if this is the latest version of the OS:
 		if [ "$osislatest" == 1 ]
@@ -499,9 +499,9 @@ sync_pg_version() {
 			aws s3 sync $DEBUG_RPM_DIR $awsdebuginfourl/debug/$packageSyncVersion/$osdistro/$os-$osarch/ --exclude "*.html" --exclude "repodata"
 			aws s3 sync --delete $DEBUG_RPM_DIR/repodata/ $awsdebuginfourl/debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/ --exclude "*.html"
 
-			# Invalidate the caches:
-			aws cloudfront create-invalidation --distribution-id $CF_SRPM_DISTRO_ID --path /srpms/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
-			aws cloudfront create-invalidation --distribution-id $CF_DEBUG_DISTRO_ID --path /debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata/*
+			# Queue the cache invalidations (sent only when a PostgreSQL version was passed):
+			queue_cf_invalidation srpm "/srpms/$packageSyncVersion/$osdistro/$os-$osarch/repodata"
+			queue_cf_invalidation debug "/debug/$packageSyncVersion/$osdistro/$os-$osarch/repodata"
 		fi
 	fi
 
@@ -552,6 +552,10 @@ declare -a sync_extras_flag=0
 declare -a sync_alpha_flag=0
 declare -a sync_beta_flag=0
 declare -a versions_to_sync=()
+# PostgreSQL versions passed by number (not through "pg"). When there are any,
+# this script invalidates the CloudFront caches of what it synced at the end of
+# the run. Otherwise awsupdateindex.sh does it once, after all builders synced:
+declare -a explicit_versions=()
 
 # Handle special case: "all"
 if [ "$SYNC_TARGETS" == "all" ]; then
@@ -602,6 +606,7 @@ else
 				if [[ "${VERSIONS_ARRAY[@]}" =~ (^|[[:space:]])"$target"($|[[:space:]]) ]]
 				then
 					versions_to_sync+=($target)
+					explicit_versions+=($target)
 				else
 					echo "${red}ERROR:${reset} Invalid sync option or unsupported PostgreSQL version: $target"
 					echo ""
@@ -665,6 +670,13 @@ else
 		echo "${red}ERROR:${reset} No valid sync targets specified"
 		usage
 	fi
+fi
+
+if [ ${#explicit_versions[@]} -gt 0 ]; then
+	# Invalidate the CloudFront caches of everything synced above, at once:
+	flush_cf_invalidations
+else
+	echo "${green}Not invalidating CloudFront caches: run awsupdateindex.sh after all builders synced.${reset}"
 fi
 
 echo "${green}All sync operations completed successfully!${reset}"

@@ -589,3 +589,51 @@ preset_gpg_passphrase() {
 		return 1
 	fi
 }
+
+# CloudFront invalidation paths queued by queue_cf_invalidation, per
+# distribution. The sync scripts queue the paths while syncing, and send them
+# with flush_cf_invalidations, as one invalidation request per distribution.
+cf_srpm_invalidation_paths=()
+cf_debug_invalidation_paths=()
+
+# Queue the CloudFront invalidation of a repodata directory. Takes "srpm" or
+# "debug" (the distribution) and the repodata directory path.
+# Only repomd.xml and its signature are invalidated: createrepo puts the
+# checksum in the names of the other repodata files, so new metadata never
+# reuses a cached name. Do not use wildcard paths here: CloudFront allows only
+# 15 wildcard paths in progress per distribution, which the builders syncing
+# at the same time exceed, but 3000 file paths.
+queue_cf_invalidation() {
+	local path
+	for path in "$2/repomd.xml" "$2/repomd.xml.asc"
+	do
+		case "$1" in
+			srpm)	cf_srpm_invalidation_paths+=("$path") ;;
+			debug)	cf_debug_invalidation_paths+=("$path") ;;
+			*)	echo "${red}ERROR:${reset} Unknown CloudFront distribution: $1"; return 1 ;;
+		esac
+	done
+}
+
+# Send the queued CloudFront invalidation paths, one request per distribution,
+# and empty the queues. Returns 1 if a request failed.
+flush_cf_invalidations() {
+	local rc=0
+
+	if [ ${#cf_srpm_invalidation_paths[@]} -gt 0 ]; then
+		echo "${green}Invalidating CloudFront caches: ${cf_srpm_invalidation_paths[*]}${reset}"
+		aws cloudfront create-invalidation --distribution-id "$CF_SRPM_DISTRO_ID" --paths "${cf_srpm_invalidation_paths[@]}" > /dev/null || rc=1
+		cf_srpm_invalidation_paths=()
+	fi
+
+	if [ ${#cf_debug_invalidation_paths[@]} -gt 0 ]; then
+		echo "${green}Invalidating CloudFront caches: ${cf_debug_invalidation_paths[*]}${reset}"
+		aws cloudfront create-invalidation --distribution-id "$CF_DEBUG_DISTRO_ID" --paths "${cf_debug_invalidation_paths[@]}" > /dev/null || rc=1
+		cf_debug_invalidation_paths=()
+	fi
+
+	if [ $rc -ne 0 ]; then
+		echo "${red}ERROR:${reset} Failed to create CloudFront invalidation(s)"
+	fi
+	return $rc
+}

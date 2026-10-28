@@ -263,8 +263,9 @@ create it.
 | `CF_SRPM_DISTRO_ID` | `E1234567890ABC` | CloudFront distribution ID fronting the SRPM bucket |
 | `CF_DEBUG_DISTRO_ID` | `E0987654321XYZ` | CloudFront distribution ID fronting the debuginfo bucket |
 
-Both must be invalidated after every sync; `packagesync.sh` and
-`awsupdateindex.sh` do this automatically.
+Both must be invalidated after every sync. `awsupdateindex.sh` does this
+once, after all builders synced. `packagesync.sh` and `packagesyncnonfree.sh`
+do it themselves only when a specific PostgreSQL version is passed to them.
 
 ---
 
@@ -520,11 +521,21 @@ For every target, the script:
 5. Signs each `repomd.xml` with `gpg2 --pinentry-mode loopback`.
 6. Syncs packages and repodata separately to S3 (packages without
    `--delete`, repodata with `--delete` to remove stale metadata).
-7. Creates CloudFront invalidations for the repodata paths.
+7. Queues CloudFront invalidations of the `repomd.xml` and `repomd.xml.asc`
+   files of each repodata path. The other repodata files have the checksum in
+   their names, so they never go stale; file paths are used instead of
+   wildcards, as CloudFront allows only 15 wildcard paths in progress per
+   distribution.
 
 When `osislatest=1`, steps 6–7 are repeated for the major-version path
 (e.g. `rhel-10-x86_64`) in addition to the full minor-version path
 (`rhel-10.1-x86_64`), because S3 has no symlink support.
+
+The queued invalidations are sent at the end of the run, one request per
+distribution, but only when a specific PostgreSQL version was passed (e.g.
+`--sync=18` or `--sync="18 common"`). Otherwise (`all`, `pg`, `common`,
+`extras`, `alpha`, `beta`) nothing is invalidated, and `awsupdateindex.sh`
+has to be run after all builders synced.
 
 SLES and openSUSE Leap builds use the `zypp/zypp` sync base and `zypp-*` S3 buckets; all
 other distros use `yum/yum` and `dnf-*` buckets. This is determined
@@ -549,7 +560,9 @@ Equivalent of `packagesync.sh` for non-free packages. Key differences:
   prerequisites (AWS CLI, credentials, `rsync`, `createrepo`, `gpg2`)
   before starting.
 - Accepts an optional positional argument to restrict sync to a single
-  PostgreSQL version.
+  PostgreSQL version. CloudFront caches are invalidated only then, as in
+  `packagesync.sh`; otherwise run `awsupdateindex.sh` after all builders
+  synced.
 - Runs the same signature and corruption check (`verify_signed` and
   `list_new_rpms`, in `global.sh`) for the selected versions before anything
   is synced, after copying the `rpmcommon` packages.
@@ -629,8 +642,10 @@ using [s3indexbuilder.py](https://github.com/mhagander/s3indexbuilder).
 S3 does not serve directory listings natively, so this script creates HTML
 index pages to allow browsing.
 
-After building the indexes it creates CloudFront invalidations for the
-`/srpms` and `/debug` paths.
+After building the indexes it invalidates the CloudFront caches of
+everything (`/srpms/*` and `/debug/*`, one wildcard path per distribution).
+The sync scripts leave this to it, unless a specific PostgreSQL version was
+passed to them, so run it after all builders synced.
 
 Run this on one RHEL/Fedora instance (for `dnf-*` buckets) and separately
 on one SLES instance (for `zypp-*` buckets). Requires Python ≥ 3.10.
