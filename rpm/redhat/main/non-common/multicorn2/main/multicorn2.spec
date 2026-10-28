@@ -1,3 +1,5 @@
+%pgdg_python3_setup
+
 %global sname multicorn2
 %global pname multicorn
 
@@ -14,46 +16,25 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
 %if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
 # The RHEL 8 macro needs distutils, which python3.12 only has with setuptools:
 %global	python3_sitearch %{_libdir}/python3.12/site-packages
 %endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	__python3 %{_bindir}/python3.11
-%global	python3_pkgversion 311
 # The SUSE macro points to the default python3 (3.6):
 %global	python3_sitearch %{_libdir}/python3.11/site-packages
 %endif
 %if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
 # python313-devel does not pull in the macros that define this:
 %global	python3_sitearch %{_libdir}/python3.13/site-packages
 %endif
 
-%{expand: %%global pyver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global pyver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
 Summary:	Multicorn Python bindings for Postgres FDW
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.2
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgsql-io/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-Makefile-removepip.patch
@@ -109,12 +90,12 @@ This package provides JIT support for multicorn2
 %build
 # Without PYTHON_OVERRIDE, multicorn links the libpython that PostgreSQL
 # was built with (the default python3), while its Python code is installed
-# for %{__ospython} below:
-PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} PYTHON_OVERRIDE=%{__ospython}
+# for %{__python3} below:
+PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} PYTHON_OVERRIDE=%{__python3}
 
 %install
 %{__rm} -rf %{buildroot}
-PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install %{with_llvm_arg} PYTHON_OVERRIDE=%{__ospython}
+PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install %{with_llvm_arg} PYTHON_OVERRIDE=%{__python3}
 # Install Python portions manually:
 %{__mkdir} -p %{buildroot}%{python3_sitearch}/%{pname}
 %{__cp} -rp python/multicorn/* %{buildroot}%{python3_sitearch}/%{pname}
@@ -135,6 +116,11 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} inst
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-11PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2-10PGDG
 - Link against the libpython of the interpreter that the Python code is
   installed for (python3.12 on RHEL, python3.13 on Amazon Linux 2023,
