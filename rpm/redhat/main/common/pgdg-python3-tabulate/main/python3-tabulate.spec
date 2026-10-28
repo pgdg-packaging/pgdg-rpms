@@ -1,3 +1,5 @@
+%pgdg_python3_setup
+
 %global sname tabulate
 
 # Our consumers (pg_chameleon, cli-helpers) use python3.12 on RHEL 8 and 9
@@ -6,23 +8,18 @@
 # one our consumers use, so keep the python3-tabulate name.
 %global pyname python3
 %if 0%{?rhel} == 8 || 0%{?rhel} == 9
-%global __ospython %{_bindir}/python3.12
-%global python3_pkgversion 3.12
 %global pyname python3.12
 %endif
 %if 0%{?amzn} == 2023
-%global __ospython %{_bindir}/python3.13
-%global __python3 %{_bindir}/python3.13
-%global python3_pkgversion 3.13
 %global pyname python3.13
 %endif
 %if "%{pyname}" != "python3"
-%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 %endif
 
 Name:		%{pyname}-%{sname}
 Version:	0.10.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	Pretty-print tabular data in Python, a library and a command-line utility
 
 License:	MIT
@@ -105,6 +102,11 @@ EOF
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-5PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-4PGDG
 - Add RHEL 8 support (python3.12), for cli-helpers, so that it does not
   need EPEL. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
