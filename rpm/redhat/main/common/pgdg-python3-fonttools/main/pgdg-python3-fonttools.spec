@@ -1,3 +1,5 @@
+%pgdg_python3_setup
+
 # This spec builds two flavors, depending on the distribution:
 #
 # - On RHEL 9 and 10 and Amazon Linux 2023: the python3.12 / python3.13
@@ -12,16 +14,6 @@
 %endif
 
 %if %{pgdg_altstack}
-%if 0%{?rhel}
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 %endif
 
 %global	modname fonttools
@@ -30,11 +22,11 @@
 %if %{pgdg_altstack}
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	4.67.0
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
 Version:	4.63.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 Summary:	Tools to manipulate font files
 
@@ -270,6 +262,11 @@ export FONTTOOLS_WITH_CYTHON=1
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-44PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-43PGDG
 - RHEL 10: Add the fonttools subpackage with the command line tools, and
   the +graphite, +interpolatable, +lxml, +plot, +type1, +ufo, +unicode and
