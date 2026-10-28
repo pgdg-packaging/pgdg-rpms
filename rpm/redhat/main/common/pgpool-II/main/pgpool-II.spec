@@ -48,11 +48,14 @@ BuildRequires:		libmemcached-devel
 %endif
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
-BuildRequires:	pgdg-srpm-macros >= 2.0.0 procps-ng openssl iputils
-%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:	pgdg-srpm-macros >= 2.0.0 openssl iputils
+%if 0%{?suse_version}
+BuildRequires:	procps
+%else
+BuildRequires:	procps-ng
+%endif
 # Several tests run a JDBC client or memcached, rewrite_timestamp uses ruby
 BuildRequires:	java-devel postgresql-jdbc /usr/bin/ruby memcached
-%endif
 %if 0%{?rhel}
 # ruby does not start without it on RHEL
 BuildRequires:	rubygems

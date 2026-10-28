@@ -2,7 +2,7 @@
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
 Version:	42.7.14
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # ASL 2.0 applies only to postgresql-jdbc.pom file, the rest is BSD
 License:	BSD and ASL 2.0
 URL:		https://jdbc.postgresql.org/
@@ -38,10 +38,13 @@ BuildRequires:	java-11-openjdk-devel javapackages-local
 %if 0%{?suse_version} == 1600
 BuildRequires:	java-21-openjdk-devel javapackages-local
 %endif
-%if 0%{?fedora} && 0%{?fedora} <= 43
+%if 0%{?amzn}
+BuildRequires:	java-21-amazon-corretto-devel javapackages-local
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 43 && !0%{?amzn}
 BuildRequires:  java-latest-openjdk-devel javapackages-local-openjdk21
 %endif
-%if 0%{?fedora} && 0%{?fedora} >= 44
+%if 0%{?fedora} && 0%{?fedora} >= 44 && !0%{?amzn}
 BuildRequires:  java-latest-openjdk-devel javapackages-local-openjdk25
 %endif
 
@@ -161,6 +164,11 @@ test $? -eq 0 && { cat test.log ; exit 1 ; }
 %doc %{_javadocdir}/%{name}
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.14-2PGDG
+- Add Amazon Linux 2023 BuildRequires (java-21-amazon-corretto-devel and
+  javapackages-local), and keep it out of the Fedora ones, as AL2023 also
+  defines %%fedora.
+
 * Thu Oct 8 2026 Devrim Gündüz <devrim@gunduz.org> - 42.7.14-1PGDG
 - Update to 42.7.14 per changes described at:
   https://github.com/pgjdbc/pgjdbc/releases/tag/REL42.7.14
