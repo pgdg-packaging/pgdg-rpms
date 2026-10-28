@@ -1,11 +1,11 @@
+%pgdg_python3_setup
+
 %global sname powa-collector
 %global pname powa_collector
 
-%global __ospython %{_bindir}/python3
-
 Name:		powa-collector
 Version:	1.3.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	POWA data collector daemon
 License:	PostgreSQL
 URL:		https://github.com/powa-team/%{name}
@@ -13,11 +13,8 @@ Source0:	https://github.com/powa-team/%{name}/archive/%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	%{sname}-tmpfiles.d
 
-%if 0%{?rhel} == 8
-BuildRequires:	python3.12-devel python3.12-pip python3.12-setuptools python3.12-wheel
-%else
-BuildRequires:	python3-devel python3-wheel python3-pip python3-setuptools
-%endif
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-wheel
 BuildRequires:		systemd systemd-devel systemd-rpm-macros
 
 %if 0%{?suse_version} >= 1500
@@ -26,12 +23,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-# The collector runs with Python 3.12 on RHEL 8:
-%if 0%{?rhel} == 8
-Requires:	python3.12-psycopg2
-%else
-Requires:	python3-psycopg2
-%endif
+Requires:	python%{python3_pkgversion}-psycopg2
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 Requires(post):		systemd
@@ -90,6 +82,12 @@ database (in the powa_servers table).
 %{python3_sitelib}/%{pname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-6PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0, and build and run
+  with its Python everywhere, not only on RHEL 8: require
+  python%%{python3_pkgversion}-* instead of python3-*. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.2-5PGDG
 - RHEL 8: BuildRequire the python3.12 packages, as the pyproject macros
   build with Python 3.12 there, not with the default python3 (3.6), and
