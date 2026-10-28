@@ -1,19 +1,16 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023, for the SFTP
 # storage backend of rohmu (pghoard), and for RHEL 10 (the OS Python there),
 # for paramiko.
 # 3.2.2 is the last release without Rust; paramiko needs >= 3.2.
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname bcrypt
 %global	pymodname bcrypt
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.2.2
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Modern password hashing for your software and your servers
 
 License:	Apache-2.0
@@ -27,6 +24,13 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 BuildRequires:	gcc
 BuildRequires:	python%{python3_pkgversion}-cffi
+
+%if 0%{?rhel} == 10
+# %%pgdg_python3_setup renamed python3-bcrypt to python%%{python3_pkgversion}-bcrypt:
+Provides:	python3-%{modname} = %{version}-%{release}
+Provides:	python3-%{modname}%{?_isa} = %{version}-%{release}
+Obsoletes:	python3-%{modname} < %{version}-%{release}
+%endif
 
 %description
 Good password hashing for your software and your servers.
@@ -45,6 +49,13 @@ Good password hashing for your software and your servers.
 %doc README.rst
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.2-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- On RHEL 10, the package is now python3.12-bcrypt, which provides
+  and obsoletes python3-bcrypt.
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 3.2.2-42PGDG
 - Add RHEL 10 support, without EPEL. Start the release from 42, so that our
   packages win over EPEL's. Per
