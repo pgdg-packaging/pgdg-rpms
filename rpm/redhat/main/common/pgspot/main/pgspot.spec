@@ -1,38 +1,11 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
-%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%pgdg_python3_setup
+
 %global sname pgspot
 %{!?runselftest:%global runselftest 0}
 
 Name:		pgspot
 Version:	0.9.4
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Spot vulnerabilities in PostgreSQL extension scripts
 License:	PostgreSQL
 Url:		https://github.com/timescale/%{sname}
@@ -83,7 +56,7 @@ export PATH=%{buildroot}%{_bindir}:$PATH PYTHONPATH=%{buildroot}%{python3_siteli
 for f in testdata/*.sql; do
 	pgspot $f | diff -u testdata/expected/$(basename $f .sql).out -
 done
-%{__ospython} -m pytest tests --ignore=tests/snapshot_test.py -p no:cacheprovider
+%{__python3} -m pytest tests --ignore=tests/snapshot_test.py -p no:cacheprovider
 %endif
 
 %files
@@ -98,6 +71,11 @@ done
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.4-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 19 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.4-1PGDG
 - Update to 0.9.4 per changes described at:
   https://github.com/timescale/pgspot/releases/tag/0.9.4
