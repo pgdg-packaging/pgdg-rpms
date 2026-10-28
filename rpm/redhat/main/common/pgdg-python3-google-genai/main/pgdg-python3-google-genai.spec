@@ -1,22 +1,6 @@
-%global pypi_name google_genai
+%pgdg_python3_setup
 
-%if 0%{?rhel} && 0%{?rhel} == 10
-%global python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 9
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%global pypi_name google_genai
 
 Name:		python%{python3_pkgversion}-google-genai
 # RHEL 10 (typing-extensions 4.9.0) stays on 1.0.0. Amazon Linux 2023 uses
@@ -33,7 +17,7 @@ Version:	1.66.0
 %if 0%{?suse_version}
 Version:	1.55.0
 %endif
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Google GenAI Python SDK
 
 License:	Apache-2.0
@@ -111,6 +95,11 @@ grep -q '^license = { text = "Apache-2.0" }$' pyproject.toml
 %doc README.md
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.66.0-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.66.0-2PGDG
 - Add Amazon Linux 2023 and RHEL 9 support with 1.66.0, and SLES 16 support with
   1.55.0, the newest releases that work with the dependencies there. Both
