@@ -1,39 +1,11 @@
-%global sname	rollbar
+%pgdg_python3_setup
 
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-# Build the python311 flavor with the SUSE pyproject macros, instead of
-# the default python3 (3.6):
-%global	pythons python311
-%global	python3_sitelib %{_prefix}/lib/python3.11/site-packages
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%global sname	rollbar
 
 Name:		python%{python3_pkgversion}-%{sname}
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	1.4.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -121,6 +93,11 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-7PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-6PGDG
 - Remove %%{?_isa} from the python3-rollbar Provides: this is a noarch
   package, and on RHEL 9 it was generated as python3-rollbar(x86-64),
