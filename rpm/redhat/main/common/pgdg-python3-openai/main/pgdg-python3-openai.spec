@@ -1,22 +1,6 @@
-%global pypi_name openai
+%pgdg_python3_setup
 
-%if 0%{?rhel} && 0%{?rhel} == 10
-%global python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 9
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%global pypi_name openai
 
 # RHEL 10 (typing-extensions 4.9.0) and SLES 16 (no jiter) stay on 1.39.0.
 # Amazon Linux 2023 and RHEL 9 use the newest release that works with their
@@ -33,7 +17,7 @@ Version:	1.39.0
 %else
 Version:	2.28.0
 %endif
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	The official Python library for the OpenAI API
 
 License:	Apache-2.0
@@ -105,6 +89,11 @@ grep -q '^requires = \["hatchling", ' pyproject.toml
 %{_bindir}/openai
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.28.0-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.28.0-2PGDG
 - Add Amazon Linux 2023 support with 2.28.0, the newest release that works
   with typing-extensions 4.12.2 and anyio 4.9.0 there.
