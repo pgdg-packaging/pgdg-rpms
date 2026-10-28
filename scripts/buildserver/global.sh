@@ -569,9 +569,19 @@ preset_gpg_passphrase() {
 		return 1
 	fi
 
-	echo "$GPG_PASSWORD" | /usr/libexec/gpg-preset-passphrase --preset "$keygrip"		# Replace with /usr/lib/gpg-preset-passphrase on SLES 15. SLES 16 uses RHEL's path
+	# gpg-preset-passphrase is in /usr/lib on SLES 15, and in /usr/libexec
+	# on the other platforms, including SLES 16:
+	local preset_cmd
+	for preset_cmd in /usr/libexec/gpg-preset-passphrase /usr/lib/gpg-preset-passphrase ""
+	do
+		[ -x "$preset_cmd" ] && break
+	done
+	if [ -z "$preset_cmd" ]; then
+		echo "${red}ERROR:${reset} gpg-preset-passphrase not found in /usr/libexec or /usr/lib"
+		return 1
+	fi
 
-	if [ $? -eq 0 ]; then
+	if echo "$GPG_PASSWORD" | "$preset_cmd" --preset "$keygrip"; then
 		echo "${green}GPG passphrase preset successfully${reset}"
 		return 0
 	else
