@@ -1,28 +1,13 @@
+%pgdg_python3_setup
+
 %global modname daemonize
 
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-
-%{expand: %%global py3ver %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+%{expand: %%global py3ver %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.5.0
-Release:	43%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Library for writing system daemons in Python
 
 License:	MIT
@@ -40,10 +25,10 @@ daemonize is a library for writing system daemons in Python.
 %autosetup -n %{modname}-%{version}
 
 %build
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%{__python3} setup.py install --no-compile --root %{buildroot}
 
 %files
 %license LICENSE
@@ -55,6 +40,11 @@ daemonize is a library for writing system daemons in Python.
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-44PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Tue Aug 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.0-43
 - Build against the python3.13 alt-stack on Amazon Linux 2023, to keep
   the Python stack consistent across all packages in the repo.
