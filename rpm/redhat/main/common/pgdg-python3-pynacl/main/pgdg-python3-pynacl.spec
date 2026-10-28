@@ -1,23 +1,16 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023, for the SFTP
 # storage backend of rohmu (pghoard), and for RHEL 10, for paramiko.
 # 1.5.0 is the newest release that works with the cffi 1.17 of Amazon
 # Linux 2023 and the cffi 1.16 of RHEL 10 (1.6 needs cffi >= 2.0).
-%if 0%{?rhel} == 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname pynacl
 %global	pymodname PyNaCl
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.5.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Python binding to the Networking and Cryptography (NaCl) library
 
 License:	Apache-2.0
@@ -72,6 +65,11 @@ export SODIUM_INSTALL=system
 %doc README.rst
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.0-42PGDG
 - Add RHEL 10 support, for paramiko without EPEL: build against
   pgdg-libsodium, found through the rpath.
