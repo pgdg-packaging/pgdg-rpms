@@ -1,39 +1,15 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global __ospython %{_bindir}/python3.12
-%global python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global __ospython %{_bindir}/python3.13
-%global __python3 %{_bindir}/python3.13
-%global python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global __ospython %{_bindir}/python3.11
-%global python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global __ospython %{_bindir}/python3.13
-%global python3_pkgversion 313
-%endif
+%pgdg_python3_setup
 
 %{!?runselftest:%global runselftest 0}
 
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
 
-%global python_sitelib %(%{__ospython} -c "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
+%global python_sitelib %(%{__python3} -c "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '%{_prefix}', 'base': '%{_prefix}'}))")
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.20.1
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -178,7 +154,7 @@ touch %{buildroot}/var/log/barman/barman.log
 # The tests use the mock module, which is not available for every Python
 # stack we build with. It is a backport of unittest.mock, so use that under
 # its name where it is missing.
-if ! %{__ospython} -c 'import mock' 2>/dev/null; then
+if ! %{__python3} -c 'import mock' 2>/dev/null; then
 	%{__mkdir} -p mock-shim/mock
 	cat > mock-shim/mock/__init__.py <<SHIM
 import sys
@@ -245,6 +221,11 @@ PYTHONPATH=%{buildroot}%{python_sitelib}${PYTHONPATH:+:$PYTHONPATH} pytest-%{pyb
 %{python_sitelib}/%{name}/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-44PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-43PGDG
 - Add %%check, running the upstream tests with pytest. It is disabled by
   default; enable it with --define 'runselftest 1'.
