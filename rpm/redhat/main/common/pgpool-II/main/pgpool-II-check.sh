@@ -43,6 +43,10 @@ export LD_LIBRARY_PATH=$inst$PGPOOL_LIBDIR
 # default, so point it at the socket directory given to regress.sh.
 unset PGUSER PGPORT
 export PGHOST=/tmp
+# The tests use $USER as the database user and as the CN of the client
+# certificate; it is not set in every build environment (openSUSE).
+USER=${USER:-$(id -un)}
+export USER
 cd src/test/regression || exit 1
 # 007.memqcache-memcached expects a memcached on the default port
 memcached -d -l 127.0.0.1 -p 11211 -P "$PWD/memcached.pid"
