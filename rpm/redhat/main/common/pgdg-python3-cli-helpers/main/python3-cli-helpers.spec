@@ -32,7 +32,7 @@
 
 Summary:	Python helpers for common CLI tasks
 Name:		python%{python3_pkgversion}-cli-helpers
-Version:	2.15.2
+Version:	2.15.3
 Release:	1PGDG%{?dist}
 License:	BSD-3-Clause
 URL:		https://github.com/dbcli/cli_helpers
@@ -91,6 +91,10 @@ command-line interfaces.
 %{python3_sitelib}/%{pypi_name}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.15.3-1PGDG
+- Update to 2.15.3 per changes described at:
+  https://github.com/dbcli/cli_helpers/releases/tag/v2.15.3
+
 * Sat Oct 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.15.2-1
 - Update to 2.15.2 per changes described at:
   https://github.com/dbcli/cli_helpers/releases/tag/v2.15.2
