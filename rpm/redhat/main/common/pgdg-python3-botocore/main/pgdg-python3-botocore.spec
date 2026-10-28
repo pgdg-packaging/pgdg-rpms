@@ -1,32 +1,9 @@
+%pgdg_python3_setup
+
 %global pypi_name botocore
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitelib %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 %if 0%{?suse_version}
 # SUSE only generates runtime Requires from the Python metadata when asked
@@ -37,7 +14,7 @@
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
 Version:	1.43.120
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -89,10 +66,10 @@ sed -i 's/python-dateutil>=2.1,<3.0.0/python-dateutil>=2.1/' setup.py setup.cfg
 grep -q "'python-dateutil>=2.1'," setup.py
 
 %build
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%{__python3} setup.py install --no-compile --root %{buildroot}
 # Create __pycache__ directories and their contents in SLES *too*:
 %if 0%{?suse_version}
 %{expand:%%python%{python3_pkgversion}_compile}
@@ -101,7 +78,7 @@ grep -q "'python-dateutil>=2.1'," setup.py
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
 # never gets populated. Bytecompile explicitly instead.
-%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}/%{pypi_name}
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}/%{pypi_name}
 %endif
 
 %files
@@ -111,6 +88,11 @@ grep -q "'python-dateutil>=2.1'," setup.py
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.120-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.120-42PGDG
 - Update to 1.43.120 per changes described at:
   https://pypi.org/project/botocore/1.43.120/
