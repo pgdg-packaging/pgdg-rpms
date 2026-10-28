@@ -1,31 +1,4 @@
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 9
-%global	__python3 %{_bindir}/python3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%pgdg_python3_setup
 
 %global	modname meson-python
 %global	pymodname meson_python
@@ -38,7 +11,7 @@ Version:	0.22.1
 %else
 Version:	0.16.0
 %endif
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	Meson Python build backend (PEP 517)
 
 License:	MIT
@@ -101,6 +74,11 @@ export MESON=%{_bindir}/meson-%{python3_pkgversion}
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.22.1-43PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Tue Oct 27 2026 Devrim Gunduz <devrim@gunduz.org> - 0.22.1-42PGDG
 - RHEL 10: Update to 0.22.1, per changes described at:
   https://github.com/mesonbuild/meson-python/releases/tag/0.22.1
