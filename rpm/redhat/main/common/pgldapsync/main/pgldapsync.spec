@@ -1,44 +1,16 @@
+%pgdg_python3_setup
+
 %global sname pgldapsync
 
-%if 0%{?fedora} && 0%{?fedora} == 45
-%global __ospython %{_bindir}/python3.15
-%global python3_pkgversion 3.15
-%endif
-%if 0%{?fedora} && 0%{?fedora} <= 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?rhel} == 8
-# Build and run with python3.12, not with platform-python (3.6):
-%global	__python3 %{_bindir}/python3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
-
 # The package is built with %%{__python3}, so the egg-info directory name has
-# its version, which is not always the one of %%{__ospython} (SLES 15):
+# its version, which is not always the one of %%{__python3} (SLES 15):
 # %%define, so that it is only expanded in %%files, once python is installed:
 %define pyver %(%{__python3} -c "import sys; sys.stdout.write('.'.join(map(str, sys.version_info[:2])))")
 
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	19PGDG%{?dist}
+Release:	20PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
@@ -98,7 +70,7 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
 # never gets populated. Bytecompile explicitly instead.
 %if 0%{?amzn} == 2023
-%py_byte_compile %{__ospython} %{buildroot}%{python3_sitelib}
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitelib}
 %endif
 
 %files
@@ -117,6 +89,11 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-20PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-19PGDG
 - Require psycopg2 instead of psycopg2-binary, which requirements.txt asks
   for and no package provides, so the package could not be installed.
