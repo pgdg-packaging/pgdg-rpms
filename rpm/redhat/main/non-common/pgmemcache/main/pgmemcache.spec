@@ -1,5 +1,16 @@
 %global sname pgmemcache
 
+# On RHEL 10, libmemcached comes from pgdg-libmemcached-awesome (EPEL is not
+# needed), which does not provide its sonames; it is found through the rpath.
+# The Makefile has no way to add the include and library directories, so
+# override its PG_CPPFLAGS and SHLIB_LINK:
+%if 0%{?rhel} == 10
+%global __requires_exclude ^lib(hashkit|memcached)\\.so
+%global memcached_make_args PG_CPPFLAGS="-DUSE_LIBMEMCACHED -I%{pgdg_libmemcachedinstdir}/include" SHLIB_LINK="-L%{pgdg_libmemcachedinstdir}/lib64 -Wl,-rpath,%{pgdg_libmemcachedinstdir}/lib64 -lmemcached -lsasl2"
+%else
+%global memcached_make_args %{nil}
+%endif
+
 %{!?llvm:%global llvm 1}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
@@ -17,14 +28,21 @@
 Summary:	A PostgreSQL API to interface with memcached
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.0
-Release:	14PGDG%{?dist}
+Release:	15PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ohmu/%{sname}/archive/%{version}.tar.gz
 Patch0:		%{sname}-fix-gcc-warning.patch
 URL:		https://github.com/Ohmu/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel libmemcached-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+%if 0%{?rhel} == 10
+BuildRequires:	pgdg-srpm-macros >= 2.5.1 pgdg-libmemcached-awesome-devel
+Requires:	pgdg-libmemcached-awesome%{?_isa}
+%else
+BuildRequires:	libmemcached-devel
+Requires:	libmemcached
+%endif
 BuildRequires:	cyrus-sasl-devel
-Requires:	postgresql%{pgmajorversion}-server libmemcached
+Requires:	postgresql%{pgmajorversion}-server
 
 Obsoletes:	%{sname}-%{pgmajorversion} < 2.3.0-4
 
@@ -62,11 +80,11 @@ This package provides JIT support for pgmemcache
 %patch -P 0 -p0
 
 %build
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{memcached_make_args}
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{memcached_make_args} install DESTDIR=%{buildroot}
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -86,6 +104,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-15PGDG
+- RHEL 10: Build against pgdg-libmemcached-awesome (installed under
+  /usr/pgdg-libmemcached), so that pgmemcache does not need the EPEL
+  libmemcached-awesome package anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-14PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
