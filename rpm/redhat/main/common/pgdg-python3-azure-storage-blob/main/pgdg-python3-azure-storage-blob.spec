@@ -1,17 +1,14 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023 only, for
 # the Azure storage backend of rohmu (pghoard).
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname azure-storage-blob
 %global	pymodname azure_storage_blob
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	12.31.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Microsoft Azure Blob Storage client library for Python
 
 License:	MIT
@@ -43,6 +40,11 @@ This is its Python client library.
 %doc README.md
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 12.31.0-2PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 12.31.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for
   the Azure storage backend of rohmu (pghoard) on Amazon Linux 2023.
