@@ -1,32 +1,13 @@
+%pgdg_python3_setup
+
 %global modname psutil
 
-%if 0%{?fedora} && 0%{?fedora} == 44
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?fedora} && 0%{?fedora} == 43
-%global __ospython %{_bindir}/python3.14
-%global python3_pkgversion 3.14
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 10
-%global	__ospython %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} >= 1500
-%global	__ospython %{_bindir}/python3.11
-%global	python3_pkgversion 311
-%endif
-
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%global python3_sitearch %(%{__ospython} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
+%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%global python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	7.2.2
-Release:	2PGDG%{?dist}.1
+Release:	3PGDG%{?dist}
 Summary:	A process and system utilities module for Python
 
 License:	BSD-3-Clause
@@ -55,15 +36,15 @@ find psutil -name \*.py | while read file; do
 done
 
 %build
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%{__python3} setup.py install --no-compile --root %{buildroot}
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
 # never gets populated. Bytecompile explicitly instead.
-%py_byte_compile %{__ospython} %{buildroot}%{python3_sitearch}/%{modname}
+%py_byte_compile %{__python3} %{buildroot}%{python3_sitearch}/%{modname}
 %endif
 
 %files
@@ -75,6 +56,11 @@ done
 %{python3_sitearch}/%{modname}/*.so
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 7.2.2-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 7.2.2-2PGDG
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
