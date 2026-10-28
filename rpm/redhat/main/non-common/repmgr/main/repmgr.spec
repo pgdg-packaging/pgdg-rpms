@@ -66,7 +66,7 @@ Requires(postun):	systemd
 
 BuildRequires:	postgresql%{pgmajorversion} postgresql%{pgmajorversion}-devel
 BuildRequires:	libxslt-devel pam-devel readline-devel
-BuildRequires:	libmemcached-devel libicu-devel
+BuildRequires:	libicu-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0

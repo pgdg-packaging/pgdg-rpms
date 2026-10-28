@@ -3,10 +3,19 @@
 %global sname pgpool-II
 %{!?runselftest:%global runselftest 0}
 
+# On RHEL 10, libmemcached comes from pgdg-libmemcached-awesome (EPEL is not
+# needed), which does not provide its sonames; it is found through the rpath:
+%if 0%{?rhel} == 10
+%global __requires_exclude ^lib(hashkit|memcached|memcachedutil)\\.so
+%global memcached_dir %{pgdg_libmemcachedinstdir}
+%else
+%global memcached_dir %{_includedir}/libmemcached
+%endif
+
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.7.3
-Release:		2PGDG%{?dist}
+Release:		3PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -32,7 +41,11 @@ BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 BuildRequires:		postgresql%{pgmajorversion}-devel pam-devel
+%if 0%{?rhel} == 10
+BuildRequires:	pgdg-srpm-macros >= 2.5.1 pgdg-libmemcached-awesome-devel
+%else
 BuildRequires:		libmemcached-devel
+%endif
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-contrib
 BuildRequires:	pgdg-srpm-macros >= 2.0.0 procps-ng openssl iputils
@@ -45,7 +58,11 @@ BuildRequires:	java-devel postgresql-jdbc /usr/bin/ruby memcached
 BuildRequires:	rubygems
 %endif
 %endif
+%if 0%{?rhel} == 10
+Requires:	pgdg-libmemcached-awesome%{?_isa}
+%else
 Requires:		libmemcached
+%endif
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
@@ -105,6 +122,12 @@ multiple Pgpool installations.
 	export LDFLAGS='-lpthread'
 %endif
 %endif
+# configure checks for libmemcached in --with-memcached, but the Makefiles
+# do not use that directory, so pass it in CPPFLAGS and LDFLAGS too:
+%if 0%{?rhel} == 10
+export CPPFLAGS="$CPPFLAGS -I%{memcached_dir}/include"
+export LDFLAGS="$LDFLAGS -L%{memcached_dir}/lib64 -Wl,-rpath,%{memcached_dir}/lib64"
+%endif
 %ifarch ppc64 ppc64le
 %configure --build=ppc64le \
 %else
@@ -115,7 +138,7 @@ multiple Pgpool installations.
 	--disable-static \
 	--sysconfdir=%{_sysconfdir}/%{name}/ \
 	--with-ldap \
-	--with-memcached=%{_includedir}/libmemcached \
+	--with-memcached=%{memcached_dir} \
 	--with-openssl \
 	--with-pam \
 	--with-pgsql=%{pginstdir}
@@ -233,6 +256,12 @@ fi
 %{_libdir}/libpgpoolpcp.so*
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-3PGDG
+- RHEL 10: Build against pgdg-libmemcached-awesome (installed under
+  /usr/pgdg-libmemcached), so that pgpool-II does not need the EPEL
+  libmemcached-awesome package anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Sat Oct 3 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-2PGDG
 - Add %%check, running upstream's regression suite (src/test/regression)
   against a scratch installation, except two watchdog tests that cannot

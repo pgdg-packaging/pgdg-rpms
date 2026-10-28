@@ -1,9 +1,18 @@
 %global sname pgpool-II
 
+# On RHEL 10, libmemcached comes from pgdg-libmemcached-awesome (EPEL is not
+# needed), which does not provide its sonames; it is found through the rpath:
+%if 0%{?rhel} == 10
+%global __requires_exclude ^lib(hashkit|memcached|memcachedutil)\\.so
+%global memcached_dir %{pgdg_libmemcachedinstdir}
+%else
+%global memcached_dir %{_includedir}/libmemcached
+%endif
+
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -24,7 +33,11 @@ BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 %endif
 
 BuildRequires:	postgresql%{pgmajorversion}-devel pam-devel
+%if 0%{?rhel} == 10
+BuildRequires:	pgdg-srpm-macros >= 2.5.1 pgdg-libmemcached-awesome-devel
+%else
 BuildRequires:	libmemcached-devel
+%endif
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
@@ -43,7 +56,11 @@ Requires(preun):	systemd
 Requires(postun):	systemd
 %endif
 
+%if 0%{?rhel} == 10
+Requires:	pgdg-libmemcached-awesome%{?_isa}
+%else
 Requires:	libmemcached
+%endif
 Requires:	%{sname}
 
 %description
@@ -58,6 +75,12 @@ PostgreSQL extensions, libraries and sql files for pgpool-II.
 %if 0%{?suse_version}
 	export LDFLAGS='-lpthread'
 %endif
+# configure checks for libmemcached in --with-memcached, but the Makefiles
+# do not use that directory, so pass it in CPPFLAGS and LDFLAGS too:
+%if 0%{?rhel} == 10
+export CPPFLAGS="$CPPFLAGS -I%{memcached_dir}/include"
+export LDFLAGS="$LDFLAGS -L%{memcached_dir}/lib64 -Wl,-rpath,%{memcached_dir}/lib64"
+%endif
 %ifarch ppc64 ppc64le
 %configure --build=ppc64le \
 %else
@@ -68,7 +91,7 @@ PostgreSQL extensions, libraries and sql files for pgpool-II.
 	--disable-static \
 	--sysconfdir=%{_sysconfdir}/%{name}/ \
 	--with-ldap \
-	--with-memcached=%{_includedir}/libmemcached \
+	--with-memcached=%{memcached_dir} \
 	--with-openssl \
 	--with-pam \
 	--with-pgsql=%{pginstdir}
@@ -110,6 +133,12 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-2PGDG
+- RHEL 10: Build against pgdg-libmemcached-awesome (installed under
+  /usr/pgdg-libmemcached), so that the package does not need the EPEL
+  libmemcached-awesome package anymore. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-1PGDG
 - Update to 4.7.3 per changes described at:
   https://www.pgpool.net/docs/latest/en/html/release-4-7-3.html
