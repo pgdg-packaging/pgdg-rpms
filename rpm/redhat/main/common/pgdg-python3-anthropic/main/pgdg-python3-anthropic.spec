@@ -1,17 +1,4 @@
-%if 0%{?rhel} == 9
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
-%if 0%{?suse_version} == 1600
-%global	__ospython %{_bindir}/python3.13
-%global	python3_pkgversion 313
-%endif
+%pgdg_python3_setup
 
 # Newer releases need typing-extensions >= 4.10 (RHEL 10 has 4.9.0, AL2023 has
 # 4.12.2 for python3.13; 0.86 and later need >= 4.14, SLES 16 has 4.13.2) and
@@ -32,10 +19,10 @@
 Name:		python%{python3_pkgversion}-anthropic
 %if %{oldsdk}
 Version:	0.40.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{?dist}
 %else
 Version:	2.3.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{?dist}
 %endif
 Summary:	The official Python library for the anthropic API
 
@@ -73,6 +60,12 @@ BuildRequires:	python3-docstring-parser python3-google-auth+requests
 BuildRequires:	python3-httpx2 python3-jiter python3-sniffio
 BuildRequires:	python3-aiohttp python3-boto3 python3-botocore
 BuildRequires:	python3-opentelemetry-api
+%endif
+
+%if 0%{?rhel} == 10 || 0%{?fedora}
+# %%pgdg_python3_setup renamed python3-anthropic to python%%{python3_pkgversion}-anthropic:
+Provides:	python3-anthropic = %{version}-%{release}
+Obsoletes:	python3-anthropic < %{version}-%{release}
 %endif
 
 %description
@@ -125,6 +118,14 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.40.0-4PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- On RHEL 10 and Fedora, the package is now python3.12-anthropic,
+  python3.14-anthropic or python3.15-anthropic, which provides and
+  obsoletes python3-anthropic.
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.40.0-3PGDG
 - SLES 16: Generate the runtime Requires from the Python metadata, and
   BuildRequire python-rpm-packaging for the Python dependency generators.
