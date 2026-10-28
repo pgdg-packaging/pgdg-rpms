@@ -7,15 +7,16 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 Version:	0.25.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	Zstandard bindings for Python
 License:	(BSD-3-Clause OR GPL-2.0-only) AND MIT
 URL:		https://github.com/indygreg/python-%{pypi_name}
 Source0:	https://files.pythonhosted.org/packages/source/z/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
-# Only applied on RHEL, AL 2023 and SLES 15, where setuptools is older than 77 and
-# does not know the SPDX license expression of pyproject.toml, and where an older
-# python3-trove-classifiers (2025.3.13 on AL 2023) rejects the free-threading
-# classifier. It is listed on every distro, so that the SRPM always carries it.
+# Only applied on RHEL, AL 2023 and SLES, where setuptools is older than 77 and
+# does not know the SPDX license expression of pyproject.toml, and/or where an
+# older trove-classifiers (2025.3.13 on AL 2023, also on SLES 16) rejects the
+# free-threading classifier. It is listed on every distro, so that the SRPM
+# always carries it.
 Patch0:		zstandard-use-legacy-license-metadata.patch
 BuildRequires:	gcc
 BuildRequires:	libzstd-devel
@@ -32,7 +33,7 @@ compression library. A C extension and CFFI interface are provided.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
-%if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version} == 1500
+%if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version}
 %patch -P0 -p0
 %endif
 %{__rm} -rf %{pypi_name}.egg-info
@@ -61,6 +62,12 @@ compression library. A C extension and CFFI interface are provided.
 %endif
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-4PGDG
+- SLES 16: Apply the legacy license metadata patch too: its
+  trove-classifiers rejects the free-threading classifier, so the build
+  failed now that the package is built with python3.13 there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.25.0-3PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
