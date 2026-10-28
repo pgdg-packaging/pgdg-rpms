@@ -1,24 +1,16 @@
+%pgdg_python3_setup
+
 # Built for the python3.13 alt-stack of Amazon Linux 2023, for the S3
 # storage backend of rohmu (pghoard), and for the python3.12 stack of
 # RHEL 8 and 9, where the OS package is built for the default Python.
 # botocore needs it.
-%if 0%{?rhel} && 0%{?rhel} <= 9
-%global	__ospython %{_bindir}/python3.12
-%global	__python3 %{_bindir}/python3.12
-%global	python3_pkgversion 3.12
-%endif
-%if 0%{?amzn} == 2023
-%global	__ospython %{_bindir}/python3.13
-%global	__python3 %{_bindir}/python3.13
-%global	python3_pkgversion 3.13
-%endif
 
 %global	modname jmespath
 %global	pymodname jmespath
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	1.1.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	JSON Matching Expressions
 
 License:	MIT
@@ -53,6 +45,11 @@ from a JSON document.
 %doc README.rst
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-3PGDG
+- Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
+  per-distro Python block and the __ospython macro. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Tue Oct 20 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.0-2PGDG
 - Build for the python3.12 stack on RHEL 9 and 8, too. botocore needs it.
 
