@@ -2,15 +2,15 @@
 
 # Built for the python3.13 alt-stack of Amazon Linux 2023 only, for
 # the Google Cloud storage backend of rohmu (pghoard).
-# 0.22.0 is the newest version that works with the pyparsing 2.4.7 of
-# Amazon Linux 2023 (0.23.0 and later need >= 3.1).
+# Needs pyparsing >= 3.1: Amazon Linux 2023 has 2.4.7, so we build
+# pgdg-python3-pyparsing there too.
 
 %global	modname httplib2
 %global	pymodname httplib2
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.22.0
-Release:	2PGDG%{?dist}
+Version:	0.32.1
+Release:	1PGDG%{?dist}
 Summary:	A comprehensive HTTP client library
 
 License:	MIT
@@ -42,6 +42,12 @@ out of other HTTP libraries.
 %doc README.md
 
 %changelog
+* Thu Oct 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.32.1-1PGDG
+- Update to 0.32.1, per changes described at:
+  https://github.com/httplib2/httplib2/releases/tag/v0.32.1
+  It needs pyparsing >= 3.1, which we now build for Amazon Linux 2023. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/475
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.22.0-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
