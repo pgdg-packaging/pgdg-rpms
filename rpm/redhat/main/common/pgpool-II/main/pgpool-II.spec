@@ -15,7 +15,7 @@
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.7.3
-Release:		3PGDG%{?dist}
+Release:		4PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -259,6 +259,9 @@ fi
 %{_libdir}/libpgpoolpcp.so*
 
 %changelog
+* Thu Oct 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-4PGDG
+- Bump up release to avoid duplicate builds on RHEL 10.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-3PGDG
 - RHEL 10: Build against pgdg-libmemcached-awesome (installed under
   /usr/pgdg-libmemcached), so that pgpool-II does not need the EPEL
