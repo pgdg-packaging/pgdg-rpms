@@ -4,7 +4,7 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Version:	3.1.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Python library for creating PEG parsers
 
 License:	MIT
@@ -22,7 +22,8 @@ The pyparsing module is an alternative approach to creating and executing
 simple grammars, vs. the traditional lex/yacc approach, or the use of
 regular expressions.
 
-This is 3.1.4: 3.2 and later need flit-core 3.11, RHEL 9 has 3.9.
+This is 3.1.4: 3.2 and later need flit-core 3.11, RHEL 9 and Amazon
+Linux 2023 have 3.9.
 
 %prep
 %autosetup -n %{modname}-%{version}
@@ -40,6 +41,11 @@ This is 3.1.4: 3.2 and later need flit-core 3.11, RHEL 9 has 3.9.
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Thu Oct 29 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.4-3PGDG
+- Add Amazon Linux 2023 support (python3.13), for httplib2 0.32.1, which
+  needs pyparsing >= 3.1. Amazon Linux 2023 has 2.4.7. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/475
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.4-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
