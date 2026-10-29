@@ -3,8 +3,8 @@
 %global	modname tzdata
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2026.5
-Release:	43PGDG%{?dist}
+Version:	2026.6
+Release:	42PGDG%{?dist}
 Summary:	Provider of IANA time zone data for Python
 
 License:	Apache-2.0
@@ -42,6 +42,11 @@ location), as a part of PEP 615.
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.6-42PGDG
+- Update to 2026.6 (upstream tzdata 2026f), per changes described at:
+  https://github.com/python/tzdata/releases/tag/2026.6
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/473
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.5-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
