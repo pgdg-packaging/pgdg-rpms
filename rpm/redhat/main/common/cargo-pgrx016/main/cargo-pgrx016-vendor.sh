@@ -48,6 +48,15 @@ cargo vendor-filterer \
 	--platform=s390x-unknown-linux-gnu \
 	--sync="$WORKDIR/openssl-new/Cargo.toml" \
 	--all-features --keep-dep-kinds=no-dev vendor
+# cargo-vendor-filterer stubs out errno, but rustix needs it on ppc64le, where
+# it uses its libc backend. Put the real crate back:
+ERRNOVER=$(grep -A1 '^name = "errno"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')
+ERRNOSUM=$(grep -A3 '^name = "errno"$' Cargo.lock | sed -n 's/^checksum = "\(.*\)"$/\1/p')
+curl -Lo "$TMPDIR/errno.crate" "https://static.crates.io/crates/errno/errno-$ERRNOVER.crate"
+echo "$ERRNOSUM  $TMPDIR/errno.crate" | sha256sum -c -
+rm -rf vendor/errno && mkdir vendor/errno
+tar -xzf "$TMPDIR/errno.crate" -C vendor/errno --strip-components=1
+echo "{\"files\":{},\"package\":\"$ERRNOSUM\"}" > vendor/errno/.cargo-checksum.json
 tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf - vendor | xz -T0 -6 > "$WORKDIR/cargo-pgrx-$VERSION-vendor.tar.xz"
 xz -t "$WORKDIR/cargo-pgrx-$VERSION-vendor.tar.xz"
 

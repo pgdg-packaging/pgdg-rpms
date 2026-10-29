@@ -4,10 +4,11 @@
 # series (cargo-pgrx016 for 0.16.x). This is why the binary is versioned.
 %global crate		cargo-pgrx
 %global pgrx_series	0.16
+%global errnover	0.3.14
 
 Name:		cargo-pgrx016
 Version:	0.16.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Cargo subcommand to build PostgreSQL extensions written in Rust (pgrx 0.16)
 # The licenses of the crates that are compiled into the binary, checked with
 # "cargo metadata --filter-platform x86_64-unknown-linux-gnu" (291 crates):
@@ -22,6 +23,10 @@ Source1:	https://raw.githubusercontent.com/pgcentralfoundation/pgrx/v%{version}/
 # architectures that we build on.
 # It has to be made again for every new version.
 Source2:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{crate}/%{crate}-%{version}-vendor.tar.xz
+# cargo-vendor-filterer replaced the errno crate with an empty stub, as it
+# does not know that rustix uses its libc backend (which needs errno) on
+# ppc64le. See %%prep:
+Source3:	https://static.crates.io/crates/errno/errno-%{errnover}.crate
 
 # The newest crates in Cargo.lock of this release need Rust 1.85:
 BuildRequires:	rust >= 1.85
@@ -44,6 +49,15 @@ It is only needed to build such extensions, not to run them.
 %prep
 %setup -q -n %{crate}-%{version} -a 2
 cp -p %{SOURCE1} LICENSE
+
+# rustix uses its libc backend on ppc64le, as inline assembly is not stable on
+# powerpc64 yet, and the libc backend needs errno. The vendor tarball only has
+# an empty stub of it, so replace that with the real crate. The checksum is
+# the one in Cargo.lock:
+rm -rf vendor/errno
+mkdir vendor/errno
+tar -xzf %{SOURCE3} -C vendor/errno --strip-components=1
+echo '{"files":{},"package":"39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"}' > vendor/errno/.cargo-checksum.json
 
 # Use the vendored crates, and nothing from the network:
 mkdir -p .cargo
@@ -81,6 +95,11 @@ install -Dpm 0755 target/release/%{crate} %{buildroot}%{_bindir}/%{crate}-%{pgrx
 %{_bindir}/%{crate}-%{pgrx_series}
 
 %changelog
+* Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 0.16.1-2PGDG
+- Replace the empty errno stub in the vendored crates with the real crate.
+  rustix uses its libc backend on ppc64le, which needs errno, and the build
+  failed there.
+
 * Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> - 0.16.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, to build pgvectorscale,
   which is written in Rust with pgrx 0.16.1.
