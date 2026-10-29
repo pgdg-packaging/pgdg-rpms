@@ -4,8 +4,8 @@
 %{!?runselftest:%global runselftest 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	5.0.0
-Release:	2PGDG%{?dist}
+Version:	5.0.1
+Release:	1PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{pname}/
@@ -62,6 +62,19 @@ PGDG_EMAJ_VERSION=%{version}
 %{pginstdir}/share/%{pname}/
 
 %changelog
+* Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0.1-1PGDG
+- Update to 5.0.1, which fixes a vulnerability that let a role with emaj_adm
+  privileges acquire superuser rights. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/482
+- Run the %%check server with max_prepared_transactions = 10, as upstream's
+  tools/create_cluster.sh now does.
+- 5.0.1 records the libpq error of failed dblink connections, and the
+  expected output of the rollback test has the one of upstream's test
+  clusters: replace it in the expected and actual output before comparing.
+- Wait for the statistics of the install test to be reported before setup
+  resets them, so that check does not count an extra call to
+  emaj_get_version() on PostgreSQL 14.
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 5.0.0-2PGDG
 - Install the SQL scripts into share/emaj, where emaj.control ("directory =
   'emaj'") makes PostgreSQL look for them, as upstream does. They were in

@@ -13,7 +13,7 @@ srcdir=$(pwd)
 # client address of the sessions in the logged changes.
 pgdg_check_start main \
 	"listen_addresses = '127.0.0.1'" \
-	"max_prepared_transactions = 5" \
+	"max_prepared_transactions = 10" \
 	"track_functions = all" \
 	"plpgsql.extra_warnings = all" \
 	"wal_level = logical" || exit 1
@@ -80,11 +80,28 @@ for t in $tests; do
 	PGHOST=127.0.0.1 PGOPTIONS="-c intervalstyle=postgres_verbose" LC_MESSAGES=C \
 		PGTZ=PST8PDT PGDATESTYLE="Postgres, MDY" psql regression -X -q --echo-all \
 		<"$testdir/sql/$t.sql" >"$testdir/results/$t.out" 2>&1
+	# setup resets the function call statistics that check reports. Give the
+	# backend of install, which calls emaj_get_version(), time to exit and
+	# report its statistics first: otherwise the call may be counted after the
+	# reset, as the statistics collector of PostgreSQL 14 does.
+	[ "$t" = install ] && sleep 2
 	# The clients print their version, and emajStat.pl the port, which is
 	# 54<PG major version> in upstream's expected output
 	sed -i -e "s/ E-Maj (version $PGDG_EMAJ_VERSION) - / E-Maj (version <devel>) - /" \
 		-e "s/(@127\.0\.0\.1:$PGPORT)/(@127.0.0.1:54$PGVER)/" "$testdir/results/$t.out"
-	if diff -a -C3 "$testdir/expected/$t.out" "$testdir/results/$t.out" >>"$testdir/regression.diffs"; then
+	# The history of rollback has the libpq error of a failed dblink
+	# connection, with the port and authentication setup of upstream's test
+	# clusters. Replace the error in both files, and compare them without the
+	# column widths of the table it is in.
+	diffopts=
+	if [ "$t" = rollback ]; then
+		for f in "$testdir/expected/$t.out" "$testdir/results/$t.out"; do
+			sed -i -E -e 's/(dblink connection test failed - SQLSTATE 08001) - could not establish connection - [^|]*\) /\1 - <connection error>) /' \
+				-e 's/^-+(\+-+)+$/<separator>/' "$f"
+		done
+		diffopts=-b
+	fi
+	if diff -a $diffopts -C3 "$testdir/expected/$t.out" "$testdir/results/$t.out" >>"$testdir/regression.diffs"; then
 		echo "test $t ... ok"
 	else
 		echo "test $t ... FAILED"
