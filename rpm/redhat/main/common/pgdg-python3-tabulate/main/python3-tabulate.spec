@@ -2,10 +2,11 @@
 
 %global sname tabulate
 
-# Our consumers (pg_chameleon, cli-helpers) use python3.12 on RHEL 8 and 9
-# and python3.13 on Amazon Linux 2023, not the system python3 (3.6, 3.9),
-# so build that flavor there. Elsewhere the system python3 is already the
-# one our consumers use, so keep the python3-tabulate name.
+# Our consumers (pg_chameleon, cli-helpers) use python3.12 on RHEL 8 and 9,
+# python3.13 on Amazon Linux 2023 and python3.11 on SLES 15, not the system
+# python3 (3.6, 3.9), so build that flavor there. Elsewhere the system
+# python3 is already the one our consumers use, so keep the python3-tabulate
+# name.
 %global pyname python3
 %if 0%{?rhel} == 8 || 0%{?rhel} == 9
 %global pyname python3.12
@@ -13,13 +14,16 @@
 %if 0%{?amzn} == 2023
 %global pyname python3.13
 %endif
+%if 0%{?suse_version} == 1500
+%global pyname python311
+%endif
 %if "%{pyname}" != "python3"
 %global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 %endif
 
 Name:		%{pyname}-%{sname}
 Version:	0.10.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	Pretty-print tabular data in Python, a library and a command-line utility
 
 License:	MIT
@@ -102,6 +106,13 @@ EOF
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-6PGDG
+- SLES 15: Build python311-tabulate, as %%pgdg_python3_setup builds with
+  python3.11 there: python3-tabulate did not build anymore. It was built
+  with python3.6, which nothing used; pg_chameleon requires
+  python311-tabulate. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-5PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
