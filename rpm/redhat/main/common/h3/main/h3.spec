@@ -4,7 +4,7 @@
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
 Version:	4.5.0
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -45,7 +45,12 @@ popd
 %install
 %{__rm} -rf %{buildroot}
 pushd build
+%if 0%{?suse_version} >= 1315
+# SUSE's %%cmake_install runs "make -C build", which breaks inside build/
+%make_install
+%else
 %cmake_install
+%endif
 popd
 %{__mv} %{buildroot}/%{_includedir}/h3/h3api.h %{buildroot}/%{_includedir}/
 %{__cp} src/h3lib/include/linkedGeo.h %{buildroot}/%{_includedir}/
@@ -81,6 +86,10 @@ popd
 %{_libdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-3PGDG
+- Fix SLES builds: use %%make_install there, as SUSE's %%cmake_install
+  macro runs make in the build/ subdirectory.
+
 * Sun Jun 7 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-2PGDG
 - Add a few more header files to support h3-pg 4.5.0
 
