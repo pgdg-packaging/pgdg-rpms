@@ -1408,6 +1408,11 @@ fi
 %endif
 
 %changelog
+* Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-10PGDG
+- Fix the bindir path in the Makefile of the -test subpackage: it pointed
+  to /usr/pgsql-87/bin/ instead of the major version's bindir. Per report from
+  Christoph Berg.
+
 * Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-9PGDG
 - Fix the llvm-devel and clang-devel dependencies of the -devel subpackage:
   they were BuildRequires instead of Requires on Fedora, RHEL, Amazon

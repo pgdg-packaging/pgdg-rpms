@@ -40,9 +40,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	rc1_420002PGDG%{?dist}
+Release:	rc1_420003PGDG%{?dist}
 %else
-Release:	rc1_2PGDG%{?dist}
+Release:	rc1_3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1408,6 +1408,11 @@ fi
 %endif
 
 %changelog
+* Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-3PGDG
+- Fix the bindir path in the Makefile of the -test subpackage: it pointed
+  to /usr/pgsql-87/bin/ instead of the major version's bindir. Per report from
+  Christoph Berg.
+
 * Mon Oct 26 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-2PGDG
 - Rebuild because of an issue on the build instances.
 

@@ -21,7 +21,7 @@ REGRESS_OPTS += --dlpath=.
 
 pg_regress_locale_flags = $(if $(ENCODING),--encoding=$(ENCODING)) $(NOLOCALE)
 
-pg_regress_installcheck = ./pg_regress --inputdir=$(srcdir) --bindir='/usr/pgsql-87/bin/' $(pg_regress_locale_flags)
+pg_regress_installcheck = ./pg_regress --inputdir=$(srcdir) --bindir='/usr/pgsql-18/bin/' $(pg_regress_locale_flags)
 
 # Test input and expected files.  These are created by pg_regress itself, so we
 # don't have a rule to create them.  We do need rules to clean them however.

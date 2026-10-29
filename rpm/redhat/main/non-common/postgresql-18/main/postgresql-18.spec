@@ -45,9 +45,9 @@ Version:	18.6
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	4200006PGDG%{?dist}
+Release:	4200007PGDG%{?dist}
 %else
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1420,6 +1420,11 @@ fi
 %endif
 
 %changelog
+* Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-7PGDG
+- Fix the bindir path in the Makefile of the -test subpackage: it pointed
+  to /usr/pgsql-87/bin/ instead of the major version's bindir. Per report from
+  Christoph Berg.
+
 * Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-6PGDG
 - Fix the llvm-devel and clang-devel dependencies of the -devel subpackage:
   they were BuildRequires instead of Requires on Fedora, RHEL and Amazon
