@@ -4,8 +4,8 @@
 %global	pymodname pyasn1
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.6.1
-Release:	2PGDG%{?dist}
+Version:	0.6.5
+Release:	1PGDG%{?dist}
 Summary:	ASN.1 types and codecs
 
 License:	BSD-2-Clause
@@ -60,6 +60,13 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.5-1PGDG
+- Update to 0.6.5 per changes described at
+  https://github.com/pyasn1/pyasn1/releases/tag/v0.6.5 . Fixes
+  GHSA-mm57-4v3p-rchx, GHSA-2qm8-x737-gmw5, GHSA-9m75-vc3g-4x39 and
+  GHSA-fm9c-5rcf-2q5p. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/460
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
