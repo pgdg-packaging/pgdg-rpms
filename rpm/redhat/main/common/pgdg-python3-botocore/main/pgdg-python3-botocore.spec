@@ -13,8 +13,8 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
-Version:	1.43.120
-Release:	43PGDG%{?dist}
+Version:	1.43.122
+Release:	42PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
 License:	Apache-2.0
@@ -88,6 +88,10 @@ grep -q "'python-dateutil>=2.1'," setup.py
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.122-42PGDG
+- Update to 1.43.122 per changes described at:
+  https://pypi.org/project/botocore/1.43.122/
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.120-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
