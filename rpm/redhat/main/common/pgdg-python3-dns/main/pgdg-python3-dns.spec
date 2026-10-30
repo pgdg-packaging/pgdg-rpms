@@ -1,8 +1,8 @@
 %pgdg_python3_setup
 
 Name:		python%{python3_pkgversion}-dns
-Version:	2.8.0
-Release:	53PGDG%{?dist}
+Version:	2.9.1
+Release:	42PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -40,9 +40,6 @@ manipulation of DNS zones, messages, names, and records.
 %prep
 %setup -q -n dnspython-%{version}
 %patch -P 0 -p0
-# Patch0 removes hatchling, so setuptools can't read the dynamic version from
-# dns/version.py and falls back to 0.0.0. Set the version statically instead.
-sed -i 's/^dynamic = \["version"\]/version = "%{version}"/' pyproject.toml
 
 # strip exec permissions so that we don't pick up dependencies from docs
 find examples -type f | xargs chmod a-x
@@ -61,6 +58,14 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.1-42PGDG
+- Update to 2.9.1 per changes described at:
+  https://github.com/rthalley/dnspython/releases/tag/v2.9.1
+- Update Patch0: 2.9.1 builds with uv_build, which we do not package, so
+  build with setuptools instead, and use the old license table: the PEP 639
+  license string needs setuptools >= 77.
+- Remove the version workaround: pyproject.toml sets it statically now.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.8.0-53PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

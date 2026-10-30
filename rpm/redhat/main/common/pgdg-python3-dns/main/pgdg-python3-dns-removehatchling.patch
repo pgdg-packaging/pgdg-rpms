@@ -1,10 +1,16 @@
---- pyproject.toml.old	2026-04-09 19:28:47.012082411 +0300
-+++ pyproject.toml	2026-04-09 19:28:50.032100455 +0300
-@@ -1,7 +1,3 @@
+--- pyproject.toml.old
++++ pyproject.toml
+@@ -1,12 +1,7 @@
 -[build-system]
--requires = ["hatchling>=1.21.0"]
--build-backend = "hatchling.build"
+-requires = ["uv_build>=0.9.21,<0.14.0"]
+-build-backend = "uv_build"
 -
  [project]
  name = "dnspython"
  description = "DNS toolkit"
+-license = "ISC"
+-license-files = ["LICENSE"]
++license = { text = "ISC" }
+ classifiers = [
+     "Development Status :: 5 - Production/Stable",
+     "Intended Audience :: Developers",
