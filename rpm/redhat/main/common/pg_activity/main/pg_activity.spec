@@ -7,7 +7,7 @@
 Summary:	Top like application for PostgreSQL server activity monitoring
 Name:		pg_activity
 Version:	3.6.2
-Release:	51PGDG%{?dist}
+Release:	52PGDG%{?dist}
 License:	GPLv3
 Url:		https://github.com/dalibo/%{name}/
 Source0:	https://github.com/dalibo/%{name}/archive/v%{version}.tar.gz
@@ -43,7 +43,18 @@ Requires:	python3.12-humanize >= 2.6.0
 Requires:	python3.12-wcwidth
 %endif
 
-%if 0%{?fedora}
+%if 0%{?amzn} == 2023
+# Amazon Linux 2023 defines fedora as 34; build and run with python3.13:
+BuildRequires:	python%{python3_pkgversion}-setuptools
+Requires:	python%{python3_pkgversion}-blessed
+Requires:	python%{python3_pkgversion} python%{python3_pkgversion}-attrs
+Requires:	python%{python3_pkgversion}-six python%{python3_pkgversion}-psutil
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.9.10
+Requires:	python%{python3_pkgversion}-humanize >= 2.6.0
+Requires:	python%{python3_pkgversion}-wcwidth
+%endif
+
+%if 0%{?fedora} && ! 0%{?amzn}
 BuildRequires:	python3-setuptools >= 53.0
 Requires:	python3-blessed
 Requires:	python3 python3-attrs
@@ -98,6 +109,12 @@ top like application for PostgreSQL server activity monitoring.
 %{python_sitelib}/pgactivity/queries/__pycache__/*.pyc
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-52PGDG
+- Amazon Linux 2023: Require the python3.13 modules: it fell through to the
+  Fedora block, which requires the python3 (3.9) ones, while the package is
+  built with python3.13, so it could not be installed. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.2-51PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
