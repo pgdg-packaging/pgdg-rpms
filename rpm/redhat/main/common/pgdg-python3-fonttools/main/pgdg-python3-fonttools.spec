@@ -21,12 +21,12 @@
 
 %if %{pgdg_altstack}
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	4.67.0
-Release:	44PGDG%{?dist}
+Version:	4.68.0
+Release:	42PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
 Version:	4.63.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 %endif
 Summary:	Tools to manipulate font files
 
@@ -206,6 +206,11 @@ This is a metapackage bringing in woff extras requires for
 # optional, and only gives fontTools newer Unicode data than Python's:
 sed -i 's/"unicodedata2 >= 18.0.0; python_version/"unicodedata2 >= 17.0.0; python_version/' setup.py
 grep -q '"unicodedata2 >= 17.0.0; python_version' setup.py
+# The woff extra wants brotli >= 1.2.1, for CVE-2026-111497. RHEL 10 has
+# 1.1.0, with that fix backported, so the +woff metapackage could not be
+# installed:
+sed -i "s/\"brotli >= 1.2.1; platform_python_implementation/\"brotli >= 1.1.0; platform_python_implementation/" setup.py
+grep -q '"brotli >= 1.1.0; platform_python_implementation' setup.py
 %endif
 %if ! %{pgdg_altstack}
 %{__rm} -rf *.egg-info
@@ -262,6 +267,13 @@ export FONTTOOLS_WITH_CYTHON=1
 %endif
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.68.0-42PGDG
+- Update to 4.68.0 on RHEL 9 and 10 and Amazon Linux 2023, per changes
+  described at https://github.com/fonttools/fonttools/releases/tag/4.68.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/463
+- RHEL 10: The +woff extras metapackage accepts brotli 1.1.0 (RHEL) now.
+- Bump the SLES release to 4.63.0-5PGDG, for this spec change.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.67.0-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
