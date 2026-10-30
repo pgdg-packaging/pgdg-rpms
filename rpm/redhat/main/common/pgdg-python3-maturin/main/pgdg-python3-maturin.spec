@@ -4,12 +4,12 @@
 %global	errnover 0.3.14
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.15.0
-Release:	45PGDG%{?dist}
+Version:	1.16.0
+Release:	42PGDG%{?dist}
 Summary:	Build and publish crates with pyo3, cffi and uniffi bindings as Python packages
 # maturin is MIT OR Apache-2.0. The licenses of the crates that are compiled
 # into the binary (without the default features, as setup.py builds it),
-# checked with "cargo tree -e normal --no-default-features" (201 crates):
+# checked with "cargo tree -e normal --no-default-features" (195 crates):
 License:	(MIT OR Apache-2.0) AND MIT AND Apache-2.0 AND Apache-2.0 WITH LLVM-exception AND 0BSD AND BSD-3-Clause AND bzip2-1.0.6 AND MPL-2.0 AND Unicode-3.0 AND Zlib
 URL:		https://github.com/PyO3/%{modname}
 Source0:	https://files.pythonhosted.org/packages/source/m/%{modname}/%{modname}-%{version}.tar.gz
@@ -127,6 +127,12 @@ export CARGO_NET_OFFLINE=true
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.16.0-42PGDG
+- Update to 1.16.0, per changes described at:
+  https://github.com/PyO3/maturin/releases/tag/v1.16.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/486
+- Update the vendored crates tarball for the new version.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.15.0-45PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
