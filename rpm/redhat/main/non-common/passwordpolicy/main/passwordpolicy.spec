@@ -15,11 +15,20 @@
 Summary:	PostgreSQL Passwordcheck Policy
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.6
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
-BuildRequires:	openssl-devel krb5-devel
+BuildRequires:	krb5-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
+BuildRequires:	openssl-devel-engine
+%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	cracklib-devel
 Requires:	postgresql%{pgmajorversion}-server
@@ -83,6 +92,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Fri Oct 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-5PGDG
+- Fix/modernize openssl dependencies.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-4PGDG
 - Add missing BR
 
