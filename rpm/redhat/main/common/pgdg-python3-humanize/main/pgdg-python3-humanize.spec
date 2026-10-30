@@ -8,7 +8,7 @@
 
 Name:		python%{python3_pkgversion}-%{sname}
 Version:	4.16.0
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Turns dates in to human readable format, e.g '3 minutes ago'
 
 License:	MIT
@@ -50,9 +50,10 @@ Obsoletes:	python3-humanize < %{version}-%{release}
 # include LICENCE anyway:
 %{__sed} -i -e '/^license-files = /d' -e 's/"hatchling>=1.27"/"hatchling"/' pyproject.toml
 
-%if 0%{?suse_version}
+%if 0%{?suse_version} || 0%{?amzn}
 # Classifiers are informational only; drop the Python 3.15 one, which the
-# trove-classifiers release of SLES 16 does not know yet:
+# trove-classifiers release of SLES 16 and Amazon Linux 2023 does not know
+# yet:
 %{__sed} -i '/"Programming Language :: Python :: 3.15"/d' pyproject.toml
 %endif
 
@@ -87,6 +88,11 @@ find -name '*.po' -delete
 %{python3_sitelib}/%{sname}/__pycache__/*.pyc
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-45PGDG
+- Add Amazon Linux 2023 support, for pg_activity. Drop the Python 3.15
+  classifier there too: the hatchling of Amazon Linux 2023 rejects it.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.16.0-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
