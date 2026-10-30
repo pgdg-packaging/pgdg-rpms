@@ -12,8 +12,8 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.43.120
-Release:	43PGDG%{?dist}
+Version:	1.43.122
+Release:	42PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
 License:	Apache-2.0
@@ -100,6 +100,10 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.122-42PGDG
+- Update to 1.43.122 per changes described at:
+  https://pypi.org/project/boto3/1.43.122/
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.43.120-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
