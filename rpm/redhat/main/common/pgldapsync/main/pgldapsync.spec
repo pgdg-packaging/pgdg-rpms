@@ -10,15 +10,15 @@
 Summary:	A tool for syncing LDAP users to Postgres Roles
 Name:		%{sname}
 Version:	1.0.0
-Release:	20PGDG%{?dist}
+Release:	21PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/enterprisedb/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 
 BuildArch:	noarch
-# RHEL 8, 9 and Amazon Linux 2023 build and run it with a newer Python than
-# their default python3, so require the modules of that one:
-%if (0%{?rhel} && 0%{?rhel} <= 9) || 0%{?amzn} == 2023
+# RHEL 8, 9, Amazon Linux 2023 and SLES 15 build and run it with a newer
+# Python than their default python3, so require the modules of that one:
+%if (0%{?rhel} && 0%{?rhel} <= 9) || 0%{?amzn} == 2023 || 0%{?suse_version} == 1500
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
 %else
 BuildRequires:	python3-devel >= 3.5 python3-setuptools
@@ -28,7 +28,7 @@ BuildRequires:	python-rpm-macros
 %endif
 
 Requires:	libpq5 >= 10.0
-%if (0%{?rhel} && 0%{?rhel} <= 9) || 0%{?amzn} == 2023
+%if (0%{?rhel} && 0%{?rhel} <= 9) || 0%{?amzn} == 2023 || 0%{?suse_version} == 1500
 Requires:	python%{python3_pkgversion}-psycopg2
 Requires:	python%{python3_pkgversion}-ldap3
 %else
@@ -61,8 +61,12 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{__install} -d %{buildroot}%{_sysconfdir}/%{sname}
 %{__cp} %{sname}/config_default.ini %{sname}/config.ini.example %{buildroot}%{_sysconfdir}/%{sname}
 
-# Create __pycache__ directories and their contents in SLES *too*:
-%if 0%{?suse_version}
+# Create __pycache__ directories and their contents in SLES *too*.
+# %%py3_compile always uses python3, which is 3.6 on SLES 15:
+%if 0%{?suse_version} == 1500
+%{__python3} -m compileall -q -d %{python3_sitelib} %{buildroot}%{python3_sitelib}
+%endif
+%if 0%{?suse_version} >= 1600
 %py3_compile %{buildroot}%{python3_sitelib}
 %endif
 
@@ -89,6 +93,13 @@ for i in `find . -iname "*.py"`; do sed -i "s/\/usr\/bin\/env python/\/usr\/bin\
 %{python3_sitelib}/%{sname}/pgutils/__pycache__/*.py*
 
 %changelog
+* Thu Oct 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-21PGDG
+- SLES 15: BuildRequire and Require the python311 modules: the package is
+  now built with python3.11 there, but required the python3 (3.6) psycopg2
+  and ldap3 modules, so it could not run. Byte-compile with python3.11
+  there: %%py3_compile used python3.6, whose .pyc files python3.11
+  ignores. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-20PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
