@@ -3,8 +3,8 @@
 %global	modname pytz
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2025.2
-Release:	43PGDG%{?dist}
+Version:	2026.6
+Release:	42PGDG%{?dist}
 Summary:	World timezone definitions for Python
 
 License:	MIT
@@ -43,6 +43,11 @@ and cross platform timezone calculations.
 %{python3_sitelib}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Thu Oct 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.6-42PGDG
+- Update to 2026.6, per changes described at:
+  https://github.com/stub42/pytz/releases/tag/release_2026.6
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/484
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2025.2-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
