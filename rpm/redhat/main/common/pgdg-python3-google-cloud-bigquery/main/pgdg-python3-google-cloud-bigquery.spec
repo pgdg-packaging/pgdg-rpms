@@ -54,8 +54,8 @@
 %global	pymodname google_cloud_bigquery
 
 Name:		%{pgdg_pyname}-%{modname}
-Version:	3.46.1
-Release:	4PGDG%{?dist}
+Version:	3.47.0
+Release:	1PGDG%{?dist}
 Summary:	Google BigQuery API client library
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -121,6 +121,10 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.47.0-1PGDG
+- Update to 3.47.0 per changes described at:
+  https://pypi.org/project/google-cloud-bigquery/3.47.0/
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 3.46.1-4PGDG
 - Rename the package to pgdg-python3.X-<module> on all distributions, as
   on SUSE, and obsolete the old python3.X-<module> package. On RHEL 10,
