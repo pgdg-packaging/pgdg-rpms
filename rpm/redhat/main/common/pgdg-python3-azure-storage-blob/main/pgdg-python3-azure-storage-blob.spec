@@ -7,8 +7,8 @@
 %global	pymodname azure_storage_blob
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	12.31.0
-Release:	2PGDG%{?dist}
+Version:	12.31.1
+Release:	1PGDG%{?dist}
 Summary:	Microsoft Azure Blob Storage client library for Python
 
 License:	MIT
@@ -40,6 +40,10 @@ This is its Python client library.
 %doc README.md
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 12.31.1-1PGDG
+- Update to 12.31.1 per changes described at:
+  https://pypi.org/project/azure-storage-blob/12.31.1/
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 12.31.0-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
