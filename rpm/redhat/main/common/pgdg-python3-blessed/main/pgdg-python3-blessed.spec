@@ -31,6 +31,10 @@ Requires:	python%{python3_pkgversion}-wcwidth >= 0.7
 # SUSE ships the curses module of Python in a separate package:
 Requires:	python%{python3_pkgversion}-curses
 %endif
+%if 0%{?rhel} == 8
+# No Python dependency generator for python3.12 on RHEL 8:
+Requires:	python%{python3_pkgversion}-wcwidth >= 0.7
+%endif
 
 %description
 Blessed is an easy, practical *library* for making *terminal* apps, by providing
@@ -69,6 +73,10 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- RHEL 8: Require wcwidth >= 0.7, which is not generated there for
+  python3.12.
+- Remove RHEL 10 support: blessed 1.39.0 needs wcwidth >= 0.7, and RHEL 10
+  only has 0.2.6. 1.22.0 stays in the RHEL 10 repo, for pg_activity.
 
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-3PGDG
 - Fix build on RHEL 10: use the license table form in pyproject.toml and
