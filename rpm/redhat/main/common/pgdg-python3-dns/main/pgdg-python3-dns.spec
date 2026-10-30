@@ -2,7 +2,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.9.1
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -40,6 +40,9 @@ manipulation of DNS zones, messages, names, and records.
 %prep
 %setup -q -n dnspython-%{version}
 %patch -P 0 -p0
+# The trove-classifiers module of SLES 16 does not know Python 3.15 yet, and
+# setuptools rejects pyproject.toml when it is installed:
+%{__sed} -i '/"Programming Language :: Python :: 3\.15",/d' pyproject.toml
 
 # strip exec permissions so that we don't pick up dependencies from docs
 find examples -type f | xargs chmod a-x
@@ -58,6 +61,10 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.1-43PGDG
+- Remove the Python 3.15 classifier from pyproject.toml: setuptools rejects
+  it when an older trove-classifiers module is installed, as on SLES 16.
+
 * Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.1-42PGDG
 - Update to 2.9.1 per changes described at:
   https://github.com/rthalley/dnspython/releases/tag/v2.9.1
