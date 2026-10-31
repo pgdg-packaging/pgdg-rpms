@@ -54,7 +54,7 @@
 %global	pymodname grpcio
 
 Name:		%{pgdg_pyname}-%{modname}
-Version:	1.85.0
+Version:	1.85.1
 Release:	1PGDG%{?dist}
 Summary:	HTTP/2-based RPC framework
 %if ! 0%{?suse_version}
@@ -153,6 +153,11 @@ export CC=/opt/rh/gcc-toolset-14/root/usr/bin/gcc CXX=/opt/rh/gcc-toolset-14/roo
 %{pgdg_pysitelib}/
 
 %changelog
+* Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.1-1PGDG
+- Update to 1.85.1 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.1
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/500
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.0-1PGDG
 - Update to 1.85.0 per changes described at:
   https://github.com/grpc/grpc/releases/tag/v1.85.0
