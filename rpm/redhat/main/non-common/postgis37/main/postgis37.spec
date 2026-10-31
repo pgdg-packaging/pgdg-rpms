@@ -54,10 +54,10 @@ Summary:	Geographic Information Systems Extensions to PostgreSQL
 
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	rc3_3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	GPLv2+
-Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}rc3.tar.gz
-Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}rc3-en.pdf
+Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
+Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
 Source4:	%{sname}%{postgiscurrmajorversion}-filter-requires-perl-Pg.sh
 
 URL:		https://www.postgis.net/
@@ -255,7 +255,7 @@ This package provides JIT support for PostGIS 3.6
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}rc3
+%setup -q -n %{sname}-%{version}
 # Copy .pdf file to top directory before installing.
 %{__cp} -p %{SOURCE2} %{sname}-%{version}.pdf
 
@@ -449,6 +449,10 @@ fi
 %endif
 
 %changelog
+* Sat Oct 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-1PGDG
+- Update to 3.7.0 per:
+  https://postgis.net/2026/10/PostGIS-3.7.0/
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-rc3_3PGDG
 - Pass --without-sfcgal to configure when building without SFCGAL, so that
   it does not pick up an installed SFCGAL by itself.
