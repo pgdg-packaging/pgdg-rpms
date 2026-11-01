@@ -71,6 +71,10 @@ This is a metapackage bringing in trio extras requires for
 %{__sed} -i -e 's/"setuptools >= 77"/"setuptools"/' \
 	-e 's/^license = "MIT"$/license = {text = "MIT"}/' pyproject.toml
 grep -q '^license = {text = "MIT"}$' pyproject.toml
+# Classifiers are informational only; drop the Python 3.15 one, which the
+# trove-classifiers release of Amazon Linux 2023 does not know yet, and
+# setuptools rejects pyproject.toml when it is installed:
+%{__sed} -i '/"Programming Language :: Python :: 3\.15",/d' pyproject.toml
 %endif
 
 %build
