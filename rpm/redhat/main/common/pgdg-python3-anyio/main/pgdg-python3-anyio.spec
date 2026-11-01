@@ -4,8 +4,18 @@
 %global	pymodname anyio
 
 Name:		python%{python3_pkgversion}-%{modname}
+# 4.15.0 and later need typing-extensions >= 4.16.0 at runtime (the sentinel
+# function). Amazon Linux 2023 has 4.12.2, and RHEL 9 python3.12 gets 4.12.2
+# from us, so stay on 4.14.0.
+# RHEL 10 stays on 4.9.0: the trio backend of later releases does not work
+# with EPEL's python3-trio 0.29.0, and our +trio metapackage replaces EPEL's.
+%if 0%{?rhel} == 10
 Version:	4.9.0
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
+%else
+Version:	4.14.0
+Release:	42PGDG%{?dist}
+%endif
 Summary:	High level compatibility layer for multiple asynchronous event loop implementations
 
 License:	MIT
@@ -23,7 +33,9 @@ BuildRequires:	python%{python3_pkgversion}-wheel
 BuildRequires:	python%{python3_pkgversion}-setuptools_scm
 
 Requires:	python%{python3_pkgversion}-idna >= 2.8
+%if 0%{?rhel} == 10
 Requires:	python%{python3_pkgversion}-sniffio >= 1.1
+%endif
 
 %if 0%{?rhel} == 10
 # Replace the EPEL package of the same module, which has the same files:
@@ -53,6 +65,13 @@ This is a metapackage bringing in trio extras requires for
 
 %prep
 %autosetup -n %{pymodname}-%{version}
+%if 0%{?rhel} != 10
+# The setuptools versions of our distributions (68 and 69) are older than 77,
+# and do not support the PEP 639 license expression:
+%{__sed} -i -e 's/"setuptools >= 77"/"setuptools"/' \
+	-e 's/^license = "MIT"$/license = {text = "MIT"}/' pyproject.toml
+grep -q '^license = {text = "MIT"}$' pyproject.toml
+%endif
 
 %build
 %pyproject_wheel
@@ -67,6 +86,16 @@ This is a metapackage bringing in trio extras requires for
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sun Nov 1 2026 Devrim Gunduz <devrim@gunduz.org> - 4.14.0-42PGDG
+- Update to 4.14.0 on RHEL 9 and Amazon Linux 2023 per changes described at:
+  https://github.com/agronholm/anyio/releases/tag/4.14.0
+  4.15.0 and later need typing-extensions >= 4.16.0, which they do not have.
+- Remove the sniffio dependency there, which upstream dropped.
+- Adjust pyproject.toml for setuptools < 77.
+- RHEL 10 stays on 4.9.0 (4.9.0-45PGDG): later releases need trio >= 0.31,
+  and EPEL has 0.29.0.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/508
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.9.0-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
