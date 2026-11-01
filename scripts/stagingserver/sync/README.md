@@ -142,7 +142,7 @@ These flags control which optional repo types are enabled by default when no `--
 | `--os` | No | Operating system: `redhat`, `fedora`, `sles`, `opensuse`, or `amzn`. If omitted, all supported operating systems are synced |
 | `--ver` | No | OS version (e.g. `9.7`, `15.6`, `43`). If omitted, all valid versions for the OS(es) being processed are synced |
 | `--arch` | No | Architecture: `aarch64`, `ppc64le`, or `x86_64`. If omitted, all supported architectures for the OS(es) being processed are synced |
-| `--sync` | No | One or more items to sync: `common`, `extras`, `testing`, `non-free`, or a PG version number (e.g. `17`). Multiple values accepted. If omitted, all available repos are synced |
+| `--sync` | No | One or more items to sync: `common`, `extras`, `testing`, `non-free`, or a PG version number (e.g. `17`). Multiple values accepted. If omitted, all available repos are synced, except the unchanged ones (see "Skipping Unchanged Repos"). Given items are always synced |
 | `--dry-run` | No | Print what would be synced without executing rsync |
 | `--debug` | No | Print detailed internal variable state before syncing |
 
@@ -217,6 +217,19 @@ The script constructs the rsync source hostname dynamically:
 ./sync_pgdg_rpms.sh --sync common
 ```
 
+### Skipping Unchanged Repos
+
+Without `--sync`, the script uses one ssh connection per builder to read the modification time and size of `repomd.xml` and `repomd.xml.asc` of all its repos, and rsyncs only the repos where they differ from the last successful rsync. `packagesync.sh` rewrites both files each time it publishes a repo, so this also covers rebuilt and removed RPMs.
+
+The state is kept in `SYNC_STATE_DIR`, one file per repo (default `~/.local/state/pgdg_sync`, see the config file), and saved only after a successful rsync, so a failed rsync is retried. A repo is rsynced as before if:
+
+- its state file does not exist, e.g. on the first run,
+- its local copy has no `repodata/repomd.xml`, e.g. `aws_sync.sh --delete-testing` removed it,
+- it has no metadata on the builder, or
+- the builder could not be reached, so nothing is known about it.
+
+`--sync` always rsyncs the given items, and is the way to repair a repo whose local files were changed, which is not noticed here. `--dry-run` still lists the selected repos without contacting the builders, so it does not show which ones would be skipped.
+
 ### Error Handling
 
 Each rsync call is wrapped in an error check. If any individual rsync fails, the error is reported to stderr and a flag (`sync_had_errors=1`) is set. The script continues processing remaining targets rather than aborting. At the end, if any errors occurred, the script exits with code `1` and a warning message. If all syncs succeeded, it exits with code `0`.
@@ -240,7 +253,7 @@ This script is intended to be called by cron to perform a full, unattended sync 
 | `--dry-run` | Passed through to `sync_pgdg_rpms.sh` |
 | `--debug` | Passed through to `sync_pgdg_rpms.sh` |
 | `--jobs N` | Number of OS/version syncs to run in parallel. Defaults to `MAX_PARALLEL` in `sync_pgdg_rpms_config.sh`; `1` means sequential |
-| `--sync` | Passed through to `sync_pgdg_rpms.sh` to limit what is synced. The special keyword `pg` expands to every version in `PG_ALL_VERSIONS` |
+| `--sync` | Passed through to `sync_pgdg_rpms.sh` to limit what is synced, and to always rsync those items. The special keyword `pg` expands to every version in `PG_ALL_VERSIONS` |
 
 `pg` can be combined with any other item, e.g. `--sync pg common` syncs all PostgreSQL versions plus the common repo (equivalent to `--sync 18 17 16 15 14 common`, given the current `PG_ALL_VERSIONS`). It's expanded before being forwarded, so it works whether items are passed as separate words (`--sync pg common`) or as one quoted string (`--sync "pg common"`).
 

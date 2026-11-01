@@ -48,7 +48,8 @@ Optional:
                  Versions that only exist in testing (e.g. 19, 20) must be combined with
                  "testing" (e.g. --sync testing 19), and restrict the testing sync to just
                  that version instead of all testing versions
-                 If not specified, syncs all available repos
+                 If not specified, syncs all available repos, skipping the ones
+                 which did not change on the builder. Given items are always synced
   --dry-run      Simulate the sync without transferring files
   --debug        Show detailed debug output
 
@@ -78,6 +79,49 @@ record_failure() {
 	local target="$1 $2 $3"
 	sync_had_errors=1
 	contains "$target" "${failed_targets[@]}" || failed_targets+=("$target")
+}
+
+# State of the repo metadata on the current builder, by repo directory.
+declare -A remote_repo_state=()
+
+# Read the state of the repo metadata of all the repos of a builder, using one
+# ssh connection. repomd.xml.asc is included, as it is created after repomd.xml,
+# which is rewritten each time packagesync.sh publishes a repo. If the builder
+# cannot be reached, nothing is known about its repos, so sync_repo tries all.
+fetch_repo_state() {
+	local host="$1" line path
+	remote_repo_state=()
+
+	# A full sync was requested with --sync, so this is not needed:
+	$HAVE_SYNC_ITEMS && return 0
+
+	while read -r path line; do
+		path="${path%/repodata/repomd.xml*}"
+		remote_repo_state["$path"]+="$line "
+	done < <(ssh "$host" 'stat -c "%n %Y %s" /var/lib/pgsql/*/ALLRPMS/repodata/repomd.xml* 2>/dev/null; true' || true)
+}
+
+# rsync a repo from the builder, unless its metadata is the same as at the last
+# successful rsync, and the local copy still exists (aws_sync.sh can delete
+# testing repos). The state was read before this rsync: if the builder publishes
+# the repo during the rsync, the state differs in the next run, and it is
+# synced again. It is saved only after a successful rsync, so that a failed one
+# is retried. Repos without metadata (not published yet) are always rsynced.
+sync_repo() {
+	local host="$1" src="$2" dest="$3"
+	local state="${remote_repo_state[$src]:-}"
+	local state_file="${SYNC_STATE_DIR}/${dest//\//_}"
+
+	if [[ -n "$state" && -f "$dest/repodata/repomd.xml" && -f "$state_file" && "$(<"$state_file")" == "$state" ]]; then
+		echo "  Unchanged, skipping: $dest"
+		return 0
+	fi
+
+	rsync -ave ssh --delete --delete-missing-args "$host":"$src"/ "$dest" || return 1
+
+	if [[ -n "$state" ]]; then
+		echo "$state" 2>/dev/null > "$state_file" || true
+	fi
 }
 
 # Parse arguments
@@ -372,6 +416,7 @@ process_os() {
 			tmp_var="BASE_DIR_${OS}"
 			BASE_DIR_OS="${!tmp_var}"
 			sleep 1
+			fetch_repo_state "$SOURCE_HOST"
 
 			echo "  Syncing : $osname-$distrover ($osarch)"
 
@@ -386,7 +431,7 @@ process_os() {
 
 					RPM_DIR=/var/lib/pgsql/rpm$pgrelease/ALLRPMS
 
-					if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$RPM_DIR/ $BASE_DIR_OS/$pgrelease/$osdistro/$osname-$distrover-$osarch; then
+					if ! sync_repo "$SOURCE_HOST" "$RPM_DIR" "$BASE_DIR_OS/$pgrelease/$osdistro/$osname-$distrover-$osarch"; then
 						echo "  [ERROR] Rsync failed for PG $pgrelease ($osname-$distrover-$osarch)" >&2
 						record_failure "$OS" "$VER" "$osarch"
 					fi
@@ -398,7 +443,7 @@ process_os() {
 				echo "  Syncing : $osname-$distrover-common repo"
 				COMMON_RPM_DIR=/var/lib/pgsql/rpmcommon/ALLRPMS
 
-				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$COMMON_RPM_DIR/ $BASE_DIR_OS/common/$osdistro/$osname-$distrover-$osarch; then
+				if ! sync_repo "$SOURCE_HOST" "$COMMON_RPM_DIR" "$BASE_DIR_OS/common/$osdistro/$osname-$distrover-$osarch"; then
 					echo "  [ERROR] Rsync failed for common repo ($osname-$distrover-$osarch)" >&2
 					record_failure "$OS" "$VER" "$osarch"
 				fi
@@ -409,7 +454,7 @@ process_os() {
 				echo "  Syncing : $osname-$distrover-extras repo"
 				EXTRAS_RPM_DIR=/var/lib/pgsql/pgdg.extras/ALLRPMS
 
-				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$EXTRAS_RPM_DIR/ $BASE_DIR_OS/extras/$osdistro/$osname-$distrover-$osarch; then
+				if ! sync_repo "$SOURCE_HOST" "$EXTRAS_RPM_DIR" "$BASE_DIR_OS/extras/$osdistro/$osname-$distrover-$osarch"; then
 					echo "  [ERROR] Rsync failed for Extras repo ($osname-$distrover-$osarch)" >&2
 					record_failure "$OS" "$VER" "$osarch"
 				fi
@@ -420,7 +465,7 @@ process_os() {
 				echo "  Syncing : $osname-$distrover-common testing repo"
 				COMMONTESTING_RPM_DIR=/var/lib/pgsql/rpmcommontesting/ALLRPMS
 
-				if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$COMMONTESTING_RPM_DIR/ $BASE_DIR_OS/testing/common/$osdistro/$osname-$distrover-$osarch; then
+				if ! sync_repo "$SOURCE_HOST" "$COMMONTESTING_RPM_DIR" "$BASE_DIR_OS/testing/common/$osdistro/$osname-$distrover-$osarch"; then
 					echo "  [ERROR] Rsync failed for commontesting repo ($osname-$distrover-$osarch)" >&2
 					record_failure "$OS" "$VER" "$osarch"
 				fi
@@ -430,7 +475,7 @@ process_os() {
 					echo "  Syncing : $osname-$distrover-extras testing repo"
 					EXTRASTESTING_RPM_DIR=/var/lib/pgsql/pgdg.extrastesting/ALLRPMS
 
-					if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$EXTRASTESTING_RPM_DIR/ $BASE_DIR_OS/testing/extras/$osdistro/$osname-$distrover-$osarch; then
+					if ! sync_repo "$SOURCE_HOST" "$EXTRASTESTING_RPM_DIR" "$BASE_DIR_OS/testing/extras/$osdistro/$osname-$distrover-$osarch"; then
 						echo "  [ERROR] Rsync failed for extras testing repo ($osname-$distrover-$osarch)" >&2
 						record_failure "$OS" "$VER" "$osarch"
 					fi
@@ -455,7 +500,7 @@ process_os() {
 					testdir="rpm${pgtestrelease}testing"
 					TESTING_RPM_DIR=/var/lib/pgsql/$testdir/ALLRPMS
 
-					if ! rsync -ave ssh --delete --delete-missing-args "$SOURCE_HOST":$TESTING_RPM_DIR/ $BASE_DIR_OS/testing/$pgtestrelease/$osdistro/$osname-$distrover-$osarch; then
+					if ! sync_repo "$SOURCE_HOST" "$TESTING_RPM_DIR" "$BASE_DIR_OS/testing/$pgtestrelease/$osdistro/$osname-$distrover-$osarch"; then
 						echo "  [ERROR] Rsync failed for PG $pgtestrelease testing repo ($osname-$distrover-$osarch)" >&2
 						record_failure "$OS" "$VER" "$osarch"
 					fi
@@ -483,11 +528,13 @@ process_os() {
 						NONFREE_SOURCE_HOST="pgrpms-non-free-amzn${VER}-${osarch}.postgresql.org"
 					fi
 
+					fetch_repo_state "$NONFREE_SOURCE_HOST"
+
 					for pgnonfreerelease in "${PG_ALL_VERSIONS[@]}"; do
 						echo "  Syncing : $osname-$distrover-PG$pgnonfreerelease non-free repo"
 						NONFREE_RPM_DIR=/var/lib/pgsql/rpm${pgnonfreerelease}/ALLRPMS
 
-						if ! rsync -ave ssh --delete --delete-missing-args "$NONFREE_SOURCE_HOST":$NONFREE_RPM_DIR/ $BASE_DIR_OS/non-free/$pgnonfreerelease/$osdistro/$osname-$distrover-$osarch; then
+						if ! sync_repo "$NONFREE_SOURCE_HOST" "$NONFREE_RPM_DIR" "$BASE_DIR_OS/non-free/$pgnonfreerelease/$osdistro/$osname-$distrover-$osarch"; then
 							echo "  [ERROR] Rsync failed for PG $pgnonfreerelease non-free repo ($osname-$distrover-$osarch)" >&2
 							record_failure "$OS" "$VER" "$osarch"
 						fi
@@ -497,6 +544,8 @@ process_os() {
 		done  # End of ARCH_LIST loop
 	done  # End of VER_LIST loop
 }
+
+$DRY_RUN || mkdir -p "$SYNC_STATE_DIR" || true
 
 for OS in "${OS_LIST[@]}"; do
 	process_os "$OS"

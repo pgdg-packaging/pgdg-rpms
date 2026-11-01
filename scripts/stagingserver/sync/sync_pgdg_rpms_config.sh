@@ -16,6 +16,11 @@ MAX_PARALLEL=6
 # the next cron slot does not start a second, overlapping sync.
 CRON_LOCK_FILE="/tmp/sync_pgdg_rpms_cron.lock"
 
+# sync_pgdg_rpms.sh keeps one file per repo here, with the state of the builder's
+# repomd.xml at the last successful rsync, to skip the repos which did not change
+# since then. Removing the directory only causes one full rsync of every repo.
+SYNC_STATE_DIR="${HOME}/.local/state/pgdg_sync"
+
 # Valid operating systems
 VALID_OS=("redhat" "fedora" "sles" "opensuse" "amzn")
 

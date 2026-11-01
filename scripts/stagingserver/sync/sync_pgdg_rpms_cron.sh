@@ -51,6 +51,8 @@ Optional:
                  (e.g. --sync common 18 17). The special keyword "pg" expands
                  to every version in PG_ALL_VERSIONS (e.g. --sync pg common
                  syncs all PostgreSQL versions plus the common repo).
+                 Given items are always synced; without --sync, repos which did
+                 not change on the builder are skipped.
 
 Examples:
   $0
