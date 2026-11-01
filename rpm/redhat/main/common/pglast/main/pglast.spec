@@ -7,8 +7,8 @@
 %global sname pglast
 
 Name:		pglast
-Version:	7.21
-Release:	2PGDG%{?dist}
+Version:	7.22
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Languages AST and statements prettifier
 License:	GPLv3+
 Url:		https://github.com/lelit/%{sname}
@@ -61,6 +61,11 @@ sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/'
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 31 2026 Devrim Gündüz <devrim@gunduz.org> - 7.22-1PGDG
+- Update to 7.22 per changes described at:
+  https://github.com/lelit/pglast/blob/v7/CHANGES.rst
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/505
+
 * Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 7.21-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

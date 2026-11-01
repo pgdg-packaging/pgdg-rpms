@@ -5,15 +5,16 @@
 
 Name:		pgspot
 Version:	0.9.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Spot vulnerabilities in PostgreSQL extension scripts
 License:	PostgreSQL
 Url:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/%{version}.tar.gz
 BuildArch:	noarch
 # Not every distribution generates the requirements from the Python metadata,
-# and pgspot needs this exact pglast version:
-Requires:	pglast = 7.21
+# and pgspot needs a PostgreSQL 17 parser, which is pglast 7.x:
+Requires:	pglast >= 7.21
+Requires:	pglast < 8
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
 %else
@@ -39,6 +40,9 @@ pgspot checks for the following vulnerabilities:
 
 %prep
 %setup -q -n %{sname}-%{version}
+# Upstream pins pglast==7.21, which would block the pglast 7.x bug fix
+# releases. Those keep the same parser:
+sed -i 's/pglast==7.21/pglast>=7.21,<8/' requirements.txt setup.cfg
 
 %build
 %pyproject_wheel
@@ -71,6 +75,12 @@ done
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Sat Oct 31 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.4-3PGDG
+- Accept any pglast 7.x >= 7.21 instead of exactly 7.21, in the package
+  and in the Python metadata, to be able to use pglast 7.22, which keeps
+  the same PostgreSQL 17 parser. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/505
+
 * Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.4-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
