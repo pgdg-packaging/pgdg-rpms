@@ -39,7 +39,7 @@ jobs:
             date=$(gh api "repos/$GITHUB_REPOSITORY/commits/$sha" --jq .commit.committer.date)
             if [ "$(date -u -d "$date" +%s)" -lt "$cutoff" ]; then
               echo "Deleting ${ref#refs/heads/} (last commit $date)"
-              gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/${ref#refs/}"
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/$ref"
             else
               echo "Keeping ${ref#refs/heads/} (last commit $date)"
             fi
