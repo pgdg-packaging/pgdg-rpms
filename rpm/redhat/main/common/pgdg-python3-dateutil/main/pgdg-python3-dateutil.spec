@@ -6,39 +6,24 @@
 %global pgdg_python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	3.0.0
-Release:	2PGDG%{?dist}
+Version:	4.0.0
+Release:	1PGDG%{?dist}
 Summary:	Powerful extensions to the standard datetime module
 License:	(Apache-2.0 AND BSD-3-Clause) OR BSD-3-Clause
 URL:		https://github.com/%{modname}/%{modname}
 Source:		%{pypi_source python_dateutil}
-# Allow setuptools-scm dependency greater than v8.0
-Patch:		relax-setuptools_scm-requires.patch
 
 BuildArch:	noarch
-BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-setuptools
-# Needed so setuptools_scm's setup_requires is already satisfied locally;
-# otherwise setup.py tries to pip-fetch it, which fails in a
-# network-isolated mock build.
-%if 0%{?rhel} != 8
-BuildRequires:	python%{python3_pkgversion}-setuptools_scm
-%endif
-%if 0%{?rhel} && 0%{?rhel} <= 9
-BuildRequires:	python%{python3_pkgversion}-pip
-%endif
-%if 0%{?rhel} && 0%{?rhel} == 10
-BuildRequires:	python3-pip
-%endif
-%if 0%{?suse_version} >= 1500
-BuildRequires:	python%{python3_pkgversion}-pip
-%endif
+BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
+BuildRequires:	python%{python3_pkgversion}-hatchling
+BuildRequires:	python%{python3_pkgversion}-hatch-fancy-pypi-readme
+BuildRequires:	pyproject-rpm-macros
 
 # Time zone data is read from the system first:
 Requires:	tzdata
-# The dependency generator does not add these on RHEL 8. dateutil uses the
+# The dependency generator does not add this on RHEL 8. dateutil uses the
 # tzdata module when a time zone is not found on the system, and for the
 # deprecated dateutil.zoneinfo module:
-Requires:	python%{python3_pkgversion}-six >= 1.6
 Requires:	python%{python3_pkgversion}-tzdata
 
 Provides:	python%{python3_pkgversion}dist(python-dateutil)
@@ -49,20 +34,27 @@ module available in Python.
 
 %prep
 %autosetup -p1 -n python_%{modname}-%{version}
-%if 0%{?rhel} == 8
-# There is no python3.12-setuptools_scm on RHEL 8. Give setup.py the version
-# directly (the sdist already has src/dateutil/_version.py):
-sed -i -e "/^      use_scm_version={$/,/^      },$/c\\      version='%{version}'," setup.py
-sed -i -e '/^setup_requires = setuptools_scm$/d' setup.cfg
-grep -q "^      version='%{version}',$" setup.py
-if grep -q 'scm' setup.py setup.cfg; then exit 1; fi
-%endif
+# The hatchling we ship for RHEL 8 and 9 (1.25) is older than 1.27, and does
+# not support the PEP 639 license-files list. Its default license file
+# patterns include LICENSE anyway. There is no python3.12-setuptools_scm on
+# RHEL 8, which hatch-vcs needs, so give the version directly:
+%{__sed} -i -e '/^license-files = /d' -e 's/"hatchling>=1.27"/"hatchling"/' \
+	-e 's/"hatch-vcs>=0.4", //' \
+	-e 's/^dynamic = \["version", "readme"\]/version = "%{version}"\ndynamic = ["readme"]/' \
+	-e '/^\[tool\.hatch\.version\]$/,+1d' \
+	-e '/^\[tool\.hatch\.build\.hooks\.vcs\]$/,+1d' pyproject.toml
+if grep -q 'vcs' pyproject.toml; then exit 1; fi
+# .gitignore lists src/dateutil/_version.py, which hatch-vcs generates
+# upstream, and hatchling 1.25 then leaves it out of the wheel. We ship it
+# from the sdist:
+%{__sed} -i '/^src\/dateutil\/_version\.py$/d' .gitignore
+if grep -q '_version' .gitignore; then exit 1; fi
 
 %build
-%{__python3} setup.py build
+%pyproject_wheel
 
 %install
-%{__python3} setup.py install --no-compile --root %{buildroot}
+%pyproject_install
 %if 0%{?amzn} == 2023
 # AL2023's brp-python-bytecompile doesn't auto-discover the python3.13
 # alt-stack site-packages dir the way Fedora/RHEL's does, so __pycache__
@@ -81,9 +73,18 @@ if grep -q 'scm' setup.py setup.cfg; then exit 1; fi
 %{pgdg_python3_sitearch}/%{modname}/tz/__pycache__/*.py*
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/__pycache__/*.py*
 %{pgdg_python3_sitearch}/%{modname}/zoneinfo/*.py*
-%{pgdg_python3_sitearch}/python_dateutil-%{version}-py%{pybasever}.egg-info/
+%{pgdg_python3_sitearch}/python_dateutil-%{version}.dist-info/
 
 %changelog
+* Sun Nov 1 2026 Devrim Gunduz <devrim@gunduz.org> - 4.0.0-1PGDG
+- Update to 4.0.0 per changes described at:
+  https://github.com/dateutil/dateutil/releases/tag/4.0.0
+- dateutil no longer depends on six: Remove the dependency.
+- Upstream moved to Hatchling. Build with pyproject macros, and remove
+  relax-setuptools_scm-requires.patch, which is no longer needed.
+- Adjust pyproject.toml for hatchling 1.25, which we ship for RHEL 8 and 9.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/507
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
