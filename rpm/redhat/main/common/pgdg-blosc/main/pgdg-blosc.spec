@@ -17,7 +17,7 @@
 %endif
 
 Name:		pgdg-%{sname}
-Version:	1.21.6
+Version:	1.21.7
 Release:	1PGDG%{?dist}
 Summary:	High performance compressor optimized for binary data
 License:	BSD-3-Clause
@@ -26,8 +26,6 @@ Source0:	https://github.com/Blosc/c-blosc/archive/v%{version}/%{sname}-%{version
 # From the Fedora package:
 Source2:	c-blosc-config.cmake
 Patch0:		blosc-gcc11.patch
-Patch1:		blosc-gcc23.patch
-Patch2:		blosc-CMake4.0.patch
 
 BuildRequires:	pgdg-srpm-macros >= 2.1.0
 BuildRequires:	cmake gcc gcc-c++
@@ -59,8 +57,6 @@ to develop programs that use the blosc meta-compressor.
 %prep
 %setup -q -n c-%{sname}-%{version}
 %patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
 # Use the OS lz4 and zstd:
 %{__rm} -r internal-complibs/lz4* internal-complibs/zstd*
 sed -i '1i  set\(CMAKE_POSITION_INDEPENDENT_CODE TRUE\)' CMakeLists.txt
@@ -111,6 +107,13 @@ sed -i 's|lib/pkgconfig|lib64/pkgconfig|' CMakeLists.txt
 %{bloscinstdir}/lib64/cmake/
 
 %changelog
+* Sat Oct 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.21.7-1PGDG
+- Update to 1.21.7 per changes described at
+  https://github.com/Blosc/c-blosc/releases/tag/v1.21.7 , which has
+  buffer validation fixes.
+- Remove the gcc23 and CMake 4.0 patches, now in the upstream sources.
+- Per https://github.com/pgdg-packaging/pgdg-rpms/issues/506
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.21.6-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-blosc, so that the GIS stack does not need the EPEL blosc
