@@ -107,7 +107,24 @@ rm -f ~/rpmcommon/RPMS/x86_64/* ~/rpmcommon/RPMS/noarch/*
 # Figure out which major PostgreSQL version(s) will be used to sync:
 
 if [ "$#" -eq 0 ]; then
-    log "Processing all stable PostgreSQL builds: ${pgStableBuilds[*]}"
+    # Sync only the versions which have new, rebuilt or removed RPMs, or whose
+    # last sync did not finish. A missing directory stays in the list, so that
+    # it is reported below:
+    declare -a changed_versions=()
+    for packageSyncVersion in "${pgStableBuilds[@]}"
+    do
+        if [ ! -d /var/lib/pgsql/rpm"${packageSyncVersion}" ] || repo_needs_sync /var/lib/pgsql/rpm"${packageSyncVersion}"; then
+            changed_versions+=("$packageSyncVersion")
+        fi
+    done
+
+    if [ ${#changed_versions[@]} -eq 0 ]; then
+        log "Nothing to sync: no version has new, rebuilt or removed RPMs."
+        exit 0
+    fi
+
+    declare -a pgStableBuilds=("${changed_versions[@]}")
+    log "Processing PostgreSQL versions with changes: ${pgStableBuilds[*]}"
 else
     if [[ " ${pgStableBuilds[*]} " =~ " $1 " ]]; then
         declare -a pgStableBuilds=("$1")
@@ -179,6 +196,10 @@ do
         error "Source directory does not exist: $BASE_DIR/RPMS/$osarch"
         continue
     fi
+
+    # Stays until this version is published, see repo_needs_sync in global.sh:
+    touch "$BASE_DIR/.sync-pending"
+    major_path_failed=0
 
     if ! rsync --checksum -av --delete --stats "$BASE_DIR/RPMS/$osarch/" "$BASE_DIR/RPMS/noarch/" "$RPM_DIR"; then
         error "Failed to sync binary RPMs for PostgreSQL $packageSyncVersion"
@@ -267,9 +288,11 @@ do
         log "osislatest=1: syncing SRPMs to major-version path..."
         if ! aws s3 sync "$SRPM_DIR" "$awssrpmurl/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch" --exclude "*.html" --exclude "repodata"; then
             error "Failed to sync SRPMs to S3 (major-version path)"
+            major_path_failed=1
         fi
         if ! aws s3 sync --delete "$SRPM_DIR/repodata/" "$awssrpmurl/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/" --exclude "*.html"; then
             error "Failed to sync SRPM repodata to S3 (major-version path)"
+            major_path_failed=1
         fi
         queue_cf_invalidation srpm "/srpms/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata"
     fi
@@ -296,14 +319,30 @@ do
         log "osislatest=1: syncing debug RPMs to major-version path..."
         if ! aws s3 sync "$DEBUG_RPM_DIR" "$awsdebuginfourl/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/" --exclude "*.html" --exclude "repodata"; then
             error "Failed to sync debug RPMs to S3 (major-version path)"
+            major_path_failed=1
         fi
         if ! aws s3 sync --delete "$DEBUG_RPM_DIR/repodata/" "$awsdebuginfourl/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata/" --exclude "*.html"; then
             error "Failed to sync debug RPM repodata to S3 (major-version path)"
+            major_path_failed=1
         fi
         queue_cf_invalidation debug "/debug/non-free/$packageSyncVersion/$osdistro/$os-$osarch/repodata"
     fi
 
+    if [ "$major_path_failed" -ne 0 ]; then
+        continue
+    fi
+
+    rm -f "$BASE_DIR/.sync-pending"
     log "Successfully completed sync for PostgreSQL $packageSyncVersion"
+done
+
+# The versions which failed above are still marked as pending:
+for packageSyncVersion in "${pgStableBuilds[@]}"
+do
+    if [ -e /var/lib/pgsql/rpm"${packageSyncVersion}"/.sync-pending ]; then
+        error "PostgreSQL $packageSyncVersion was not synced completely. Run this script again to retry."
+        sync_failed=1
+    fi
 done
 
 # When a specific PostgreSQL version was passed, invalidate its CloudFront

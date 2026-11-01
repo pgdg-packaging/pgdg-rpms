@@ -348,6 +348,39 @@ list_new_rpms() {
 	} | awk -F'\t' '{ key = $2 "\t" $3 "\t" int($4) } $1 == "S" { staged[key]; next } !(key in staged) { print $5 }'
 }
 
+# Print the file names of the RPMs in the staging directories of the given
+# directory (see list_new_rpms) that are not in its build directories anymore,
+# so the RPMs that a sync would remove from the repo.
+list_removed_rpms() {
+	local base="$1"
+
+	{
+		find "$base/RPMS/$osarch" "$base/RPMS/noarch" "$base/SRPMS" -name '*.rpm' -printf 'C\t%f\n' 2>/dev/null
+		find "$base/ALLRPMS" "$base/ALLDEBUGRPMS" "$base/ALLSRPMS" -name '*.rpm' -printf 'S\t%f\n' 2>/dev/null
+	} | awk -F'\t' '$1 == "C" { built[$2]; next } !($2 in built) { print $2 }'
+}
+
+# Succeed if the repo of the given directory (e.g. /var/lib/pgsql/rpm18) has to
+# be synced: it has new, rebuilt or removed RPMs, or an earlier sync of it did
+# not finish. A sync leaves the .sync-pending file in the directory until it
+# has finished, as the staging directories already match the build directories
+# when the upload to S3 fails or is interrupted, and nothing else would tell
+# that the repo is not up to date. Build directories without any RPMs are not
+# treated as if all the RPMs were removed: that needs an explicit sync.
+repo_needs_sync() {
+	local base="$1"
+
+	[ -e "$base/.sync-pending" ] && return 0
+	[ -n "$(list_new_rpms "$base" || true)" ] && return 0
+	[ -z "$(list_removed_rpms "$base" || true)" ] && return 1
+
+	if [ -z "$(find "$base/RPMS/$osarch" "$base/RPMS/noarch" "$base/SRPMS" -name '*.rpm' -print -quit 2>/dev/null || true)" ]; then
+		echo "${red}WARNING:${reset} $base has no RPMs in its build directories, but has staged ones. Not syncing it automatically." 1>&2
+		return 1
+	fi
+	return 0
+}
+
 # Check that a gpg-agent is running to sign with. The build scripts call this
 # at the start, so that a long build is not wasted on packages which then
 # cannot be signed.

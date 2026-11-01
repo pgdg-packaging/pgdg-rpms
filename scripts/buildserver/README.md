@@ -446,19 +446,22 @@ function), and no package name to sign is given:
 ## packagesync.sh
 
 Publishes built RPMs to the production (or testing) repository. This is the
-most capable script in the collection. It must be called with explicit sync
-targets; running it without arguments prints the usage message.
+most capable script in the collection. Without `--sync`, it syncs only the
+repos that need it (see below); with `--sync`, it always syncs the given
+targets. `--help` prints the usage message.
 
 ### Usage
 
 ```
-packagesync.sh [--testing] --sync=<target>
+packagesync.sh [--testing] [--sync=<target>]
 ```
 
 Multiple space-separated targets can be combined inside a single `--sync`
 value:
 
 ```bash
+packagesync.sh                               # only the repos that need it
+packagesync.sh --testing                     # same, for the testing repos
 packagesync.sh --sync=all                    # common + extras + all stable versions
 packagesync.sh --sync=common                 # only the common repo
 packagesync.sh --sync=extras                 # only the extras repo
@@ -472,6 +475,35 @@ packagesync.sh --sync="pg common extras"
 packagesync.sh --testing --sync=18           # version 18 in testing repos
 packagesync.sh --testing --sync=pg           # all versions in testing repos
 ```
+
+### Syncing only the repos that need it
+
+Without `--sync`, the script checks the common repo, the extras repo (if
+enabled) and each version of `pgStableBuilds` (`pgTestBuilds` with
+`--testing`), and syncs a repo if (`repo_needs_sync` in `global.sh`):
+
+- it has new or rebuilt RPMs (`list_new_rpms`), or
+- RPMs were removed from its build directories (`list_removed_rpms`), or
+- its `.sync-pending` file exists: a sync creates this file in the repo's
+  base directory (e.g. `/var/lib/pgsql/rpm18`) before changing anything, and
+  removes it after the repo was published. Once a sync has updated the
+  staging directories, they match the build directories, so without this
+  file a failed or interrupted upload to S3 would never be retried. A failed
+  `aws` or `createrepo` command leaves the file and makes the script exit
+  with status 1.
+
+If nothing needs a sync, the script says so and exits. Otherwise it continues
+as with `--sync` for the repos it found.
+
+- Alpha and beta builds are never selected, as they use the same directories
+  as the testing repos. Use `--sync=alpha` or `--sync=beta`.
+- If a repo has staged RPMs but none in its build directories, it is not
+  synced, and a warning is printed. An explicit `--sync` would empty the repo.
+- CloudFront caches are not invalidated, as with `--sync=pg`: run
+  `awsupdateindex.sh` after all builders synced.
+- Only local state is compared, not S3. When a repo has to be published without
+  changes, e.g. after setting `osislatest=1` on a new minor version, use an
+  explicit `--sync`.
 
 ### Signature and corruption check
 
@@ -559,8 +591,10 @@ Equivalent of `packagesync.sh` for non-free packages. Key differences:
 - Uses stricter error handling (`set -euo pipefail`) and validates
   prerequisites (AWS CLI, credentials, `rsync`, `createrepo`, `gpg2`)
   before starting.
-- Accepts an optional positional argument to restrict sync to a single
-  PostgreSQL version. CloudFront caches are invalidated only then, as in
+- Accepts an optional positional argument to sync a single PostgreSQL
+  version. Without it, it syncs only the versions that need it, after copying
+  the `rpmcommon` packages, like `packagesync.sh` without `--sync`.
+  CloudFront caches are invalidated only with the argument, as in
   `packagesync.sh`; otherwise run `awsupdateindex.sh` after all builders
   synced.
 - Runs the same signature and corruption check (`verify_signed` and

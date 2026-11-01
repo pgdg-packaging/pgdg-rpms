@@ -37,8 +37,13 @@ TESTING_MODE=0
 usage() {
 	echo "Usage: $0 [--testing] [--sync=<option> [option2 ...]]"
 	echo ""
+	echo "Without --sync, sync only the common, extras and PostgreSQL version repos"
+	echo "which have new, rebuilt or removed RPMs, or whose last sync did not finish."
+	echo "Alpha and beta builds are synced only with --sync."
+	echo ""
 	echo "Options:"
 	echo "  --testing            Enable testing mode (syncs to testing repositories)"
+	echo "  --help               Show this help"
 	echo ""
 	echo "Sync Options:"
 	echo "  --sync=all           Sync common, extras, and all PostgreSQL versions"
@@ -59,6 +64,7 @@ usage() {
 	echo "  - 'pg' keyword (all versions)"
 	echo ""
 	echo "Examples:"
+	echo "  $0"
 	echo "  $0 --sync=all"
 	echo "  $0 --sync=common"
 	echo "  $0 --sync=extras"
@@ -72,6 +78,7 @@ usage() {
 	echo "  $0 --sync=\"pg common extras\""
 	echo ""
 	echo "Testing mode examples:"
+	echo "  $0 --testing"
 	echo "  $0 --testing --sync=18"
 	echo "  $0 --testing --sync=pg"
 	echo "  $0 --testing --sync=\"17 18\""
@@ -141,6 +148,40 @@ preflight_signature_check() {
 	fi
 }
 
+# Record failures of the commands that publish the repo, which the sync
+# functions do not check, so that a failed repo stays marked as pending:
+sync_step_failed=0
+sync_errors=0
+aws() {
+	local rc=0
+	command aws "$@" || rc=$?
+	[ $rc -eq 0 ] || sync_step_failed=1
+	return $rc
+}
+createrepo() {
+	local rc=0
+	command createrepo "$@" || rc=$?
+	[ $rc -eq 0 ] || sync_step_failed=1
+	return $rc
+}
+
+# Mark the repo of the given directory as pending before it is changed, see
+# repo_needs_sync in global.sh:
+sync_begin() {
+	sync_step_failed=0
+	touch "$1/.sync-pending"
+}
+
+# Remove the mark if the repo was published without errors:
+sync_end() {
+	if [ $sync_step_failed -eq 0 ]; then
+		rm -f "$1/.sync-pending"
+	else
+		echo "${red}ERROR:${reset} Syncing $1 failed. Run this script again to retry."
+		sync_errors=1
+	fi
+}
+
 # Function to sync common RPMs
 sync_common() {
 	if [ $TESTING_MODE -eq 1 ]; then
@@ -163,6 +204,7 @@ sync_common() {
 	mkdir -p $COMMON_RPM_DIR
 	mkdir -p $COMMON_SRPM_DIR
 	mkdir -p $COMMON_DEBUG_RPM_DIR
+	sync_begin "$(sync_source_dir common)"
 
 	# rsync binary and source RPMs to their own directories:
 	if [ $TESTING_MODE -eq 1 ]; then
@@ -239,6 +281,7 @@ sync_common() {
 		fi
 	fi
 
+	sync_end "$(sync_source_dir common)"
 	echo "${green}=== Common RPMs sync completed ===${reset}"
 }
 
@@ -268,6 +311,7 @@ sync_extras() {
 	mkdir -p $EXTRAS_RPM_DIR
 	mkdir -p $EXTRAS_SRPM_DIR
 	mkdir -p $EXTRAS_DEBUG_RPM_DIR
+	sync_begin "$BASE_DIR"
 
 	# rsync binary and source RPMs to their own directories:
 	rsync --checksum -av --delete --stats $BASE_DIR/RPMS/$osarch/ $BASE_DIR/RPMS/noarch/ $EXTRAS_RPM_DIR
@@ -333,6 +377,8 @@ sync_extras() {
 		fi
 	fi
 
+	sync_end "$BASE_DIR"
+
 	if [ $TESTING_MODE -eq 1 ]; then
 		echo "${green}=== Extras RPMs sync completed (TESTING MODE) ===${reset}"
 	else
@@ -372,6 +418,7 @@ sync_alpha_beta() {
 	mkdir -p $RPM_DIR
 	mkdir -p $SRPM_DIR
 	mkdir -p $DEBUG_RPM_DIR
+	sync_begin "$BASE_DIR"
 
 	# rsync binary and source RPMs to their own directories:
 	rsync --checksum -av --delete --stats $BASE_DIR/RPMS/$osarch/ $BASE_DIR/RPMS/noarch/ $RPM_DIR
@@ -418,6 +465,7 @@ sync_alpha_beta() {
 		queue_cf_invalidation debug "/debug/testing/$osdistro/$os-$osarch/repodata"
 	fi
 
+	sync_end "$BASE_DIR"
 	echo "${green}=== PostgreSQL $packageSyncVersion $build_type RPMs sync completed ===${reset}"
 }
 
@@ -446,6 +494,7 @@ sync_pg_version() {
 	mkdir -p $RPM_DIR
 	mkdir -p $SRPM_DIR
 	mkdir -p $DEBUG_RPM_DIR
+	sync_begin "$BASE_DIR"
 
 	# rsync binary and source RPMs to their own directories:
 	rsync --checksum -av --delete --stats $BASE_DIR/RPMS/$osarch/ $BASE_DIR/RPMS/noarch/ $RPM_DIR
@@ -505,6 +554,8 @@ sync_pg_version() {
 		fi
 	fi
 
+	sync_end "$BASE_DIR"
+
 	if [ $TESTING_MODE -eq 1 ]; then
 		echo "${green}=== PostgreSQL $packageSyncVersion TESTING RPMs sync completed ===${reset}"
 	else
@@ -514,10 +565,8 @@ sync_pg_version() {
 
 # Parse command line arguments
 SYNC_TARGETS=""
-
-if [ $# -eq 0 ]; then
-	usage
-fi
+# 1 when no --sync was passed: find out which repos have to be synced below.
+AUTO_MODE=1
 
 for arg in "$@"
 do
@@ -528,7 +577,11 @@ do
 			;;
 		--sync=*)
 			SYNC_TARGETS="${arg#*=}"
+			AUTO_MODE=0
 			shift
+			;;
+		--help)
+			usage
 			;;
 		*)
 			echo "${red}ERROR:${reset} Unknown argument: $arg"
@@ -544,6 +597,29 @@ if [ $TESTING_MODE -eq 1 ]; then
 	echo "${green}Using pgTestBuilds versions: ${VERSIONS_ARRAY[@]}${reset}"
 else
 	declare -a VERSIONS_ARRAY=("${pgStableBuilds[@]}")
+fi
+
+# Without --sync, sync only the repos which have to be synced. Alpha and beta
+# builds use the same directories as the testing repos of those versions, so
+# they are not added here. These are not explicit versions (see below), as a
+# run without --sync is meant for all builders.
+if [ $AUTO_MODE -eq 1 ]; then
+	declare -a auto_candidates=(common)
+	[ "$extrasrepoenabled" == 1 ] && auto_candidates+=(extras)
+	auto_candidates+=("${VERSIONS_ARRAY[@]}")
+
+	for target in "${auto_candidates[@]}"
+	do
+		if repo_needs_sync "$(sync_source_dir "$target")"; then
+			SYNC_TARGETS+="${SYNC_TARGETS:+ }$target"
+		fi
+	done
+
+	if [ -z "$SYNC_TARGETS" ]; then
+		echo "${green}Nothing to sync: no repo has new, rebuilt or removed RPMs.${reset}"
+		exit 0
+	fi
+	echo "${green}Repos to sync: $SYNC_TARGETS${reset}"
 fi
 
 # Process sync targets
@@ -606,7 +682,7 @@ else
 				if [[ "${VERSIONS_ARRAY[@]}" =~ (^|[[:space:]])"$target"($|[[:space:]]) ]]
 				then
 					versions_to_sync+=($target)
-					explicit_versions+=($target)
+					[ $AUTO_MODE -eq 1 ] || explicit_versions+=($target)
 				else
 					echo "${red}ERROR:${reset} Invalid sync option or unsupported PostgreSQL version: $target"
 					echo ""
@@ -677,6 +753,11 @@ if [ ${#explicit_versions[@]} -gt 0 ]; then
 	flush_cf_invalidations
 else
 	echo "${green}Not invalidating CloudFront caches: run awsupdateindex.sh after all builders synced.${reset}"
+fi
+
+if [ $sync_errors -ne 0 ]; then
+	echo "${red}ERROR:${reset} Some repos were not synced completely, see above."
+	exit 1
 fi
 
 echo "${green}All sync operations completed successfully!${reset}"
