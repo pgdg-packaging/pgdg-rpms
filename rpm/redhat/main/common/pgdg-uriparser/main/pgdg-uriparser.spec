@@ -15,7 +15,7 @@
 %endif
 
 Name:		pgdg-%{sname}
-Version:	1.0.2
+Version:	1.0.3
 Release:	1PGDG%{?dist}
 Summary:	URI parsing library - RFC 3986
 License:	BSD-3-Clause
@@ -80,6 +80,12 @@ developing applications that use %{sname}.
 %{uriparserinstdir}/lib64/pkgconfig/
 
 %changelog
+* Sat Oct 31 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.3-1PGDG
+- Update to 1.0.3 per changes described at
+  https://github.com/uriparser/uriparser/blob/uriparser-1.0.3/ChangeLog .
+  Fixes CVE-2026-48841. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/504
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-uriparser, so that the GIS stack does not need the EPEL
