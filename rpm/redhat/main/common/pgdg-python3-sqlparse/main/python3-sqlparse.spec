@@ -24,8 +24,8 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	0.6.0
-Release:	4PGDG%{?dist}
+Version:	0.6.1
+Release:	1PGDG%{?dist}
 Summary:	Non-validating SQL parser module for Python
 
 License:	BSD-3-Clause
@@ -80,6 +80,11 @@ support for parsing, splitting and formatting SQL statements.
 %{python3_sitelib}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Mon Nov 2 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.1-1PGDG
+- Update to 0.6.1, which fixes CVE-2026-112307 and a denial of service in
+  format(). This is the final upstream release. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/512
+
 * Sat Oct 24 2026 Devrim Gündüz <devrim@gunduz.org> - 0.6.0-4PGDG
 - Add RHEL 8 and 9 support, for pgcli. Build with python3.12 on RHEL 9,
   whose python3 is 3.9, and do not ship sqlformat there, which conflicts
