@@ -17,8 +17,8 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	4PGDG%{?dist}
-Summary:	PostgreSQL username/password checks
+Release:	5PGDG%{?dist}
+Summary:	Reject queries that scan all partitions of a partitioned table
 License:	PostgreSQL
 URL:		https://github.com/HexaCluster/%{sname}
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -91,6 +91,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-5PGDG
+- Fix Summary, which was copied from another package.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
