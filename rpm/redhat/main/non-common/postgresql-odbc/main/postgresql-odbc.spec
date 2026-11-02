@@ -1,6 +1,6 @@
 %global pgodbcmajver 18
 %global pgodbcmidver 00
-%global pgodbcminver 0005
+%global pgodbcminver 0006
 
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
@@ -12,7 +12,7 @@ URL:		https://odbc.postgresql.org/
 Source0:	https://github.com/postgresql-interfaces/psqlodbc/archive/refs/tags/REL-%{pgodbcmajver}_%{pgodbcmidver}_%{pgodbcminver}.tar.gz
 Source1:	acinclude.m4
 
-BuildRequires:	autoconf krb5-devel pam-devel automake libtool
+BuildRequires:	autoconf krb5-devel make pam-devel automake libtool
 BuildRequires:	pam-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	unixODBC-devel
 
@@ -96,6 +96,12 @@ popd
 %license license.txt
 
 %changelog
+* Mon Nov 2 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0006-1PGDG
+- Update to 18.00.0006 per changes described at:
+  https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-18_00_0006
+  This release fixes CVE-2026-120057 to CVE-2026-120067.
+- Add missing make BR
+
 * Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0005-1PGDG
 - Update to 18.00.0005 per changes described at:
   https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-18_00_0005
