@@ -16,11 +16,14 @@
 
 # On RHEL, libsodium comes from pgdg-libsodium (EPEL is not needed), which
 # does not provide its soname; it is found through the rpath. The Makefile
-# sets these variables, so override them on the make command line:
+# sets these variables, so override them on the make command line. Pass the
+# full path of the library instead of -L and -lsodium: PGXS puts the LDFLAGS
+# of PostgreSQL, which include -L/usr/lib64, before SHLIB_LINK, so -lsodium
+# picks EPEL's libsodium, when libsodium-devel is installed on the build host:
 %if 0%{?rhel}
 %global __requires_exclude ^libsodium\\.so
 %global sodium_includedir %{pgdg_libsodiuminstdir}/include
-%global sodium_make_args PG_CPPFLAGS="-O0 -I%{sodium_includedir}" SHLIB_LINK="-L%{pgdg_libsodiuminstdir}/lib64 -Wl,-rpath,%{pgdg_libsodiuminstdir}/lib64 -lsodium"
+%global sodium_make_args PG_CPPFLAGS="-O0 -I%{sodium_includedir}" SHLIB_LINK="%{pgdg_libsodiuminstdir}/lib64/libsodium.so -Wl,-rpath,%{pgdg_libsodiuminstdir}/lib64"
 %else
 %global sodium_includedir %{_includedir}
 %global sodium_make_args %{nil}
@@ -29,7 +32,7 @@
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.11
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -40,8 +43,8 @@ Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.g
 Patch0:		%{sname}-ipcrypt-old-libsodium.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel
 %if 0%{?rhel}
-BuildRequires:	pgdg-srpm-macros >= 2.3.0 pgdg-libsodium-devel
-Requires:	pgdg-libsodium%{?_isa}
+BuildRequires:	pgdg-srpm-macros >= 2.3.0 pgdg-libsodium-devel >= 1.0.22
+Requires:	pgdg-libsodium%{?_isa} >= 1.0.22
 %else
 BuildRequires:	libsodium-devel
 %endif
@@ -104,6 +107,12 @@ This package provides JIT support for pgsodium
 %build
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{sodium_make_args}
+%if 0%{?rhel}
+# The soname is filtered out of Requires, so nothing else would catch a link
+# against any other libsodium:
+sodium_soname=$(readelf -d %{pgdg_libsodiuminstdir}/lib64/libsodium.so | sed -n 's/.*(SONAME).*\[\(.*\)\]$/\1/p')
+readelf -d %{sname}.so | grep -F "(NEEDED)" | grep -qF "[$sodium_soname]"
+%endif
 
 %install
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{sodium_make_args} install DESTDIR=%{buildroot}
@@ -150,6 +159,14 @@ pg_prove -d postgres -p $(pgdg_check_port plain) test/test.sql
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-8PGDG
+- RHEL: Link against the libsodium of pgdg-libsodium by its full path:
+  -lsodium picked EPEL's libsodium on the build hosts, so pgsodium.so
+  needed libsodium.so.23 on RHEL 8 and 9, which pgdg-libsodium does not
+  have, and could not be loaded. Fail the build on such a link, and
+  require pgdg-libsodium >= 1.0.22. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/518
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-7PGDG
 - Use the patch from upstream PR https://github.com/michelp/pgsodium/pull/125
   to build the ipcrypt functions as stubs with libsodium older than 1.0.21,
