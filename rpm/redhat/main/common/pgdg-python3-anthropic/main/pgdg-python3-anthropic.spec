@@ -21,8 +21,8 @@ Name:		python%{python3_pkgversion}-anthropic
 Version:	0.40.0
 Release:	4PGDG%{?dist}
 %else
-Version:	2.3.0
-Release:	2PGDG%{?dist}
+Version:	2.4.0
+Release:	1PGDG%{?dist}
 %endif
 Summary:	The official Python library for the anthropic API
 
@@ -118,6 +118,11 @@ The Claude SDK for Python provides access to the Claude API from Python applicat
 %endif
 
 %changelog
+* Tue Nov 03 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.0-1PGDG
+- Update to 2.4.0 on Fedora, per changes described at:
+  https://github.com/anthropics/anthropic-sdk-python/releases/tag/v2.4.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/517
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.40.0-4PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
