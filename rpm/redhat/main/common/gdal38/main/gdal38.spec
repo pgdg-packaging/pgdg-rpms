@@ -60,7 +60,7 @@
 
 Name:		%{sname}38
 Version:	%{gdalmajorversion}.5
-Release:	12PGDG%{?dist}
+Release:	13PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -92,7 +92,8 @@ BuildRequires:	ant
 %if 0%{?rhel}
 BuildRequires:	pgdg-armadillo-devel pgdg-cfitsio-devel pgdg-freexl-devel
 BuildRequires:	pgdg-hdf-devel pgdg-hdf5-devel pgdg-libdeflate-devel
-BuildRequires:	pgdg-libgta-devel pgdg-netcdf-devel pgdg-xerces-c-devel
+BuildRequires:	pgdg-libgta-devel pgdg-libkml-devel pgdg-netcdf-devel
+BuildRequires:	pgdg-xerces-c-devel
 %ifnarch ppc64le
 BuildRequires:	pgdg-libarrow-devel
 %endif
@@ -270,7 +271,8 @@ Requires:	geos%{geosmajorversion} >= %{geosfullversion}
 # are filtered out below):
 Requires:	pgdg-armadillo%{?_isa} pgdg-cfitsio%{?_isa} pgdg-freexl%{?_isa}
 Requires:	pgdg-hdf%{?_isa} pgdg-hdf5%{?_isa} pgdg-libdeflate%{?_isa}
-Requires:	pgdg-libgta%{?_isa} pgdg-netcdf%{?_isa} pgdg-xerces-c%{?_isa}
+Requires:	pgdg-libgta%{?_isa} pgdg-libkml%{?_isa} pgdg-netcdf%{?_isa}
+Requires:	pgdg-xerces-c%{?_isa}
 Requires:	pgdg-gpsbabel
 %ifnarch ppc64le
 Requires:	pgdg-libarrow%{?_isa}
@@ -346,7 +348,7 @@ manipulating GDAL file format library
 # RHEL: do not require the sonames of the pgdg-* libraries, which are not
 # provided (they are found through the rpath); see the Requires above:
 %if 0%{?rhel}
-%global __requires_exclude ^lib(armadillo|arrow[a-z_]*|parquet|cfitsio|freexl|hdf|mfhdf|hdf5[a-z_]*|sz|aec|deflate|gta|minizip|netcdf|uriparser|xerces-c[-0-9.]*|blosc|arpack|superlu)\\.so
+%global __requires_exclude ^lib(armadillo|arrow[a-z_]*|parquet|cfitsio|freexl|hdf|mfhdf|hdf5[a-z_]*|sz|aec|deflate|gta|kml[a-z]*|minizip|netcdf|uriparser|xerces-c[-0-9.]*|blosc|arpack|superlu)\\.so
 %endif
 
 %prep
@@ -379,7 +381,7 @@ LDFLAGS="$LDFLAGS -L%{projinstdir}/lib64 -L%{libgeotiffinstdir}/lib -L%{geosinst
 # the same attribute name), which GDAL 3.8 still uses:
 export CXXFLAGS="$CXXFLAGS -D_FillValue=NC_FillValue"
 export CFLAGS="$CFLAGS -D_FillValue=NC_FillValue"
-for p in armadillo arpack arrow blosc cfitsio freexl hdf hdf5 libaec libdeflate libgta minizip-ng netcdf superlu uriparser xerces-c; do
+for p in armadillo arpack arrow blosc cfitsio freexl hdf hdf5 libaec libdeflate libgta libkml minizip-ng netcdf superlu uriparser xerces-c; do
 	PGDGPREFIXES="${PGDGPREFIXES};/usr/pgdg-$p"
 	PKG_CONFIG_PATH="${PKG_CONFIG_PATH:+$PKG_CONFIG_PATH:}/usr/pgdg-$p/lib64/pkgconfig"
 	LDFLAGS="$LDFLAGS -Wl,-rpath,/usr/pgdg-$p/lib64"
@@ -536,6 +538,12 @@ done
 %endif
 
 %changelog
+* Mon Nov 2 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-13PGDG
+- RHEL: Build against pgdg-libkml. It was not a BuildRequires on RHEL, so
+  the build picked up EPEL's libkml where the builder has libkml-devel,
+  and gdal38-libs could not be installed without EPEL.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-12PGDG
 - RHEL: build against our pgdg-* packages (armadillo, cfitsio, freexl,
   hdf, hdf5, libarrow, libdeflate, libgta, netcdf, xerces-c) instead of the
