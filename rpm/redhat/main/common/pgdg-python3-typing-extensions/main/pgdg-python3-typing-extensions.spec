@@ -20,7 +20,6 @@
 %endif
 
 %if %{pgdg_altstack}
-%global	__ospython %{_bindir}/python3.12
 %global	__python3 %{_bindir}/python3.12
 %global	python3_pkgversion 3.12
 %else
@@ -33,10 +32,10 @@
 Name:		python%{python3_pkgversion}-%{modname}
 %if %{pgdg_altstack}
 Version:	4.12.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %else
 Version:	4.16.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %endif
 Summary:	Backported and experimental type hints for Python
 
@@ -142,6 +141,11 @@ echo rpm > $(echo %{buildroot}%{os_sitelib}/*.dist-info)/INSTALLER
 %endif
 
 %changelog
+* Tue Nov 03 2026 Devrim Gunduz <devrim@gunduz.org> - 4.12.2-4PGDG
+- Remove the __ospython definition, which nothing used. 4.16.0 on SLES 16
+  gets the same bump, to 4.16.0-4PGDG. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 4.12.2-3PGDG
 - RHEL 9: Also build the default python3 (3.9) flavor, in the new
   python3-typing-extensions subpackage, which python3-psycopg3 needs:
