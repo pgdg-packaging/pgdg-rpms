@@ -16,7 +16,7 @@
 
 Summary:	Hypothetical Indexes support for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.4
+Version:	1.4.5
 Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/HypoPG/hypopg/archive/%{version}.tar.gz
@@ -97,6 +97,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Sun Nov 1 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.5-1PGDG
+- Update to 1.4.5 per changes described at:
+  https://github.com/HypoPG/hypopg/releases/tag/1.4.5
+
 * Mon Oct 26 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.4-1PGDG
 - Update to 1.4.4 per changes described at:
   https://github.com/HypoPG/hypopg/releases/tag/1.4.4
