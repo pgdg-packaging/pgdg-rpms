@@ -1,15 +1,15 @@
 %global sname psycopg2
 %global pname python311-%{sname}
 
-%global __ospython %{_bindir}/python3.11
+%global __python3 %{_bindir}/python3.11
 
-%{expand: %%global pybasever %(echo `%{__ospython} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
-%{!?python311_sitearch: %global python311_sitearch %(%{__ospython} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))")}
+%{expand: %%global pybasever %(echo `%{__python3} -c "import sys; sys.stdout.write(sys.version[:4])"`)}
+%{!?python311_sitearch: %global python311_sitearch %(%{__python3} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(2))")}
 
 Summary:	A PostgreSQL database adapter for Python 3.11
 Name:		python311-%{sname}
 Version:	2.9.9
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://www.psycopg.org
@@ -39,11 +39,11 @@ This sub-package delivers set of tests for the adapter.
 %build
 
 export PATH=%{pginstdir}/bin:$PATH
-%{__ospython} setup.py build
+%{__python3} setup.py build
 
 %install
 export PATH=%{pginstdir}/bin:$PATH
-%{__ospython} setup.py install --no-compile --root %{buildroot}
+%{__python3} setup.py install --no-compile --root %{buildroot}
 
 # Copy tests directory:
 %{__mkdir} -p %{buildroot}%{python311_sitearch}/%{sname}/
@@ -67,6 +67,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{python311_sitearch}/%{sname}/tests
 
 %changelog
+* Tue Nov 03 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.9-2PGDG
+- Use __python3 instead of __ospython. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+
 * Mon Feb 19 2024 Devrim Gündüz <devrim@gunduz.org> - 2.9.9-1PGDG
 - Initial packaging for Python 3.11 to support pg_activity dependencies
   on SLES 15.
