@@ -17,7 +17,7 @@
 Summary:	Postgres extension to parse a US street address string into its component parts.
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.7.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/postgis/%{sname}
@@ -26,7 +26,7 @@ Requires:	postgresql%{pgmajorversion}-server postgis3_%{pgmajorversion} >= 3.7
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 Requires:	pcre2
 %else
 Requires:	libpcre2-8-0
@@ -96,6 +96,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Mon Nov 2 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-5PGDG
+- Require pcre2 on Amazon Linux 2023. libpcre2-8-0 is the SUSE package
+  name, which broke the installation there.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
