@@ -60,7 +60,7 @@
 
 Name:		%{sname}38
 Version:	%{gdalmajorversion}.5
-Release:	13PGDG%{?dist}
+Release:	14PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -387,6 +387,10 @@ for p in armadillo arpack arrow blosc cfitsio freexl hdf hdf5 libaec libdeflate 
 	LDFLAGS="$LDFLAGS -Wl,-rpath,/usr/pgdg-$p/lib64"
 done
 export PKG_CONFIG_PATH LDFLAGS
+# GDAL 3.8 looks for the HDF4 library as "df" first, in all directories. That
+# finds EPEL's libdf.so in /usr/lib64 if hdf-devel is installed, and pgdg-hdf
+# ships libhdf.so:
+HDF4FLAGS="-DHDF4_df_LIBRARY_RELEASE=/usr/pgdg-hdf/lib64/libhdf.so -DHDF4_mfhdf_LIBRARY_RELEASE=/usr/pgdg-hdf/lib64/libmfhdf.so"
 %endif
 
 %if 0%{?rhel} == 8
@@ -411,6 +415,7 @@ export PYTHON=/usr/bin/python3.12
  -DSPATIALITE_LIBRARY=%{libspatialiteinstdir}/lib/libspatialite.so \
  -DGDAL_JAVA_INSTALL_DIR=%{_jnidir}/%{name} \
  -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}${PGDGPREFIXES}" \
+ ${HDF4FLAGS} \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
 %if 0%{?rhel} == 8
  -DGDAL_USE_ARCHIVE=OFF \
@@ -538,6 +543,13 @@ done
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-14PGDG
+- RHEL: Link against the HDF4 libraries of pgdg-hdf. GDAL 3.8 looks for
+  the HDF4 library as "df" first, and picked EPEL's libdf.so.0 from
+  /usr/lib64 where hdf-devel is installed, so gdal38-libs could not be
+  installed without EPEL. Pass the library paths explicitly.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Mon Nov 2 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-13PGDG
 - RHEL: Build against pgdg-libkml. It was not a BuildRequires on RHEL, so
   the build picked up EPEL's libkml where the builder has libkml-devel,
