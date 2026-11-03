@@ -62,8 +62,8 @@ Epoch:		1
 Version:	3.2.13
 Release:	4PGDG%{?dist}
 %else
-Version:	3.3.6
-Release:	45PGDG%{?dist}
+Version:	3.3.7
+Release:	42PGDG%{?dist}
 %endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
@@ -407,6 +407,12 @@ fi
 %endif
 
 %changelog
+* Tue Nov 03 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.7-42PGDG
+- Update to 3.3.7 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.7
+  RHEL 9 stays on 3.2.13.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/521
+
 * Sat Oct 24 2026 Devrim Gunduz <devrim@gunduz.org> - 1:3.2.13-4PGDG
 - RHEL 9: Also build the C extensions for python3.12, in the new
   python3.12-psycopg3-c subpackage, which pgcli needs. Per
