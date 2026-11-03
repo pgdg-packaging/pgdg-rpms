@@ -15,7 +15,7 @@
 %if 0%{?rhel} == 8
 %global		arrowversion 15.0.2
 %else
-%global		arrowversion 26.0.0
+%global		arrowversion 26.0.1
 %endif
 
 # Dependencies that RHEL does not ship are built into the Arrow libraries
@@ -30,7 +30,7 @@
 %else
 %global		re2version 2023-03-01
 %global		simdjsonversion 4.6.4
-%global		thriftversion 0.22.0
+%global		thriftversion 0.24.0
 %global		utf8procversion 2.10.0
 %global		xsimdversion 14.2.0
 %endif
@@ -183,6 +183,11 @@ cd cpp
 %{arrowinstdir}/share/
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 26.0.1-1PGDG
+- Update to 26.0.1 on RHEL 9 and 10, per changes described at
+  https://github.com/apache/arrow/releases/tag/apache-arrow-26.0.1
+- Update the built-in Thrift to 0.24.0, like upstream.
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 26.0.0-1PGDG
 - Arrow 15.0.2 on RHEL 8, for GDAL 3.8 (gdal38).
 - Initial packaging for the PostgreSQL RPM repository, installed under
