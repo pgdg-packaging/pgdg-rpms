@@ -27,10 +27,11 @@
 Name:		python%{python3_pkgversion}-%{modname}
 %if %{pgdg_gauth247}
 Version:	2.47.0
-%else
-Version:	2.62.0
-%endif
 Release:	44PGDG%{?dist}
+%else
+Version:	2.62.1
+Release:	42PGDG%{?dist}
+%endif
 %if 0%{?rhel} == 10
 # EPEL's python3-google-auth has Epoch 1, and obsoletes
 # python3.12-google-auth < 1:<its version>, which matched ours, whatever our
@@ -198,6 +199,12 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Tue Nov 03 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.62.1-42PGDG
+- Update to 2.62.1 on RHEL 8 and 10, per changes described at:
+  https://pypi.org/project/google-auth/2.62.1/
+  RHEL 9 and Amazon Linux 2023 stay on 2.47.0.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/520
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.62.0-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
