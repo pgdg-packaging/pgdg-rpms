@@ -17,14 +17,29 @@
 # directory of the JRE package instead: it also ends up in the RUNPATH of
 # jdbc_fdw.so, so it must exist without the -devel package. On AL2023, use
 # the real directory: the /usr/lib/jvm/java-25-amazon-corretto link only
-# exists while Corretto 25 is the newest one installed.
+# exists while Corretto 25 is the newest one installed. On RHEL, the
+# builders also have JDK 8 and java-latest, so java_sdk_openjdk may not be
+# the JDK the package requires: use that JDK for linking and for javac too.
+%if 0%{?rhel} == 8
+%global rhel_jdk 11
+%endif
+%if 0%{?rhel} == 9
+%global rhel_jdk 17
+%endif
+%if 0%{?rhel} == 10
+%global rhel_jdk 21
+%endif
 %if 0%{?amzn}
 %global jvm_libdir_arg LIBDIR=/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/lib/server
 %else
 %if 0%{?suse_version} >= 1500
 %global jvm_libdir_arg LIBDIR=/usr/lib64/jvm/jre-21-openjdk/lib/server
 %else
+%if 0%{?rhel_jdk}
+%global jvm_libdir_arg LIBDIR=/usr/lib/jvm/jre-%{rhel_jdk}-openjdk/lib/server
+%else
 %global jvm_libdir_arg %{nil}
+%endif
 %endif
 %endif
 
@@ -123,6 +138,9 @@ export PATH=/usr/lib/jvm/java-openjdk/bin:$PATH
 %if 0%{?amzn}
 export PATH=/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/bin:$PATH
 %endif
+%if 0%{?rhel_jdk}
+export PATH=/usr/lib/jvm/java-%{rhel_jdk}-openjdk/bin:$PATH
+%endif
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{jvm_libdir_arg}
 
@@ -152,6 +170,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-10PGDG
 - Fix the build on Amazon Linux 2023 and SLES: link against libjvm.so in
   the directories it really is, instead of the OpenJDK alternative.
+- On RHEL, link against and compile with the JDK the package requires
+  (11/17/21 on RHEL 8/9/10), instead of the java_sdk_openjdk alternative,
+  which can point to another JDK on the builders.
 
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-9PGDG
 - Add jdbc_fdw-0.5.0-pg18.patch, fixing three PG18 build breaks:
