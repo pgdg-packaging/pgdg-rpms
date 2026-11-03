@@ -1,7 +1,7 @@
 %global sname	set_user
 
 %global setusermajver 4
-%global setusermidver 2
+%global setusermidver 3
 %global setuserminver 0
 
 %{!?llvm:%global llvm 1}
@@ -21,7 +21,7 @@
 Summary:	PostgreSQL extension allowing privilege escalation with enhanced logging and control
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{setusermajver}.%{setusermidver}.%{setuserminver}
-Release:	6PGDG%{?dist}
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgaudit/%{sname}
 Source0:	https://github.com/pgaudit/%{sname}/archive/refs/tags/REL%{setusermajver}_%{setusermidver}_%{setuserminver}.tar.gz
@@ -101,6 +101,13 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 4.3.0-1PGDG
+- Update to 4.3.0, per changes described at:
+  https://github.com/pgaudit/set_user/releases/tag/REL4_3_0
+  This release fixes security issues that let a session escalated by
+  set_user() return to the original role without the reset token, or
+  crash the backend.
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.0-6PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it
