@@ -25,6 +25,8 @@ BuildRequires:	libxml2-devel javapackages-tools gcc-c++
 %if 0%{?rhel} == 8
 BuildRequires:	java-11-openjdk-devel
 Requires:	java-11-openjdk
+# %%javac and %%jar use %%{java_home}, which defaults to JDK 8 on RHEL 8:
+%global java_home /usr/lib/jvm/java-11-openjdk
 %else
 %if 0%{?rhel} == 9
 BuildRequires:	java-17-openjdk-devel
@@ -162,6 +164,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
   java-openjdk alternative, and SLES 16 has no java alternatives. Pin
   Java 21 on SUSE, like the builders have.
 - Add missing gcc-c++ BuildRequires: libhive is C++.
+- Use JDK 11 for %%javac and %%jar on RHEL 8, which used JDK 8 and so
+  failed without it, though the package requires JDK 11.
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-6PGDG
 - Pin java-11/17/21-openjdk(-devel) on RHEL 8/9/10 respectively (and
