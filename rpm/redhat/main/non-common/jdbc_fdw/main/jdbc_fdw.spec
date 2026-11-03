@@ -15,9 +15,11 @@
 # The Makefile links against /etc/alternatives/java_sdk_openjdk, which
 # Corretto does not provide, and which does not exist on SLES 16. Use a
 # directory of the JRE package instead: it also ends up in the RUNPATH of
-# jdbc_fdw.so, so it must exist without the -devel package.
+# jdbc_fdw.so, so it must exist without the -devel package. On AL2023, use
+# the real directory: the /usr/lib/jvm/java-25-amazon-corretto link only
+# exists while Corretto 25 is the newest one installed.
 %if 0%{?amzn}
-%global jvm_libdir_arg LIBDIR=/usr/lib/jvm/java-25-amazon-corretto/lib/server
+%global jvm_libdir_arg LIBDIR=/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/lib/server
 %else
 %if 0%{?suse_version} >= 1500
 %global jvm_libdir_arg LIBDIR=/usr/lib64/jvm/jre-21-openjdk/lib/server
@@ -119,7 +121,7 @@ export PATH=/usr/lib64/jvm/java-21-openjdk/bin:$PATH
 export PATH=/usr/lib/jvm/java-openjdk/bin:$PATH
 %endif
 %if 0%{?amzn}
-export PATH=/usr/lib/jvm/java-25-amazon-corretto/bin:$PATH
+export PATH=/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/bin:$PATH
 %endif
 
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{jvm_libdir_arg}
