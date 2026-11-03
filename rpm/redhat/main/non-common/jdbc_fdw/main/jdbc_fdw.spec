@@ -12,10 +12,24 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# The Makefile links against /etc/alternatives/java_sdk_openjdk, which
+# Corretto does not provide, and which does not exist on SLES 16. Use a
+# directory of the JRE package instead: it also ends up in the RUNPATH of
+# jdbc_fdw.so, so it must exist without the -devel package.
+%if 0%{?amzn}
+%global jvm_libdir_arg LIBDIR=/usr/lib/jvm/java-25-amazon-corretto/lib/server
+%else
+%if 0%{?suse_version} >= 1500
+%global jvm_libdir_arg LIBDIR=/usr/lib64/jvm/jre-21-openjdk/lib/server
+%else
+%global jvm_libdir_arg %{nil}
+%endif
+%endif
+
 Summary:	JDBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
@@ -38,8 +52,13 @@ Requires:	java-21-openjdk
 BuildRequires:	java-25-amazon-corretto-devel
 Requires:	java-25-amazon-corretto
 %else
+%if 0%{?suse_version} >= 1500
+BuildRequires:	java-21-openjdk-devel
+Requires:	java-21-openjdk
+%else
 BuildRequires:	java-devel
 Requires:	java
+%endif
 %endif
 %endif
 %endif
@@ -94,17 +113,20 @@ This package provides JIT support for jdbc_fdw
 %build
 
 %if 0%{?suse_version} >= 1500
-export PATH=/usr/lib64/jvm/java-openjdk/bin:$PATH
+export PATH=/usr/lib64/jvm/java-21-openjdk/bin:$PATH
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 8
 export PATH=/usr/lib/jvm/java-openjdk/bin:$PATH
 %endif
+%if 0%{?amzn}
+export PATH=/usr/lib/jvm/java-25-amazon-corretto/bin:$PATH
+%endif
 
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{jvm_libdir_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDIR=%{buildroot} %{with_llvm_arg} %{jvm_libdir_arg}
 # Install README and howto file under PostgreSQL installation directory:
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
@@ -125,6 +147,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-10PGDG
+- Fix the build on Amazon Linux 2023 and SLES: link against libjvm.so in
+  the directories it really is, instead of the OpenJDK alternative.
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-9PGDG
 - Add jdbc_fdw-0.5.0-pg18.patch, fixing three PG18 build breaks:
   (1) commands/explain.h now only forward-declares "struct ExplainState"
