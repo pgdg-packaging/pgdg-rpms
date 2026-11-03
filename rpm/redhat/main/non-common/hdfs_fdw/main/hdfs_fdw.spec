@@ -16,12 +16,12 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.3
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
-BuildRequires:	libxml2-devel javapackages-tools
+BuildRequires:	libxml2-devel javapackages-tools gcc-c++
 %if 0%{?rhel} == 8
 BuildRequires:	java-11-openjdk-devel
 Requires:	java-11-openjdk
@@ -38,8 +38,13 @@ Requires:	java-21-openjdk
 BuildRequires:	java-25-amazon-corretto-devel
 Requires:	java-25-amazon-corretto
 %else
+%if 0%{?suse_version} >= 1500
+BuildRequires:	java-21-openjdk-devel
+Requires:	java-21-openjdk
+%else
 BuildRequires:	java-devel
 Requires:	java
+%endif
 %endif
 %endif
 %endif
@@ -85,15 +90,26 @@ export JDK_INCLUDE="/usr/lib/jvm/java-openjdk/include/"
 export JRE_LIBDIR="/usr/lib/jvm/java-openjdk/lib/amd64/server/"
 export JVM_LIB="/usr/lib/jvm/java-openjdk/lib/amd64/server/"
 %endif
-%if 0%{?fedora} || 0%{?rhel} >= 9
+%if ( 0%{?fedora} || 0%{?rhel} >= 9 ) && !0%{?amzn}
 export JDK_INCLUDE="/usr/lib/jvm/java-openjdk/include/"
 export JRE_LIBDIR="/usr/lib/jvm/java-openjdk/lib/server/"
 export JVM_LIB="/usr/lib/jvm/java-openjdk/lib/server/"
 %endif
+# Corretto does not provide the java-openjdk alternative, and its own
+# java-25-amazon-corretto link only exists while Corretto 25 is the newest
+# one installed. SLES 16 has no java alternatives at all. So use the
+# versioned JDK directories there.
+# Only JDK_INCLUDE is used: libhive dlopen()s libjvm.so from the
+# hdfs_fdw.jvmpath setting at runtime.
+%if 0%{?amzn}
+export JDK_INCLUDE="/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/include/"
+export JRE_LIBDIR="/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/lib/server/"
+export JVM_LIB="/usr/lib/jvm/java-25-amazon-corretto.%{_arch}/lib/server/"
+%endif
 %if 0%{?suse_version} >= 1500
-export JDK_INCLUDE="/usr/lib64/jvm/java/include/"
-export JRE_LIBDIR="/usr/lib64/jvm/java/lib/server/"
-export JVM_LIB="/usr/lib64/jvm/java/lib/server/"
+export JDK_INCLUDE="/usr/lib64/jvm/java-21-openjdk/include/"
+export JRE_LIBDIR="/usr/lib64/jvm/jre-21-openjdk/lib/server/"
+export JVM_LIB="/usr/lib64/jvm/jre-21-openjdk/lib/server/"
 %endif
 
 pushd libhive
@@ -140,6 +156,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-7PGDG
+- Fix the build on Amazon Linux 2023 and SLES 16: use the JNI headers of
+  the versioned JDK directories, as Corretto does not provide the
+  java-openjdk alternative, and SLES 16 has no java alternatives. Pin
+  Java 21 on SUSE, like the builders have.
+- Add missing gcc-c++ BuildRequires: libhive is C++.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-6PGDG
 - Pin java-11/17/21-openjdk(-devel) on RHEL 8/9/10 respectively (and
   java-25-amazon-corretto on Amazon Linux 2023), instead of the
