@@ -464,6 +464,11 @@ export PKG_CONFIG_PATH LDFLAGS
  -DSPATIALITE_LIBRARY=%{libspatialiteinstdir}/lib/libspatialite.so \
  -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}${PGDGPREFIXES}" \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
+%ifarch ppc64le
+ -DGDAL_USE_ARROW=OFF \
+ -DGDAL_USE_ARROWDATASET=OFF \
+ -DGDAL_USE_PARQUET=OFF \
+%endif
 %if 0%{?rhel} >= 9
  -DCMAKE_CXX_STANDARD=20 \
 %endif
@@ -617,6 +622,11 @@ done
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/462
+- RHEL ppc64le: Do not build the Arrow and Parquet drivers. pgdg-libarrow
+  is not available on ppc64le, so the build picked EPEL's libarrow from
+  the build hosts, and gdal313-libs needed libarrow.so.900 or
+  libarrow.so.1700 there without requiring it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/422
 
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-9PGDG
 - Build with C++20 on RHEL 9 and 10: the headers of Arrow 26

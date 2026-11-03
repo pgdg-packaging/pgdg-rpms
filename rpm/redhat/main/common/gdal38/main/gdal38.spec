@@ -60,7 +60,7 @@
 
 Name:		%{sname}38
 Version:	%{gdalmajorversion}.5
-Release:	14PGDG%{?dist}
+Release:	15PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -417,6 +417,10 @@ export PYTHON=/usr/bin/python3.12
  -DCMAKE_PREFIX_PATH="%{geosinstdir};%{libgeotiffinstdir}${PGDGPREFIXES}" \
  ${HDF4FLAGS} \
  -DGDAL_USE_JPEG12_INTERNAL=OFF \
+%ifarch ppc64le
+ -DGDAL_USE_ARROW=OFF \
+ -DGDAL_USE_PARQUET=OFF \
+%endif
 %if 0%{?rhel} == 8
  -DGDAL_USE_ARCHIVE=OFF \
  -DGDAL_USE_OGDI=OFF \
@@ -543,6 +547,12 @@ done
 %endif
 
 %changelog
+* Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-15PGDG
+- RHEL ppc64le: Do not build the Arrow and Parquet drivers. pgdg-libarrow
+  is not available on ppc64le, so the build picked EPEL's libarrow from
+  the build hosts, and gdal38-libs needed libarrow.so.800 there without
+  requiring it. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/422
+
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-14PGDG
 - RHEL: Link against the HDF4 libraries of pgdg-hdf. GDAL 3.8 looks for
   the HDF4 library as "df" first, and picked EPEL's libdf.so.0 from
