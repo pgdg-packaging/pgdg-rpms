@@ -15,7 +15,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.6.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	PostgreSQL Protocol Buffers logical decoder plugin
 
 License:	MIT
@@ -30,8 +30,11 @@ BuildRequires:	libprotobuf-c-devel
 Requires:	libprotobuf-c1
 %else
 %if 0%{?fedora} >= 45
-BuildRequires:	protobuf3-c-devel
-Requires:	protobuf3-c
+# Fedora 45 ships both protobuf-c and protobuf3-c, which obsoletes it. Both
+# provide protobuf-c and libprotobuf-c, so accept either: requiring
+# protobuf3-c conflicted with installed protobuf-c-devel/-compiler packages.
+BuildRequires:	pkgconfig(libprotobuf-c)
+Requires:	protobuf-c
 %else
 BuildRequires:	protobuf-c-devel
 Requires:	protobuf-c
@@ -89,6 +92,13 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.1-3PGDG
+- Fedora 45: Require protobuf-c and BuildRequire pkgconfig(libprotobuf-c),
+  which both protobuf-c and protobuf3-c provide, instead of protobuf3-c.
+  protobuf3-c obsoletes protobuf-c, so the package could not be installed
+  next to protobuf-c-devel or protobuf-c-compiler, and blocked
+  dnf system-upgrade from Fedora 44 on such systems.
+
 * Sat Sep 19 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.1-2PGDG
 - Fedora 45: protobuf-c(-devel) is now protobuf3-c(-devel). Use the new names.
 
