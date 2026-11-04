@@ -14,8 +14,8 @@
 %endif
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.5
-Release:	2PGDG%{?dist}
+Version:	2.0.6
+Release:	1PGDG%{?dist}
 Summary:	PostgreSQL extension used for indexing the sky
 License:	GPLv2
 URL:		https://github.com/segasai/%{sname}
@@ -83,6 +83,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Thu Nov 5 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.6-1PGDG
+- Update to 2.0.6 per changes described at:
+  https://github.com/segasai/q3c/releases/tag/v2.0.6
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/538
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.5-2PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
