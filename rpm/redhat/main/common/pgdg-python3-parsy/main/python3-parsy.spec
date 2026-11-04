@@ -6,8 +6,9 @@
 %global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{sname}
+%pgdg_python3_obsoletes_prev
 Version:	2.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	Easy and elegant way to parse text in Python
 License:	MIT
 URL:		https://github.com/python-%{sname}/%{sname}/
@@ -56,6 +57,12 @@ documentation and it doesn't say things like that!
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-6PGDG
+- Fedora 45: Obsolete the Fedora 44 package, python3.14-parsy, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-5PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

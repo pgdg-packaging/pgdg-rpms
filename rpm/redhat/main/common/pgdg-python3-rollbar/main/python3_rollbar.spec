@@ -3,9 +3,10 @@
 %global sname	rollbar
 
 Name:		python%{python3_pkgversion}-%{sname}
+%pgdg_python3_obsoletes_prev
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	1.4.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -93,6 +94,12 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-8PGDG
+- Fedora 45: Obsolete the Fedora 44 package, python3.14-rollbar, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-7PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

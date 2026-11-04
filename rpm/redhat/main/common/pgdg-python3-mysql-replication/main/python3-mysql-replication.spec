@@ -3,8 +3,9 @@
 %global sname	mysql-replication
 
 Name:		python%{python3_pkgversion}-%{sname}
+%pgdg_python3_obsoletes_prev
 Version:	1.0.17
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -63,6 +64,12 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-7PGDG
+- Fedora 45: Obsolete the Fedora 44 package, python3.14-mysql-replication, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-6PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

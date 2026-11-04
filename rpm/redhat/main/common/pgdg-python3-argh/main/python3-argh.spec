@@ -3,10 +3,11 @@
 %global	modname argh
 
 Name:		python%{python3_pkgversion}-%{modname}
+%pgdg_python3_obsoletes_prev
 # pg_statviz (the only consumer) requires argh < 0.30:
 Epoch:		1
 Version:	0.29.4
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	An unobtrusive argparse wrapper with natural syntax
 
 License:	LGPLv3+
@@ -57,6 +58,12 @@ BuildRequires:	glibc-langpack-en
 %{python3_sitelib}/argh*/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.29.4-3PGDG
+- Fedora 45: Obsolete the Fedora 44 package, python3.14-argh, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.29.4-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

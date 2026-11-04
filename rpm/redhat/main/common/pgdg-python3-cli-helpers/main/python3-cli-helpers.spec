@@ -32,8 +32,10 @@
 
 Summary:	Python helpers for common CLI tasks
 Name:		python%{python3_pkgversion}-cli-helpers
+%pgdg_python3_obsoletes_prev
+%pgdg_python3_obsoletes_prev python%{python3_pkgversion}-cli-helpers+styles
 Version:	2.15.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD-3-Clause
 URL:		https://github.com/dbcli/cli_helpers
 Source0:	https://github.com/dbcli/cli_helpers/archive/refs/tags/v%{version}.tar.gz
@@ -91,6 +93,12 @@ command-line interfaces.
 %{python3_sitelib}/%{pypi_name}-%{version}.dist-info/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 2.15.3-2PGDG
+- Fedora 45: Obsolete the Fedora 44 packages, python3.14-cli-helpers and
+  python3.14-cli-helpers+styles, with %%pgdg_python3_obsoletes_prev from
+  pgdg-srpm-macros 2.6.0. They were not replaced on upgrades, and their
+  python(abi) = 3.14 dependency blocked dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.15.3-1PGDG
 - Update to 2.15.3 per changes described at:
   https://github.com/dbcli/cli_helpers/releases/tag/v2.15.3
