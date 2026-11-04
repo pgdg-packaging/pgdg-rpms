@@ -3,6 +3,15 @@
 %global sname pgpool-II
 %{!?runselftest:%global runselftest 0}
 
+# EL-10 and Fedora >= 44: ship a local SELinux policy module that lets
+# sshd_session_t search/read the postgres user's home dir (postgresql_db_t),
+# so that SSH pubkey auth via ~/.ssh/authorized_keys works:
+%if 0%{?rhel} >= 10 || 0%{?fedora} >= 44
+%global sshd_selinux 1
+%else
+%global sshd_selinux 0
+%endif
+
 # On RHEL 10, libmemcached comes from pgdg-libmemcached-awesome (EPEL is not
 # needed), which does not provide its sonames; it is found through the rpath:
 %if 0%{?rhel} == 10
@@ -15,7 +24,7 @@
 Summary:		Pgpool is a connection pooling/replication server for PostgreSQL
 Name:			%{sname}
 Version:		4.7.3
-Release:		4PGDG%{?dist}
+Release:		5PGDG%{?dist}
 License:		BSD
 URL:			https://pgpool.net
 Source0:		https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -25,6 +34,7 @@ Source6:		%{sname}-sysusers.conf
 Source7:		%{sname}-tmpfiles.d
 # Runs the regression suite in %%check
 Source8:		%{sname}-check.sh
+Source9:		%{sname}-sshd-selinux.te
 Patch1:			%{sname}-conf.sample.patch
 
 BuildRequires:		gcc
@@ -77,6 +87,9 @@ BuildRequires:	openssl-devel
 %endif
 
 BuildRequires:		systemd
+%if %sshd_selinux
+BuildRequires:	selinux-policy-devel
+%endif
 # We require this to be present for %%{_prefix}/lib/tmpfiles.d
 Requires:		systemd
 %if 0%{?suse_version} && 0%{?suse_version} >= 1500
@@ -183,6 +196,13 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
 %{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{sname}.conf
 
+%if %sshd_selinux
+checkmodule -M -m -o pgpool_II_sshd_fix.mod %{SOURCE9}
+semodule_package -o pgpool_II_sshd_fix.pp -m pgpool_II_sshd_fix.mod
+%{__install} -d -m 755 %{buildroot}%{_datadir}/selinux/packages
+%{__install} -m 644 pgpool_II_sshd_fix.pp %{buildroot}%{_datadir}/selinux/packages/
+%endif
+
 # nuke libtool archive and static lib
 %{__rm} -f %{buildroot}%{_libdir}/libpgpoolpcp.{a,la}
 # Remove bitcode files
@@ -202,6 +222,10 @@ export PATH=%{pginstdir}/bin/:$PATH
 # Create log directory
 %{__mkdir} -p /var/log/%{name}
 %{__chown} postgres: /var/log/%{name}
+%if %sshd_selinux
+%{_sbindir}/selinuxenabled 2>/dev/null && \
+	%{_sbindir}/semodule -i %{_datadir}/selinux/packages/pgpool_II_sshd_fix.pp >/dev/null 2>&1 || :
+%endif
 
 %preun
 %systemd_preun %{sname}.service
@@ -214,6 +238,14 @@ fi
 /sbin/ldconfig
 
 %systemd_postun_with_restart %{sname}.service
+
+%if %sshd_selinux
+if [ $1 -eq 0 ] ; then
+	# Package removal, not upgrade
+	%{_sbindir}/selinuxenabled 2>/dev/null && \
+		%{_sbindir}/semodule -r pgpool_II_sshd_fix >/dev/null 2>&1 || :
+fi
+%endif
 
 %files
 %doc README TODO INSTALL AUTHORS ChangeLog NEWS
@@ -231,6 +263,9 @@ fi
 %{_sysusersdir}/%{name}-pgdg.conf
 %{_tmpfilesdir}/%{name}.conf
 %{_unitdir}/%{sname}.service
+%if %sshd_selinux
+%{_datadir}/selinux/packages/pgpool_II_sshd_fix.pp
+%endif
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %files devel
@@ -259,6 +294,14 @@ fi
 %{_libdir}/libpgpoolpcp.so*
 
 %changelog
+* Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-5PGDG
+- EL-10 and Fedora 44+: Ship a local SELinux policy module (loaded in %%post)
+  that allows sshd_session_t to search/read postgresql_db_t, fixing SSH
+  pubkey auth for the postgres user via ~/.ssh/authorized_keys (used by
+  the failover and online recovery scripts) on pgpool-II hosts without a
+  postgresqlNN-server package (which ships the same rules). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/533
+
 * Thu Oct 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-4PGDG
 - Bump up release to avoid duplicate builds on RHEL 10.
 
