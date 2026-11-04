@@ -56,8 +56,9 @@
 %global	pymodname google_crc32c
 
 Name:		%{pgdg_pyname}-%{modname}
+%pgdg_python3_obsoletes_prev
 Version:	1.9.0
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	A python wrapper of the C library 'Google CRC32C'
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -130,6 +131,12 @@ export LDFLAGS="%{?build_ldflags} -L$PWD/pgdg-crc32c/lib"
 %{pgdg_pysitelib}/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.9.0-4PGDG
+- Fedora 45: Obsolete the Fedora 44 package, pgdg-python3.14-google-crc32c, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.9.0-3PGDG
 - Rename the package to pgdg-python3.X-<module> on all distributions, as
   on SUSE, and obsolete the old python3.X-<module> package. On RHEL 10,

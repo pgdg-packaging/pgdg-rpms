@@ -54,8 +54,9 @@
 %global	pymodname google_cloud_bigquery
 
 Name:		%{pgdg_pyname}-%{modname}
+%pgdg_python3_obsoletes_prev
 Version:	3.47.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Google BigQuery API client library
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -121,6 +122,12 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 3.47.0-2PGDG
+- Fedora 45: Obsolete the Fedora 44 package, pgdg-python3.14-google-cloud-bigquery, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.47.0-1PGDG
 - Update to 3.47.0 per changes described at:
   https://pypi.org/project/google-cloud-bigquery/3.47.0/

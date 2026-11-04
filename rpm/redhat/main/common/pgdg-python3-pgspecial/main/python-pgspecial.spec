@@ -25,8 +25,9 @@
 %{?python_enable_dependency_generator}
 
 Name:		python%{python3_pkgversion}-%{sname}
+%pgdg_python3_obsoletes_prev
 Version:	2.2.1
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Epoch:		1
 Summary:	Meta-commands handler for Postgres Database.
 
@@ -84,6 +85,12 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.2.1-5PGDG
+- Fedora 45: Obsolete the Fedora 44 package, python3.14-pgspecial, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Wed Sep 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.2.1-4PGDG
 - Enable the Python dependency generator, so that the runtime Requires
   (click, sqlparse, psycopg) are also generated on SUSE.

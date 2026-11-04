@@ -8,8 +8,9 @@
 
 Summary:	Compare and synchronize PostgreSQL database schemas
 Name:		python%{python3_pkgversion}-%{sname}
+%pgdg_python3_obsoletes_prev
 Version:	0.10.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/perseas/%{cname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/perseas/%{cname}/
@@ -62,6 +63,12 @@ Andromeda Project. This is Python 3 version.
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-8PGDG
+- Fedora 45: Obsolete the Fedora 44 package, python3.14-pyrseas, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.10.0-7PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0, and build with its
   Python everywhere, not only on Amazon Linux 2023. The package is now

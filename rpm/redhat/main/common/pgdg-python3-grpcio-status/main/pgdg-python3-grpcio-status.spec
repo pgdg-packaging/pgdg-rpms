@@ -54,8 +54,9 @@
 %global	pymodname grpcio_status
 
 Name:		%{pgdg_pyname}-%{modname}
+%pgdg_python3_obsoletes_prev
 Version:	1.85.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Status proto mapping for gRPC
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -108,6 +109,12 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.1-2PGDG
+- Fedora 45: Obsolete the Fedora 44 package, pgdg-python3.14-grpcio-status, with
+  %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
+  replaced on upgrades, and its python(abi) = 3.14 dependency blocked
+  dnf system-upgrade.
+
 * Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.1-1PGDG
 - Update to 1.85.1 per changes described at:
   https://github.com/grpc/grpc/releases/tag/v1.85.1
