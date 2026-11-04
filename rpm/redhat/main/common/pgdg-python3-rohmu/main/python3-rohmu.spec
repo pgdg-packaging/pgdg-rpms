@@ -5,18 +5,25 @@
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
+# RHEL 9: build for Python 3.12, as the Python modules rohmu needs are
+# packaged for it (in the OS and the PGDG repository), not for the default
+# python3 (3.9):
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
 
 %global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 %global sname rohmu
 
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 Name:		python%{python3_pkgversion}-%{sname}
 %else
 Name:		python3-%{sname}
 %endif
 Version:	2.8.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Epoch:		1
 Summary:	Python library for building backup tools for databases
 
@@ -24,7 +31,11 @@ License:	Apache 2.0
 URL:		https://github.com/aiven/%{sname}
 Source0:	https://github.com/aiven/%{sname}/archive/refs/tags/releases/%{version}.tar.gz
 
-%if 0%{?amzn} == 2023
+%if 0%{?rhel} == 9
+# The previous builds were for the default python3 (3.9):
+Obsoletes:	python3-%{sname} < 1:2.8.2-6PGDG
+%endif
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-hatchling python%{python3_pkgversion}-hatch-vcs
 %else
@@ -106,16 +117,6 @@ grep -q '^from __future__ import annotations' rohmu/common/models.py
 # above) instead of generated requirements:
 sed -i -E '/^ *"(azure-common|azure-storage-blob|botocore|google-api-python-client|httplib2|oauth2client|paramiko|python-snappy|python-swiftclient)[ ",]/d' pyproject.toml
 %endif
-%if 0%{?rhel} == 9
-# EPEL 9 has pydantic 1.10.14, which is the v1 API itself: the pydantic.v1
-# namespace rohmu imports was added in 1.10.17. Import pydantic there, and
-# require a 1.x version:
-sed -i 's/^\( *\)"pydantic >= 1.10.17",/\1"pydantic >= 1.10.14, < 2",/' pyproject.toml
-grep -q '"pydantic >= 1.10.14, < 2"' pyproject.toml
-sed -i -e 's/^import pydantic\.v1 as pyd$/import pydantic as pyd/' -e 's/^from pydantic\.v1 import /from pydantic import /' \
-	rohmu/common/models.py rohmu/common/statsd.py rohmu/delta/common.py rohmu/object_storage/config.py
-! grep -rq 'pydantic\.v1' rohmu
-%endif
 %if 0%{?amzn} == 2023
 # google-api-python-client needs a newer google-api-core than the
 # distribution has. On Amazon Linux 2023 both are in the private PGDG Python
@@ -165,6 +166,13 @@ export PGDG_PACKAGE_VERSION=%{version}
 %{python3_sitelib}/%{sname}/
 
 %changelog
+* Tue Nov 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-6PGDG
+- RHEL 9: Build for Python 3.12 (python3.12-rohmu), which obsoletes
+  python3-rohmu. The Python 3.9 build needed EPEL's pydantic 1.10, and
+  zstandard, which nothing provides for Python 3.9 without EPEL. Python 3.12
+  has pydantic 2 in the PGDG repository, so drop the pydantic 1.10
+  adjustments. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 1:2.8.2-5PGDG
 - Make the modules of the storage backends weak dependencies on all
   distributions but Amazon Linux 2023: they do not all exist there (EPEL

@@ -5,20 +5,20 @@
 %global	python3_sitearch %{_libdir}/python3.11/site-packages
 %endif
 
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 Name:		python%{python3_pkgversion}-snappy
 %else
 Name:		python3-snappy
 %endif
 Epoch:		1
 Version:	0.6.1
-Release:	43PGDG%{?dist}
+Release:	44PGDG%{?dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
 Source:		https://files.pythonhosted.org/packages/source/p/python-snappy/python-snappy-%{version}.tar.gz
 
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 BuildRequires:	gcc-c++ pkgconfig snappy-devel
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-packaging
 BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-setuptools
@@ -33,7 +33,7 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-%if ! 0%{?amzn}
+%if ! 0%{?amzn} && 0%{?rhel} != 9
 Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 %endif
@@ -57,6 +57,11 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Tue Nov 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1:0.6.1-44PGDG
+- Add RHEL 9 support (python3.12-snappy), for rohmu and pghoard, which are
+  now built for Python 3.12 there. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

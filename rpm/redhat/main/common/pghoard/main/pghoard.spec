@@ -4,17 +4,22 @@
 %global	__python3 %{_bindir}/python3.13
 %global	python3_pkgversion 3.13
 %endif
+# RHEL 9: build for Python 3.12, like rohmu:
+%if 0%{?rhel} == 9
+%global	__python3 %{_bindir}/python3.12
+%global	python3_pkgversion 3.12
+%endif
 
 Summary:	PostgreSQL backup daemon and restore tooling for cloud object storage
 Name:		pghoard
 Version:	2.8.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	Apache License 2.0
 Source0:	https://github.com/Aiven-Open/%{name}/archive/refs/tags/%{version}.tar.gz
 Patch0:		pghoard-pyproject.toml.patch
 URL:		https://github.com/Aiven-Open/%{name}
 BuildArch:	noarch
-%if 0%{?amzn} == 2023
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
 Requires:	python%{python3_pkgversion}-rohmu
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-hatchling
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -101,6 +106,12 @@ SETUPTOOLS_SCM_PRETEND_VERSION=%{version} %pyproject_wheel
 %license LICENSE
 
 %changelog
+* Tue Nov 3 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-5PGDG
+- RHEL 9: Build for Python 3.12, like rohmu, so that pghoard can be
+  installed without EPEL: the Python 3.9 modules it needs (pydantic,
+  zstandard, python-snappy) are only in EPEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Fri Oct 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.8.0-4PGDG
 - Postpone the evaluation of the annotations of pghoard/object_store.py:
   pghoard failed to start on Python 3.9 (RHEL 9).
