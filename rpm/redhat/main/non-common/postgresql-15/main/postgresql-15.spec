@@ -85,9 +85,9 @@ Version:	15.19
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420006PGDG%{?dist}
+Release:	420007PGDG%{?dist}
 %else
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1009,7 +1009,7 @@ run_testsuite()
 %if %sysuserd
 # We need this user to be created ASAP so that we can set up
 # ownership of some directories:
-%sysusers_create_package %{name} %SOURCE20
+%sysusers_create_package %{name}-pgdg %SOURCE20
 %else
 # This is replaced by sysusers.d in recent OSes:
 groupadd -g 26 -o -r postgres >/dev/null 2>&1 || :
@@ -1501,6 +1501,16 @@ fi
 %endif
 
 %changelog
+* Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 15.19-7PGDG
+- Use the same sysusers.d file name in %%pre server as the one installed
+  under %%{_sysusersdir}, so that an override in /etc/sysusers.d/ is honoured
+  both during package installation and by systemd-sysusers.service (Fedora
+  43 and later).
+- Order the unit after nss-user-lookup.target, so that the postgres user can
+  be resolved via directory services (SSSD, winbind, nslcd ...) at boot.
+- Document how to prevent the creation of the local postgres user on servers
+  that get it from a central directory service.
+
 * Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 15.19-6PGDG
 - Fix the llvm-devel and clang-devel dependencies of the -devel subpackage:
   they were BuildRequires instead of Requires on Fedora, RHEL and Amazon

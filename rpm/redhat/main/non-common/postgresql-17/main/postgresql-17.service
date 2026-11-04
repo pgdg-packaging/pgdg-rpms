@@ -15,6 +15,7 @@ Description=PostgreSQL 17 database server
 Documentation=https://www.postgresql.org/docs/17/static/
 After=syslog.target
 After=network-online.target
+After=nss-user-lookup.target
 StartLimitIntervalSec=120
 StartLimitBurst=10
 

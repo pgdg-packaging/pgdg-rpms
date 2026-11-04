@@ -40,9 +40,9 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	rc1_420003PGDG%{?dist}
+Release:	rc1_420004PGDG%{?dist}
 %else
-Release:	rc1_3PGDG%{?dist}
+Release:	rc1_4PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -894,7 +894,7 @@ run_testsuite()
 %endif
 
 %pre server
-%sysusers_create_package %{name} %SOURCE20
+%sysusers_create_package %{name}-pgdg %SOURCE20
 
 %post server
 /sbin/ldconfig
@@ -1408,6 +1408,15 @@ fi
 %endif
 
 %changelog
+* Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-4PGDG
+- Use the same sysusers.d file name in %%pre server as the one installed
+  under %%{_sysusersdir}, so that an override in /etc/sysusers.d/ is honoured
+  both during package installation and by systemd-sysusers.service.
+- Order the unit after nss-user-lookup.target, so that the postgres user can
+  be resolved via directory services (SSSD, winbind, nslcd ...) at boot.
+- Document how to prevent the creation of the local postgres user on servers
+  that get it from a central directory service.
+
 * Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-3PGDG
 - Fix the bindir path in the Makefile of the -test subpackage: it pointed
   to /usr/pgsql-87/bin/ instead of the major version's bindir. Per report from
