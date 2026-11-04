@@ -12,7 +12,7 @@ Name:		python3-snappy
 %endif
 Epoch:		1
 Version:	0.6.1
-Release:	44PGDG%{?dist}
+Release:	45PGDG%{?dist}
 Summary:	Python library for the snappy compression library
 License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
@@ -34,7 +34,6 @@ BuildRequires:	pyproject-rpm-macros
 %endif
 
 %if ! 0%{?amzn} && 0%{?rhel} != 9
-Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
 %endif
 
@@ -57,6 +56,10 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 %{python3_sitearch}/*
 
 %changelog
+* Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.6.1-45PGDG
+- Remove the Provides: python3-%%{sname} line: sname is not defined, so
+  the package provided the literal "python3-%%{sname}" string.
+
 * Tue Nov 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1:0.6.1-44PGDG
 - Add RHEL 9 support (python3.12-snappy), for rohmu and pghoard, which are
   now built for Python 3.12 there. Per
