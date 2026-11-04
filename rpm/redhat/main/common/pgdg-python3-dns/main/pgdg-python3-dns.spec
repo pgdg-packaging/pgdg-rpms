@@ -2,7 +2,7 @@
 
 Name:		python%{python3_pkgversion}-dns
 Version:	2.9.2
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -24,7 +24,6 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-Provides:	python3-%{sname}%{?_isa} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(dnspython) = %{version}-%{release}
 
 %description
@@ -61,6 +60,10 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.2-43PGDG
+- Remove the Provides: python3-%%{sname} line: sname is not defined, so
+  the package provided the literal "python3-%%{sname}" string.
+
 * Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.2-42PGDG
 - Update to 2.9.2 per changes described at:
   https://github.com/rthalley/dnspython/releases/tag/v2.9.2
