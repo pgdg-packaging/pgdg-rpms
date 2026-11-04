@@ -69,6 +69,24 @@ bash, and the home directory set to /var/lib/pgsql.  This user also has no
 default password.  If you want to be able to su to it from a non-root account
 or login as 'postgres' you will need to set a password using passwd.
 
+The user is created by systemd-sysusers, from the configuration file
+/usr/lib/sysusers.d/postgresql20-pgdg.conf. If the postgres user comes from a
+central directory service (Active Directory, FreeIPA, LDAP ...), a local user
+may be created when the directory service is not reachable (for example during
+image builds, kickstart installations, or early in the boot process), which
+then shadows the directory user. To prevent this, create a file with the same
+name under /etc/sysusers.d/ before installing the server subpackage, either to
+disable the creation of the user:
+
+	ln -s /dev/null /etc/sysusers.d/postgresql20-pgdg.conf
+
+or to make the local user match the UID/GID of the directory user:
+
+	u postgres <uid>:<gid> 'PostgreSQL Server' /var/lib/pgsql /usr/bin/bash
+
+The systemd unit is ordered after nss-user-lookup.target, so the postgres user
+is resolved via the directory service when the server is started at boot.
+
 In the default installation, only postgres user is allowed to access to 
 the database server, because initdb in the RPMs pick up "peer" auth 
 method in the RPMs. 

@@ -896,7 +896,7 @@ run_testsuite()
 %endif
 
 %pre server
-%sysusers_create_package %{name} %SOURCE20
+%sysusers_create_package %{name}-pgdg %SOURCE20
 
 %post server
 /sbin/ldconfig
@@ -1408,6 +1408,15 @@ fi
 %endif
 
 %changelog
+* Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-11PGDG
+- Use the same sysusers.d file name in %%pre server as the one installed
+  under %%{_sysusersdir}, so that an override in /etc/sysusers.d/ is honoured
+  both during package installation and by systemd-sysusers.service.
+- Order the unit after nss-user-lookup.target, so that the postgres user can
+  be resolved via directory services (SSSD, winbind, nslcd ...) at boot.
+- Document how to prevent the creation of the local postgres user on servers
+  that get it from a central directory service.
+
 * Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-10PGDG
 - Fix the bindir path in the Makefile of the -test subpackage: it pointed
   to /usr/pgsql-87/bin/ instead of the major version's bindir. Per report from
