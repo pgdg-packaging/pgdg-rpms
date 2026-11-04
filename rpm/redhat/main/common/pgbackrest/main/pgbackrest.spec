@@ -3,6 +3,15 @@
 
 %{!?runselftest:%global runselftest 0}
 
+# EL-10 and Fedora >= 44: ship a local SELinux policy module that lets
+# sshd_session_t search/read the postgres user's home dir (postgresql_db_t),
+# so that SSH pubkey auth via ~/.ssh/authorized_keys works:
+%if 0%{?rhel} >= 10 || 0%{?fedora} >= 44
+%global sshd_selinux 1
+%else
+%global sshd_selinux 0
+%endif
+
 # On RHEL, libssh2 comes from pgdg-libssh2 (EPEL is not needed), which does
 # not provide its soname; it is found through the rpath:
 %if 0%{?rhel}
@@ -12,7 +21,7 @@
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
 Version:	2.60.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -21,6 +30,7 @@ Source3:	%{name}.logrotate
 Source4:	%{name}.service
 Source6:	%{name}-sysusers.conf
 Source7:	%{name}-tmpfiles.d
+Source8:	%{name}-sshd-selinux.te
 
 BuildRequires:	gcc libpq5-devel libxml2-devel
 %if 0%{?rhel}
@@ -30,6 +40,9 @@ Requires:	pgdg-libssh2%{?_isa}
 BuildRequires:	libssh2-devel
 %endif
 BuildRequires:	libzstd-devel meson zlib-devel
+%if %sshd_selinux
+BuildRequires:	selinux-policy-devel
+%endif
 %if %runselftest
 # The smoke test runs a backup/restore cycle against the PostgreSQL it finds
 BuildRequires:	postgresql%{pgmajorversion}-server python3
@@ -89,6 +102,11 @@ export LDFLAGS="%{build_ldflags} -Wl,-rpath,%{pgdg_libssh2instdir}/lib64"
 %meson -Dlibssh2=enabled
 %meson_build
 
+%if %sshd_selinux
+checkmodule -M -m -o %{name}_sshd_fix.mod %{SOURCE8}
+semodule_package -o %{name}_sshd_fix.pp -m %{name}_sshd_fix.mod
+%endif
+
 %install
 %meson_install
 %{__install} -D -d -m 0700 %{buildroot}/%{_sharedstatedir}/%{name}
@@ -109,6 +127,11 @@ export LDFLAGS="%{build_ldflags} -Wl,-rpath,%{pgdg_libssh2instdir}/lib64"
 
 %{__mkdir} -p %{buildroot}/%{_tmpfilesdir}
 %{__install} -m 0644 %{SOURCE7} %{buildroot}/%{_tmpfilesdir}/%{name}.conf
+
+%if %sshd_selinux
+%{__install} -d -m 755 %{buildroot}%{_datadir}/selinux/packages
+%{__install} -m 644 %{name}_sshd_fix.pp %{buildroot}%{_datadir}/selinux/packages/
+%endif
 
 %check
 %if %runselftest
@@ -131,6 +154,10 @@ if [ $1 -eq 1 ] ; then
    %systemd_post %{name}.service
    %endif
 fi
+%if %sshd_selinux
+%{_sbindir}/selinuxenabled 2>/dev/null && \
+	%{_sbindir}/semodule -i %{_datadir}/selinux/packages/%{name}_sshd_fix.pp >/dev/null 2>&1 || :
+%endif
 
 %preun
 if [ $1 -eq 0 ] ; then
@@ -147,6 +174,14 @@ if [ $1 -ge 1 ] ; then
 	/usr/bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
 fi
 
+%if %sshd_selinux
+if [ $1 -eq 0 ] ; then
+	# Package removal, not upgrade
+	%{_sbindir}/selinuxenabled 2>/dev/null && \
+		%{_sbindir}/semodule -r %{name}_sshd_fix >/dev/null 2>&1 || :
+fi
+%endif
+
 %files
 %defattr(-,root,root)
 %license LICENSE
@@ -156,11 +191,22 @@ fi
 %{_tmpfilesdir}/%{name}.conf
 %{_sysusersdir}/%{name}-pgdg.conf
 %{_unitdir}/%{name}.service
+%if %sshd_selinux
+%{_datadir}/selinux/packages/%{name}_sshd_fix.pp
+%endif
 %attr(-,postgres,postgres) /var/log/%{name}
 %attr(-,postgres,postgres) %{_sharedstatedir}/%{name}
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.0-3PGDG
+- EL-10 and Fedora 44+: Ship a local SELinux policy module (loaded in %%post)
+  that allows sshd_session_t to search/read postgresql_db_t, fixing SSH
+  pubkey auth for the postgres user via ~/.ssh/authorized_keys on
+  pgBackRest hosts without a postgresqlNN-server package (which ships the
+  same rules). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/533
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.0-2PGDG
 - RHEL: build against pgdg-libssh2 (installed under /usr/pgdg-libssh2),
   so that pgBackRest does not need the EPEL libssh2 package anymore. Per
