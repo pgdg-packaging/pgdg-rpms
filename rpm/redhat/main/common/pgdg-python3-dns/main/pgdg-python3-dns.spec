@@ -1,8 +1,8 @@
 %pgdg_python3_setup
 
 Name:		python%{python3_pkgversion}-dns
-Version:	2.9.1
-Release:	43PGDG%{?dist}
+Version:	2.9.2
+Release:	42PGDG%{?dist}
 Summary:	DNS toolkit for Python
 
 Group:		Development/Languages
@@ -61,6 +61,12 @@ find examples -type f | xargs chmod a-x
 %{python3_sitelib}/dns
 
 %changelog
+* Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.2-42PGDG
+- Update to 2.9.2 per changes described at:
+  https://github.com/rthalley/dnspython/releases/tag/v2.9.2
+  This release adds bounds checks to the WKS record parser. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/531
+
 * Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.1-43PGDG
 - Remove the Python 3.15 classifier from pyproject.toml: setuptools rejects
   it when an older trove-classifiers module is installed, as on SLES 16.
