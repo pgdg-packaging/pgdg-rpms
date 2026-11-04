@@ -47,6 +47,15 @@
 # The subpackages require -libs and -ecpg-libs explicitly instead:
 %global __provides_exclude_from ^%{bbfpginstdir}/
 
+# EL-10 and Fedora >= 44: ship a local SELinux policy module that lets
+# sshd_session_t search/read the postgres user's home dir (postgresql_db_t),
+# so that SSH pubkey auth via ~/.ssh/authorized_keys works:
+%if 0%{?rhel} >= 10 || 0%{?fedora} >= 44
+%global sshd_selinux 1
+%else
+%global sshd_selinux 0
+%endif
+
 Summary:	PostgreSQL client programs and libraries, patched for Babelfish
 Name:		%{sname}%{pgmajorversion}
 Version:	18.7
@@ -55,7 +64,7 @@ Version:	18.7
 # which overrides our packages. Increase our release number on SuSE.
 Release:	4200006PGDG%{?dist}
 %else
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 %endif
 License:	PostgreSQL
 URL:		https://github.com/babelfish-for-postgresql/postgresql_modified_for_babelfish
@@ -76,6 +85,7 @@ Source17:	%{sname}-%{pgmajorversion}-setup
 Source18:	%{sname}-%{pgmajorversion}.service
 Source19:	%{sname}-%{pgmajorversion}-tmpfiles.d
 Source20:	%{sname}-%{pgmajorversion}-sysusers.conf
+Source21:	%{sname}-%{pgmajorversion}-sshd-selinux.te
 
 # Upstream PR #807 (merged to BABEL_6_X_DEV__PG_18_X): GCC 15 / C23 build fixes.
 # Not in BABEL_6_3_STABLE__PG_18_7; drop once it is.
@@ -90,6 +100,9 @@ BuildRequires:	gcc gcc-c++ make libcurl-devel >= 7.61.0
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4
 BuildRequires:	libxml2-devel libxslt-devel
+%if %sshd_selinux
+BuildRequires:	selinux-policy-devel
+%endif
 
 # lz4 dependency
 %if 0%{?suse_version} >= 1500
@@ -673,6 +686,13 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 # Install sysusers.d config file to allow rpm to create users/groups automatically.
 %{__install} -m 0644 -D %{SOURCE20} %{buildroot}%{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
 
+%if %sshd_selinux
+checkmodule -M -m -o babelfish_postgresql%{pgmajorversion}_sshd_fix.mod %{SOURCE21}
+semodule_package -o babelfish_postgresql%{pgmajorversion}_sshd_fix.pp -m babelfish_postgresql%{pgmajorversion}_sshd_fix.mod
+%{__install} -d -m 755 %{buildroot}%{_datadir}/selinux/packages
+%{__install} -m 644 babelfish_postgresql%{pgmajorversion}_sshd_fix.pp %{buildroot}%{_datadir}/selinux/packages/
+%endif
+
 %if %test
 	# tests. There are many files included here that are unnecessary,
 	# but include them anyway for completeness. We replace the original
@@ -826,6 +846,10 @@ if [ $1 -eq 1 ] ; then
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
    %systemd_post %{sname}-%{pgmajorversion}.service
 fi
+%if %sshd_selinux
+%{_sbindir}/selinuxenabled 2>/dev/null && \
+	%{_sbindir}/semodule -i %{_datadir}/selinux/packages/babelfish_postgresql%{pgmajorversion}_sshd_fix.pp >/dev/null 2>&1 || :
+%endif
 
 %preun server
 if [ $1 -eq 0 ] ; then
@@ -841,6 +865,14 @@ if [ $1 -ge 1 ] ; then
 	# Package upgrade, not uninstall
 	/bin/systemctl try-restart %{sname}-%{pgmajorversion}.service >/dev/null 2>&1 || :
 fi
+
+%if %sshd_selinux
+if [ $1 -eq 0 ] ; then
+	# Package removal, not upgrade
+	%{_sbindir}/selinuxenabled 2>/dev/null && \
+		%{_sbindir}/semodule -r babelfish_postgresql%{pgmajorversion}_sshd_fix >/dev/null 2>&1 || :
+fi
+%endif
 
 # Unlike the stock packages, there are no update-alternatives entries and no
 # linker configuration file: everything stays under %{bbfpginstdir}.
@@ -1154,6 +1186,9 @@ fi
 %{_sysusersdir}/%{sname}%{pgpackageversion}-pgdg.conf
 %{_tmpfilesdir}/%{sname}-%{pgmajorversion}.conf
 %{_unitdir}/%{sname}-%{pgmajorversion}.service
+%if %sshd_selinux
+%{_datadir}/selinux/packages/babelfish_postgresql%{pgmajorversion}_sshd_fix.pp
+%endif
 %if %pam
 %config(noreplace) /etc/pam.d/postgresql
 %endif
@@ -1226,6 +1261,14 @@ fi
 %endif
 
 %changelog
+* Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 18.7-10PGDG
+- EL-10 and Fedora 44+: Ship a local SELinux policy module (loaded in
+  %%post server) that allows sshd_session_t to search/read postgresql_db_t,
+  fixing SSH pubkey auth for the postgres user via ~/.ssh/authorized_keys
+  on Babelfish hosts without a postgresqlNN-server package (which ships
+  the same rules). Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/533
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 18.7-9PGDG
 - Do not provide the libraries under /usr/babelfish-18 (libpq.so.5,
   libecpg.so.6 etc.): they are only found through the rpath, but dnf used
