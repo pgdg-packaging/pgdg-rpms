@@ -1,5 +1,6 @@
 %global sname	passwordpolicy
 %{!?llvm:%global llvm 1}
+%{!?runselftest:%global runselftest 0}
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -15,7 +16,7 @@
 Summary:	PostgreSQL Passwordcheck Policy
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.6
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
@@ -23,7 +24,7 @@ BuildRequires:	krb5-devel
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 BuildRequires:	openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
@@ -33,6 +34,14 @@ BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	cracklib-devel
 Requires:	postgresql%{pgmajorversion}-server
 Requires:	cracklib
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%if 0%{?suse_version}
+BuildRequires:	cracklib-dict-full
+%else
+BuildRequires:	cracklib-dicts
+%endif
+%endif
 
 %description
 The PostgreSQL Passwordcheck Policy is like the regular passwordcheck module,
@@ -65,6 +74,15 @@ This package provides JIT support for passwordpolicy
 
 %prep
 %setup -q -n %{sname}-%{version}
+# pg_reload_conf() only signals the postmaster, so the backend may run the
+# next statement before it gets the reload signal. Sleep in the same
+# statement, so that the reload is processed before the next one runs. The
+# column name stays the same, so the expected output only changes in the
+# echoed statement.
+%{__sed} -i 's/^SELECT pg_reload_conf();/SELECT r AS pg_reload_conf FROM pg_reload_conf() r, LATERAL (SELECT pg_sleep(0.5)) s;/' \
+	test/sql/common/reset.sql test/sql/*.sql test/expected/*.out
+# test05's expected output predates the pg_sleep() calls in its SQL
+%{__sed} -i '/^SELECT pg_sleep(1);$/d' test/sql/passwordpolicy_test05.sql
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -76,6 +94,19 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{__install} -d %{buildroot}%{pginstdir}/doc/extension
 %{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 %{__rm} -f %{buildroot}%{pginstdir}/doc/extension/README.md
+
+%check
+%if %runselftest
+# passwordpolicy needs to be preloaded; test04 checks a dictionary word, so
+# point cracklib at the system dictionary.
+%pgdg_check_init
+pgdg_check_start main "shared_preload_libraries = 'passwordpolicy'" \
+	"password_policy.cracklib_dictpath = '%{_datadir}/cracklib/pw_dict'"
+# test06's expected output belongs to an older version of the test, and its
+# result depends on the background worker flushing the password history.
+pgdg_installcheck %{with_llvm_arg} \
+	REGRESS="passwordpolicy_test01 passwordpolicy_test02 passwordpolicy_test03 passwordpolicy_test04 passwordpolicy_test05"
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -92,6 +123,16 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-6PGDG
+- Add %%check, running the regression tests with the %%check helpers
+  from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it with
+  --define 'runselftest 1'. The tests sleep briefly after each
+  pg_reload_conf(), so that the new settings are in effect in the next
+  statement. Drop the pg_sleep() calls from test05, which its expected
+  output does not have, and skip test06, whose expected output belongs to
+  an older version of the test.
+- Add the missing openssl-devel BuildRequires on RHEL 8.
+
 * Fri Oct 30 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-5PGDG
 - Fix/modernize openssl dependencies.
 
