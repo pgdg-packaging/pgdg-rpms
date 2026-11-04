@@ -6,7 +6,7 @@
 %endif
 
 Name:		pgdg-srpm-macros
-Version:	2.5.1
+Version:	2.6.0
 Release:	1PGDG%{?dist}
 Summary:	SRPM macros for building PostgreSQL PGDG Packages
 
@@ -36,6 +36,13 @@ echo no build stage needed
 %{_rpmconfigdir}/pgdg-check-functions.sh
 
 %changelog
+* Wed Nov 04 2026 Devrim Gündüz <devrim@gunduz.org> - 2.6.0-1PGDG
+- Update to 2.6.0 per changes described at:
+  https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.6.0
+- Adds %%pgdg_python3_obsoletes_prev, which obsoletes the python3.14-*
+  names of the Fedora 44 packages on Fedora 45, so that they are replaced
+  on upgrades instead of blocking dnf system-upgrade.
+
 * Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 2.5.1-1PGDG
 - Update to 2.5.1 per changes described at:
   https://github.com/pgdg-packaging/pgdg-srpm-macros/releases/tag/2.5.1
