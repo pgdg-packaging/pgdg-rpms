@@ -20,7 +20,7 @@
 %endif
 
 Name:		pgdg-libmongoc
-Version:	1.30.14
+Version:	1.30.15
 Release:	1PGDG%{?dist}
 Summary:	Client library written in C for MongoDB
 # See THIRD_PARTY_NOTICES
@@ -135,6 +135,14 @@ them.
 %{mongocinstdir}/lib64/cmake/
 
 %changelog
+* Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 1.30.15-1PGDG
+- Update to 1.30.15 per changes described at:
+  https://github.com/mongodb/mongo-c-driver/releases/tag/1.30.15
+  This release fixes aborts on malformed cursor namespaces and GridFS
+  file metadata, a missing bounds check when reading GridFS files, and
+  a memory leak. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/528
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 1.30.14-1PGDG
 - Update to 1.30.14, the latest 1.x release (mongo_fdw does not support
   the 2.x API), and build it on RHEL 8, 9 and 10, installed under
