@@ -476,16 +476,6 @@ Requires(post):		glibc
 Requires(postun):	glibc
 # pre/post stuff needs systemd too
 
-%package static
-Summary:	Statically linked PostgreSQL libraries
-Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
-Provides:	%{name}-static = %{version}-%{release}
-Provides:	%{name}-static%{?_isa} = %{version}-%{release}
-
-%description static
-Statically linked PostgreSQL libraries that do not have dynamically linked
-counterparts.
-
 %if 0%{?suse_version} >= 1500
 Requires(post):		systemd
 %else
@@ -502,6 +492,16 @@ PostgreSQL is an advanced Object-Relational database management system (DBMS).
 The postgresql%{pgmajorversion}-server package contains the programs needed to
 create and run a PostgreSQL server, which will in turn allow you to create and
 maintain PostgreSQL databases.
+
+%package static
+Summary:	Statically linked PostgreSQL libraries
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
+Provides:	%{name}-static = %{version}-%{release}
+Provides:	%{name}-static%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
 
 %if %test
 %package test

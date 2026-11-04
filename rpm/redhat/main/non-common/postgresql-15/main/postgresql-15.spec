@@ -445,16 +445,6 @@ Requires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	libicu-devel
 %endif
 
-%package static
-Summary:	Statically linked PostgreSQL libraries
-Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
-Provides:	%{name}-static = %{version}-%{release}
-Provides:	%{name}-static%{?_isa} = %{version}-%{release}
-
-%description static
-Statically linked PostgreSQL libraries that do not have dynamically linked
-counterparts.
-
 %if %enabletaptests
 %if 0%{?suse_version} && 0%{?suse_version} >= 1315
 Requires:	perl-IPC-Run
@@ -485,6 +475,16 @@ needed to compile C or C++ applications which will directly interact
 with a PostgreSQL database management server. It also contains the ecpg
 Embedded C Postgres preprocessor. You need to install this package if you want
 to develop applications which will interact with a PostgreSQL server.
+
+%package static
+Summary:	Statically linked PostgreSQL libraries
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
+Provides:	%{name}-static = %{version}-%{release}
+Provides:	%{name}-static%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
 
 %if %llvm
 %package llvmjit
