@@ -17,7 +17,7 @@
 %endif
 
 Name:		pgdg-%{sname}
-Version:	1.1.7
+Version:	1.1.8
 Release:	1PGDG%{?dist}
 Summary:	Adaptive Entropy Coding library
 License:	BSD-2-Clause
@@ -94,6 +94,13 @@ Development files for libaec (Adaptive Entropy Coding library).
 %{libaecinstdir}/lib64/cmake/
 
 %changelog
+* Thu Nov 5 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.8-1PGDG
+- Update to 1.1.8 per changes described at:
+  https://github.com/Deutsches-Klimarechenzentrum/libaec/releases/tag/v1.1.8
+  It fixes several heap buffer overflows and out-of-bounds reads in the
+  decoder and in the SZIP compatibility API. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/535
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.7-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-libaec, so that the GIS stack does not need the EPEL libaec
