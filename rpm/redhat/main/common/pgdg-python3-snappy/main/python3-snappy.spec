@@ -18,7 +18,8 @@ License:	BSD-3-Clause
 URL:		https://github.com/andrix/python-snappy
 Source:		https://files.pythonhosted.org/packages/source/p/python-snappy/python-snappy-%{version}.tar.gz
 
-%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
+# SLES 15 builds for python3.11, not for the default python3 (3.6):
+%if 0%{?amzn} == 2023 || 0%{?rhel} == 9 || 0%{?suse_version} == 1500
 BuildRequires:	gcc-c++ pkgconfig snappy-devel
 BuildRequires:	python%{python3_pkgversion}-devel python%{python3_pkgversion}-packaging
 BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-setuptools
@@ -58,6 +59,8 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 - Remove the python3dist(%%{name}) Provides: it used the package name
   (python3-snappy) instead of the Python project name (python-snappy),
   which the dependency generator provides already.
+- Fix the build on SLES 15: use the python311 BuildRequires there, as
+  %%pgdg_python3_setup builds for python3.11.
 
 * Tue Nov 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1:0.6.1-44PGDG
 - Add RHEL 9 support (python3.12-snappy), for rohmu and pghoard, which are
