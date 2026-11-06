@@ -16,8 +16,8 @@
 %endif
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	5.5.0
-Release:	12PGDG%{?dist}
+Version:	5.5.1
+Release:	1PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -217,6 +217,15 @@ fi
 %endif
 
 %changelog
+* Thu Nov 5 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.1-1PGDG
+- Update to 5.5.1 per changes described at
+  https://github.com/EnterpriseDB/repmgr/releases/tag/v5.5.1 . It properly
+  escapes the values substituted into the externally configured
+  notification commands (security fix). Note that "%d" (and "%c" and "%a")
+  are now substituted already shell-quoted, so they should no longer be
+  quoted in event_notification_command. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/546
+
 * Sun Sep 13 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-12PGDG
 - Add missing BRs and Requires.
 - Add %%check, running the regression tests with the %%check helpers
