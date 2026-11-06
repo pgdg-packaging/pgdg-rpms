@@ -6,8 +6,8 @@
 %global pgdg_python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-click
-Version:	8.5.0
-Release:	43PGDG%{?dist}
+Version:	8.5.1
+Release:	42PGDG%{?dist}
 Summary:	Simple wrapper around optparse for powerful command line utilities
 
 License:	BSD-3-Clause
@@ -63,6 +63,11 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 %{pgdg_python3_sitearch}/%{modname}/
 
 %changelog
+* Fri Nov 6 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.1-42PGDG
+- Update to 8.5.1 per changes described at:
+  https://github.com/pallets/click/blob/8.5.1/CHANGES.md
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/554
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 8.5.0-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
