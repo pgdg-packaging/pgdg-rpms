@@ -5,7 +5,7 @@
 Summary:	'top' for PostgreSQL process
 Name:		%{sname}
 Version:	4.1.3
-Release:	45PGDG%{?dist}
+Release:	46PGDG%{?dist}
 License:	BSD
 URL:		https://gitlab.com/%{sname}/%{sname}
 Source0:	https://gitlab.com/%{sname}/%{sname}/-/archive/v%{version}/%{sname}-v%{version}.tar.bz2
@@ -35,9 +35,10 @@ pg_top allows you to monitor PostgreSQL processes. It also allows you to:
 %prep
 %setup -q -n %{sname}-v%{version}
 # libbsd is only used on the BSDs (strlcpy/strlcat), but CMakeLists.txt
-# requires it on all platforms; on RHEL it comes from EPEL:
-sed -i 's/^find_library(LIBBSD bsd REQUIRED)$/find_library(LIBBSD bsd)/' CMakeLists.txt
-grep -q '^find_library(LIBBSD bsd)$' CMakeLists.txt
+# requires it on all platforms; on RHEL it comes from EPEL. Remove the check
+# altogether, so that pg_top does not link to libbsd even if it is installed:
+grep -q '^find_library(LIBBSD bsd REQUIRED)$' CMakeLists.txt
+sed -i '/^find_library(LIBBSD bsd REQUIRED)$/d' CMakeLists.txt
 
 
 %build
@@ -73,6 +74,12 @@ popd
 %{_mandir}/man1/%{sname}.1.gz
 
 %changelog
+* Fri Nov 6 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-46PGDG
+- Remove the libbsd check from CMakeLists.txt instead of making it
+  optional: 4.1.3-45PGDG still linked to libbsd from EPEL on RHEL 8, as it
+  was installed on the build server. Rebuild on RHEL 8 only. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1.3-45PGDG
 - Do not build against libbsd: pg_top only uses it on the BSDs, and it
   comes from EPEL on RHEL. Per
