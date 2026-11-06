@@ -1408,6 +1408,12 @@ fi
 %endif
 
 %changelog
+* Fri Nov 6 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-12PGDG
+- Move the -static subpackage out of the -server preamble: the tags after
+  %%description static were silently dropped from the -server subpackage. Patch
+  from Manika Singhal. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/pull/536
+
 * Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 20.0alpha-11PGDG
 - Use the same sysusers.d file name in %%pre server as the one installed
   under %%{_sysusersdir}, so that an override in /etc/sysusers.d/ is honoured

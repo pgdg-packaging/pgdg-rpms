@@ -85,9 +85,9 @@ Version:	15.19
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420007PGDG%{?dist}
+Release:	420008PGDG%{?dist}
 %else
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1501,6 +1501,12 @@ fi
 %endif
 
 %changelog
+* Fri Nov 6 2026 Devrim Gündüz <devrim@gunduz.org> - 15.19-8PGDG
+- Move the -static subpackage out of the -devel preamble: the tags after
+  %%description static were silently dropped from the -devel subpackage. Patch
+  from Manika Singhal. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/pull/536
+
 * Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 15.19-7PGDG
 - Use the same sysusers.d file name in %%pre server as the one installed
   under %%{_sysusersdir}, so that an override in /etc/sysusers.d/ is honoured
