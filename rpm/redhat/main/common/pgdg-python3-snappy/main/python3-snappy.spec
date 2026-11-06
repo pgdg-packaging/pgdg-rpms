@@ -33,10 +33,6 @@ BuildRequires:	python-rpm-macros
 BuildRequires:	pyproject-rpm-macros
 %endif
 
-%if ! 0%{?amzn} && 0%{?rhel} != 9
-Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
-%endif
-
 %description
 Python library for the snappy compression library from Google.
 
@@ -59,6 +55,9 @@ sed -i -e '/^#!\//, 1d' src/snappy/snappy.py
 * Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 1:0.6.1-45PGDG
 - Remove the Provides: python3-%%{sname} line: sname is not defined, so
   the package provided the literal "python3-%%{sname}" string.
+- Remove the python3dist(%%{name}) Provides: it used the package name
+  (python3-snappy) instead of the Python project name (python-snappy),
+  which the dependency generator provides already.
 
 * Tue Nov 3 2026 Devrim Gündüz <devrim@gunduz.org> - 1:0.6.1-44PGDG
 - Add RHEL 9 support (python3.12-snappy), for rohmu and pghoard, which are
