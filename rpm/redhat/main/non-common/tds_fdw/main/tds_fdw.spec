@@ -16,12 +16,23 @@
 Summary:	TDS Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.5
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/tds-fdw/%{sname}/archive/v%{version}.zip
 URL:		https://github.com/tds-fdw/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel freetds-devel
-Requires:	postgresql%{pgmajorversion}-server freetds
+BuildRequires:	postgresql%{pgmajorversion}-devel
+Requires:	postgresql%{pgmajorversion}-server
+%if 0%{?rhel} && ! 0%{?amzn}
+# FreeTDS comes from EPEL on RHEL, so use our pgdg-freetds package, which is
+# found through the rpath. Require it by name, as it does not provide its
+# libraries:
+BuildRequires:	pgdg-freetds-devel
+Requires:	pgdg-freetds%{?_isa}
+%global __requires_exclude ^libsybdb\\.so
+%else
+BuildRequires:	freetds-devel
+Requires:	freetds
+%endif
 
 Obsoletes:	%{sname}%{pgmajorversion} < 2.0.2-2
 
@@ -57,6 +68,16 @@ This package provides JIT support for tds_fdw
 
 %prep
 %setup -q -n %{sname}-%{version}
+%if 0%{?rhel} && ! 0%{?amzn}
+# Link to pgdg-freetds by its full path, so that the FreeTDS library of EPEL
+# is not used even if it is installed:
+grep -q '^SHLIB_LINK := -lsybdb$' Makefile
+grep -q '^TDS_INCLUDE :=$' Makefile
+sed -i \
+	-e 's|^SHLIB_LINK := -lsybdb$|SHLIB_LINK := /usr/pgdg-freetds/lib64/libsybdb.so -Wl,-rpath,/usr/pgdg-freetds/lib64|' \
+	-e 's|^TDS_INCLUDE :=$|TDS_INCLUDE := -I/usr/pgdg-freetds/include|' \
+	Makefile
+%endif
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -93,6 +114,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Fri Nov 6 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.5-6PGDG
+- RHEL: Build against our new pgdg-freetds package, instead of the EPEL
+  freetds package. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.5-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
