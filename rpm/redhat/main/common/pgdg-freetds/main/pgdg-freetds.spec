@@ -9,7 +9,7 @@
 %global		__requires_exclude ^lib(sybdb|ct)\\.so
 
 Name:		pgdg-%{sname}
-Version:	1.5.20
+Version:	1.5.21
 Release:	1PGDG%{?dist}
 Summary:	Implementation of the TDS (Tabular DataStream) protocol
 License:	LGPL-2.0-or-later AND GPL-2.0-or-later
@@ -91,6 +91,10 @@ for %{name}.
 %{freetdsinstdir}/lib64/lib*.so
 
 %changelog
+* Sat Nov 7 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.21-1PGDG
+- Update to 1.5.21 per changes described at:
+  https://github.com/FreeTDS/freetds/blob/Branch-1_5/NEWS.md
+
 * Fri Nov 6 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.20-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-freetds, so that tds_fdw does not need the EPEL freetds
