@@ -3,8 +3,8 @@
 %global	modname jiter
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.18.0
-Release:	2PGDG%{?dist}
+Version:	0.19.0
+Release:	1PGDG%{?dist}
 Summary:	Fast iterable JSON parser
 # jiter is MIT. The licenses of the crates that are compiled into the
 # extension, checked with "cargo tree -p jiter-python -e normal" (40 crates):
@@ -14,10 +14,13 @@ Source0:	https://files.pythonhosted.org/packages/source/j/%{modname}/%{modname}-
 # The crates that jiter depends on, for building without network access. Made
 # with "./pgdg-python3-jiter-vendor.sh %%{version}", which runs
 # cargo-vendor-filterer for the Linux architectures that we build on.
-# It has to be made again for every new version.
+# It has to be made again for every new version. The crates of 0.19.0 are
+# the same as those of 0.18.0, and the script made the same tarball (same
+# sha256), so 0.19.0 uses the 0.18.0 tarball.
+%global	vendorver 0.18.0
 # The CDN cached a 404 for the plain URL. The query string makes it fetch
 # the file again; #/ keeps the local file name unchanged.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{modname}-%{version}-vendor.tar.xz?v=1#/%{modname}-%{version}-vendor.tar.xz
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{modname}/%{modname}-%{vendorver}-vendor.tar.xz?v=1#/%{modname}-%{vendorver}-vendor.tar.xz
 
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
@@ -26,18 +29,13 @@ BuildRequires:	python-rpm-macros
 %else
 BuildRequires:	pyproject-rpm-macros
 %endif
-%if 0%{?amzn} == 2023 || 0%{?rhel} == 9
-BuildRequires:	python%{python3_pkgversion}-maturin >= 1.15.0
+%if 0%{?amzn} == 2023 || 0%{?rhel} >= 9
+# pyproject.toml of this release asks for maturin >= 1.16.0:
+BuildRequires:	python%{python3_pkgversion}-maturin >= 1.16.0
 %endif
 %if 0%{?suse_version}
 # SLES 16 has maturin 1.8.7, which builds this release too:
 BuildRequires:	python%{python3_pkgversion}-maturin
-%endif
-%if 0%{?rhel} == 10
-# EPEL 10 has maturin 1.9.6. pyproject.toml asks for 1.15.0, but pip does
-# not check the build requirements with --no-build-isolation, and older
-# releases build this release fine:
-BuildRequires:	maturin
 %endif
 # Amazon Linux 2023 defines %%fedora too:
 %if 0%{?fedora} && ! 0%{?amzn}
@@ -86,6 +84,13 @@ export MATURIN_PEP517_ARGS="--frozen"
 %{python3_sitearch}/%{modname}-%{version}.dist-info/
 
 %changelog
+* Sat Nov 7 2026 Devrim Gunduz <devrim@gunduz.org> - 0.19.0-1PGDG
+- Update to 0.19.0 per changes described at:
+  https://github.com/pydantic/jiter/releases/tag/v0.19.0
+- The vendored crates did not change, so use the 0.18.0 vendor tarball.
+- RHEL 10: BuildRequire our python3.12-maturin >= 1.16.0, which this
+  release asks for, instead of the EPEL maturin.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18.0-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
