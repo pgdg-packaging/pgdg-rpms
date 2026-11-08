@@ -6,7 +6,7 @@
 Summary:	MySQL to PostgreSQL replica system
 Name:		pg_chameleon
 Version:	2.0.21
-Release:	15PGDG%{?dist}
+Release:	16PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/the4thdoctor/%{name}/archive/v%{version}.tar.gz
 URL:		https://github.com/the4thdoctor/%{name}
@@ -31,7 +31,17 @@ Requires:	python3-PyYAML python%{python3_pkgversion}-parsy
 Requires:	python%{python3_pkgversion}-daemonize python%{python3_pkgversion}-tabulate
 Requires:	python%{python3_pkgversion}-psycopg2 python%{python3_pkgversion}-rollbar
 Requires:	python%{python3_pkgversion}-PyMySQL python%{python3_pkgversion}-mysql-replication >= 0.31
-
+%endif
+%if 0%{?rhel} == 8
+# No Python dependency generator for python3.12 on RHEL 8:
+Requires:	python%{python3_pkgversion}-PyMySQL >= 0.10.0
+Requires:	python%{python3_pkgversion}-mysql-replication >= 0.31
+Requires:	python%{python3_pkgversion}-psycopg2 >= 2.8.3
+Requires:	python%{python3_pkgversion}-pyyaml >= 3.13
+Requires:	python%{python3_pkgversion}-tabulate >= 0.8.1
+Requires:	python%{python3_pkgversion}-daemonize >= 2.4.7
+Requires:	python%{python3_pkgversion}-rollbar >= 0.13.17
+Requires:	python%{python3_pkgversion}-parsy >= 2.1
 %endif
 
 %description
@@ -81,6 +91,12 @@ the jsonb values and replays the changes against the PostgreSQL database.
 %{python3_sitelib}/%{name}/sql/upgrade/*.sql
 
 %changelog
+* Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-16PGDG
+- RHEL 8: Add the runtime Requires by hand: there is no Python dependency
+  generator for python3.12 there, so the package required nothing, and
+  older builds required the python3 (3.6) packages of EPEL. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.21-15PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
