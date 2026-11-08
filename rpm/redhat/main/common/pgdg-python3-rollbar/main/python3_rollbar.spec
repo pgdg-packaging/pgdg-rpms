@@ -6,7 +6,7 @@ Name:		python%{python3_pkgversion}-%{sname}
 %pgdg_python3_obsoletes_prev
 Summary:	Python notifier for reporting exceptions, errors, and log messages to Rollbar.
 Version:	1.4.0
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 URL:		https://github.com/%{sname}/py%{sname}
 Source0:	https://github.com/%{sname}/py%{sname}/archive/v%{version}.tar.gz
 License:	Python-2.0
@@ -23,7 +23,11 @@ BuildRequires:	pyproject-rpm-macros
 %endif
 
 Requires:	python%{python3_pkgversion}-%{sname}
-Requires:	python3-requests
+%if 0%{?rhel} == 8 || 0%{?suse_version}
+# RHEL 8 (for python3.12) and SUSE do not generate runtime Requires from
+# the Python metadata; the others do:
+Requires:	python%{python3_pkgversion}-requests
+%endif
 
 Provides:	python3-%{sname} = %{version}-%{release}
 Provides:	python%{python3_pkgversion}dist(%{name}) = %{version}-%{release}
@@ -94,6 +98,13 @@ Python versions.
 %{python3_sitelib}/%{sname}/test/*/__pycache__/*.py*
 
 %changelog
+* Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-9PGDG
+- Require requests of the same Python version on RHEL 8 and SUSE, which
+  do not generate runtime Requires: python3-requests is the package of
+  the system Python there (3.6 on RHEL 8 and SLES 15). Remove it on the
+  other distros, where the Requires are generated. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.0-8PGDG
 - Fedora 45: Obsolete the Fedora 44 package, python3.14-rollbar, with
   %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
