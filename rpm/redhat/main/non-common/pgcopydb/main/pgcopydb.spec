@@ -4,12 +4,21 @@
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
 Version:	0.18
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
 BuildRequires:	gcc make
-BuildRequires:	postgresql%{pgmajorversion}-devel gc-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel
+%if 0%{?rhel} >= 10
+# RHEL 10 does not ship gc; use our package, installed under
+# /usr/pgdg-gc, instead of the EPEL one:
+BuildRequires:	pgdg-gc-devel
+Requires:	pgdg-gc%{?_isa}
+%global __requires_exclude ^libgc\\.so
+%else
+BuildRequires:	gc-devel
+%endif
 # The static libraries (libpgcommon, libpgport) are in the -static subpackage
 # as of PostgreSQL 19:
 %if %{pgmajorversion} >= 19
@@ -52,7 +61,7 @@ BuildRequires:	openssl-devel
 %endif
 BuildRequires:	libxml2-devel libxslt-devel pam-devel
 BuildRequires:	readline-devel zlib-devel
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+%if 0%{?fedora} >= 43 || (0%{?rhel} >= 8 && 0%{?rhel} < 10)
 Requires:	gc
 %endif
 %if 0%{?suse_version} >= 1500
@@ -69,6 +78,15 @@ pg_restore jobs.
 
 %prep
 %setup -q -n %{sname}-%{version}
+%if 0%{?rhel} >= 10
+# Link to libgc by its full path, with an rpath, so that the EPEL library
+# in /usr/lib64 is not used even if it is installed:
+grep -q '^LIBS += -lgc$' src/bin/pgcopydb/Makefile
+grep -q '^DEFAULT_CFLAGS += -Wformat$' src/bin/pgcopydb/Makefile
+%{__sed} -i -e 's|^LIBS += -lgc$|LIBS += /usr/pgdg-gc/lib64/libgc.so -Wl,-rpath,/usr/pgdg-gc/lib64|' \
+	-e 's|^DEFAULT_CFLAGS += -Wformat$|DEFAULT_CFLAGS += -Wformat -I/usr/pgdg-gc/include|' \
+	src/bin/pgcopydb/Makefile
+%endif
 
 %build
 # -Wl,-pie in pgcopydb's SECURITY_CFLAGS is redundant (RPM hardening specs
@@ -87,6 +105,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgcopydb
 
 %changelog
+* Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18-4PGDG
+- RHEL 10: Build against our new pgdg-gc package instead of the EPEL gc
+  package, as RHEL 10 does not ship gc. Link to libgc by its full path,
+  with an rpath, so that the EPEL library is not used even if it is
+  installed. Per https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 0.18-3PGDG
 - Add missing BR
 - Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon
