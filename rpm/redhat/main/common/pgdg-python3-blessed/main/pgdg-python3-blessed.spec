@@ -6,8 +6,15 @@
 %global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{sname}
+%if 0%{?rhel} == 10
+# 1.39.0 and later need wcwidth >= 0.7, and RHEL 10 only has 0.2.6 in
+# BaseOS. 1.25.0 is the last release that works with it:
+Version:	1.25.0
+Release:	44PGDG%{?dist}
+%else
 Version:	1.39.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
+%endif
 Summary:	Easy, practical library for making terminal apps, by providing an elegant, well- documented interface to Colors, Keyboard input, and screen Positioning capabilities
 
 License:	MIT
@@ -69,6 +76,13 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 %{python3_sitelib}/%{sname}
 
 %changelog
+* Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-5PGDG
+- Add RHEL 10 support back, with 1.25.0 (1.25.0-44PGDG): it is the last
+  release that works with wcwidth 0.2.6 of RHEL 10. The 1.39.0-3 build in
+  the RHEL 10 ppc64le repo needs wcwidth >= 0.7, which is only in EPEL, so
+  pg_activity could not be installed there without it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-4PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
