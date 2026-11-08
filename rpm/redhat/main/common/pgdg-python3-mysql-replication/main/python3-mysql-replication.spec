@@ -5,7 +5,7 @@
 Name:		python%{python3_pkgversion}-%{sname}
 %pgdg_python3_obsoletes_prev
 Version:	1.0.17
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 Summary:	Pure Python Implementation of MySQL replication protocol build on top of PyMYSQL
 License:	Apache-2.0
 URL:		https://github.com/noplay/python-%{sname}
@@ -31,6 +31,11 @@ BuildRequires:	python%{python3_pkgversion}-pip python%{python3_pkgversion}-setup
 BuildRequires:	python%{python3_pkgversion}-wheel
 
 Requires:	python%{python3_pkgversion}-PyMySQL
+%if 0%{?rhel} == 8 || 0%{?suse_version}
+# RHEL 8 (for python3.12) and SUSE do not generate runtime Requires from
+# the Python metadata; the others do:
+Requires:	python%{python3_pkgversion}-packaging
+%endif
 
 %description
 Pure Python Implementation of MySQL replication protocol build on top of
@@ -64,6 +69,12 @@ their datas and raw SQL queries.
 %{python3_sitelib}/pymysqlreplication/util/__pycache__/*.py*
 
 %changelog
+* Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-8PGDG
+- Require packaging on RHEL 8 and SUSE, which do not generate runtime
+  Requires: pymysqlreplication imports it, so pg_chameleon failed to
+  start there without it. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+
 * Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.17-7PGDG
 - Fedora 45: Obsolete the Fedora 44 package, python3.14-mysql-replication, with
   %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
