@@ -1,0 +1,1 @@
+../main/rdf_fdw.spec
