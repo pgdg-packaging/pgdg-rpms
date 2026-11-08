@@ -79,8 +79,8 @@ if grep -q '^license-files' pyproject.toml; then exit 1; fi
 * Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-5PGDG
 - Add RHEL 10 support back, with 1.25.0 (1.25.0-44PGDG): it is the last
   release that works with wcwidth 0.2.6 of RHEL 10. The 1.39.0-3 build in
-  the RHEL 10 ppc64le repo needs wcwidth >= 0.7, which is only in EPEL, so
-  pg_activity could not be installed there without it. Per
+  the RHEL 10 ppc64le repo needs wcwidth >= 0.7, which neither RHEL 10 nor
+  EPEL 10 has, so it could not be installed, and pg_activity with it. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/513
 
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.39.0-4PGDG
