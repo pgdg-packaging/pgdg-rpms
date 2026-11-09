@@ -8,7 +8,7 @@
 Summary:	Anonymization & Data Masking for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.3.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The extension itself, and the licenses of the Rust crates that are compiled into
 # it (245 crates), checked with "cargo metadata --filter-platform
 # x86_64-unknown-linux-gnu", without the dev dependencies:
@@ -36,6 +36,8 @@ BuildRequires:	rust1.98
 %endif
 BuildRequires:	cargo-pgrx019 = %{pgrx_version}
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# "cargo pgrx init" in %%build runs initdb
+BuildRequires:	postgresql%{pgmajorversion}-server
 # pgrx-pg-sys generates the bindings of the PostgreSQL headers with bindgen:
 %if 0%{?suse_version} == 1600
 BuildRequires:	llvm19-devel clang19-devel
@@ -114,6 +116,10 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 %{pginstdir}/share/extension/anon/
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-2PGDG
+- Add missing BuildRequires: postgresqlNN-server. "cargo pgrx init" in
+  %%build runs initdb, so the build failed in a clean buildroot.
+
 * Tue Oct 27 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-1PGDG
 - Update to 3.3.0 per changes described at:
   https://gitlab.com/dalibo/postgresql_anonymizer/-/blob/3.3.0/CHANGELOG.md
