@@ -4,12 +4,15 @@
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
 Version:	0.18
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/dimitri/%{sname}
 BuildRequires:	gcc make
-BuildRequires:	postgresql%{pgmajorversion}-devel
+# pgcopydb is a client tool, built once for all PostgreSQL versions. It
+# uses the headers and the static libpgcommon/libpgport of one major
+# version (%%{pgmajorversion}, set by the common build), and libpq5 at runtime:
+BuildRequires:	postgresql%{pgmajorversion}-devel libpq5-devel
 %if 0%{?rhel} >= 10
 # RHEL 10 does not ship gc; use our package, installed under
 # /usr/pgdg-gc, instead of the EPEL one:
@@ -67,7 +70,9 @@ Requires:	gc
 %if 0%{?suse_version} >= 1500
 Requires:	libgc1
 %endif
-Requires:	postgresql%{pgmajorversion}
+# psql, pg_dump and pg_restore, found through PG_CONFIG or PATH:
+Requires:	postgresql
+Requires:	libpq5 >= %{pgmajorversion}.0
 
 %description
 pgcopydb is a tool that automates running pg_dump | pg_restore between
@@ -78,6 +83,14 @@ pg_restore jobs.
 
 %prep
 %setup -q -n %{sname}-%{version}
+# Link to libpq5 by its full path, instead of the libpq of the PostgreSQL
+# version used for the build, and do not add its rpath from pg_config
+# --ldflags (the rest of it is in the RPM LDFLAGS already):
+grep -q '^LIBS += -lpq$' src/bin/pgcopydb/Makefile
+grep -q '^LIBS += $(shell $(PG_CONFIG) --ldflags)$' src/bin/pgcopydb/Makefile
+%{__sed} -i -e 's|^LIBS += -lpq$|LIBS += %{_libdir}/libpq.so|' \
+	-e '/^LIBS += $(shell $(PG_CONFIG) --ldflags)$/d' \
+	src/bin/pgcopydb/Makefile
 %if 0%{?rhel} >= 10
 # Link to libgc by its full path, with an rpath, so that the EPEL library
 # in /usr/lib64 is not used even if it is installed:
@@ -97,14 +110,22 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags}
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
+USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} BINDIR=%{_bindir} DESTDIR=%{buildroot} install
 
 %files
 %license LICENSE
 %doc README.md
-%{pginstdir}/bin/pgcopydb
+%{_bindir}/pgcopydb
 
 %changelog
+* Mon Nov 9 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18-5PGDG
+- Move to the common repository: pgcopydb is a client tool, and the same
+  package was built for each PostgreSQL version, each one installing
+  /usr/pgsql-NN/bin/pgcopydb. Install it to /usr/bin instead, and link it
+  to libpq5. It finds psql, pg_dump and pg_restore through the PG_CONFIG
+  environment variable or PATH, as before. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/562
+
 * Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18-4PGDG
 - RHEL 10: Build against our new pgdg-gc package instead of the EPEL gc
   package, as RHEL 10 does not ship gc. Link to libgc by its full path,
