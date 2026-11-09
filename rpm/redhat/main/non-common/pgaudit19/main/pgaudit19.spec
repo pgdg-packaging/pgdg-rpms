@@ -17,9 +17,9 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	19.0
-Release:	beta4_1PGDG%{?dist}
+Release:	rc1_1PGDG%{?dist}
 License:	BSD
-Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/19beta4.tar.gz
+Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/19rc1.tar.gz
 URL:		https://www.pgaudit.org
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	krb5-devel
@@ -36,6 +36,8 @@ Requires:	postgresql%{pgmajorversion}-server
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 # The tests use pg_stat_statements and postgres_fdw from contrib
 BuildRequires:	postgresql%{pgmajorversion}-contrib
+# prove and IPC::Run, for the TAP tests
+BuildRequires:	perl(Test::Harness) perl(IPC::Run)
 %endif
 
 %description
@@ -78,7 +80,7 @@ This package provides JIT support for pgaudit
 %endif
 
 %prep
-%setup -q -n %{sname}-19beta4
+%setup -q -n %{sname}-19rc1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -113,6 +115,13 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-rc1_1PGDG
+- Update to 19rc1 per changes described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/19rc1
+- BuildRequire perl(Test::Harness) and perl(IPC::Run) when runselftest
+  is enabled: installcheck also runs the TAP tests, which failed
+  without prove.
+
 * Wed Sep 30 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-beta4_1PGDG
 - Update to 19beta4 per changes described at:
   https://github.com/pgaudit/pgaudit/releases/tag/19beta4
