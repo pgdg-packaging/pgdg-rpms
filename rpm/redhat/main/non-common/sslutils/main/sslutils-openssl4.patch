@@ -1,0 +1,93 @@
+--- sslutils-1.4.1.orig/sslutils.c	2026-06-17 10:25:28.000000000 +0300
++++ sslutils-1.4.1/sslutils.c	2026-11-09 13:44:33.802846594 +0300
+@@ -279,14 +279,14 @@
+ 	if (!revtm)
+ 		return NULL;
+ 
+-	i = revtm->length + 1;
++	i = ASN1_STRING_length(revtm) + 1;
+ 
+ 	str = OPENSSL_malloc(i);
+ 
+ 	if (!str)
+ 		return NULL;
+ 
+-	BUF_strlcpy(str, (char *)revtm->data, i);
++	BUF_strlcpy(str, (const char *)ASN1_STRING_get0_data(revtm), i);
+ 	ASN1_UTCTIME_free(revtm);
+ 
+ 	return str;
+@@ -367,9 +367,9 @@
+ 	row[DB_type] = (char *)OPENSSL_malloc(2);
+ 
+ 	tm = X509_get0_notAfter(x);
+-	row[DB_exp_date] = (char *)OPENSSL_malloc(tm->length + 1);
+-	memcpy(row[DB_exp_date], tm->data, tm->length);
+-	row[DB_exp_date][tm->length] = '\0';
++	row[DB_exp_date] = (char *)OPENSSL_malloc(ASN1_STRING_length(tm) + 1);
++	memcpy(row[DB_exp_date], ASN1_STRING_get0_data(tm), ASN1_STRING_length(tm));
++	row[DB_exp_date][ASN1_STRING_length(tm)] = '\0';
+ 
+ 	row[DB_rev_date] = NULL;
+ 	row[DB_file] = (char *)OPENSSL_malloc(8);
+@@ -747,10 +747,10 @@
+ 	}
+ 
+ 	/* Add attributes. */
+-	name = X509_REQ_get_subject_name(req);;
++	name = X509_NAME_new();
+ 	if (!name)
+ 	{
+-		err = "X509_REQ_get_subject_name";
++		err = "X509_NAME_new";
+ 		goto out;
+ 	}
+ 	if (!X509_NAME_add_entry_by_txt(name, "C", MBSTRING_UTF8,
+@@ -803,6 +803,11 @@
+ 		err = "X509_NAME_add_entry_by_txt_emailAddress";
+ 		goto out;
+ 	}
++	if (!X509_REQ_set_subject_name(req, name))
++	{
++		err = "X509_REQ_set_subject_name";
++		goto out;
++	}
+ 
+ 	if (!X509_REQ_set_pubkey(req, evp))
+ 	{
+@@ -835,6 +840,8 @@
+ 
+ 	/* Get out, while trying not to leak memory. */
+ out:
++	if (name != NULL)
++		X509_NAME_free(name);
+ 	if (evp != NULL)
+ 		EVP_PKEY_free(evp);
+ 	if (req != NULL)
+@@ -961,7 +968,7 @@
+ 		err = "Error_setting_certificate_version";
+ 		goto out;
+ 	}
+-	xn = X509_REQ_get_subject_name(req);
++	xn = (X509_NAME *) X509_REQ_get_subject_name(req);
+ 	if (!xn)
+ 	{
+ 		err = "Error_getting_subject_name";
+@@ -973,7 +980,7 @@
+ 		goto out;
+ 	}
+ 
+-	if (!X509_gmtime_adj(X509_get0_notBefore(certificate), 0))
++	if (!X509_gmtime_adj(X509_getm_notBefore(certificate), 0))
+ 	{
+ 		err = "Error_setting_validity_before_time";
+ 		goto out;
+@@ -988,7 +995,7 @@
+ 			goto out;
+ 		}
+ 	}
+-	if (!X509_gmtime_adj(X509_get0_notAfter(certificate), (long)60 * 60 * 24 * validity_days))
++	if (!X509_gmtime_adj(X509_getm_notAfter(certificate), (long)60 * 60 * 24 * validity_days))
+ 	{
+ 		err = "Error_setting_validity_before_time";
+ 		goto out;

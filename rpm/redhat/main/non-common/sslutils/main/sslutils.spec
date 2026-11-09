@@ -25,6 +25,7 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
+Patch0:		%{sname}-openssl4.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel, net-snmp-devel
 Requires:	postgresql%{pgmajorversion}-server
 
@@ -59,6 +60,7 @@ This package provides JIT support for sslutils
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -100,6 +102,11 @@ strip %{buildroot}%{pginstdir}/lib/*.so
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Add a patch to fix the build against OpenSSL 4: use the ASN1_STRING
+  accessors instead of the (now opaque) struct members, build the CSR
+  subject name separately instead of modifying the one returned by the
+  now-const X509_REQ_get_subject_name(), and use X509_getm_notBefore()/
+  X509_getm_notAfter() to set the validity period.
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.1-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
