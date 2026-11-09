@@ -40,13 +40,13 @@ Version:	19
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	rc1_420005PGDG%{?dist}
+Release:	rc2_420001PGDG%{?dist}
 %else
-Release:	rc1_5PGDG%{?dist}
+Release:	rc2_1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}rc1/postgresql-%{version}rc1.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}rc2/postgresql-%{version}rc2.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -517,7 +517,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}rc1
+%setup -q -n %{sname}-%{pgpackageversion}rc2
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1408,6 +1408,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc2-1PGDG
+- Update to 19.0 RC2
+
 * Fri Nov 6 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc1-5PGDG
 - Move the -static subpackage out of the -server preamble: the tags after
   %%description static were silently dropped from the -server subpackage. Patch
