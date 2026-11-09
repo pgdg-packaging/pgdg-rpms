@@ -1,7 +1,7 @@
 %global sname check_pgactivity
 
 %global cpgacmajver 2
-%global cpgacminver 12
+%global cpgacminver 13
 
 Name:		nagios-plugins-pgactivity
 Version:	%{cpgacmajver}.%{cpgacminver}
@@ -38,6 +38,10 @@ check_pgactivity is part of Open PostgreSQL Monitoring.
 %license LICENSE
 
 %changelog
+* Mon Nov 9 2026 Devrim Gunduz <devrim@gunduz.org> 2.13-1PGDG
+- Update to 2.13 per changes described at:
+  https://github.com/OPMDG/check_pgactivity/releases/tag/REL2_13
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> 2.12-1PGDG
 - Update to 2.12 per changes described at:
   https://github.com/OPMDG/check_pgactivity/releases/tag/REL2_12
