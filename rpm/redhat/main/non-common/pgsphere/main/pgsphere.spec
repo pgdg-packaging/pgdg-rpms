@@ -31,6 +31,9 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 License:	BSD
 Group:		Applications/Databases
 Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
+# Alternate expected output of the moc test for PostgreSQL 19, from upstream:
+# https://github.com/postgrespro/pgsphere/commit/54c07d0b2a11 (issue #147)
+Patch0:		pgsphere-1.5.2-pg19-moc-expected.patch
 URL:		https://github.com/postgrespro/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel zlib-devel
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
@@ -77,6 +80,7 @@ This package provides JIT support for pgsphere
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
 
 %build
 %{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
@@ -113,6 +117,9 @@ This package provides JIT support for pgsphere
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Add the upstream alternate expected output of the moc test, which
+  failed with PostgreSQL 19: an error for a function called with the
+  wrong number of arguments now has a DETAIL instead of a HINT.
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.2-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
