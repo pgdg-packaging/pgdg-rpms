@@ -24,7 +24,7 @@ build15testing: prep15
 	--define "_builddir $(HOME)/rpm15testing/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpm15testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm15testing/RPMS/" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfsrpm15testing
 
@@ -32,21 +32,21 @@ srpm15testing: prep15
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfsrpm15testing: prep15
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm15testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnosignsrpm15testing: prep15
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm15testing/SRPMS" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 rpm15testing: prep15
@@ -56,7 +56,7 @@ rpm15testing: prep15
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nosignbuild15testimg:
@@ -66,7 +66,7 @@ nosignbuild15testimg:
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm15testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm15testing/RPMS/" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfnosignsrpm15testing
 
@@ -74,7 +74,7 @@ noprepbuild15testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm15testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -83,7 +83,7 @@ noprepbuild15testing:
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm15testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm15testing/RPMS/" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nopreprpm15testing:
@@ -93,12 +93,12 @@ nopreprpm15testing:
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	-bb $(SPECFILE)
 
 noprepsrpm15testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm15testing/BUILDROOT" \
-	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" \
+	--define "pgmajorversion 15" --define "pginstdir /usr/pgsql-15" --define "pgpackageversion 15" --define "pgminorversion $(PG15MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)

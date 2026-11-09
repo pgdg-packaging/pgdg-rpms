@@ -24,7 +24,7 @@ build17testing: prep17
 	--define "_builddir $(HOME)/rpm17testing/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpm17testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm17testing/RPMS/" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfsrpm17testing
 
@@ -32,21 +32,21 @@ srpm17testing: prep17
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfsrpm17testing: prep17
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm17testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnosignsrpm17testing: prep17
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm17testing/SRPMS" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 rpm17testing: prep17
@@ -56,7 +56,7 @@ rpm17testing: prep17
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nosignbuild17testimg:
@@ -66,7 +66,7 @@ nosignbuild17testimg:
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm17testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm17testing/RPMS/" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfnosignsrpm17testing
 
@@ -74,7 +74,7 @@ noprepbuild17testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm17testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -83,7 +83,7 @@ noprepbuild17testing:
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm17testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm17testing/RPMS/" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nopreprpm17testing:
@@ -93,12 +93,12 @@ nopreprpm17testing:
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	-bb $(SPECFILE)
 
 noprepsrpm17testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm17testing/BUILDROOT" \
-	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" \
+	--define "pgmajorversion 17" --define "pginstdir /usr/pgsql-17" --define "pgpackageversion 17" --define "pgminorversion $(PG17MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)

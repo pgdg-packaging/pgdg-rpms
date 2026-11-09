@@ -7,6 +7,19 @@
 # devrim@gunduz.org	   	#
 #################################
 
+# The PostgreSQL minor releases that the non-common packages are built
+# against. They are passed to rpmbuild as the pgminorversion macro, and the
+# specs then BuildRequire postgresqlNN-devel and Require postgresqlNN-libs of
+# at least that version, so that a package built against a new minor release
+# is not installed with an older one. Update them for every minor release,
+# after the PostgreSQL packages themselves are built on the build servers.
+PG14MINORVERSION = 14.25
+PG15MINORVERSION = 15.20
+PG16MINORVERSION = 16.16
+PG17MINORVERSION = 17.12
+PG18MINORVERSION = 18.7
+PG19MINORVERSION = 19-rc2
+
 prep:
 	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
 

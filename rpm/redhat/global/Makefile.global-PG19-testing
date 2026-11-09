@@ -22,7 +22,7 @@ prep19:
 	# Update spec file, patches, etc, before running spectool:
 	git pull
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" $(SPECFILE)
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" $(SPECFILE)
 
 build19testing: prep19
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -31,7 +31,7 @@ build19testing: prep19
 	--define "_builddir $(HOME)/rpm19testing/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm19testing/RPMS/" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfsrpm19testing
 
@@ -39,28 +39,28 @@ srpm19testing: prep19
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfsrpm19testing: prep19
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnoprepsrpm19testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnosignsrpm19testing: prep19
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 rpm19testing: prep19
@@ -70,7 +70,7 @@ rpm19testing: prep19
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nosignbuild19testimg:
@@ -80,7 +80,7 @@ nosignbuild19testimg:
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm19testing/RPMS/" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfnosignsrpm19testing
 
@@ -88,7 +88,7 @@ noprepbuild19testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -97,7 +97,7 @@ noprepbuild19testing:
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm19testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm19testing/RPMS/" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nopreprpm19testing:
@@ -107,12 +107,12 @@ nopreprpm19testing:
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	-bb $(SPECFILE)
 
 noprepsrpm19testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm19testing/BUILDROOT" \
-	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)

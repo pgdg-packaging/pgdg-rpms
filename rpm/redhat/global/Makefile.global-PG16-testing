@@ -24,7 +24,7 @@ build16testing: prep16
 	--define "_builddir $(HOME)/rpm16testing/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpm16testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm16testing/RPMS/" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfsrpm16testing
 
@@ -32,21 +32,21 @@ srpm16testing: prep16
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfsrpm16testing: prep16
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm16testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnosignsrpm16testing: prep16
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm16testing/SRPMS" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 rpm16testing: prep16
@@ -56,7 +56,7 @@ rpm16testing: prep16
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nosignbuild16testimg:
@@ -66,7 +66,7 @@ nosignbuild16testimg:
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm16testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm16testing/RPMS/" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfnosignsrpm16testing
 
@@ -74,7 +74,7 @@ noprepbuild16testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm16testing/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -83,7 +83,7 @@ noprepbuild16testing:
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm16testing/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm16testing/RPMS/" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nopreprpm16testing:
@@ -93,12 +93,12 @@ nopreprpm16testing:
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	-bb $(SPECFILE)
 
 noprepsrpm16testing:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm16testing/BUILDROOT" \
-	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" \
+	--define "pgmajorversion 16" --define "pginstdir /usr/pgsql-16" --define "pgpackageversion 16" --define "pgminorversion $(PG16MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)

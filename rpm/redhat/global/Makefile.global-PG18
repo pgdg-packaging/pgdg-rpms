@@ -21,7 +21,7 @@ prep18:
 	# Update spec file, patches, etc, before running spectool:
 	git pull
 	# Use spectool to download source files, especially tarballs.
-	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" $(SPECFILE)
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" $(SPECFILE)
 
 build18: prep18
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -30,7 +30,7 @@ build18: prep18
 	--define "_builddir $(HOME)/rpm18/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm18/RPMS/" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfsrpm18
 
@@ -38,28 +38,28 @@ srpm18: prep18
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfsrpm18: prep18
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnoprepsrpm18:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 bfnosignsrpm18: prep18
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 rpm18: prep18
@@ -69,7 +69,7 @@ rpm18: prep18
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nosignbuild18: prep18
@@ -79,7 +79,7 @@ nosignbuild18: prep18
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm18/RPMS/" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	-bb $(SPECFILE)
 	make bfnosignsrpm18
 
@@ -87,7 +87,7 @@ noprepbuild18:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -96,7 +96,7 @@ noprepbuild18:
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpm18/SRPMS" \
 	--define "_rpmdir $(HOME)/rpm18/RPMS/" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	-bb $(SPECFILE)
 
 nopreprpm18:
@@ -106,12 +106,12 @@ nopreprpm18:
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	-bb $(SPECFILE)
 
 noprepsrpm18:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpm18/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" --define "pgminorversion $(PG18MINORVERSION)" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
