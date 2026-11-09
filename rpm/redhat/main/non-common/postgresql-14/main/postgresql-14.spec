@@ -958,6 +958,11 @@ cat postgres-%{pgmajorversion}.lang pg_resetwal-%{pgmajorversion}.lang pg_checks
 
 test_failure=0
 
+# When rpmbuild is started from make (our package Makefiles), MAKELEVEL is
+# inherited and the temp-install rule in Makefile.global, which only runs at
+# MAKELEVEL 0, is skipped: there is no tmp_install and initdb is not found.
+unset MAKELEVEL MAKEFLAGS MFLAGS
+
 # Our postgresql.conf.sample enables the logging collector, but the TAP tests
 # read the server log from the file that pg_ctl writes. Turn it off for the
 # test instances.
