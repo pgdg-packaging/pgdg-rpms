@@ -72,7 +72,9 @@ Requires:	libgc1
 %endif
 # psql, pg_dump and pg_restore, found through PG_CONFIG or PATH:
 Requires:	postgresql
-Requires:	libpq5 >= %{pgmajorversion}.0
+# Any libpq of the supported PostgreSQL versions (14 and later) has all the
+# functions it uses; postgresqlNN-libs also provide libpq5:
+Requires:	libpq5
 
 %description
 pgcopydb is a tool that automates running pg_dump | pg_restore between
