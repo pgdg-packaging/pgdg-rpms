@@ -101,13 +101,13 @@ then
 			sleep 1
 			echo "time make build${packageBuildVersion}"
 			if ! time make build${packageBuildVersion}; then
-				packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+				packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 				cd
 				log_build_failure "$packagename" "$packageBuildVersion" "non-free"
 				exit 1
 			fi
 			# Get the package version after building the package so that we get the latest version:
-			packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
+			packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
 			sign_built_rpms rpm${packageBuildVersion} $packageBuildVersion || sign_failed=1
 			cd
 		else

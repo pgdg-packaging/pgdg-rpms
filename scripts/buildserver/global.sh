@@ -147,6 +147,28 @@ log_build_failure() {
 # same file its make targets load.
 rpmspec_extra_args=()
 
+# Run rpmspec with rpmspec_extra_args and the defines of the given PostgreSQL
+# major version, like the Makefiles pass them to rpmbuild. The version may be
+# empty: e.g. pgAlphaVersion and pgBetaVersion are empty on RHEL 8, which does
+# not support PostgreSQL 19 and later, and common packages are signed with
+# pgAlphaVersion. An empty version would define the macros with an empty body,
+# which rpmspec rejects ("Macro %pgmajorversion has empty body"), so the
+# defines are left out then, and the defaults of the spec file are used.
+# Usage: rpmspec_pg <pgmajorversion> <rpmspec arguments...>
+rpmspec_pg() {
+	local pg_version="$1"
+	shift
+	local -a defines=()
+
+	if [ -n "$pg_version" ]; then
+		defines=(--define "pgmajorversion ${pg_version}" \
+			--define "pginstdir /usr/pgsql-${pg_version}" \
+			--define "pgpackageversion ${pg_version}")
+	fi
+
+	rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" "$@"
+}
+
 # Print the file names of the binary RPMs that the spec file in the current
 # directory produces, named exactly the way rpmbuild names them, one per
 # line (e.g. "foo-1.0-1PGDG.f45.x86_64.rpm"). --builtrpms leaves out the
@@ -156,19 +178,11 @@ rpmspec_extra_args=()
 spec_rpm_files() {
 	local pg_version="$1"
 	local specfile
-	local -a defines=()
 	specfile=$(ls *.spec 2>/dev/null | head -n 1)
 
 	[ -z "$specfile" ] && return 1
 
-	# See spec_rpm_patterns: no empty defines.
-	if [ -n "$pg_version" ]; then
-		defines=(--define "pgmajorversion ${pg_version}" \
-			--define "pginstdir /usr/pgsql-${pg_version}" \
-			--define "pgpackageversion ${pg_version}")
-	fi
-
-	rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" \
+	rpmspec_pg "$pg_version" \
 		-q --builtrpms --qf "%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}.rpm\n" "$specfile" 2>/dev/null
 }
 
@@ -222,9 +236,7 @@ is_already_built() {
 		fi
 	done <<< "$expected_rpms"
 
-	already_built_version=$(rpmspec "${rpmspec_extra_args[@]}" --define "pgmajorversion ${pg_version}" \
-		--define "pginstdir /usr/pgsql-${pg_version}" \
-		--define "pgpackageversion ${pg_version}" \
+	already_built_version=$(rpmspec_pg "$pg_version" \
 		-q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
 
 	return 0
@@ -485,26 +497,16 @@ sign_package() {
 spec_rpm_patterns() {
 	local pg_version="$1"
 	local specfile version_release name suffix
-	local -a defines=()
-
-	# An empty version would define the macros with an empty body, which
-	# rpmspec rejects ("Macro %pgmajorversion has empty body"). Leave them out
-	# then, so that the defaults in the spec file are used:
-	if [ -n "$pg_version" ]; then
-		defines=(--define "pgmajorversion ${pg_version}" \
-			--define "pginstdir /usr/pgsql-${pg_version}" \
-			--define "pgpackageversion ${pg_version}")
-	fi
 
 	specfile=$(ls *.spec 2>/dev/null | head -n 1)
 	[ -z "$specfile" ] && return 1
 
-	version_release=$(rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" -q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
+	version_release=$(rpmspec_pg "$pg_version" -q --qf "%{VERSION}-%{RELEASE}\n" "$specfile" 2>/dev/null | head -n 1)
 	[ -z "$version_release" ] && return 1
 
 	{
-		rpmspec "${rpmspec_extra_args[@]}" "${defines[@]}" -q --builtrpms --qf "%{NAME}\n" "$specfile" 2>/dev/null
-		rpmspec "${rpmspec_extra_args[@]}" --srpm "${defines[@]}" -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
+		rpmspec_pg "$pg_version" -q --builtrpms --qf "%{NAME}\n" "$specfile" 2>/dev/null
+		rpmspec_pg "$pg_version" --srpm -q --qf "%{NAME}\n" "$specfile" 2>/dev/null
 	} | sort -u | while IFS= read -r name; do
 		[ -z "$name" ] && continue
 		for suffix in "" "-debuginfo" "-debugsource"; do
@@ -523,14 +525,6 @@ verify_built_rpms() {
 	local rpm_location="$1"
 	local pg_version="$2"
 	local specfile expected rpm_file matches found_list="" unsigned bad=0
-	local -a defines=()
-
-	# See spec_rpm_patterns: no empty defines.
-	if [ -n "$pg_version" ]; then
-		defines=(--define "pgmajorversion ${pg_version}" \
-			--define "pginstdir /usr/pgsql-${pg_version}" \
-			--define "pgpackageversion ${pg_version}")
-	fi
 
 	specfile=$(ls *.spec 2>/dev/null | head -n 1)
 	expected=$(spec_rpm_files "$pg_version")
@@ -538,7 +532,7 @@ verify_built_rpms() {
 		echo "${red}ERROR:${reset} Cannot tell which RPMs ${specfile:-the spec file} produces, so cannot check that they are signed."
 		return 1
 	fi
-	expected="$expected"$'\n'$(rpmspec "${rpmspec_extra_args[@]}" --srpm "${defines[@]}" \
+	expected="$expected"$'\n'$(rpmspec_pg "$pg_version" --srpm \
 		-q --qf "%{NAME}-%{VERSION}-%{RELEASE}.src.rpm\n" "$specfile" 2>/dev/null)
 
 	while IFS= read -r rpm_file; do

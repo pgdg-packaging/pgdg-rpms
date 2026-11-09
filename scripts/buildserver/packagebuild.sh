@@ -97,12 +97,12 @@ then
 		echo "${green}Ok, building $packagename on $git_os for PostgreSQL $pgBetaVersion beta:${reset}"
 		sleep 1
 		if ! time make "build${pgBetaVersion}testing"; then
-			packageVersion=`rpmspec --define "pgmajorversion ${pgBetaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+			packageVersion=`rpmspec_pg "${pgBetaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
 			log_build_failure "$packagename" "$pgBetaVersion" "beta_testing"
 			exit 1
 		fi
-		packageVersion=`rpmspec --define "pgmajorversion ${pgBetaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
+		packageVersion=`rpmspec_pg "${pgBetaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
 		sign_built_rpms "rpm${pgBetaVersion}testing" $pgBetaVersion || sign_failed=1
 		cd
 		exit $sign_failed
@@ -144,7 +144,7 @@ then
 		echo "${green}Ok, this is a common package, and I am building $packagename for $git_os for common testing repo.${reset}"
 		sleep 1
 		if ! time make commonbuildtesting; then
-			packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+			packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
 			log_build_failure "$packagename" "common" "common_testing"
 			exit 1
@@ -160,14 +160,14 @@ then
 		echo "${green}Ok, this is a common package, and I am building $packagename for $git_os for common repo.${reset}"
 		sleep 1
 		if ! time make commonbuild; then
-			packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+			packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 			cd
 			log_build_failure "$packagename" "common" "common"
 			exit 1
 		fi
 	fi
 	# Get the package version after building the package so that we get the latest version:
-	packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
+	packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
 	if [ $testing_mode -eq 1 ]
 	then
 		sign_built_rpms rpmcommontesting $pgAlphaVersion || sign_failed=1
@@ -226,7 +226,7 @@ then
 				echo "${green}Ok, building $packagename on $git_os against PostgreSQL $packageBuildVersion testing${reset}"
 				sleep 1
 				if ! time make build${packageBuildVersion}testing; then
-					packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+					packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 					cd
 					log_build_failure "$packagename" "$packageBuildVersion" "testing"
 					exit 1
@@ -242,14 +242,14 @@ then
 				sleep 1
 				echo "time make build${packageBuildVersion}"
 				if ! time make build${packageBuildVersion}; then
-					packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+					packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 					cd
 					log_build_failure "$packagename" "$packageBuildVersion" "stable"
 					exit 1
 				fi
 			fi
 			# Get the package version after building the package so that we get the latest version:
-			packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
+			packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
 			sign_built_rpms rpm${packageBuildVersion} $packageBuildVersion || sign_failed=1
 			cd
 		else
@@ -281,7 +281,7 @@ then
 			echo "${green}Ok, building $packagename on $git_os testing repo:${reset}"
 			sleep 1
 			if ! time make extrasbuildtesting; then
-				packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+				packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 				cd
 				log_build_failure "$packagename" "extras" "extras_testing"
 				exit 1
@@ -297,13 +297,13 @@ then
 			echo "${green}Ok, building $packagename on $git_os:${reset}"
 			sleep 1
 			if ! time make extrasbuild; then
-				packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
+				packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec 2>/dev/null |head -n 1 | awk -F ': ' '{print $2}'`
 				cd
 				log_build_failure "$packagename" "extras" "extras"
 				exit 1
 			fi
 		fi
-		packageVersion=`rpmspec --define "pgmajorversion ${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
+		packageVersion=`rpmspec_pg "${pgAlphaVersion}" -q --qf "%{name}: %{Version}\n" *.spec |head -n 1 | awk -F ': ' '{print $2}'`
 		sign_built_rpms pgdg $pgAlphaVersion || sign_failed=1
 		cd
 		exit $sign_failed
