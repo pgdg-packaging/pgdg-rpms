@@ -3,7 +3,7 @@
 
 Name:           %{sname}_%{pgmajorversion}
 Version:	0.2.5
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 Summary:	PostgreSQL extension to provide additional Prometheus metrics for pgexporter.
 License:	BSD
 URL:		https://github.com/pgexporter/%{sname}
@@ -41,6 +41,9 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.2.5-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sat Jun 20 2026 - Devrim Gündüz <devrim@gunduz.org> 0.2.5-1PGDG
 - Update to 0.2.5 per changes described at:
   https://github.com/pgexporter/pgexporter_ext/releases/tag/0.2.5

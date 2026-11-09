@@ -21,7 +21,7 @@
 Summary:	A PostgreSQL extension for automatic bloat cleanup
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{squeezemajver}.%{squeezemidver}.%{squeezeminver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/REL%{squeezemajver}_%{squeezemidver}_%{squeezeminver}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -105,6 +105,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.9.4-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.9.4-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

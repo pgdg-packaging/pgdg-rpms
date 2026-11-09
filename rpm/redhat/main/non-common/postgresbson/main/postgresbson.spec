@@ -26,7 +26,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	BSON data type for PostgreSQL
 License:	MIT
 URL:		https://github.com/buzzm/%{sname}
@@ -121,6 +121,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-2PGDG
 - RHEL: build against the libbson of pgdg-libmongoc (installed under
   /usr/pgdg-libmongoc), so that postgresbson does not need the EPEL

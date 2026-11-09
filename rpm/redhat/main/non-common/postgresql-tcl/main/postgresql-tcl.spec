@@ -5,7 +5,7 @@
 
 Name:		postgresql%{pgmajorversion}-tcl
 Version:	%{pgtclmajorversion}.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A Tcl client library for PostgreSQL
 
 URL:		https://github.com/flightaware/Pgtcl
@@ -61,6 +61,9 @@ autoconf
 %{pgtclprefix}-%{pgmajorversion}/share/man/mann/*
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.1-1PGDG
 - Update to 3.3.1 per changes described at:
   https://github.com/flightaware/Pgtcl/releases/tag/v3.3.1

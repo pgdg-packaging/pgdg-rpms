@@ -3,7 +3,7 @@
 Summary:	pgbouncer Foreign Data Wrapper
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/CrunchyData/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/CrunchyData/%{sname}
@@ -41,6 +41,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Sep 9 2026 Devrim Gunduz <devrim@gunduz.org> 1.4.0-2PGDG
 - Mark this package as noarch as this is an SQL-only extension.
 

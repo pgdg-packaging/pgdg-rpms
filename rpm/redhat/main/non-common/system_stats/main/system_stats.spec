@@ -17,7 +17,7 @@
 Summary:	A Postgres extension for exposing system metrics such as CPU, memory and disk information
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.1
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
@@ -99,6 +99,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.1-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.1-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

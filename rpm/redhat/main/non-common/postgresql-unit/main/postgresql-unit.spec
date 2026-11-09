@@ -17,7 +17,7 @@
 Summary:	SI Units for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	7.10
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ChristophBerg/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/ChristophBerg/%{sname}
@@ -101,6 +101,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 7.10-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 7.10-9PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

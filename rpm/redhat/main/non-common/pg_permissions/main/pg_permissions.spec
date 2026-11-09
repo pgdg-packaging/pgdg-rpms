@@ -8,7 +8,7 @@
 Summary:	PostgreSQL permission reports and checks
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/REL_%{permissionsmajver}_%{permissionsminver}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -47,6 +47,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %{pginstdir}/share/extension/%{sname}*.*
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

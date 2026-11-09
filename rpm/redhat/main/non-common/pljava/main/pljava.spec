@@ -26,7 +26,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 URL:		http://tada.github.io/%{sname}/
 
@@ -132,6 +132,9 @@ done
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-8PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Sep 20 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-7PGDG
 - Add missig BR, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
 

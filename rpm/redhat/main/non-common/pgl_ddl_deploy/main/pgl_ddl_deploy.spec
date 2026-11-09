@@ -17,7 +17,7 @@
 Summary:	Transparent Logical DDL Replication (pgl_ddl_deploy)
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2.1
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/enova/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/enova/%{sname}
@@ -80,6 +80,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.1-8PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.1-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

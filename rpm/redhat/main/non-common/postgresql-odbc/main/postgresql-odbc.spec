@@ -5,7 +5,7 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -96,6 +96,9 @@ popd
 %license license.txt
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0006-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Nov 2 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0006-1PGDG
 - Update to 18.00.0006 per changes described at:
   https://github.com/postgresql-interfaces/psqlodbc/releases/tag/REL-18_00_0006

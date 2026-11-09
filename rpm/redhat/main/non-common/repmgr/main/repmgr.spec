@@ -17,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -217,6 +217,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 5.5.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Nov 5 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.1-1PGDG
 - Update to 5.5.1 per changes described at
   https://github.com/EnterpriseDB/repmgr/releases/tag/v5.5.1 . It properly

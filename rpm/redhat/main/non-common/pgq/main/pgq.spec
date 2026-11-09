@@ -16,7 +16,7 @@
 Summary:	Generic Queue for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.5.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}/
@@ -87,6 +87,9 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.5.2-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

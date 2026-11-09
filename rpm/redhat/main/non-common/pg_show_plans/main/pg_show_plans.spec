@@ -17,7 +17,7 @@
 Summary:	A PostgreSQL extension that shows query plans of all the currently running SQL statements.
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.8
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -97,6 +97,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.8-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.1.8-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

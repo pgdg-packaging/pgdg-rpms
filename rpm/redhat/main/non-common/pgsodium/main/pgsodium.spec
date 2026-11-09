@@ -32,7 +32,7 @@
 Summary:	PostgreSQL extension for high level cryptographic algorithms
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1.11
-Release:	8PGDG%{dist}
+Release:	9PGDG%{dist}
 License:	BSD
 URL:		https://github.com/michelp/%{sname}/
 Source0:	https://github.com/michelp/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -159,6 +159,9 @@ pg_prove -d postgres -p $(pgdg_check_port plain) test/test.sql
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1.11-9PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.11-8PGDG
 - RHEL: Link against the libsodium of pgdg-libsodium by its full path:
   -lsodium picked EPEL's libsodium on the build hosts, so pgsodium.so

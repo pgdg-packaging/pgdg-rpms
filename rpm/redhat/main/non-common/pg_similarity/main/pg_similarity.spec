@@ -19,7 +19,7 @@
 Summary:	Set of functions and operators for executing similarity queries for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{packagemajorver}.%{packageminver}
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 URL:		https://github.com/eulerto/%{sname}
 Source0:	https://github.com/eulerto/%{sname}/archive/refs/tags/%{sname}_%{packagemajorver}_%{packageminver}.tar.gz
 Patch0:		%{sname}-hamming.patch
@@ -107,6 +107,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-9PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-8PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

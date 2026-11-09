@@ -16,7 +16,7 @@
 Summary:	PostgreSQL extension to construct High-Performance SQL Cluster Engine for distributed big data
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/pgspider/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/pgspider/%{sname}/
@@ -83,6 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.0-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.0-5PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

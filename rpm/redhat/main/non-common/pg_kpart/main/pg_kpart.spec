@@ -17,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 Summary:	Reject queries that scan all partitions of a partitioned table
 License:	PostgreSQL
 URL:		https://github.com/HexaCluster/%{sname}
@@ -91,6 +91,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-5PGDG
 - Fix Summary, which was copied from another package.
 

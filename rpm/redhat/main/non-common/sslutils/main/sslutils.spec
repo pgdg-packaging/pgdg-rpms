@@ -16,7 +16,7 @@
 Summary:	SSL Utils for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/EnterpriseDB/%{sname}
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
@@ -91,6 +91,9 @@ strip %{buildroot}%{pginstdir}/lib/*.so
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.4.1-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

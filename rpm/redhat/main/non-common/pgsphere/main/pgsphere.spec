@@ -18,7 +18,7 @@
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -100,6 +100,9 @@ This package provides JIT support for pgsphere
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.2-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

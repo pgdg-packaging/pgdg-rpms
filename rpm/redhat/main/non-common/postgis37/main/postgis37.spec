@@ -54,7 +54,7 @@ Summary:	Geographic Information Systems Extensions to PostgreSQL
 
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -449,6 +449,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sat Oct 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-1PGDG
 - Update to 3.7.0 per:
   https://postgis.net/2026/10/PostGIS-3.7.0/

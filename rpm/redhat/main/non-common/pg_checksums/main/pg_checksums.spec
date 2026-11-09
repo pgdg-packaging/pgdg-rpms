@@ -3,7 +3,7 @@
 Summary:	Activate/deactivate/verify checksums in offline Postgres clusters
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/credativ/%{sname}
 Source0:	https://github.com/credativ/%{sname}/archive/%{version}.tar.gz
@@ -64,6 +64,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %attr (755,root,root) %{pginstdir}/bin/%{sname}_ext
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> 1.4-3PGDG
 - Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
   not work on SLES. Use the versioned packages per distro, as the other

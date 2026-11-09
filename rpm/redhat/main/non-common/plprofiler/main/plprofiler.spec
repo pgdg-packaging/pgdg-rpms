@@ -22,7 +22,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ppmajorver}.5
-Release:	7PGDG%{dist}
+Release:	8PGDG%{dist}
 Summary:	PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -94,6 +94,9 @@ export PATH=%{pginstdir}/bin:${PATH}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-8PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.5-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

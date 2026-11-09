@@ -17,7 +17,7 @@
 Summary:	t-digest implementation for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.7
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/tvondra/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/tvondra/%{sname}
@@ -94,6 +94,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.7-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

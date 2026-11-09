@@ -17,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20190509
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 Summary:	PostgreSQL extension that exposes PCRE functionality as functions and operators
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -102,6 +102,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.20190509-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20190509-9PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

@@ -17,7 +17,7 @@
 Summary:	PostgreSQL and Greenplum job scheduler
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/RekGRpth/%{sname}
 Source0:	https://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
@@ -116,6 +116,9 @@ pgdg_installcheck %{with_llvm_arg} REGRESS_OPTS="--use-existing --dbname=postgre
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

@@ -18,7 +18,7 @@
 Summary:	Postgres extension and service for automated failover and high-availability
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2
-Release:	8PGDG%{dist}
+Release:	9PGDG%{dist}
 License:	Apache
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/%{sname}/
@@ -136,6 +136,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2-9PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2-8PGDG
 - Add %%check, running the regression tests of the monitor extension with
   the %%check helpers from pgdg-srpm-macros 2.0.0. The pg_autoctl tests of

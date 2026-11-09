@@ -22,7 +22,7 @@
 Summary:	Procedural language interface between PostgreSQL and R
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plrmajver}.%{plrmidver}.%{plrminver}.%{plrfinver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	GPLv2
 Source0:	https://github.com/postgres-%{sname}/%{sname}/archive/REL%{plrmajver}_%{plrmidver}_%{plrminver}_%{plrfinver}.tar.gz
 URL:		https://github.com/postgres-%{sname}/%{sname}
@@ -97,6 +97,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{bui
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 8.4.8.10-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 8.4.8.10-1PGDG
 - Update to 8.4.8.10 per changes described at:
   https://github.com/postgres-plr/plr/releases/tag/REL8_4_8_10

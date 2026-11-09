@@ -17,7 +17,7 @@
 Summary:	Server side rollback at statement level for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	ISC
 Source0:	https://github.com/HexaCluster/%{sname}/archive/v%{version}.tar.gz
 # Remove when upstream applies the patch:
@@ -91,6 +91,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

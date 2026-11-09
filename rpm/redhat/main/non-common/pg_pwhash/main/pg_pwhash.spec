@@ -12,7 +12,7 @@
 Summary:	A PostgreSQL extension which provides advanced password hashing methods based on adaptive implementations.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -92,6 +92,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/lib/%{sname}.so
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

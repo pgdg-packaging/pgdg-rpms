@@ -15,7 +15,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.6
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL extension used for indexing the sky
 License:	GPLv2
 URL:		https://github.com/segasai/%{sname}
@@ -83,6 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Nov 5 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.6-1PGDG
 - Update to 2.0.6 per changes described at:
   https://github.com/segasai/q3c/releases/tag/v2.0.6

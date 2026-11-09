@@ -20,7 +20,7 @@
 Summary:	Logical Replication extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pglogicalmajver}.%{pglogicalmidver}.%{pglogicalminver}
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	PostgreSQL
 URL:		https://github.com/2ndQuadrant/%{sname}
 Source0:	https://github.com/2ndQuadrant/%{sname}/archive/REL%{pglogicalmajver}_%{pglogicalmidver}_%{pglogicalminver}.tar.gz
@@ -137,6 +137,9 @@ PATH=%{pginstdir}/bin:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.8-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Sep 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.4.8-5PGDG
 - Add missing BR
 - Add postgresqlNN-static to BuildRequires for PostgreSQL 19+: libpgcommon

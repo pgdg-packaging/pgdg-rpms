@@ -5,7 +5,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.0.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	A table update logger for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/dalibo/%{pname}/
@@ -62,6 +62,9 @@ PGDG_EMAJ_VERSION=%{version}
 %{pginstdir}/share/%{pname}/
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 5.0.1-1PGDG
 - Update to 5.0.1, which fixes a vulnerability that let a role with emaj_adm
   privileges acquire superuser rights. Per

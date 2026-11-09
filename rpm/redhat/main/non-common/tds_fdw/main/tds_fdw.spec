@@ -16,7 +16,7 @@
 Summary:	TDS Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.5
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/tds-fdw/%{sname}/archive/v%{version}.zip
 URL:		https://github.com/tds-fdw/%{sname}
@@ -114,6 +114,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.5-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Nov 6 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.5-6PGDG
 - RHEL: Build against our new pgdg-freetds package, instead of the EPEL
   freetds package. Per

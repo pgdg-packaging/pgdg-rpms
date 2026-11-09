@@ -20,7 +20,7 @@
 Summary:	PostgreSQL tool to rewrite a table
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgrwmajver}.%{pgrwmidver}
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/cybertec-postgresql/pg_rewrite/archive/refs/tags/REL%{pgrwmajver}_%{pgrwmidver}.tar.gz
@@ -99,6 +99,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Oct 1 2026 Devrim Gunduz <devrim@gunduz.org> - %{pgrwmajver}.%{pgrwmidver}-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

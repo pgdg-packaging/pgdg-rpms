@@ -18,7 +18,7 @@
 Summary:	PostgreSQL HTTP client
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.7.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 URL:		https://github.com/pramsey/%{sname}
 Source0:	https://github.com/pramsey/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	MIT
@@ -92,6 +92,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.2-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.2-5PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. The tests need internet access. It is

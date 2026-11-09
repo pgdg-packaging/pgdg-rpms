@@ -19,7 +19,7 @@
 Summary:	2-gram (bigram) index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbigmver}_%{pgbigmpackagever}
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 URL:		https://github.com/pgbigm/%{sname}
 Source0:	https://github.com/pgbigm/%{sname}/archive/refs/tags/v%{pgbigmver}-%{pgbigmpackagever}.tar.gz
 License:	PostgreSQL
@@ -99,6 +99,9 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2_20250903-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2_20250903-6PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

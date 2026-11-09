@@ -17,7 +17,7 @@
 Summary:	A semantic version data type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.42.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/theory/pg-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/theory/pg-%{sname}/
@@ -87,6 +87,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.42.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Oct 11 2026 Devrim Gunduz <devrim@gunduz.org> - 0.42.0-1PGDG
 - Update to 0.42.0 per changes described at:
   https://github.com/theory/pg-semver/releases/tag/v0.42.0

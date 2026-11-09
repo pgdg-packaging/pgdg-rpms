@@ -20,7 +20,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 Summary:	PostgreSQL extension to allow to access to memory usage diagnostics
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -83,6 +83,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.1-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

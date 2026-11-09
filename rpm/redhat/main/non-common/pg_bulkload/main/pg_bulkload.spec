@@ -23,7 +23,7 @@
 Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
@@ -165,6 +165,9 @@ pgdg_installcheck -C bin %{with_llvm_arg} \
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1.23-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-5PGDG
 - Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237
 - Add %%check, running the regression tests with the %%check helpers

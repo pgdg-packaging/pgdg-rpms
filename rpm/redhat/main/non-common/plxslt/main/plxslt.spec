@@ -16,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20140221
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	PL/XSLT Procedural Language Handler for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -90,6 +90,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.20140221-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20140221-6PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

@@ -17,7 +17,7 @@
 Summary:	v7 UUIDs data type in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.0
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	MPLv2.0
 Source0:	https://github.com/fboulnois/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/fboulnois/%{sname}
@@ -91,6 +91,9 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

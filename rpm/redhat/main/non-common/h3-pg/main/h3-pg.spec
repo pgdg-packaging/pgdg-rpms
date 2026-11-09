@@ -8,7 +8,7 @@
 Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.5.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	Apache
 URL:		https://github.com/postgis/%{sname}
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -114,6 +114,9 @@ ctest --test-dir build-check --output-on-failure --exclude-regex '^h3_postgis_re
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.5.0-3PGDG
 - Add %%check, running the regression tests with ctest against the copy
   of the PostgreSQL installation from the %%check helpers of

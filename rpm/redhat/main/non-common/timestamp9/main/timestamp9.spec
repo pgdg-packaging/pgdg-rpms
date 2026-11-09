@@ -3,7 +3,7 @@
 Summary:	An efficient nanosecond precision timestamp type for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/optiver/%{sname}/archive/refs/tags/%{sname}-%{version}.tar.gz
 URL:		https://github.com/optiver/%{sname}
@@ -40,6 +40,9 @@ popd
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-5PGDG
 - Add missing BR
 

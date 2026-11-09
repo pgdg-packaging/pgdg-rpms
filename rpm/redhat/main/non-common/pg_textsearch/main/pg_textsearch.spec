@@ -17,7 +17,7 @@
 Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-1.5.0-limits_h.patch
@@ -107,6 +107,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 2 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-1PGDG
 - Update to 1.5.1 per changes described at:
   https://github.com/timescale/pg_textsearch/releases/tag/v1.5.1

@@ -16,7 +16,7 @@
 Summary:	Temporal tables extension for PostgreQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.2
-Release:	9PGDG%{dist}
+Release:	10PGDG%{dist}
 Source0:	https://github.com/arkhipov/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/arkhipov/%{sname}
 License:	BSD
@@ -83,6 +83,9 @@ PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} DESTDIR=
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.2-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-9PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

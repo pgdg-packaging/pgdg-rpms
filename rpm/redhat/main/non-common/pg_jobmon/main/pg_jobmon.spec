@@ -3,7 +3,7 @@
 Summary:	Job logging and monitoring extension for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.1
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 Source0:	http://api.pgxn.org/dist/pg_jobmon/%{version}/pg_jobmon-%{version}.zip
 URL:		https://github.com/omniti-labs/%{sname}
@@ -38,6 +38,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-6PGDG
 - Add missing BR
 

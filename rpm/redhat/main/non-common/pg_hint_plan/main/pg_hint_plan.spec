@@ -47,7 +47,7 @@
 Summary:	Tweak PostgreSQL execution plans using so-called "hints" in SQL comments
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pghintplanversion}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL%{pgmajorversion}_%{git_tag}.tar.gz
 URL:		https://github.com/ossc-db/%{sname}/
@@ -147,6 +147,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Oct 15 2026 Devrim Gunduz <devrim@gunduz.org> - %{pghintplanversion}-1PGDG
 - Add PostgreSQL 19 support (1.9.0), per changes described at:
   https://github.com/ossc-db/pg_hint_plan/releases/tag/REL19_1_9_0

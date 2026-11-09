@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension to add compatibility to Oracle UTL_SMTP package.
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/hexacluster/%{sname}/
 Source0:	https://github.com/hexacluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -109,6 +109,9 @@ pgdg_installcheck || { cat tmp_check/smtp_server.log; exit 1; }
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-1PGDG
 - Update to 2.0 per changes described at:
   https://github.com/HexaCluster/pg_utl_smtp/releases/tag/v2.0

@@ -18,7 +18,7 @@
 Summary:	JSON output plugin for changeset extraction
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.7
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/eulerto/%{sname}/archive/%{sname}_%{wal2json_rel}.tar.gz
 URL:		https://github.com/eulerto/wal2json
@@ -106,6 +106,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.7-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 09 2026 Devrim Gunduz <devrim@gunduz.org> - 2.7-1PGDG
 - Update to 2.7, per changes described at:
   https://github.com/eulerto/wal2json/releases/tag/wal2json_2_7

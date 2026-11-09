@@ -119,6 +119,7 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-2PGDG
 - Add missing BuildRequires: postgresqlNN-server. "cargo pgrx init" in
   %%build runs initdb, so the build failed in a clean buildroot.
+- Rebuild against latest PostgreSQL minor releases
 
 * Tue Oct 27 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-1PGDG
 - Update to 3.3.0 per changes described at:

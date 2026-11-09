@@ -18,7 +18,7 @@
 Summary:	Sequential UUID generators for PostgreSQL
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.0.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/tvondra/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/tvondra/%{sname}
@@ -90,6 +90,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.3-8PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.3-7PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

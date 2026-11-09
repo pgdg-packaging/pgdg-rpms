@@ -17,7 +17,7 @@
 Summary:	Track per-plan call counts, execution times and EXPLAIN texts in Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pganalyze/%{sname}
 Source0:	https://github.com/pganalyze/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -108,6 +108,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 - Devrim Gündüz <devrim@gunduz.org> - 2.1.1-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

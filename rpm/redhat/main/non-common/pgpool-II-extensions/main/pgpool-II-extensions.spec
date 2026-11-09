@@ -12,7 +12,7 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
@@ -133,6 +133,9 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.7.3-2PGDG
 - RHEL 10: Build against pgdg-libmemcached-awesome (installed under
   /usr/pgdg-libmemcached), so that the package does not need the EPEL

@@ -16,7 +16,7 @@
 Summary:	PostgreSQL Passwordcheck Policy
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.6
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
@@ -123,6 +123,9 @@ pgdg_installcheck %{with_llvm_arg} \
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.6-6PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it with

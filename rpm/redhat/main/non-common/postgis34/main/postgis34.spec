@@ -72,7 +72,7 @@ Summary:	Geographic Information Systems Extensions to PostgreSQL
 
 Name:		%{sname}%{postgiscurrmajorversion}_%{pgmajorversion}
 Version:	%{postgismajorversion}.6
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	GPLv2+
 Source0:	https://download.osgeo.org/postgis/source/postgis-%{version}.tar.gz
 Source2:	https://download.osgeo.org/postgis/docs/postgis-%{version}-en.pdf
@@ -473,6 +473,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.4.6-12PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.6-11PGDG
 - Enable SFCGAL support on RHEL 8 - ppc64le, which now has SFCGAL 1.5.
 - Pass --without-sfcgal to configure when building without SFCGAL, so that

@@ -17,7 +17,7 @@
 Summary:	SQL functions that allow capture of node OS metrics from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -91,6 +91,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7-6PGDG
 - Update to 2.0.1 per changes described at:
   https://github.com/pgnodemx/pgnodemx/releases/tag/v2.0.1

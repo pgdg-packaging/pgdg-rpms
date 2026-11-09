@@ -21,7 +21,7 @@
 Summary:	PostgreSQL extension allowing privilege escalation with enhanced logging and control
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{setusermajver}.%{setusermidver}.%{setuserminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/pgaudit/%{sname}
 Source0:	https://github.com/pgaudit/%{sname}/archive/refs/tags/REL%{setusermajver}_%{setusermidver}_%{setuserminver}.tar.gz
@@ -101,6 +101,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.3.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 4.3.0-1PGDG
 - Update to 4.3.0, per changes described at:
   https://github.com/pgaudit/set_user/releases/tag/REL4_3_0

@@ -17,7 +17,7 @@
 Summary:	Prefix Range module for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.11
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/dimitri/%{sname}/archive/v%{version}.zip
 URL:		https://github.com/dimitri/%{name}
@@ -93,6 +93,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg} DESTDIR=%
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.11-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.11-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

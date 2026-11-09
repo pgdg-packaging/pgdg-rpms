@@ -4,7 +4,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.2.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 Summary:	Faceted query acceleration for PostgreSQL using roaring bitmaps
 License:	BSD
 URL:		https://github.com/cybertec-postgresql/%{sname}
@@ -54,6 +54,9 @@ echo no build stage needed
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.2.0-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 0.2.0-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

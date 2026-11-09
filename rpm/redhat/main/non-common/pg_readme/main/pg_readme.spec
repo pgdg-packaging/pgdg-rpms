@@ -5,7 +5,7 @@
 Summary:	PostgreSQL extension to generate a README.md document for a database extension or schema
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.7.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	BSD
 Group:		Applications/Databases
 URL:		https://github.com/bigsmoke/%{sname}
@@ -64,6 +64,9 @@ in the pg_description system catalog.
 %{pginstdir}/share/extension/%{sname}*.control
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.7.1-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Oct 12 2026 Devrim Gündüz <devrim@gunduz.org> - 0.7.1-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0, on PostgreSQL 15 and newer: the tests use

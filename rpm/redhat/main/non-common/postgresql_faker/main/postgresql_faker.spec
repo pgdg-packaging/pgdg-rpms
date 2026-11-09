@@ -16,7 +16,7 @@
 Summary:	Fake Data Generator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.3
-Release:	11PGDG%{?dist}
+Release:	12PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://gitlab.com/dalibo/%{sname}/-/archive/%{version}/%{sname}-%{version}.tar.bz2
 URL:		https://gitlab.com/dalibo/%{sname}
@@ -90,6 +90,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.5.3-12PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.3-11PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

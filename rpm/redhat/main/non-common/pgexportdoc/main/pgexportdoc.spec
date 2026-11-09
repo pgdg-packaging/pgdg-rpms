@@ -3,7 +3,7 @@
 Summary:	command line utility for exporting XML, JSON, BYTEA document from PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
@@ -95,6 +95,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-9PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-8PGDG
 - Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
   not work on SLES. Use the versioned packages per distro, as the other

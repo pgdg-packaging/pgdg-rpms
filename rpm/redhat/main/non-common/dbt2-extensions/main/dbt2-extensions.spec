@@ -17,7 +17,7 @@
 Summary:	Database Test 2 Differences from the TPC-C - Extensions
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	0.62.0
-Release:	5PGDG%{dist}
+Release:	6PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/osdldbt/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/osdldbt/%{sname}/
@@ -156,6 +156,9 @@ popd
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.62.0-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 0.62.0-5PGDG
 - Actually install stock_level.sql, delivery.sql, new_order.sql,
   order_status.sql and payment.sql in %%install  They're the plain

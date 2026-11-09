@@ -16,7 +16,7 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.3
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -158,6 +158,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.3-8PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.3-7PGDG
 - Fix the build on Amazon Linux 2023 and SLES 16: use the JNI headers of
   the versioned JDK directories, as Corretto does not provide the

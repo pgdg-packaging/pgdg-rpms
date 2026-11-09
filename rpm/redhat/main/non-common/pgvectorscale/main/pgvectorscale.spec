@@ -6,7 +6,7 @@
 Summary:	Faster and cheaper vector search on PostgreSQL, complementing pgvector
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.9.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The extension itself, and the licenses of the Rust crates that are compiled into
 # it (161 crates), checked with "cargo metadata --filter-platform
 # x86_64-unknown-linux-gnu", without the dev dependencies:
@@ -124,5 +124,8 @@ cp -a target/release/%{pname}-pg%{pgmajorversion}/* %{buildroot}/
 %{pginstdir}/share/extension/%{pname}--*.sql
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Sep 25 2026 Devrim Gündüz <devrim@gunduz.org> - 0.9.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository.

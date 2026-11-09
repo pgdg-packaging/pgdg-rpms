@@ -16,7 +16,7 @@
 Summary:	PostgreSQL extension to schedules and manages jobs in a job queue similar to Oracle DBMS_JOB package
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-include.patch
@@ -88,6 +88,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} PG_CPPFLA
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-5PGDG
 - Pass PG_CPPFLAGS=-I%{pginstdir}/include to make to fix builds.
 

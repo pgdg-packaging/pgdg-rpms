@@ -17,7 +17,7 @@
 Summary:	Trusted Language Extensions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.3
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/aws/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/aws/%{sname}/
@@ -112,6 +112,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.3-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 9 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-1PGDG
 - Update to 1.5.3 per changes described at:
   https://github.com/aws/pg_tle/releases/tag/v1.5.3

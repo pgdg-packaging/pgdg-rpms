@@ -17,7 +17,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	17.1
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/pgaudit/pgaudit/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -113,6 +113,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 17.1-9PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 17.1-8PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

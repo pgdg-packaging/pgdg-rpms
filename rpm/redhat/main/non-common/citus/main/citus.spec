@@ -17,7 +17,7 @@
 Summary:	PostgreSQL extension that transforms Postgres into a distributed database
 Name:		%{sname}_%{pgmajorversion}
 Version:	14.3.0
-Release:	1PGDG%{dist}
+Release:	2PGDG%{dist}
 License:	AGPLv3
 URL:		https://github.com/citusdata/%{sname}
 Source0:	https://github.com/citusdata/%{sname}/archive/v%{version}.tar.gz
@@ -143,6 +143,9 @@ make %{?_smp_mflags} %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 14.3.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 23 2026 Devrim Gunduz <devrim@gunduz.org> - 14.3.0-1PGDG
 - Update to 14.3.0 per changes described at:
   https://github.com/citusdata/citus/releases/tag/v14.3.0

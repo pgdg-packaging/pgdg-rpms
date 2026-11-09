@@ -18,7 +18,7 @@
 Summary:	A PostgreSQL extension for storing point cloud (LIDAR) data
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pointcloudmajorversion}.5
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 URL:		https://github.com/pgpointcloud/%{sname}
 Source0:	https://github.com/pgpointcloud/%{sname}/archive/v%{version}.tar.gz
 Patch0:		%{sname}-zlib-ng-memsize-tests.patch
@@ -113,6 +113,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.5-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.5-9PGDG
 - Do not Require CUnit-devel at runtime; it is only needed to run the
   tests, so BuildRequire it with runselftest instead. On RHEL it comes from

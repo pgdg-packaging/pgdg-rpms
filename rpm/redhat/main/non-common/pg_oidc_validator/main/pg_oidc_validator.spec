@@ -17,7 +17,7 @@
 Summary:	OAuth validator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 License:	Apache 2.0
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
@@ -96,6 +96,9 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-4PGDG
 - Add missing BR
 

@@ -17,7 +17,7 @@ Summary:	PERIODs and SYSTEM VERSIONING for PostgreSQL
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2.2
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.zip
@@ -81,6 +81,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2.2-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 15 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.2-9PGDG
 - Add missing BR, https://github.com/pgdg-packaging/pgdg-rpms/issues/237
 

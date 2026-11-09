@@ -6,7 +6,7 @@
 Summary:	Unit testing for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3.4
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/theory/%{sname}
 Source0:	https://github.com/theory/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -72,6 +72,9 @@ popd
 %{perl_privlib}/TAP/Parser/SourceHandler/pgTAP.pm
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.4-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.4-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

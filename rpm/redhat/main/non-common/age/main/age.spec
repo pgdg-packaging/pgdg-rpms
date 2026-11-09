@@ -20,11 +20,11 @@
 # rpm on EL-8 (4.14) does not support %%elif, so use nested %%if blocks.
 %if %{pgmajorversion} == 17
 %global ageversion 1.7.0
-%global agerelease rc0_5
+%global agerelease rc0_6
 %else
 %if %{pgmajorversion} == 18 || %{pgmajorversion} == 19
 %global ageversion 1.8.0
-%global agerelease rc0_2
+%global agerelease rc0_3
 %else
 %{error:age is not available for PostgreSQL %{pgmajorversion}}
 %endif
@@ -124,6 +124,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-rc0_3PGDG (1.7.0-rc0_6PGDG for PostgreSQL 17)
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-rc0_2PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

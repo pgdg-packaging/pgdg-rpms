@@ -17,7 +17,7 @@
 Summary:	PostgreSQL json query language with GIN indexing support
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.2
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/postgrespro/%{sname}/archive/ver_%{version}.tar.gz
 URL:		https://github.com/postgrespro/%{sname}/
@@ -111,6 +111,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2-9PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

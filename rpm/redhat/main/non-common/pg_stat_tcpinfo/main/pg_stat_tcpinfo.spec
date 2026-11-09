@@ -17,7 +17,7 @@
 Summary:	PostgreSQL extension that shows detailed TCP connection information
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://github.com/jakubwartakEDB/%{sname}
 Source0:	https://github.com/jakubwartakEDB/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -93,6 +93,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository:
   https://github.com/jakubwartakEDB/pg_stat_tcpinfo/releases/tag/v1.1

@@ -12,7 +12,7 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/VERSION_%{orafcemajver}_%{orafcemidver}_%{orafceminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -79,6 +79,9 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.17.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 14 2026 Devrim Gündüz <devrim@gunduz.org> - 4.17.1-1PGDG
 - Update to 4.17.1 per changes described at
   https://github.com/orafce/orafce/releases/tag/VERSION_4_17_1

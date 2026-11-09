@@ -18,7 +18,7 @@
 Summary:	Incremental Data Processing in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 License:	PostgreSQL
 Group:		Applications/Databases
 URL:		https://github.com/CrunchyData/%{sname}
@@ -99,6 +99,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6.1-1PGDG
 - Update to 1.6.1 per changes described at:
   https://github.com/CrunchyData/pg_incremental/releases/tag/v1.6.1

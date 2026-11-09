@@ -16,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	6.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	PostgreSQL username/password checks
 License:	PostgreSQL
 URL:		https://github.com/HexaCluster/%{sname}
@@ -103,6 +103,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 6.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 14 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0-1PGDG
 - Update to 6.0 per changes described at
   https://github.com/HexaCluster/credcheck/releases/tag/v6.0

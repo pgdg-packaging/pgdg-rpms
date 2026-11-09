@@ -17,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.20
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	PostgreSQL Extension Whitelist
 License:	PostgreSQL
 URL:		https://github.com/dimitri/%{sname}
@@ -104,6 +104,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.20-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.20-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

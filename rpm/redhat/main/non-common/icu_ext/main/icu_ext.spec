@@ -16,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.11.0
-Release:	4PGDG%{?dist}
+Release:	5PGDG%{?dist}
 Summary:	PostgreSQL extension to expose functionality from ICU to PostgreSQL applications
 License:	PostgreSQL
 URL:		https://github.com/dverite/%{sname}
@@ -90,6 +90,9 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.11.0-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

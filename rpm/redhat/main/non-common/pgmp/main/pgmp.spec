@@ -18,7 +18,7 @@
 Summary:	PostgreSQL Multiple Precision Arithmetic Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.6
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 License:	LGPL
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 # Make sure that we use Python 3.
@@ -97,6 +97,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.6-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-5PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

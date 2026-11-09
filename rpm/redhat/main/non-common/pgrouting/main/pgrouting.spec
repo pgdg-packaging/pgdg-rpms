@@ -5,7 +5,7 @@
 Summary:	Routing functionality for PostGIS
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgroutingmajorversion}.2
-Release:	2PGDG%{dist}
+Release:	3PGDG%{dist}
 License:	GPLv2+
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 URL:		https://pgrouting.org/
@@ -72,6 +72,9 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.2-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sat Sep 5 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.2-2PGDG
 - Fix SLES build failure: %%cmake resolves the source directory
   relative to the pushd'd build/ directory on SUSE, so use plain

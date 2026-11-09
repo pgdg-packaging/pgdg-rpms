@@ -17,7 +17,7 @@
 Summary:	Nominatim Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	MIT
 URL:		https://github.com/jimjonesbr/%{sname}
 Source0:	https://github.com/jimjonesbr/%{sname}/archive/v%{version}.tar.gz
@@ -95,6 +95,9 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} DESTDIR=%{build
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Sep 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3-2PGDG
 - Run the regression tests with the %%check helpers from
   pgdg-srpm-macros 2.0.0.

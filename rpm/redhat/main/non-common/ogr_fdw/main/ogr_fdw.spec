@@ -30,7 +30,7 @@
 Summary:	PostgreSQL foreign data wrapper for OGR
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.9
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/pramsey/pgsql-ogr-fdw/archive/v%{version}.tar.gz
 URL:		https://github.com/pramsey/pgsql-ogr-fdw
@@ -118,6 +118,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.9-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.9-6PGDG
 - Link ogr_fdw.so and ogr_fdw_info with an RPATH to GDAL, instead of
   relying on the ld.so.conf.d file of GDAL. Rebuild against GDAL built

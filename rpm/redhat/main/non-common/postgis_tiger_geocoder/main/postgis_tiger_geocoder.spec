@@ -6,7 +6,7 @@ Summary:	Functions for geocoding, reverse geocoding, and standardizing address d
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	2025.2
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	MIT
 URL:		https://gitea.osgeo.org/postgis/%{sname}
 Source0:	https://gitea.osgeo.org/postgis/%{sname}/releases/download/%{version}/%{sname}-%{version}.tar.gz
@@ -57,6 +57,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2025.2-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2025.2-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

@@ -21,7 +21,7 @@
 Summary:	Procedural language interface between PostgreSQL and Lua
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plluangmajver}.%{plluangmidver}.%{plluangminver}
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/REL_%{plluangmajver}_%{plluangmidver}_%{plluangminver}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}
@@ -129,6 +129,9 @@ pgdg_installcheck %{with_llvm_arg} LUA="%{_bindir}/lua" LUAC="%{_bindir}/luac"
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.12-10PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.12-9PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

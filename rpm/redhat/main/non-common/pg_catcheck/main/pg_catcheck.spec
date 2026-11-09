@@ -3,7 +3,7 @@
 Summary:	Tool for diagnosing PostgreSQL system catalog corruption
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.6.0
-Release:	7PGDG%{?dist}
+Release:	8PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/EnterpriseDB/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/EnterpriseDB/%{sname}
@@ -107,6 +107,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %{pginstdir}/bin/%{sname}
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-8PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-7PGDG
 - Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
   not work on SLES. Use the versioned packages per distro, as the other

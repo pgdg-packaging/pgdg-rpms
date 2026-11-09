@@ -28,7 +28,7 @@
 Summary:	A PostgreSQL API to interface with memcached
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.0
-Release:	15PGDG%{?dist}
+Release:	16PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/ohmu/%{sname}/archive/%{version}.tar.gz
 Patch0:		%{sname}-fix-gcc-warning.patch
@@ -104,6 +104,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-16PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-15PGDG
 - RHEL 10: Build against pgdg-libmemcached-awesome (installed under
   /usr/pgdg-libmemcached), so that pgmemcache does not need the EPEL

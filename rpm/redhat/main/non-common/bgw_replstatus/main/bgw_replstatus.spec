@@ -16,7 +16,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.8
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 Summary:	PostgreSQL background worker to report wether a node is a replication master or standby
 License:	PostgreSQL
 URL:		https://github.com/mhagander/%{sname}
@@ -118,6 +118,9 @@ fi
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-7PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-6PGDG
 - Add %%check: start a primary and a standby with bgw_replstatus
   preloaded, and check that the worker reports MASTER and STANDBY. It

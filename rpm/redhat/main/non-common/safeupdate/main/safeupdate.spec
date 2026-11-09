@@ -16,7 +16,7 @@
 Summary:	A simple extension to PostgreSQL that requires criteria for UPDATE and DELETE
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 License:	ISC
 URL:		https://github.com/eradman/pg-safeupdate
 Source0:	https://github.com/eradman/pg-safeupdate/archive/refs/tags/%{version}.tar.gz
@@ -76,6 +76,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only

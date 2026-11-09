@@ -17,7 +17,7 @@
 Summary:	Numeric data types for PostgreSQL that use numerals
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/df7cb/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/df7cb//%{sname}
@@ -100,6 +100,9 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3-9PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3-8PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0. It is disabled by default; enable it

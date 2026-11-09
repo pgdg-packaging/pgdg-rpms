@@ -17,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.3.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	RoaringBitmap extension for PostgreSQL
 License:	Apache 2.0
 URL:		https://github.com/ChenHuajun/%{sname}
@@ -91,6 +91,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.0-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Sun Oct 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.3.0-1PGDG
 - Update to 1.3.0 per changes described at:
   https://github.com/ChenHuajun/pg_roaringbitmap/releases/tag/v1.3.0

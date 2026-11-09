@@ -17,7 +17,7 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.8.7
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Open-source vector similarity search for Postgres
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}/
@@ -104,6 +104,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.7-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 0.8.7-1PGDG
 - Update to 0.8.7 per changes described at:
   https://github.com/pgvector/pgvector/blob/v0.8.7/CHANGELOG.md

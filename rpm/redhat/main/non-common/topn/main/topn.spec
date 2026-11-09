@@ -17,7 +17,7 @@
 Summary:	PostgreSQL extension that returns the top values in a database
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.7.1
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 License:	AGPLv3
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
@@ -100,6 +100,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.7.1-5PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.7.1-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
   from pgdg-srpm-macros 2.0.0, except the three that need data from

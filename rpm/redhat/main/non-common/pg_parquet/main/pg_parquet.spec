@@ -7,7 +7,7 @@
 Summary:	Copy data between PostgreSQL and Parquet files
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 # The extension itself, and the licenses of the Rust crates that are compiled into
 # it (334 crates), checked with "cargo metadata --filter-platform
 # x86_64-unknown-linux-gnu", without the dev dependencies:
@@ -118,5 +118,8 @@ cp -a target/release/%{sname}-pg%{pgmajorversion}/* %{buildroot}/
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-2PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Mon Oct 5 2026 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-1PGDG
 - Initial packaging for the PostgreSQL RPM repository.

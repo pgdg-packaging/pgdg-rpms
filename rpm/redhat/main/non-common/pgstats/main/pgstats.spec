@@ -6,7 +6,7 @@
 Summary:	vmstat-like tool for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgstatsmajver}.%{pgstatsmidver}.%{pgstatsminver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/gleu/pgstats/archive/refs/tags/REL%{pgstatsmajver}_%{pgstatsmidver}_%{pgstatsminver}.tar.gz
 URL:		https://github.com/gleu/%{sname}
@@ -57,6 +57,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgwaitevent
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-3PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-2PGDG
 - Add missing BR
 

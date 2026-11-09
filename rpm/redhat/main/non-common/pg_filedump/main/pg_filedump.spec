@@ -10,7 +10,7 @@
 Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pg_fdmajorver}.%{pg_fdminorver}
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
 Patch0:		%{sname}-makefile-rpm-gcc.patch
@@ -81,6 +81,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %doc README.pg_filedump.md
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-6PGDG
+- Rebuild against latest PostgreSQL minor releases
+
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-5PGDG
 - Fix the clang/llvm BuildRequires: the plain "clang" added earlier does
   not work on SLES. Use the versioned packages per distro, as the other
