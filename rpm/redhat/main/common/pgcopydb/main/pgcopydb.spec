@@ -70,8 +70,10 @@ Requires:	gc
 %if 0%{?suse_version} >= 1500
 Requires:	libgc1
 %endif
-# psql, pg_dump and pg_restore, found through PG_CONFIG or PATH:
-Requires:	postgresql
+# psql, pg_dump and pg_restore, found through PG_CONFIG or PATH. Require
+# the client of the same major version: its pg_dump can dump all supported
+# PostgreSQL versions (a bare "postgresql" pulled in postgresql14):
+Requires:	postgresql%{pgmajorversion}
 # Any libpq of the supported PostgreSQL versions (14 and later) has all the
 # functions it uses; postgresqlNN-libs also provide libpq5:
 Requires:	libpq5
