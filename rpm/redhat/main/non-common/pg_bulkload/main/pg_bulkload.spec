@@ -26,6 +26,10 @@ Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
 Release:	6PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # Built against this PostgreSQL minor release: require at least that one.
+# The other postgresqlNN-* dependencies need no version here: the PostgreSQL
+# subpackages require each other's exact version-release (all of them pin
+# the client package, which pins -libs), so the server, contrib etc. follow
+# -devel at build time and -libs at runtime.
 BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
 Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 %endif
