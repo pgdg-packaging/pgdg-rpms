@@ -81,13 +81,13 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	14.24
+Version:	14.25
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420007PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	7PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -1481,6 +1481,10 @@ fi
 %endif
 
 %changelog
+* Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 14.25-1PGDG
+- Update to 14.25 per changes described at:
+  https://www.postgresql.org/docs/release/14.25/
+
 * Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 14.24-7PGDG
 - Use the same sysusers.d file name in %%pre server as the one installed
   under %%{_sysusersdir}, so that an override in /etc/sysusers.d/ is honoured
