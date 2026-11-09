@@ -1,5 +1,9 @@
 %undefine _package_note_file
 %global sname pgcopydb
+# Common package: built with the headers and static libraries of one
+# PostgreSQL major version. The common build passes it; default to the same
+# one, so that the spec file can be parsed without it:
+%{!?pgmajorversion:%global pgmajorversion 18}
 
 Summary:	Automate pg_dump | pg_restore between two running Postgres servers
 Name:		%{sname}
@@ -129,6 +133,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} BINDIR=%{_bindi
   to libpq5. It finds psql, pg_dump and pg_restore through the PG_CONFIG
   environment variable or PATH, as before. Per
   https://github.com/pgdg-packaging/pgdg-rpms/issues/562
+- Default %%{pgmajorversion} to 18, so that the spec file can be parsed
+  without it.
 
 * Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 0.18-4PGDG
 - RHEL 10: Build against our new pgdg-gc package instead of the EPEL gc
