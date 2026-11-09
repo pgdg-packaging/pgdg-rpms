@@ -19,7 +19,9 @@ Summary:	IPv4/v6 and IPv4/v6 range index type for PostgreSQL
 Version:	2.4.3
 Release:	5PGDG%{?dist}
 %if 0%{?pgminorversion:1}
-# Built against this PostgreSQL minor release: require at least that one.
+# pgminorversion is the PostgreSQL minor release that the build servers
+# build against (global/Makefile.global): require at least that one, at
+# build time and at runtime.
 # The other postgresqlNN-* dependencies need no version here: the PostgreSQL
 # subpackages require each other's exact version-release (all of them pin
 # the client package, which pins -libs), so the server, contrib etc. follow

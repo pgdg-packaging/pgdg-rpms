@@ -24,7 +24,9 @@ Name:		%{sname}-archivist_%{pgmajorversion}
 Version:	%{powamajorversion}.%{powamidversion}.%{powaminorversion}
 Release:	4PGDG%{?dist}
 %if 0%{?pgminorversion:1}
-# Built against this PostgreSQL minor release: require at least that one.
+# pgminorversion is the PostgreSQL minor release that the build servers
+# build against (global/Makefile.global): require at least that one, at
+# build time and at runtime.
 # The other postgresqlNN-* dependencies need no version here: the PostgreSQL
 # subpackages require each other's exact version-release (all of them pin
 # the client package, which pins -libs), so the server, contrib etc. follow
