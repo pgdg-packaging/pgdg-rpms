@@ -25,8 +25,8 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	1.2.0
-Release:	4PGDG%{?dist}
+Version:	1.2.4
+Release:	1PGDG%{?dist}
 Summary:	Pure-Python MySQL client library
 
 License:	MIT
@@ -83,6 +83,13 @@ and Jython.
 %{python3_sitelib}/%{pname}/constants/__pycache__/*.py*
 
 %changelog
+* Mon Nov 9 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.4-1PGDG
+- Update to 1.2.4 per changes described at:
+  https://github.com/PyMySQL/PyMySQL/releases/tag/v1.2.4
+  This fixes two SQL injection vulnerabilities:
+  https://github.com/PyMySQL/PyMySQL/security/advisories/GHSA-m75w-33c4-7v8q
+  https://github.com/PyMySQL/PyMySQL/security/advisories/GHSA-x4f8-9hx9-hpp9
+
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-4PGDG
 - Add Amazon Linux 2023 support, building the python3.13 flavor there
   (python3.13-PyMySQL) for pg_chameleon.
