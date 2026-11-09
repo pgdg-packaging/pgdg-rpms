@@ -18,6 +18,11 @@ Summary:	PostgreSQL extension adding HyperLogLog data structures as a native dat
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.21
 Release:	6PGDG%{dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	Apache
 Source0:	https://github.com/citusdata/postgresql-%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/citusdata/postgresql-%{sname}/
@@ -96,6 +101,8 @@ PG_CONFIG=%{pginstdir}/bin/pg_config %make_install %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.21-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.21-5PGDG
 - Add %%check, running the regression tests with the %%check helpers

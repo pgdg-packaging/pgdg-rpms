@@ -18,6 +18,11 @@ Summary:	Extra Window Functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
 Release:	3PGDG%{dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 URL:		https://github.com/xocolatl/%{sname}
 Source0:	https://github.com/xocolatl/%{sname}/archive/v%{version}.tar.gz
@@ -92,6 +97,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-3PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-2PGDG
 - Add %%check, running the regression tests with the %%check helpers

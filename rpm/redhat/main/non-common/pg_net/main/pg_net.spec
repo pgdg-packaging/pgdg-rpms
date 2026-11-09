@@ -18,6 +18,11 @@ Summary:	A PostgreSQL extension that enables asynchronous (non-blocking) HTTP/HT
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20.5
 Release:	4PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 URL:		https://github.com/supabase/%{sname}
 Source0:	https://github.com/supabase/%{sname}/archive/refs/tags/v%{version}.tar.gz
 License:	Apache-2.0
@@ -94,6 +99,8 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.20.5-4PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20.5-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass

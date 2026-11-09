@@ -32,6 +32,11 @@ Summary:	PostgreSQL Audit Extension
 Name:		%{sname}%{pgauditversion}_%{pgmajorversion}
 Version:	%{pversion}
 Release:	10PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
@@ -129,6 +134,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - %{pversion}-10PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.1-9PGDG
 - Add %%check, running the regression tests with the %%check helpers

@@ -18,6 +18,11 @@ Summary:	PostgreSQL table versioning extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.85
 Release:	13PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	BSD
 Source0:	http://momjian.us/download/%{sname}/%{sname}-%{version}.tar.gz
 URL:		http://momjian.us/download/%{sname}/
@@ -86,6 +91,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.85-13PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 0.85-12PGDG
 - Make %%llvm actually control the build, not just packaging: pass

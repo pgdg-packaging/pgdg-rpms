@@ -47,6 +47,11 @@ Summary:	JDBC Foreign Data Wrapper for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.0
 Release:	11PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 URL:		https://github.com/pgspider/%{sname}
 Source0:	https://github.com/pgspider/%{sname}/archive/v%{version}.tar.gz
@@ -169,6 +174,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.5.0-11PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 0.5.0-10PGDG
 - Fix the build on Amazon Linux 2023 and SLES: link against libjvm.so in

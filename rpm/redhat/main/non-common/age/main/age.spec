@@ -34,6 +34,11 @@ Summary:	Graph database optimized for fast analysis and real-time data processin
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ageversion}
 Release:	%{agerelease}PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	Apache 2.0
 URL:		https://github.com/apache/%{sname}/
 # The tag tarballs of different PostgreSQL versions have the same file name, so
@@ -126,6 +131,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-rc0_3PGDG (1.7.0-rc0_6PGDG for PostgreSQL 17)
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-rc0_2PGDG
 - Add %%check, running the regression tests with the %%check helpers

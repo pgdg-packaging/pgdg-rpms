@@ -24,6 +24,11 @@ Summary:	Approximate algorithms (sketches) for PostgreSQL from Apache DataSketch
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.0
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	Apache-2.0
 URL:		https://github.com/apache/%{sname}-postgresql
 Source0:	https://github.com/apache/%{sname}-postgresql/archive/refs/tags/%{version}.tar.gz
@@ -132,6 +137,8 @@ fi
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Thu Oct 08 2026 Devrim Gunduz <devrim@gunduz.org> - 1.7.0-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository:

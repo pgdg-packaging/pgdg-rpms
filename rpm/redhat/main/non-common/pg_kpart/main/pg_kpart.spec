@@ -18,6 +18,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
 Release:	6PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	Reject queries that scan all partitions of a partitioned table
 License:	PostgreSQL
 URL:		https://github.com/HexaCluster/%{sname}
@@ -93,6 +98,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-5PGDG
 - Fix Summary, which was copied from another package.

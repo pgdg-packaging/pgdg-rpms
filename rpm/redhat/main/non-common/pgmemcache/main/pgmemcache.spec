@@ -29,6 +29,11 @@ Summary:	A PostgreSQL API to interface with memcached
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.3.0
 Release:	16PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	MIT
 Source0:	https://github.com/ohmu/%{sname}/archive/%{version}.tar.gz
 Patch0:		%{sname}-fix-gcc-warning.patch
@@ -106,6 +111,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.0-16PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-15PGDG
 - RHEL 10: Build against pgdg-libmemcached-awesome (installed under

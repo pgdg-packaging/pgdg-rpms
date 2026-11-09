@@ -27,6 +27,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.2.0
 Release:	3PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	BSON data type for PostgreSQL
 License:	MIT
 URL:		https://github.com/buzzm/%{sname}
@@ -123,6 +128,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-3PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.2.0-2PGDG
 - RHEL: build against the libbson of pgdg-libmongoc (installed under

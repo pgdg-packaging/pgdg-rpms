@@ -18,6 +18,11 @@ Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	19.0
 Release:	rc1_1PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	BSD
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/19rc1.tar.gz
 URL:		https://www.pgaudit.org
@@ -122,6 +127,8 @@ pgdg_installcheck %{with_llvm_arg}
   is enabled: installcheck also runs the TAP tests, which failed
   without prove.
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Wed Sep 30 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-beta4_1PGDG
 - Update to 19beta4 per changes described at:

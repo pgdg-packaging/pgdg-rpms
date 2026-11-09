@@ -6,6 +6,11 @@ Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	LGPLv2
 URL:		https://odbc.postgresql.org/
 
@@ -98,6 +103,8 @@ popd
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0006-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Nov 2 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0006-1PGDG
 - Update to 18.00.0006 per changes described at:

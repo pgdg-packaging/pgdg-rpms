@@ -6,6 +6,11 @@
 Name:		postgresql%{pgmajorversion}-tcl
 Version:	%{pgtclmajorversion}.1
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	A Tcl client library for PostgreSQL
 
 URL:		https://github.com/flightaware/Pgtcl
@@ -63,6 +68,8 @@ autoconf
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Sep 14 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.1-1PGDG
 - Update to 3.3.1 per changes described at:

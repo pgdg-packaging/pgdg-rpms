@@ -18,6 +18,11 @@ Summary:	PostgreSQL Global Temporary Tables Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.6
 Release:	5PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	GPLv2
 Source0:	https://github.com/darold/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/darold/%{sname}
@@ -100,6 +105,8 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %make_install %{with_llvm_arg} install DE
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6-5PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.6-4PGDG
 - Add %%check, running the regression tests with the %%check helpers

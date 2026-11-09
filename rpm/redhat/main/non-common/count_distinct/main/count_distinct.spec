@@ -18,6 +18,11 @@ Summary:	A hash-table based alternative to COUNT(DISTINCT ...) aggregate in Post
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0.2
 Release:	8PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	BSD
 Source0:	http://api.pgxn.org/dist/%{sname}/%{version}/%{sname}-%{version}.zip
 URL:		https://github.com/tvondra/%{sname}
@@ -91,6 +96,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.2-8PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.2-7PGDG
 - Add %%check, running the regression tests with the %%check helpers

@@ -18,6 +18,11 @@ Summary:	PostgreSQL extension which allows to set all cluster databases read onl
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.6
 Release:	5PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 Source0:	https://github.com/pierreforstmann/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://github.com/pierreforstmann/%{sname}
@@ -103,6 +108,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.6-5PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.6-4PGDG
 - Add %%check, running the regression tests with the %%check helpers

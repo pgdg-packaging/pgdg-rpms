@@ -17,6 +17,11 @@ Summary:	High-Performance Pattern Matching Index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.0.0
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	MIT
 URL:		https://github.com/crystallinecore/%{sname}/
 Source0:	https://github.com/crystallinecore/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -86,6 +91,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-1PGDG
 - Update to 3.0.0 per changes described at:

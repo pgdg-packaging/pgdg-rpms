@@ -20,6 +20,11 @@ Summary:	A PostgreSQL extension to manage partitioned tables by time or ID
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.0
 Release:	6PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 Source0:	https://github.com/pgpartman/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/pgpartman/%{sname}
@@ -130,6 +135,8 @@ pg_prove -d postgres -o -f $(ls test/test_pg17plus/*.sql | grep -v '/test-time-m
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 5.5.0-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.0-5PGDG
 - Add %%check, running the pgTAP tests of upstream with pg_prove and the

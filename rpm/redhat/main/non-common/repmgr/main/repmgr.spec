@@ -18,6 +18,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	5.5.1
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	Replication Manager for PostgreSQL Clusters
 License:	GPLv3
 URL:		https://github.com/enterpriseDB/%{sname}
@@ -219,6 +224,8 @@ fi
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 5.5.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Thu Nov 5 2026 Devrim Gunduz <devrim@gunduz.org> - 5.5.1-1PGDG
 - Update to 5.5.1 per changes described at

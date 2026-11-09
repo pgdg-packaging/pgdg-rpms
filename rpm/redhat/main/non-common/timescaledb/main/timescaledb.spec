@@ -4,6 +4,11 @@ Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.31.0
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	Apache
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/timescale/%{sname}
@@ -57,6 +62,8 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.31.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.31.0-1PGDG
 - Update to 2.31.0, per changes described at:

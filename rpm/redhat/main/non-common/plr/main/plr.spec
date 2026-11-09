@@ -23,6 +23,11 @@ Summary:	Procedural language interface between PostgreSQL and R
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{plrmajver}.%{plrmidver}.%{plrminver}.%{plrfinver}
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	GPLv2
 Source0:	https://github.com/postgres-%{sname}/%{sname}/archive/REL%{plrmajver}_%{plrmidver}_%{plrminver}_%{plrfinver}.tar.gz
 URL:		https://github.com/postgres-%{sname}/%{sname}
@@ -99,6 +104,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{bui
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 8.4.8.10-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Oct 13 2026 Devrim Gunduz <devrim@gunduz.org> - 8.4.8.10-1PGDG
 - Update to 8.4.8.10 per changes described at:

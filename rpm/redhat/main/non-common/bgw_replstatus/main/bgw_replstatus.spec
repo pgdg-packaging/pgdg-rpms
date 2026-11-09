@@ -17,6 +17,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.8
 Release:	7PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PostgreSQL background worker to report wether a node is a replication master or standby
 License:	PostgreSQL
 URL:		https://github.com/mhagander/%{sname}
@@ -120,6 +125,8 @@ fi
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-7PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Sep 28 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.8-6PGDG
 - Add %%check: start a primary and a standby with bgw_replstatus

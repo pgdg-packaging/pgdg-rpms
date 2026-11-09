@@ -24,6 +24,11 @@ Summary:	High speed data loading utility for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbulkloadmajver}.%{pgbulkloadmidver}.%{pgbulkloadminver}
 Release:	6PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 URL:		https://github.com/ossc-db/%{sname}
 Source0:	https://github.com/ossc-db/%{sname}/archive/VERSION%{pgbulkloadpackagever}.tar.gz
 License:	BSD
@@ -167,6 +172,8 @@ pgdg_installcheck -C bin %{with_llvm_arg} \
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1.23-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Aug 30  2026 Devrim Gunduz <devrim@gunduz.org> - 3.1.23-5PGDG
 - Add missing BRs, per https://github.com/pgdg-packaging/pgdg-rpms/issues/237

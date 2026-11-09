@@ -23,6 +23,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ppmajorver}.5
 Release:	8PGDG%{dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PL/pgSQL profiler
 License:	Artistic-1.0, CDDL-1.0
 URL:		https://github.com/bigsql/%{sname}
@@ -96,6 +101,8 @@ export PATH=%{pginstdir}/bin:${PATH}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.5-8PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.2.5-7PGDG
 - Make %%llvm actually control the build, not just packaging: pass

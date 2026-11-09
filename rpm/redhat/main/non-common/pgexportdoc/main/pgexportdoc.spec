@@ -4,6 +4,11 @@ Summary:	command line utility for exporting XML, JSON, BYTEA document from Postg
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.4
 Release:	9PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	BSD
 Source0:	https://github.com/okbob/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/okbob/%{sname}
@@ -97,6 +102,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-9PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.4-8PGDG
 - Fix the clang/llvm BuildRequires: the plain "clang" added earlier does

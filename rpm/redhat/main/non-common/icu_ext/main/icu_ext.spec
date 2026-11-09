@@ -17,6 +17,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.11.0
 Release:	5PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PostgreSQL extension to expose functionality from ICU to PostgreSQL applications
 License:	PostgreSQL
 URL:		https://github.com/dverite/%{sname}
@@ -92,6 +97,8 @@ export LC_ALL=C.UTF-8
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.11.0-5PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.11.0-4PGDG
 - Add %%check, running the regression tests with the %%check helpers

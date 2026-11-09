@@ -9,6 +9,11 @@ Summary:	Anonymization & Data Masking for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.3.0
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 # The extension itself, and the licenses of the Rust crates that are compiled into
 # it (245 crates), checked with "cargo metadata --filter-platform
 # x86_64-unknown-linux-gnu", without the dev dependencies:
@@ -120,6 +125,8 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 - Add missing BuildRequires: postgresqlNN-server. "cargo pgrx init" in
   %%build runs initdb, so the build failed in a clean buildroot.
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Oct 27 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-1PGDG
 - Update to 3.3.0 per changes described at:

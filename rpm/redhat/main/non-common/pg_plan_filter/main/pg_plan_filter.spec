@@ -19,6 +19,11 @@ Summary:	PostgreSQL module to filter statements by their execution plans
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0.0
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 URL:		https://github.com/pgexperts/%{sname}
 Source0:	https://github.com/pgexperts/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -95,6 +100,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Wed Oct 07 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.0-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository:

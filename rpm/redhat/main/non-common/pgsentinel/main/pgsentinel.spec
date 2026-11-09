@@ -17,6 +17,11 @@ Summary:	PostgreSQL extension for sampling active session history
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 URL:		https://github.com/%{sname}/%{sname}
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -82,6 +87,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.2-1PGDG
 - Update to 1.5.2 per changes described at:

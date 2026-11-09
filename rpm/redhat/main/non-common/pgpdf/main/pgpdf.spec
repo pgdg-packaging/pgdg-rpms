@@ -24,6 +24,11 @@ Summary:	pdf type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.0
 Release:	9PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	GPLv2
 URL:		https://github.com/Florents-Tselai/%{sname}/
 Source0:	https://github.com/Florents-Tselai/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -120,6 +125,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.0-9PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Oct 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0.1.0-8PGDG
 - Add %%check, running the regression tests with the %%check helpers

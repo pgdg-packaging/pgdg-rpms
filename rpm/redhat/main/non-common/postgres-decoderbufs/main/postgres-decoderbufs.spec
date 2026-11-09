@@ -16,6 +16,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.6.1
 Release:	4PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PostgreSQL Protocol Buffers logical decoder plugin
 
 License:	MIT
@@ -94,6 +99,8 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.1-4PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 3.6.1-3PGDG
 - Fedora 45: Require protobuf-c and BuildRequire pkgconfig(libprotobuf-c),

@@ -11,6 +11,11 @@ Summary:	PostgreSQL File Dump Utility
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pg_fdmajorver}.%{pg_fdminorver}
 Release:	6PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 URL:		https://github.com/df7cb/%{sname}
 Source0:	https://github.com/df7cb/%{sname}/archive/%{sversion}.tar.gz
 Patch0:		%{sname}-makefile-rpm-gcc.patch
@@ -83,6 +88,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Fri Oct 2 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-5PGDG
 - Fix the clang/llvm BuildRequires: the plain "clang" added earlier does

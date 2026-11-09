@@ -18,6 +18,11 @@ Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.1
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-1.5.0-limits_h.patch
@@ -109,6 +114,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Fri Oct 2 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.1-1PGDG
 - Update to 1.5.1 per changes described at:

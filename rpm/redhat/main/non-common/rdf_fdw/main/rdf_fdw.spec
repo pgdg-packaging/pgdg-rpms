@@ -16,6 +16,11 @@ Summary:	PostgreSQL Foreign Data Wrapper for RDF Triplestores
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.1
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	MIT
 URL:		https://github.com/jimjonesbr/%{sname}
 Source0:	https://github.com/jimjonesbr/%{sname}/archive/v%{version}.tar.gz
@@ -101,6 +106,8 @@ export LC_ALL=C.UTF-8
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Nov 8 2026 Devrim Gunduz <devrim@gunduz.org> - 3.1-1PGDG
 - Initial packaging for the PostgreSQL RPM Repository, per

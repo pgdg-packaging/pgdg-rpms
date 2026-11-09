@@ -18,6 +18,11 @@ Summary:	Postgres extension to parse a US street address string into its compone
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.7.0
 Release:	6PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	MIT
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/postgis/%{sname}
@@ -98,6 +103,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.7.0-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Mon Nov 2 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.0-5PGDG
 - Require pcre2 on Amazon Linux 2023. libpcre2-8-0 is the SUSE package

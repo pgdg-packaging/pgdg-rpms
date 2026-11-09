@@ -21,6 +21,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}
 Release:	4PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PostgreSQL extension to allow to access to memory usage diagnostics
 License:	BSD
 URL:		https://github.com/okbob/%{sname}
@@ -85,6 +90,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.1-4PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - %{pmeminfomajver}.%{pmeminfomidver}.%{pmeminfominver}-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass

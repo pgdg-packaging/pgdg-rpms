@@ -20,6 +20,11 @@ Summary:	Set of functions and operators for executing similarity queries for Pos
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{packagemajorver}.%{packageminver}
 Release:	9PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 URL:		https://github.com/eulerto/%{sname}
 Source0:	https://github.com/eulerto/%{sname}/archive/refs/tags/%{sname}_%{packagemajorver}_%{packageminver}.tar.gz
 Patch0:		%{sname}-hamming.patch
@@ -109,6 +114,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-9PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0-8PGDG
 - Add %%check, running the regression tests with the %%check helpers

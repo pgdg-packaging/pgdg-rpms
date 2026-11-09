@@ -17,6 +17,11 @@ Summary:	PostgreSQL extension to schedules and manages jobs in a job queue simil
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.0
 Release:	6PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 Source0:	https://github.com/HexaCluster/%{sname}/archive/refs/tags/v%{version}.tar.gz
 Patch0:		%{sname}-include.patch
@@ -90,6 +95,8 @@ PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} PG_CPPFLA
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0-6PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-5PGDG
 - Pass PG_CPPFLAGS=-I%{pginstdir}/include to make to fix builds.

@@ -22,6 +22,11 @@ Summary:	PostgreSQL extension allowing privilege escalation with enhanced loggin
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{setusermajver}.%{setusermidver}.%{setuserminver}
 Release:	2PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 URL:		https://github.com/pgaudit/%{sname}
 Source0:	https://github.com/pgaudit/%{sname}/archive/refs/tags/REL%{setusermajver}_%{setusermidver}_%{setuserminver}.tar.gz
@@ -103,6 +108,8 @@ pgdg_installcheck %{with_llvm_arg}
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.3.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 4.3.0-1PGDG
 - Update to 4.3.0, per changes described at:

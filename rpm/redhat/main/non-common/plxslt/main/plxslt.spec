@@ -17,6 +17,11 @@
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.20140221
 Release:	7PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PL/XSLT Procedural Language Handler for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
@@ -92,6 +97,8 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.20140221-7PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20140221-6PGDG
 - Add %%check, running the regression tests with the %%check helpers

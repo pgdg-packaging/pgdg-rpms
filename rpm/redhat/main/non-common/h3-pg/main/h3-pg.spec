@@ -9,6 +9,11 @@ Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreS
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.5.0
 Release:	4PGDG%{dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	Apache
 URL:		https://github.com/postgis/%{sname}
 Source0:	https://github.com/postgis/%{sname}/archive/refs/tags/v%{version}.tar.gz
@@ -116,6 +121,8 @@ ctest --test-dir build-check --output-on-failure --exclude-regex '^h3_postgis_re
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-4PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 4.5.0-3PGDG
 - Add %%check, running the regression tests with ctest against the copy

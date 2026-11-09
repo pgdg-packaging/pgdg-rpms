@@ -17,6 +17,11 @@ Summary:	Generic Queue for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.5.2
 Release:	4PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# Built against this PostgreSQL minor release: require at least that one.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	ISC
 Source0:	https://github.com/%{sname}/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/%{sname}/%{sname}/
@@ -89,6 +94,8 @@ export PG_CONFIG=%{pginstdir}/bin/pg_config
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.5.2-4PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
 
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 3.5.2-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
