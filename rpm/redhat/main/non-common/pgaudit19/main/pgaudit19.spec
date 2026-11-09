@@ -121,6 +121,7 @@ pgdg_installcheck %{with_llvm_arg}
 - BuildRequire perl(Test::Harness) and perl(IPC::Run) when runselftest
   is enabled: installcheck also runs the TAP tests, which failed
   without prove.
+- Rebuild against latest PostgreSQL minor releases
 
 * Wed Sep 30 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-beta4_1PGDG
 - Update to 19beta4 per changes described at:
