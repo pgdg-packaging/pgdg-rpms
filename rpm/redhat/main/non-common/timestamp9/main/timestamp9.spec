@@ -3,7 +3,7 @@
 Summary:	An efficient nanosecond precision timestamp type for Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.4.0
-Release:	6PGDG%{?dist}
+Release:	7PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -30,19 +30,30 @@ timestamp9 is an efficient nanosecond precision timestamp type for PostgreSQL.
 %setup -q -n %{sname}-%{sname}-%{version}
 
 %build
+export PATH=%{pginstdir}/bin/:$PATH
+%if 0%{?suse_version} >= 1500
+# SUSE's %%cmake creates and enters the build directory itself, and its
+# %%cmake_install runs make with -C build, so do not cd into it here.
+%cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+%cmake_build
+%else
 %{__mkdir} build
 pushd build
-export PATH=%{pginstdir}/bin/:$PATH
 %cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
 %cmake_build
 popd
+%endif
 
 %install
 %{__rm} -rf %{buildroot}
-pushd build
 export PATH=%{pginstdir}/bin/:$PATH
+%if 0%{?suse_version} >= 1500
+%cmake_install
+%else
+pushd build
 %cmake_install
 popd
+%endif
 
 %files
 %defattr(644,root,root,755)
@@ -51,6 +62,11 @@ popd
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-7PGDG
+- Fix the build on SLES: SUSE's %%cmake and %%cmake_install handle the
+  build directory themselves, so do not cd into it first. Rebuilt on SLES
+  only.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-6PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
