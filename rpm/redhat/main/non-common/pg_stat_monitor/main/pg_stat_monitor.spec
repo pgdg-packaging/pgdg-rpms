@@ -50,7 +50,7 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 
-BuildRequires:	rb5-devel
+BuildRequires:	krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
