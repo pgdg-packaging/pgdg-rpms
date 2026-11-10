@@ -53,7 +53,7 @@
 %global	pymodname google_api_python_client
 
 Name:		%{pgdg_pyname}-%{modname}
-Version:	2.201.0
+Version:	2.202.0
 Release:	1PGDG%{?dist}
 Summary:	Google API Client Library for Python
 
@@ -102,6 +102,11 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Tue Nov 10 2026 Devrim Gunduz <devrim@gunduz.org> - 2.202.0-1PGDG
+- Update to 2.202.0 per changes described at:
+  https://github.com/googleapis/google-api-python-client/releases/tag/v2.202.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/583
+
 * Fri Oct 16 2026 Devrim Gunduz <devrim@gunduz.org> - 2.201.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, for the Google Cloud
   storage backend of rohmu (pghoard) on Amazon Linux 2023. It is installed
