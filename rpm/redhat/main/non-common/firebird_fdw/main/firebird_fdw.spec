@@ -35,6 +35,14 @@ BuildRequires:	postgresql%{pgmajorversion}-devel firebird-devel
 BuildRequires:	libfq >= 0.6.2
 Requires:	postgresql%{pgmajorversion}-server
 
+%description
+This is a foreign data wrapper (FDW) to connect PostgreSQL to Firebird.
+It provides both read (SELECT) and write (INSERT/UPDATE/DELETE)
+support, WHERE-clause pushdowns, connection caching and Firebird transaction
+support.
+
+This code is very much work-in-progress; USE AT YOUR OWN RISK.
+
 %if %llvm
 %package llvmjit
 Summary:	Just-in-time compilation support for firebird_fdw
@@ -59,14 +67,6 @@ Requires:	llvm >= 19.0
 %description llvmjit
 This package provides JIT support for firebird_fdw
 %endif
-
-%description
-This is a foreign data wrapper (FDW) to connect PostgreSQL to Firebird.
-It provides both read (SELECT) and write (INSERT/UPDATE/DELETE)
-support, WHERE-clause pushdowns, connection caching and Firebird transaction
-support.
-
-This code is very much work-in-progress; USE AT YOUR OWN RISK.
 
 %prep
 %setup -q -n %{sname}-%{version}

@@ -34,6 +34,15 @@ License:	BSD
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 
+%description
+A temporal table is a table that records the period of time when a row
+is valid. There are two types of periods: the application period (also
+known as valid-time or business-time) and the system period (also known
+as transaction-time).
+
+Currently, Temporal Tables Extension supports the system-period
+temporal tables only.
+
 %if %llvm
 %package llvmjit
 Summary:	Just-in-time compilation support for temporal_tables
@@ -58,15 +67,6 @@ Requires:	llvm >= 19.0
 %description llvmjit
 This package provides JIT support for temporal_tables
 %endif
-
-%description
-A temporal table is a table that records the period of time when a row
-is valid. There are two types of periods: the application period (also
-known as valid-time or business-time) and the system period (also known
-as transaction-time).
-
-Currently, Temporal Tables Extension supports the system-period
-temporal tables only.
 
 %prep
 %setup -q -n %{sname}-%{version}
