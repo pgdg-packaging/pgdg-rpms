@@ -7,7 +7,7 @@
 Summary:	Copy data between PostgreSQL and Parquet files
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.5.1
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -29,8 +29,10 @@ Source0:	https://github.com/CrunchyData/%{sname}/archive/refs/tags/v%{version}.t
 # access. Made with "./pg_parquet-vendor.sh %%{version}", which updates pgrx to
 # %%{pgrx_version} in Cargo.lock, and runs cargo-vendor-filterer for the Linux
 # architectures that we build on.
-# It has to be made again for every new version.
-Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-vendor.tar.xz
+# It has to be made again for every new version. "-2": made again for 0.5.1
+# with the real prettyplease crate (needed on ppc64le), under a new name so that
+# the build servers do not keep using the old tarball.
+Source1:	https://download.postgresql.org/pub/repos/yum/rust-sources/%{sname}/%{sname}-%{version}-2-vendor.tar.xz
 
 # The newest crates in Cargo.lock need Rust 1.86:
 BuildRequires:	rust >= 1.86
@@ -129,6 +131,11 @@ cp -a target/release/%{sname}-pg%{pgmajorversion}/* %{buildroot}/
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-3PGDG
+- Use a new vendor tarball with the real prettyplease crate instead of an
+  empty stub. On ppc64le aws-lc-sys builds bindgen with its default
+  features, which need prettyplease, so the build failed there.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.5.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is

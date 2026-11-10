@@ -30,7 +30,10 @@ cargo update -p pgrx -p pgrx-tests --precise $PGRX_VERSION
 # PostgreSQL headers with newer clang versions. The spec switches it to bindgen
 # 0.72.1 (as pgrx 0.17 does). That version is in Cargo.lock already, but only
 # for an optional feature of aws-lc-sys, so the filter below would replace it
-# with a stub. Vendor it fully:
+# with a stub. Vendor it fully. On the architectures other than x86_64 and
+# aarch64 (ppc64le, s390x), aws-lc-sys always uses bindgen with its default
+# features, which include prettyplease. The filter does not see that, and
+# replaces prettyplease with a stub, so ask for that feature too:
 mkdir -p "$WORKDIR/bindgen-0.72/src"
 touch "$WORKDIR/bindgen-0.72/src/lib.rs"
 cat > "$WORKDIR/bindgen-0.72/Cargo.toml" <<'CARGOEOF'
@@ -40,7 +43,7 @@ version = "0.0.0"
 edition = "2021"
 
 [dependencies]
-bindgen = { version = "=0.72.1", default-features = false, features = ["experimental", "runtime"] }
+bindgen = { version = "=0.72.1", default-features = false, features = ["experimental", "runtime", "prettyplease"] }
 CARGOEOF
 # Only keep the crates for the Linux architectures that we build on, and not the
 # dev dependencies. The other crates are replaced with empty stubs, so that
