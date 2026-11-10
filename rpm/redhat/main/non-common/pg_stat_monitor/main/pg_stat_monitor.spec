@@ -41,8 +41,16 @@ Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 %if %{pgmajorversion} == 19
 Patch0:		pg_stat_monitor-pg19-beta4-293096b.patch
 %endif
+%if 0%{?suse_version} >= 1500
+Requires:	libopenssl3
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
+Requires:	openssl-libs >= 1.1.1k
+BuildRequires:	openssl-devel
+%endif
 
-BuildRequires:	openssl-devel krb5-devel
+BuildRequires:	rb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
@@ -150,6 +158,7 @@ pgdg_installcheck %{with_llvm_arg}
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Fix OpenSSL dependency for SLES
 
 * Tue Sep 29 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-3PGDG
 - Add %%check, running the regression tests with the %%check helpers
