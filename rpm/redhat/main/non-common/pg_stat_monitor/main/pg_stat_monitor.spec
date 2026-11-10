@@ -42,12 +42,13 @@ Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 Patch0:		pg_stat_monitor-pg19-beta4-293096b.patch
 %endif
 %if 0%{?suse_version} >= 1500
-Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8
-Requires:	openssl-libs >= 1.1.1k
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
+BuildRequires:	openssl-devel-engine
 %endif
 
 BuildRequires:	krb5-devel
