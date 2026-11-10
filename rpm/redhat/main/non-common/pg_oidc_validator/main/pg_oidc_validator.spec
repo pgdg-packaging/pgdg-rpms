@@ -1,6 +1,14 @@
 %global sname pg_oidc_validator
 
+# No llvmjit subpackage on Amazon Linux 2023: its only clang is 15, which
+# does not support -std=c++23 and, even with -std=c++2b, cannot parse GCC 11's
+# <ranges> header that the code uses. The bitcode must be built with the LLVM
+# version the server's JIT uses, so a newer clang is not an option either.
+%if 0%{?amzn}
+%{!?llvm:%global llvm 0}
+%else
 %{!?llvm:%global llvm 1}
+%endif
 
 # Propagate %%llvm into the actual build: PGXS decides whether to invoke
 # clang/llvm-config based on with_llvm from the installed postgresql*-devel's
@@ -17,7 +25,7 @@
 Summary:	OAuth validator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.1.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -33,7 +41,16 @@ License:	Apache 2.0
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
 
-BuildRequires:	gcc-c++ krb5-devel libcurl-devel openssl-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
+BuildRequires:	openssl-devel-engine
+%endif
+BuildRequires:	gcc-c++ krb5-devel libcurl-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if 0%{?suse_version} >= 1500
@@ -61,10 +78,6 @@ Requires:	llvm17
 %if 0%{?suse_version} == 1600
 BuildRequires:	llvm19-devel clang19-devel
 Requires:	llvm19
-%endif
-%if 0%{?amzn}
-BuildRequires:	llvm-devel >= 15.0 clang-devel >= 15.0
-Requires:	llvm >= 15.0
 %endif
 %if ( 0%{?fedora} || 0%{?rhel} >= 8 ) && !0%{?amzn}
 BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
@@ -107,6 +120,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-6PGDG
+- Fix builds on Amazon Linux 2023: disable the llvmjit subpackage there,
+  as clang 15 cannot build the bitcode (no -std=c++23, and it fails on
+  GCC 11's <ranges> header with -std=c++2b).
+- Fix OpenSSL dependency on SLES.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
