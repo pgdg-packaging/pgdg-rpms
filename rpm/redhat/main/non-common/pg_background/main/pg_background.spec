@@ -17,8 +17,8 @@
 
 Summary:	PostgreSQL Background Worker
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.0.4
-Release:	3PGDG%{?dist}
+Version:	2.0.5
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -112,6 +112,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.5-1PGDG
+- Update to 2.0.5 per changes described at:
+  https://github.com/vibhorkum/pg_background/releases/tag/v2.0.5
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/586
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.0.4-3PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
