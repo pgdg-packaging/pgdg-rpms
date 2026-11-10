@@ -14,16 +14,17 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
-# On RHEL, uriparser comes from pgdg-uriparser (EPEL is not needed), which
-# does not provide its soname; it is found through the rpath:
-%if 0%{?rhel}
+# On RHEL, uriparser comes from pgdg-uriparser (EPEL is not needed). Amazon
+# Linux 2023 has no uriparser package, so it uses pgdg-uriparser, too.
+# pgdg-uriparser does not provide its soname; it is found through the rpath:
+%if 0%{?rhel} || 0%{?amzn}
 %global __requires_exclude ^liburiparser\\.so
 %endif
 
 Summary:	uri type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.20251029
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -41,7 +42,7 @@ Patch0:		%{sname}-fix-pg_cppflags.patch
 URL:		https://github.com/petere/%{sname}
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
-%if 0%{?rhel}
+%if 0%{?rhel} || 0%{?amzn}
 BuildRequires:	pgdg-srpm-macros >= 2.1.0 pgdg-uriparser-devel
 Requires:	pgdg-uriparser%{?_isa}
 %else
@@ -100,7 +101,7 @@ This package provides JIT support for pguri
 
 %build
 #export PG_CPPFLAGS="$PG_CPPFLAGS -Wno-int-conversion"
-%if 0%{?rhel}
+%if 0%{?rhel} || 0%{?amzn}
 export PKG_CONFIG_PATH=%{pgdg_uriparserinstdir}/lib64/pkgconfig
 # The Makefile appends the pkg-config flags to this:
 export SHLIB_LINK="-Wl,-rpath,%{pgdg_uriparserinstdir}/lib64"
@@ -135,6 +136,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.20251029-6PGDG
+- Amazon Linux 2023: build against pgdg-uriparser, as uriparser-devel is
+  not available on that platform.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.20251029-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
