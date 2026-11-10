@@ -3,16 +3,17 @@
 %{!?runselftest:%global runselftest 0}
 
 # On RHEL, libargon2 and libscrypt come from pgdg-libargon2 and
-# pgdg-libscrypt (EPEL is not needed), which do not provide their sonames;
+# pgdg-libscrypt (EPEL is not needed). Amazon Linux 2023 has neither
+# library, so it uses them, too. They do not provide their sonames;
 # they are found through the rpath:
-%if 0%{?rhel}
+%if 0%{?rhel} || 0%{?amzn}
 %global __requires_exclude ^lib(argon2|scrypt)\\.so
 %endif
 
 Summary:	A PostgreSQL extension which provides advanced password hashing methods based on adaptive implementations.
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.0
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -42,7 +43,7 @@ BuildRequires:	libopenssl-3-devel
 Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
-%if 0%{?rhel}
+%if 0%{?rhel} || 0%{?amzn}
 BuildRequires:	pgdg-srpm-macros >= 2.3.0
 BuildRequires:	pgdg-libargon2-devel pgdg-libscrypt-devel
 Requires:	pgdg-libargon2%{?_isa} pgdg-libscrypt%{?_isa}
@@ -72,7 +73,7 @@ requirements are met:
 
 %build
 export PATH=%{pginstdir}/bin:$PATH
-%if 0%{?rhel}
+%if 0%{?rhel} || 0%{?amzn}
 export CFLAGS="%{build_cflags} -I%{pgdg_libargon2instdir}/include -I%{pgdg_libscryptinstdir}/include"
 export LDFLAGS="%{build_ldflags} -L%{pgdg_libargon2instdir}/lib64 -L%{pgdg_libscryptinstdir}/lib64 -Wl,-rpath,%{pgdg_libargon2instdir}/lib64:%{pgdg_libscryptinstdir}/lib64"
 %endif
@@ -103,6 +104,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/lib/%{sname}.so
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-6PGDG
+- Amazon Linux 2023: build against pgdg-libargon2 and pgdg-libscrypt, as
+  libargon2-devel and libscrypt-devel are not available on that platform.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
