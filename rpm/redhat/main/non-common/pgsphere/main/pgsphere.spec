@@ -15,10 +15,20 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# SLES 15: clang picks the newest GCC installation in /usr/lib64/gcc, even
+# when only its C compiler is installed (e.g. gcc13 next to the default
+# gcc7-c++), and then finds no C++ headers ('cstddef' file not found) for
+# the bitcode files. Point clang at the GCC that g++ uses.
+%if 0%{?suse_version} == 1500 && %llvm
+%global sphere_clang_arg CLANG="%{_bindir}/clang --gcc-install-dir=$(dirname $(g++ -print-libgcc-file-name))"
+%else
+%global sphere_clang_arg %{nil}
+%endif
+
 Summary:	R-Tree implementation using GiST for spherical objects
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.5.2
-Release:	5PGDG%{?dist}
+Release:	6PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -37,7 +47,7 @@ Source0:	https://github.com/postgrespro/%{sname}/archive/refs/tags/%{version}.ta
 # https://github.com/postgrespro/pgsphere/commit/54c07d0b2a11 (issue #147)
 Patch0:		pgsphere-1.5.2-pg19-moc-expected.patch
 URL:		https://github.com/postgrespro/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel zlib-devel
+BuildRequires:	postgresql%{pgmajorversion}-devel zlib-devel gcc-c++
 %if 0%{?fedora} >= 40 || 0%{?rhel} >= 8
 BuildRequires:	healpix-c++-devel
 %endif
@@ -85,11 +95,11 @@ This package provides JIT support for pgsphere
 %patch -P 0 -p1
 
 %build
-%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
+%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} %{sphere_clang_arg}
 
 %install
 %{__rm} -rf %{buildroot}
-%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} DESTDIR=%{buildroot} install
+%{__make} PG_CONFIG=%{pginstdir}/bin/pg_config USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} %{sphere_clang_arg} DESTDIR=%{buildroot} install
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -115,6 +125,11 @@ This package provides JIT support for pgsphere
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-6PGDG
+- Fix the bitcode build on SLES 15, where clang picked a newer GCC
+  installation without C++ headers.
+- Add missing gcc-c++ BuildRequires.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.2-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
