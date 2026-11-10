@@ -7,8 +7,8 @@
 # packages use Python 3.12 there.
 
 Name:		python%{python3_pkgversion}-%{sname}
-Version:	6.6
-Release:	2PGDG%{?dist}
+Version:	6.6.1
+Release:	1PGDG%{?dist}
 Summary:	Scalable, non-blocking web server and tools
 
 License:	Apache-2.0
@@ -52,6 +52,11 @@ ideal for real-time web services.
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Tue Nov 10 2026 Devrim Gunduz <devrim@gunduz.org> - 6.6.1-1PGDG
+- Update to 6.6.1 per changes described at:
+  https://www.tornadoweb.org/en/stable/releases/v6.6.1.html
+  This release includes security fixes.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 6.6-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
