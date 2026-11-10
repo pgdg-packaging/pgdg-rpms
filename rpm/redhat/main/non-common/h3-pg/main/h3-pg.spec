@@ -8,7 +8,7 @@
 Summary:	Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.5.0
-Release:	4PGDG%{dist}
+Release:	5PGDG%{dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -82,9 +82,14 @@ popd
 
 %install
 %{__rm} -rf %{buildroot}
+# SUSE's %%cmake_install already runs make in the build directory (-C build)
+%if 0%{?suse_version} >= 1500
+%cmake_install
+%else
 pushd build
 %cmake_install
 popd
+%endif
 
 %check
 %if %runselftest
@@ -125,6 +130,11 @@ ctest --test-dir build-check --output-on-failure --exclude-regex '^h3_postgis_re
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-5PGDG
+- Fix %%install on SLES: SUSE's %%cmake_install already runs make with
+  -C build, so do not cd into the build directory first. Rebuilt on SLES
+  only.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-4PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
