@@ -17,7 +17,7 @@
 Summary:	Track per-plan call counts, execution times and EXPLAIN texts in Postgres
 Name:		%{sname}_%{pgmajorversion}
 Version:	2.1.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -33,7 +33,16 @@ License:	PostgreSQL
 URL:		https://github.com/pganalyze/%{sname}
 Source0:	https://github.com/pganalyze/%{sname}/archive/refs/tags/v%{version}.tar.gz
 
-BuildRequires:	openssl-devel krb5-devel
+%if 0%{?suse_version} >= 1500
+BuildRequires:	libopenssl-3-devel
+%endif
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+BuildRequires:	openssl-devel
+%endif
+%if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
+BuildRequires:	openssl-devel-engine
+%endif
+BuildRequires:	krb5-devel
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
@@ -119,6 +128,9 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-4PGDG
+- Fix OpenSSL dependency on SLES and AL2023
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.1-3PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
