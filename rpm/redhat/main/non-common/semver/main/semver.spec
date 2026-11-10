@@ -16,8 +16,8 @@
 
 Summary:	A semantic version data type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.42.0
-Release:	2PGDG%{?dist}
+Version:	0.43.0
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -98,6 +98,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gunduz <devrim@gunduz.org> - 0.43.0-1PGDG
+- Update to 0.43.0 per changes described at:
+  https://github.com/theory/pg-semver/releases/tag/v0.43.0
+  This release breaks compatibility with previous versions: the parser
+  no longer accepts some invalid semvers, such as ones with negative
+  parts. Check for and repair invalid semvers before upgrading.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.42.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
