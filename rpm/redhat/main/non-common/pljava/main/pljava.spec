@@ -26,7 +26,7 @@
 Summary:	Java stored procedures, triggers, and functions for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pljavamajver}.%{pljavamidver}.%{pljavaminver}
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -52,12 +52,19 @@ Requires:	java-11-openjdk
 BuildRequires:	java-25-amazon-corretto-devel
 Requires:	java-25-amazon-corretto
 %else
+%if 0%{?suse_version} >= 1600
+# SLES 16 has no java-openjdk alternatives link; pin the JDK so that
+# JAVA_HOME below exists.
+BuildRequires:	java-21-openjdk-devel
+Requires:	java-21-openjdk
+%else
 BuildRequires:	java-devel
 Requires:	java
 %endif
 %endif
+%endif
 
-BuildRequires:	maven krb5-devel postgresql%{pgmajorversion}-devel
+BuildRequires:	gcc maven krb5-devel postgresql%{pgmajorversion}-devel
 
 %if 0%{?suse_version} >= 1500
 Requires:	libopenssl3
@@ -79,22 +86,26 @@ language and executed in the backend.
 export CLASSPATH=
 
 export PATH=%{pginstdir}/bin:$PATH
-%ifarch ppc64 ppc64le
-mvn clean install -Dso.debug=true -Psaxon-examples -Dnar.aolProperties=pljava-so/aol.%{archtag}-linux-gpp.properties
-%else
+# Set JAVA_HOME on all architectures: without it, mvn on the RHEL 8
+# ppc64le builder picks up JDK 8, whose javac does not know --release.
 %if 0%{?rhel} == 8
 export JAVA_HOME=/etc/alternatives/java_sdk_11_openjdk
 %endif
 %if 0%{?fedora} || 0%{?rhel} >= 9
 export JAVA_HOME=/usr/lib/jvm/java-openjdk/
 %endif
-%if 0%{?suse_version} >= 1500
+%if 0%{?suse_version} >= 1500 && 0%{?suse_version} < 1600
 export JAVA_HOME=/usr/lib64/jvm/java-openjdk/
+%endif
+%if 0%{?suse_version} >= 1600
+export JAVA_HOME=/usr/lib64/jvm/java-21-openjdk
 %endif
 %if 0%{?amzn} == 2023
 export JAVA_HOME=/usr/lib/jvm/java-25-amazon-corretto.%{_arch}
 %endif
-# Common for all distros:
+%ifarch ppc64 ppc64le
+mvn clean install -Dso.debug=true -Psaxon-examples -Dnar.aolProperties=pljava-so/aol.%{archtag}-linux-gpp.properties
+%else
 mvn clean install -Dso.debug=true -Psaxon-examples
 %endif
 
@@ -143,6 +154,13 @@ done
 %{pginstdir}/share/%{sname}/%{sname}-api-%{version}.jar
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-9PGDG
+- SLES 16: Pin java-21-openjdk and point JAVA_HOME to it, as SLES 16
+  has no java-openjdk alternatives link.
+- ppc64le: Set JAVA_HOME there too, so that mvn does not pick up JDK 8
+  on RHEL 8.
+- Add missing gcc BuildRequires.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.10-8PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
