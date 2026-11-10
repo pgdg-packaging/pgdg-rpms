@@ -21,6 +21,18 @@
 %global with_llvm_arg with_llvm=no
 %endif
 
+# The code needs C++23 (-std=c++23, <ranges>). SLES 15's default g++ is GCC 7,
+# so use GCC 13 there, and point clang at GCC 13's libstdc++ for the bitcode
+# (otherwise clang picks the newest GCC installation, with or without C++
+# headers).
+%if 0%{?suse_version} == 1500
+%global oidc_cxx g++-13
+%global oidc_make_args CXX=%{oidc_cxx} CLANG="%{_bindir}/clang --gcc-install-dir=$(dirname $(%{oidc_cxx} -print-libgcc-file-name))"
+%else
+%global oidc_cxx g++
+%global oidc_make_args %{nil}
+%endif
+
 
 Summary:	OAuth validator for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
@@ -51,6 +63,9 @@ BuildRequires:	openssl-devel
 BuildRequires:	openssl-devel-engine
 %endif
 BuildRequires:	gcc-c++ krb5-devel libcurl-devel
+%if 0%{?suse_version} == 1500
+BuildRequires:	gcc13-c++
+%endif
 BuildRequires:	postgresql%{pgmajorversion}-devel
 Requires:	postgresql%{pgmajorversion}-server
 %if 0%{?suse_version} >= 1500
@@ -92,12 +107,12 @@ This packages provides JIT support for pg_oidc_validator
 %setup -q -n %{sname}-%{version}
 
 %build
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} %{oidc_make_args} PG_CXXFLAGS="%{optflags}" COMPILER='%{oidc_cxx} $(CXXFLAGS)'
 
 %install
 %{__rm} -rf %{buildroot}
 
-PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot} PG_CXXFLAGS="%{optflags}" COMPILER='g++ $(CXXFLAGS)'
+PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroot} %{oidc_make_args} PG_CXXFLAGS="%{optflags}" COMPILER='%{oidc_cxx} $(CXXFLAGS)'
 
 
 # Install README
@@ -125,6 +140,8 @@ PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg
   as clang 15 cannot build the bitcode (no -std=c++23, and it fails on
   GCC 11's <ranges> header with -std=c++2b).
 - Fix OpenSSL dependency on SLES.
+- Fix builds on SLES 15: build with GCC 13, as GCC 7 does not support
+  -std=c++23, and point clang at GCC 13's libstdc++ for the bitcode.
 
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.1.0-5PGDG
 - Rebuild against latest PostgreSQL minor releases
