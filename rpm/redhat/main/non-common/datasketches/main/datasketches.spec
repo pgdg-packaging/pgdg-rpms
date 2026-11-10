@@ -20,10 +20,20 @@
 # use the compiler's default standard instead.
 %global ds_make_args PG_CPPFLAGS="-fPIC -I%{_includedir}/DataSketches" PG_CXXFLAGS= SHLIB_LINK=-lstdc++
 
+# SLES 15: clang picks the newest GCC installation in /usr/lib64/gcc, even
+# when only its C compiler is installed (e.g. gcc13 next to the default
+# gcc7-c++), and then finds no C++ headers ('new' file not found) for the
+# bitcode files. Point clang at the GCC that g++ uses.
+%if 0%{?suse_version} == 1500 && %llvm
+%global ds_clang_arg CLANG="%{_bindir}/clang --gcc-install-dir=$(dirname $(g++ -print-libgcc-file-name))"
+%else
+%global ds_clang_arg %{nil}
+%endif
+
 Summary:	Approximate algorithms (sketches) for PostgreSQL from Apache DataSketches
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.7.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -95,11 +105,11 @@ This package provides JIT support for %{sname}
 %patch -P 0 -p0
 
 %build
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{ds_make_args}
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{ds_clang_arg} %{ds_make_args}
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{ds_make_args} DESTDIR=%{buildroot} install
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} %{ds_clang_arg} %{ds_make_args} DESTDIR=%{buildroot} install
 
 %check
 %if %runselftest
@@ -141,6 +151,10 @@ fi
 %endif
 
 %changelog
+* Tue Nov 10 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-3PGDG
+- Fix the bitcode build on SLES 15, where clang picked a newer GCC
+  installation without C++ headers.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
