@@ -23,7 +23,18 @@
 Summary:	PostgreSQL Audit Log To File Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	1.8.7
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# pgminorversion is the PostgreSQL minor release that the build servers
+# build against (global/Makefile.global): require at least that one, at
+# build time and at runtime.
+# The other postgresqlNN-* dependencies need no version here: the PostgreSQL
+# subpackages require each other's exact version-release (all of them pin
+# the client package, which pins -libs), so the server, contrib etc. follow
+# -devel at build time and -libs at runtime.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	PostgreSQL
 Source0:	https://github.com/fmbiete/%{sname}/archive/v%{version}.tar.gz
 URL:		https://github.com/fmbiete/%{sname}
@@ -123,6 +134,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{buil
 %endif
 
 %changelog
+* Wed Nov 11 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.7-3PGDG
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
+  Extensions built against the November 2026 minor releases fail to
+  load on older minor releases with an "undefined symbol" error.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.7-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 
