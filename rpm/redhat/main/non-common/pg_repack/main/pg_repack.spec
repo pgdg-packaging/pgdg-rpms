@@ -115,6 +115,14 @@ This package provides JIT support for pg_repack
 
 %prep
 %setup -q -n %{sname}-ver_%{version}
+# Since the November 2026 minor releases (CVE-2026-6460), PostgreSQL 14-18
+# store a "pg_attver=N" column version in pg_attribute.attoptions, so the
+# column options check of the repack-check test sees it. Leave it out of the
+# query, in both the test and its expected outputs, so that the test still
+# checks that pg_repack keeps the column options, on old and new minors:
+sed -i "s/^SELECT attname, nullif(attstattarget, -1) as attstattarget, attoptions$/SELECT attname, nullif(attstattarget, -1) as attstattarget, nullif(array(SELECT o FROM unnest(attoptions) o WHERE o NOT LIKE 'pg_attver=%%'), '{}') AS attoptions/" \
+	regress/sql/repack-check.sql regress/expected/repack-check*.out
+test $(grep -l "pg_attver=" regress/sql/repack-check.sql regress/expected/repack-check*.out | wc -l) -eq 5
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -158,6 +166,9 @@ pgdg_installcheck %{with_llvm_arg}
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Leave the pg_attver column version, which the November 2026 minor
+  releases store in pg_attribute.attoptions (CVE-2026-6460), out of the
+  column options check of the repack-check test.
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.5.3-8PGDG
 - Add %%check, running the regression tests with the %%check helpers

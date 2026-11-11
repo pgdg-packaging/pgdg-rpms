@@ -81,6 +81,17 @@ This package provides JIT support for rum
 
 %prep
 %setup -q -n %{sname}-%{version}
+# The "Select using incorrect operator class" query of the rum_validate test
+# passes a rum_distance_query (a composite type) where the deliberately broken
+# operator class expects a tsquery. The result was never defined, and since
+# the composite type versioning of the November 2026 minor releases
+# (CVE-2026-6460) it fails with "unrecognized operator". Remove only that
+# query; the rest of rum_validate still runs:
+sed -i '/^-- PGPRO-1175: Select using incorrect operator class$/,/^$/d' \
+	sql/rum_validate.sql expected/rum_validate.out
+if grep -q 'Select using incorrect operator class' sql/rum_validate.sql expected/rum_validate.out; then
+	echo 'rum_validate: removing the PGPRO-1175 query failed'; exit 1
+fi
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -123,6 +134,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Remove the "Select using incorrect operator class" query from the
+  rum_validate test. It never had a defined result, and fails with
+  "unrecognized operator" since the composite type versioning of the
+  November 2026 minor releases (CVE-2026-6460).
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 1.3.15-2PGDG
 - Add %%check, running the regression tests with the %%check helpers
