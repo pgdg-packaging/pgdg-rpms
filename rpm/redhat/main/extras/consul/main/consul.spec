@@ -15,7 +15,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul
 Version:	2.1.0
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Consul is a tool for service discovery and configuration. Consul is distributed, highly available, and extremely scalable.
 
 License:	MPLv2.0
@@ -89,7 +89,7 @@ any number of regions without complex configuration.
 %files
 %defattr(-,root,root,-)
 %dir %attr(750, root, consul) %{_sysconfdir}/%{name}.d
-%attr(640, root, consul) %{_sysconfdir}/%{name}.d/consul.json-dist.hcl
+%config(noreplace) %attr(640, root, consul) %{_sysconfdir}/%{name}.d/consul.json-dist.hcl
 %dir %attr(750, consul, consul) %{_sharedstatedir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %{_unitdir}/%{name}.service
@@ -99,6 +99,12 @@ any number of regions without complex configuration.
 %doc
 
 %changelog
+* Wed Nov 11 2026 Devrim Gündüz <devrim@gunduz.org> 2.1.0-2PGDG
+- Mark /etc/consul.d/consul.json-dist.hcl as %%config(noreplace). Consul
+  loads every file in /etc/consul.d, so package updates overwrote local
+  changes to it and consul started as a server again. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/594
+
 * Fri Oct 23 2026 Devrim Gündüz <devrim@gunduz.org> 2.1.0-1PGDG
 - Update to 2.1.0 per changes described at:
   https://github.com/hashicorp/consul/releases/tag/v2.1.0
