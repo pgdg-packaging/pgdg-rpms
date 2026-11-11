@@ -35,6 +35,10 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 %endif
 License:	MIT
 Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/REL_%{plluangmajver}_%{plluangmidver}_%{plluangminver}.tar.gz
+# Open cursors in triggers with transition tables on an SPI connection that
+# stays open for the whole trigger call; since the November 2026 minor
+# releases, the server crashes otherwise:
+Patch0:		%{sname}-2.0.12-transition-table-cursors.patch
 URL:		https://github.com/%{sname}/%{sname}
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
@@ -88,6 +92,7 @@ This package provides JIT support for pllua
 
 %prep
 %setup -q -n %{sname}-REL_%{plluangmajver}_%{plluangmidver}_%{plluangminver}
+%patch -P 0 -p1
 
 %build
 %if 0%{?suse_version} >= 1500
@@ -144,6 +149,11 @@ pgdg_installcheck %{with_llvm_arg} LUA="%{_bindir}/lua" LUAC="%{_bindir}/luac"
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Fix a server crash in trigger functions with transition tables that
+  use cursors (e.g. spi.rows()) since the November 2026 minor releases,
+  which drop the portals that use transition tables at SPI_finish()
+  (CVE-2026-120143). pllua opened such cursors on a short-lived SPI
+  connection; open them on one that stays open for the whole trigger call.
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0.12-9PGDG
 - Add %%check, running the regression tests with the %%check helpers

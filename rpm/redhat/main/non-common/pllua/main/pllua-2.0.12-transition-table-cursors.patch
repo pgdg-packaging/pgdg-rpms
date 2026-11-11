@@ -1,0 +1,142 @@
+--- a/src/init.c
++++ b/src/init.c
+@@ -952,6 +952,7 @@
+ 	interp->cur_activation.interp = NULL;
+ 	interp->cur_activation.active_error = LUA_REFNIL;
+ 	interp->cur_activation.err_text = NULL;
++	interp->cur_activation.trig_spi_cxt = NULL;
+ 
+ #if LUA_VERSION_NUM == 501
+ 	L = luaL_newstate();
+--- a/src/pllua.c
++++ b/src/pllua.c
+@@ -9,6 +9,7 @@
+ 
+ #include "commands/event_trigger.h"
+ #include "commands/trigger.h"
++#include "executor/spi.h"
+ 
+ PG_MODULE_MAGIC;
+ 
+@@ -94,6 +95,7 @@
+ 	act.interp = NULL;
+ 	act.active_error = LUA_REFNIL;
+ 	act.err_text = NULL;
++	act.trig_spi_cxt = NULL;
+ 
+ #if PG_VERSION_NUM >= 110000
+ 	if (fcinfo->context && IsA(fcinfo->context, CallContext))
+@@ -132,7 +134,39 @@
+ 			pllua_initial_protected_call(act.interp, pllua_resume_function, &act);
+ 		}
+ 		else if (CALLED_AS_TRIGGER(fcinfo))
++		{
++#if PG_VERSION_NUM >= 100000
++			TriggerData *td = (TriggerData *) fcinfo->context;
++
++			/*
++			 * Portals that use the transition tables registered on an SPI
++			 * connection must not outlive it, and since the November 2026
++			 * minor releases SPI_finish() drops them (CVE-2026-120143).
++			 * Every other SPI call of ours has its own connection, so keep
++			 * one connection with the transition tables open for the whole
++			 * trigger call, for cursors (e.g. spi.rows()) to be opened on.
++			 * On error, the (sub)transaction abort closes it.
++			 */
++			if (td->tg_oldtable || td->tg_newtable)
++			{
++				MemoryContext oldcxt = CurrentMemoryContext;
++
++				if (SPI_connect() != SPI_OK_CONNECT)
++					elog(ERROR, "pllua: SPI_connect failed");
++				if (SPI_register_trigger_data(td) != SPI_OK_TD_REGISTER)
++					elog(ERROR, "pllua: SPI_register_trigger_data failed");
++				act.trig_spi_cxt = CurrentMemoryContext;
++				MemoryContextSwitchTo(oldcxt);
++			}
++#endif
+ 			pllua_initial_protected_call(act.interp, pllua_call_trigger, &act);
++			if (act.trig_spi_cxt)
++			{
++				act.trig_spi_cxt = NULL;
++				if (SPI_finish() != SPI_OK_FINISH)
++					elog(ERROR, "pllua: SPI_finish failed");
++			}
++		}
+ 		else if (CALLED_AS_EVENT_TRIGGER(fcinfo))
+ 			pllua_initial_protected_call(act.interp, pllua_call_event_trigger, &act);
+ 		else
+@@ -174,6 +208,7 @@
+ 	act.interp = NULL;
+ 	act.active_error = LUA_REFNIL;
+ 	act.err_text = NULL;
++	act.trig_spi_cxt = NULL;
+ 
+ 	pllua_setcontext(NULL, PLLUA_CONTEXT_PG);
+ 
+@@ -220,6 +255,7 @@
+ 	act.interp = NULL;
+ 	act.active_error = LUA_REFNIL;
+ 	act.err_text = "inline block entry";
++	act.trig_spi_cxt = NULL;
+ 
+ #if PG_VERSION_NUM >= 110000
+ 	act.atomic = act.cblock->atomic;
+--- a/src/pllua.h
++++ b/src/pllua.h
+@@ -178,6 +178,14 @@
+ 	/* for error context stuff */
+ 	struct pllua_interpreter *interp;
+ 	const char *err_text;
++
++	/*
++	 * If not NULL, an SPI connection with the transition tables of the
++	 * trigger being called is open for the whole call, and this is its
++	 * procedure memory context. Cursors are opened on that connection; see
++	 * pllua_spi_cursor_open().
++	 */
++	MemoryContext trig_spi_cxt;
+ } pllua_activation_record;
+ 
+ typedef struct pllua_cache_inval
+--- a/src/spi.c
++++ b/src/spi.c
+@@ -778,7 +778,16 @@
+ 
+ 	PLLUA_TRY();
+ 	{
+-		bool readonly = pllua_spi_enter(L);
++		pllua_activation_record *pact = &(pllua_getinterpreter(L)->cur_activation);
++		/*
++		 * In a trigger with transition tables, use the SPI connection that
++		 * stays open for the whole call: the portal must not outlive the SPI
++		 * connection its query was planned on. See pllua_common_call().
++		 */
++		MemoryContext trig_oldcxt = pact->trig_spi_cxt ?
++			MemoryContextSwitchTo(pact->trig_spi_cxt) : NULL;
++		bool readonly = pact->trig_spi_cxt ?
++			pllua_get_cur_act_readonly(L) : pllua_spi_enter(L);
+ 		ParamListInfo paramLI = NULL;
+ 
+ 		if (!stmt)
+@@ -808,11 +817,17 @@
+ 		portal = SPI_cursor_open_with_paramlist(name, stmt->plan, paramLI, readonly);
+ 
+ 		/*
+-		 * If we made our own statement, we didn't save it so it goes away here
+-		 * The portal does _not_ go away - it's not tied to SPI.
++		 * If we made our own statement, we didn't save it so it goes away here,
++		 * or, on the trigger's SPI connection, when the trigger returns.
++		 * The portal does _not_ go away - it's not tied to SPI, unless it is
++		 * on the trigger's SPI connection, which drops it when the trigger
++		 * returns.
+ 		 */
+ 
+-		pllua_spi_exit(L);
++		if (trig_oldcxt)
++			MemoryContextSwitchTo(trig_oldcxt);
++		else
++			pllua_spi_exit(L);
+ 	}
+ 	PLLUA_CATCH_RETHROW();
+ 
