@@ -50,7 +50,7 @@
 
 Name:		%{sname}313
 Version:	%{gdalmajorversion}.3
-Release:	10PGDG%{?dist}
+Release:	11PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -211,7 +211,7 @@ BuildRequires:	java-21-openjdk-devel
 %endif
 %if 0%{?fedora} >= 42 || 0%{?rhel} >= 8
 %if 0%{?fedora}
-BuildRequires:	libdap-devel hdf-devel hdf-static hdf5-devel >= 1.10
+BuildRequires:	hdf-devel hdf-static hdf5-devel >= 1.10
 %endif
 BuildRequires:	expat-devel
 BuildRequires:	jasper-devel
@@ -230,7 +230,7 @@ BuildRequires:	java-devel >= 1:1.6.0
 %endif
 BuildRequires:	json-c-devel
 %if 0%{?fedora}
-BuildRequires:	libdap-devel libgta-devel
+BuildRequires:	libgta-devel
 %endif
 BuildRequires:	perl-devel
 BuildRequires:	perl-generators
@@ -618,6 +618,10 @@ done
 %endif
 
 %changelog
+* Wed Nov 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-11PGDG
+- Remove the unused libdap-devel BuildRequires. GDAL removed the DODS
+  driver, the only user of libdap, in 3.5.0.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.13.3-10PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per

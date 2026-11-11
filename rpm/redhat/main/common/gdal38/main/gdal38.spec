@@ -60,7 +60,7 @@
 
 Name:		%{sname}38
 Version:	%{gdalmajorversion}.5
-Release:	15PGDG%{?dist}
+Release:	16PGDG%{?dist}
 Summary:	GIS file format library
 License:	MIT
 URL:		https://www.gdal.org
@@ -194,7 +194,6 @@ BuildRequires:	python3-numpy-devel
 %else
 %if ! 0%{?rhel}
 BuildRequires:	g2clib-static
-BuildRequires:	libdap-devel
 BuildRequires:	hdf-devel hdf-static hdf5-devel
 %endif
 BuildRequires:	expat-devel
@@ -202,7 +201,7 @@ BuildRequires:	jasper-devel
 BuildRequires:	java-devel >= 1:1.6.0
 BuildRequires:	json-c-devel
 %if ! 0%{?rhel}
-BuildRequires:	libdap-devel libgta-devel
+BuildRequires:	libgta-devel
 BuildRequires:	librx-devel
 %endif
 BuildRequires:	perl-devel
@@ -547,6 +546,10 @@ done
 %endif
 
 %changelog
+* Wed Nov 11 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-16PGDG
+- Remove the unused libdap-devel BuildRequires. GDAL removed the DODS
+  driver, the only user of libdap, in 3.5.0.
+
 * Tue Nov 3 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.5-15PGDG
 - RHEL ppc64le: Do not build the Arrow and Parquet drivers. pgdg-libarrow
   is not available on ppc64le, so the build picked EPEL's libarrow from
