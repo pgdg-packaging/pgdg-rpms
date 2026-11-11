@@ -8,8 +8,8 @@
 
 Summary:	BigQuery Foreign Data Wrapper for PostgreSQL
 Name:		bigquery_fdw
-Version:	2.0
-Release:	16PGDG%{?dist}
+Version:	2.2.0
+Release:	1PGDG%{?dist}
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
 License:	LGPLv3+ with exceptions
 Url:		https://github.com/gabfl/%{name}/
@@ -34,7 +34,7 @@ Requires:	multicorn2
 # packages of that tree provide the pgdg-python3.X-<module> names (on SUSE,
 # they are the package names); the distribution's python3.X-<module>
 # packages may satisfy versioned Requires on the usual names with an Epoch:
-Requires:	pgdg-python%{python3_pkgversion}-google-cloud-bigquery >= 3.46.1
+Requires:	pgdg-python%{python3_pkgversion}-google-cloud-bigquery >= 3.47.0
 
 %description
 bigquery_fdw is a BigQuery foreign data wrapper for PostgreSQL using
@@ -110,6 +110,12 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{name}-%{version}.dist-info
 
 %changelog
+* Wed Nov 11 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-1PGDG
+- Update to 2.2.0 per changes described at:
+  https://github.com/gabfl/bigquery_fdw/releases/tag/2.2.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/593
+- Require google-cloud-bigquery >= 3.47.0, as upstream does now.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2.0-16PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
