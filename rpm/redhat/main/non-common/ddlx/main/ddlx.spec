@@ -9,6 +9,9 @@ Version:	0.30
 Release:	5PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/lacanoid/%{pname}/archive/%{version}.tar.gz
+# Fix column options with the pg_attver entry of the November 2026 minor
+# releases. https://github.com/lacanoid/pgddl/pull/37
+Patch0:	%{sname}-%{version}-pg_attver.patch
 URL:		https://github.com/lacanoid/%{pname}
 BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
@@ -28,6 +31,7 @@ system catalogs to nicely formatted snippets of SQL DDL, such as CREATE TABLE.
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch -P 0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -56,6 +60,11 @@ sed -i 's/Owner: root    /Owner: postgres/' test/expected/pg18.out
 %changelog
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.30-5PGDG
 - Rebuild against latest PostgreSQL minor releases
+- Add a patch to skip the internal pg_attver column option of the
+  November 2026 minor releases in the generated DDL, and to fix
+  "more than one row returned by a subquery" errors for columns with
+  more than one option. Patch sent upstream as
+  https://github.com/lacanoid/pgddl/pull/37
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.30-4PGDG
 - Add %%check, running the regression tests with the %%check helpers
