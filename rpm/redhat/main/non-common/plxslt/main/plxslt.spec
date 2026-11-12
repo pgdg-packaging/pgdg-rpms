@@ -110,6 +110,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{with_llvm_arg} DESTDIR=%{buil
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
   built against (pgminorversion, set by the build server Makefiles).
+- Add an alternative expected output for the tohtml regression test,
+  for newer libxml2 releases that write <meta charset="UTF-8">. Patch
+  sent upstream as https://github.com/petere/plxslt/pull/4
 
 * Tue Sep 29 2026 Devrim Gunduz <devrim@gunduz.org> - 0.20140221-6PGDG
 - Add %%check, running the regression tests with the %%check helpers
