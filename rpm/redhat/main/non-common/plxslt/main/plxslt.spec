@@ -32,6 +32,10 @@ Summary:	PL/XSLT Procedural Language Handler for PostgreSQL
 License:	GPLv2
 URL:		https://github.com/petere/%{sname}
 Source0:	https://github.com/petere/%{sname}/archive/refs/tags/%{version}.tar.gz
+# Newer libxml2 releases (2.15 on Fedora 45) serialize the HTML encoding
+# declaration as <meta charset="UTF-8">: add an alternative expected
+# output for it.
+Patch0:		%{sname}-%{version}-meta-charset-expected.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel libxslt-devel
 Requires:	postgresql%{pgmajorversion}
@@ -70,6 +74,7 @@ This package provides JIT support for plxslt
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
