@@ -2,8 +2,19 @@
 
 Summary:	PostgreSQL based time-series database
 Name:		%{sname}-tsl_%{pgmajorversion}
-Version:	2.31.0
+Version:	2.32.0
 Release:	1PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# pgminorversion is the PostgreSQL minor release that the build servers
+# build against (global/Makefile.global): require at least that one, at
+# build time and at runtime.
+# The other postgresqlNN-* dependencies need no version here: the PostgreSQL
+# subpackages require each other's exact version-release (all of them pin
+# the client package, which pins -libs), so the server, contrib etc. follow
+# -devel at build time and -libs at runtime.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 License:	Timescale
 Source0:	https://github.com/timescale/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/timescale/%{sname}
@@ -66,6 +77,16 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/pgxs/src/test/perl/TimescaleNode.pm
 
 %changelog
+* Thu Nov 12 2026 Devrim Gündüz <devrim@gunduz.org> - 2.32.0-1PGDG
+- Update to 2.32.0, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.32.0
+  This release includes security fixes.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/602
+- Some of the fixes are in the loader, which PostgreSQL loads at server
+  start: restart PostgreSQL after the update for them to take effect.
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
+
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> - 2.31.0-1PGDG
 - Update to 2.31.0, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.31.0

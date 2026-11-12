@@ -2,8 +2,8 @@
 
 Summary:	A time-series database for high-performance real-time analytics
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.31.0
-Release:	2PGDG%{?dist}
+Version:	2.32.0
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -66,6 +66,14 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Thu Nov 12 2026 Devrim Gündüz <devrim@gunduz.org> - 2.32.0-1PGDG
+- Update to 2.32.0, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.32.0
+  This release includes security fixes.
+- Some of the fixes are in the loader, which PostgreSQL loads at server
+  start: restart PostgreSQL after the update for them to take effect.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/602
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.31.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
