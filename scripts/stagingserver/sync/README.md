@@ -132,7 +132,7 @@ These flags control which optional repo types are enabled by default when no `--
 ### Usage
 
 ```bash
-./sync_pgdg_rpms.sh [--os <os>] [--ver <version>] [--arch <arch>] [--sync <items...>] [--dry-run] [--debug]
+./sync_pgdg_rpms.sh [--os <os>] [--ver <version>] [--arch <arch>] [--sync <items...>] [--no-testing] [--dry-run] [--debug]
 ```
 
 ### Options
@@ -143,6 +143,7 @@ These flags control which optional repo types are enabled by default when no `--
 | `--ver` | No | OS version (e.g. `9.7`, `15.6`, `43`). If omitted, all valid versions for the OS(es) being processed are synced |
 | `--arch` | No | Architecture: `aarch64`, `ppc64le`, or `x86_64`. If omitted, all supported architectures for the OS(es) being processed are synced |
 | `--sync` | No | One or more items to sync: `common`, `extras`, `testing`, `non-free`, or a PG version number (e.g. `17`). Multiple values accepted. If omitted, all available repos are synced, except the unchanged ones (see "Skipping Unchanged Repos"). Given items are always synced |
+| `--no-testing` | No | Do not sync the testing repos, whatever `SYNCTESTINGREPOS_<os>` says. Cannot be combined with `--sync testing` |
 | `--dry-run` | No | Print what would be synced without executing rsync |
 | `--debug` | No | Print detailed internal variable state before syncing |
 
@@ -243,7 +244,7 @@ This script is intended to be called by cron to perform a full, unattended sync 
 ### Usage
 
 ```bash
-./sync_pgdg_rpms_cron.sh [--dry-run] [--debug] [--jobs N] [--sync item1 item2 ...]
+./sync_pgdg_rpms_cron.sh [--dry-run] [--debug] [--no-testing] [--jobs N] [--sync item1 item2 ...]
 ```
 
 ### Options
@@ -252,6 +253,7 @@ This script is intended to be called by cron to perform a full, unattended sync 
 |---|---|
 | `--dry-run` | Passed through to `sync_pgdg_rpms.sh` |
 | `--debug` | Passed through to `sync_pgdg_rpms.sh` |
+| `--no-testing` | Passed through to `sync_pgdg_rpms.sh`: skip the testing repos. Unchanged repos are still skipped as usual |
 | `--jobs N` | Number of OS/version syncs to run in parallel. Defaults to `MAX_PARALLEL` in `sync_pgdg_rpms_config.sh`; `1` means sequential |
 | `--sync` | Passed through to `sync_pgdg_rpms.sh` to limit what is synced, and to always rsync those items. The special keyword `pg` expands to every version in `PG_ALL_VERSIONS` |
 
@@ -348,7 +350,7 @@ source /path/to/sync_pgdg_rpms_completion.sh
 | After `--arch` | Valid architectures for the selected `--os` (or all architectures) |
 | After `--sync` | `common`, `extras`, `testing`, `non-free`, and all PG versions from `PG_ALL_VERSIONS` |
 | Continuing `--sync` values | Same as above (multi-value support) |
-| Default / `--` prefix | `--os`, `--arch`, `--ver`, `--sync`, `--dry-run`, `--debug` |
+| Default / `--` prefix | `--os`, `--arch`, `--ver`, `--sync`, `--no-testing`, `--dry-run`, `--debug` |
 
 The completion function attempts to load `sync_pgdg_rpms_config.sh` automatically to keep completions in sync with the live configuration. If the config file cannot be found, it falls back to hardcoded values.
 

@@ -27,6 +27,7 @@ OS_VERSIONS[amzn]="${VALID_VER_amzn[*]}"
 # Flags
 DRY_RUN=false
 DEBUG=false
+NO_TESTING=false  # --no-testing: passed through to skip the testing repos
 JOBS="${MAX_PARALLEL:-1}"  # Max concurrent os/ver syncs (--jobs overrides config)
 SYNC_OPTIONS=""  # Additional sync options (e.g., "--sync common 18")
 declare -a SYNC_ITEMS_RAW=()  # --sync items collected so far, "pg" not yet expanded
@@ -34,7 +35,7 @@ declare -a SYNC_ITEMS_RAW=()  # --sync items collected so far, "pg" not yet expa
 # Help
 usage() {
 	cat <<EOF
-Usage: $0 [--dry-run] [--debug] [--jobs N] [--sync item1 item2 ...]
+Usage: $0 [--dry-run] [--debug] [--no-testing] [--jobs N] [--sync item1 item2 ...]
 
 Runs a full, unattended sync of every OS/version combination in
 sync_pgdg_rpms_config.sh by invoking sync_pgdg_rpms.sh once per os/ver pair
@@ -45,6 +46,8 @@ output of each is printed as a block when it finishes.
 Optional:
   --dry-run      Passed through to sync_pgdg_rpms.sh
   --debug        Passed through to sync_pgdg_rpms.sh
+  --no-testing   Passed through to sync_pgdg_rpms.sh: do not sync the testing
+                 repos. Unchanged repos are still skipped as usual
   --jobs N       Number of os/ver syncs to run in parallel (default:
                  MAX_PARALLEL from the config; 1 = sequential)
   --sync         Passed through to sync_pgdg_rpms.sh to limit what is synced
@@ -57,6 +60,7 @@ Optional:
 Examples:
   $0
   $0 --dry-run
+  $0 --no-testing
   $0 --sync common
   $0 --sync pg common
 
@@ -76,6 +80,10 @@ while [[ $# -gt 0 ]]; do
 		;;
 	--debug)
 		DEBUG=true
+		shift
+		;;
+	--no-testing)
+		NO_TESTING=true
 		shift
 		;;
 	--jobs|-j)
@@ -136,6 +144,7 @@ run_sync() {
 	# Add optional flags
 	$DRY_RUN && cmd+=" --dry-run"
 	$DEBUG && cmd+=" --debug"
+	$NO_TESTING && cmd+=" --no-testing"
 	[[ -n "$SYNC_OPTIONS" ]] && cmd+=" $SYNC_OPTIONS"
 
 	log "Running: $cmd"

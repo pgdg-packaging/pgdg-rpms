@@ -41,7 +41,7 @@ _sync_pgdg_rpms() {
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD - 1]}"
 
-	opts="--os --arch --ver --sync --dry-run --debug"
+	opts="--os --arch --ver --sync --no-testing --dry-run --debug"
 
 	# Try to load config, use fallback if not available
 	if ! _sync_pgdg_rpms_get_config; then

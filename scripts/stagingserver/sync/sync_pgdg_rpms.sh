@@ -21,6 +21,7 @@ ARCH_ARGS=()				# Architectures requested via one or more --arch
 VER_ARGS=()				# OS versions requested via one or more --ver
 DRY_RUN=false
 DEBUG=false
+NO_TESTING=false			# --no-testing: never sync the testing repos
 SYNC_ITEMS=()				# Items to sync (common, extras, testing, non-free, or PG versions)
 
 # Help
@@ -50,6 +51,9 @@ Optional:
                  that version instead of all testing versions
                  If not specified, syncs all available repos, skipping the ones
                  which did not change on the builder. Given items are always synced
+  --no-testing   Do not sync the testing repos (common, extras and per-PG-version
+                 testing), whatever SYNCTESTINGREPOS_<os> says. Cannot be combined
+                 with "--sync testing"
   --dry-run      Simulate the sync without transferring files
   --debug        Show detailed debug output
 
@@ -149,6 +153,10 @@ while [[ $# -gt 0 ]]; do
 			shift
 		done
 		;;
+	--no-testing)
+		NO_TESTING=true
+		shift
+		;;
 	--dry-run)
 		DRY_RUN=true
 		shift
@@ -244,6 +252,11 @@ if [[ ${#SYNC_ITEMS[@]} -gt 0 ]]; then
 	fi
 fi
 
+if $NO_TESTING && [[ $SYNC_TESTING -eq 1 ]]; then
+	echo "ERROR: --no-testing cannot be combined with --sync testing" >&2
+	exit 1
+fi
+
 # Was a PG version explicitly requested via --sync (as opposed to the
 # per-OS default list of stable versions used when --sync is omitted)?
 # The testing loop in process_os() uses this to decide whether to sync
@@ -318,6 +331,9 @@ process_os() {
 		os_sync_testing=$SYNCTESTINGREPOS
 		os_sync_nonfree=$SYNCNONFREEREPOS
 		os_sync_pg_versions=("${PG_ALL_VERSIONS[@]}")
+	fi
+	if $NO_TESTING; then
+		os_sync_testing=0
 	fi
 
 	echo "Starting sync operation for $OS"
