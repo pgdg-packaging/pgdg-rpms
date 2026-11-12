@@ -21,7 +21,18 @@
 
 Name:		%{sname}_%{pgmajorversion}
 Version:	6.1
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
+%if 0%{?pgminorversion:1}
+# pgminorversion is the PostgreSQL minor release that the build servers
+# build against (global/Makefile.global): require at least that one, at
+# build time and at runtime.
+# The other postgresqlNN-* dependencies need no version here: the PostgreSQL
+# subpackages require each other's exact version-release (all of them pin
+# the client package, which pins -libs), so the server, contrib etc. follow
+# -devel at build time and -libs at runtime.
+BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
+Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
+%endif
 Summary:	PG-Strom extension module for PostgreSQL
 License:	PostgreSQL
 URL:		https://github.com/heterodb/pg-strom
@@ -118,6 +129,11 @@ export CUDA_PATH=%{__cuda_path}
 %endif
 
 %changelog
+* Thu Nov 12 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1-4PGDG
+- Rebuild against latest PostgreSQL minor releases
+- Require at least the PostgreSQL minor release that the package is
+  built against (pgminorversion, set by the build server Makefiles).
+
 * Sun Aug 30 2026 Devrim Gunduz <devrim@gunduz.org> - 6.1-3PGDG
 - Make %%llvm actually control the build, not just packaging: pass
   with_llvm=no to make when %%llvm is 0, otherwise setting %%llvm 0 only
