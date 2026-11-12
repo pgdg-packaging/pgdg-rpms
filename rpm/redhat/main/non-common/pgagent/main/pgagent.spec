@@ -4,7 +4,7 @@
 Summary:	Job scheduler for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	4.2.3
-Release:	13PGDG%{?dist}
+Release:	14PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -62,12 +62,11 @@ documentation contains details of the setup and use of pgAgent with your
 PostgreSQL system.
 
 %pre
-if [ $1 -eq 1 ] ; then
-%sysusers_create_package %{name} %SOURCE6
-touch /var/log/pgagent_%{pgmajorversion}.log
-fi
-%{__chown} pgagent:pgagent /var/log/pgagent_%{pgmajorversion}.log
-%{__chmod} 0700 /var/log/pgagent_%{pgmajorversion}.log
+# Keep the macro the last line of %%pre: on EL-8 its here-document
+# terminator has a trailing space, so any line after it ends up in the
+# here-document and breaks the scriptlet. Per
+# https://github.com/pgdg-packaging/pgdg-rpms/issues/605
+%sysusers_create_package %{name}-pgdg %SOURCE6
 
 %prep
 %setup -q -n %{sname}-%{sname}-%{version}
@@ -146,6 +145,11 @@ cat > %{buildroot}%{_sysconfdir}/logrotate.d/%{name} <<EOF
 EOF
 
 %post
+if [ ! -e /var/log/pgagent_%{pgmajorversion}.log ] ; then
+	touch /var/log/pgagent_%{pgmajorversion}.log
+fi
+%{__chown} pgagent:pgagent /var/log/pgagent_%{pgmajorversion}.log
+%{__chmod} 0700 /var/log/pgagent_%{pgmajorversion}.log
 %systemd_post %{name}.service
 
 %preun
@@ -171,6 +175,13 @@ EOF
 %{pginstdir}/share/extension/%{sname}.control
 
 %changelog
+* Fri Nov 13 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-14PGDG
+- Fix the %%pre scriptlet on RHEL 8: the systemd-sysusers here-document
+  terminator of the EL-8 %%sysusers_create_package macro has a trailing
+  space, so the lines after it broke the scriptlet. Keep the macro alone
+  in %%pre and move the log file setup to %%post. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/605
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.2.3-13PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
