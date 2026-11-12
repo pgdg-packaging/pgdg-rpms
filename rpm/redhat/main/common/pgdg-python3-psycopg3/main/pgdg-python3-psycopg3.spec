@@ -62,7 +62,7 @@ Epoch:		1
 Version:	3.2.13
 Release:	4PGDG%{?dist}
 %else
-Version:	3.3.7
+Version:	3.3.9
 Release:	42PGDG%{?dist}
 %endif
 # The exceptions allow linking to OpenSSL and PostgreSQL's libpq
@@ -393,20 +393,22 @@ fi
 %files c
 %{python3_sitearch}/psycopg_c-%{version}.dist-info/
 %{python3_sitearch}/psycopg_c/*.py*
-%if 0%{?rhel} != 9
-%{python3_sitearch}/psycopg_c/*.c
-%endif
 %{python3_sitearch}/psycopg_c/*.so
 %{python3_sitearch}/psycopg_c/__pycache__/*py*
 %{python3_sitearch}/psycopg_c/_psycopg/*
 %{python3_sitearch}/psycopg_c/pq.pxd
 %{python3_sitearch}/psycopg_c/pq/*
 %{python3_sitearch}/psycopg_c/py.typed
-%if 0%{?rhel} != 9
-%{python3_sitearch}/psycopg_c/types/*
-%endif
 
 %changelog
+* Thu Nov 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.9-42PGDG
+- Update to 3.3.9 per changes described at:
+  https://github.com/psycopg/psycopg/releases/tag/3.3.9
+  RHEL 9 stays on 3.2.13.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/601
+- The -c subpackage no longer ships the C sources of the extensions:
+  upstream now excludes them from the wheels.
+
 * Tue Nov 03 2026 Devrim Gunduz <devrim@gunduz.org> - 3.3.7-42PGDG
 - Update to 3.3.7 per changes described at:
   https://github.com/psycopg/psycopg/releases/tag/3.3.7
