@@ -13,7 +13,7 @@
 
 Name:		python%{python3_pkgversion}-%{pypi_name}
 # NOTICE - Updating this package requires updating python-boto3
-Version:	1.44.0
+Version:	1.44.2
 Release:	42PGDG%{?dist}
 Summary:	Low-level, data-driven core of boto 3
 
@@ -88,6 +88,10 @@ grep -q "'python-dateutil>=2.1'," setup.py
 %{python3_sitelib}/%{pypi_name}/*
 
 %changelog
+* Fri Nov 13 2026 Devrim Gunduz <devrim@gunduz.org> - 1.44.2-42PGDG
+- Update to 1.44.2 per changes described at:
+  https://pypi.org/project/botocore/1.44.2/
+
 * Wed Nov 11 2026 Devrim Gunduz <devrim@gunduz.org> - 1.44.0-42PGDG
 - Update to 1.44.0 per changes described at:
   https://pypi.org/project/botocore/1.44.0/
