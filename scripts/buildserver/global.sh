@@ -101,8 +101,8 @@ fi
 
 # PostgreSQL Build Versions. One array element per version: quoted expansions
 # ("${pgStableBuilds[@]}") must see each version separately.
-declare -a pgStableBuilds=(18 17 16 15)
-declare -a pgTestBuilds=(19 18 17 16 15)
+declare -a pgStableBuilds=(18 17 16 15 14)
+declare -a pgTestBuilds=(19 18 17 16 15 14)
 declare -a pgBetaVersion=(19)
 declare -a pgAlphaVersion=(20)
 
@@ -246,8 +246,8 @@ is_already_built() {
 # signed yet, so that rpmsign only runs for those. Starting rpmsign for every
 # RPM is much slower than this, as the RPMs are queried in batches and only
 # the header of each RPM is read. Each answer is matched to its path, not to
-# its file name, as the same RPM can be in more than one directory (e.g. rpm15
-# and rpm15testing) with only one of the copies signed. Anything that cannot be
+# its file name, as the same RPM can be in more than one directory (e.g. rpm14
+# and rpm14testing) with only one of the copies signed. Anything that cannot be
 # confirmed as signed (unsigned or unreadable) is printed as well, so it goes
 # to rpmsign, which then signs it or reports why not.
 list_unsigned_rpms() {

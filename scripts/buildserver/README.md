@@ -66,10 +66,10 @@ touch.
 
 | Variable | Example | Description |
 |---|---|---|
-| `pgStableBuilds` | `("18 17 16 15")` | Production versions, used by `packagesync.sh` and `packagebuild.sh` |
-| `pgTestBuilds` | `("19 18 17 16 15")` | Versions available in testing repos |
-| `pgBetaVersion` | `(19)` | Current beta version (empty when no active beta) |
-| `pgAlphaVersion` | `(20)` | Current alpha/development version |
+| `pgStableBuilds` | `("18 17 16 15 14")` | Production versions, used by `packagesync.sh` and `packagebuild.sh` |
+| `pgTestBuilds` | `("19 18 17 16 15 14")` | Versions available in testing repos |
+| `pgBetaVersion` | `()` | Current beta version (empty when no active beta) |
+| `pgAlphaVersion` | `(19)` | Current alpha/development version |
 
 ### GPG Configuration
 
@@ -111,8 +111,8 @@ the RPM itself, as it "already contains an identical signature"), while
 Other RPM versions were not measured. `list_unsigned_rpms` also passes on
 anything it cannot confirm as signed (e.g. unreadable RPMs), so those still
 reach `rpmsign`. It checks every path on its own, so a signed copy of an RPM
-in one directory (e.g. `rpm15testing`) does not hide an unsigned copy with
-the same file name in another (e.g. `rpm15`).
+in one directory (e.g. `rpm14testing`) does not hide an unsigned copy with
+the same file name in another (e.g. `rpm14`).
 Set `FORCE_RESIGN=1` to run `rpmsign` on every RPM anyway:
 
 ```bash
