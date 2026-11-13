@@ -3,7 +3,7 @@
 Summary:	Import tool for OpenStreetMap data to pgRouting database
 Name:		%{sname}
 Version:	3.0.0
-Release:	3PGDG%{dist}
+Release:	4PGDG%{dist}
 License:	GPLv2
 Source0:	https://github.com/pgRouting/%{sname}/archive/v%{version}.tar.gz
 Patch0:		osm2pgrouting-libpqxx-8.patch
@@ -23,6 +23,14 @@ Requires:	boost-program-options libpqxx
 %endif
 
 BuildRequires:	cmake >= 3.12 boost-devel >= 1.53
+
+# libpqxx 8 needs C++20 <format>, which GCC 11 lacks:
+%if 0%{?rhel} == 9
+BuildRequires:	gcc-toolset-15 gcc-toolset-15-gcc gcc-toolset-15-gcc-c++ gcc-toolset-15-gcc-plugin-annobin
+%endif
+%if 0%{?amzn} == 2023
+BuildRequires:	gcc14 gcc14-c++
+%endif
 Requires:	libpq5
 
 Obsoletes:	%{sname}_15 <= 2.3.8
@@ -36,11 +44,16 @@ Import tool for OpenStreetMap data to pgRouting database.
 %setup -q -n %{sname}-%{version}
 %patch -P0 -p0
 %build
-%if 0%{?suse_version} >= 1499
-cmake .. \
-%else
-cmake .. \
+%if 0%{?rhel} == 9
+export PATH=/opt/rh/gcc-toolset-15/root/usr/bin/:$PATH
 %endif
+%if 0%{?amzn} == 2023
+export CC=/usr/bin/gcc14-gcc
+export CXX=/usr/bin/gcc14-g++
+%undefine _annotated_build
+%endif
+%{?set_build_flags}
+cmake .. \
 	-DCMAKE_INSTALL_PREFIX=%{_prefix} \
 	-DPOSTGRESQL_INCLUDE_DIR:PATH=%{_includedir} \
 	-DPOSTGRESQL_LIBRARIES:PATH=%{_libdir}/libpq.so.5 \
@@ -69,6 +82,12 @@ cd build/
 %{_datadir}/%{sname}/mapconfig_for_pedestrian.xml
 
 %changelog
+* Fri Nov 13 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-4PGDG
+- Build with gcc-toolset-15 on RHEL 9 and with gcc14 on AL2023, as
+  libpqxx 8 needs C++20 <format>, which GCC 11 lacks.
+- Call %%set_build_flags before cmake, so that RHEL 9 builds get the
+  distro compiler flags and debug info as well.
+
 * Sat Sep 12 2026 Devrim Gunduz <devrim@gunduz.org> - 3.0.0-3PGDG
 - Fix the %%cmake3 macro reference left over from the previous CMake 4
   fix.
