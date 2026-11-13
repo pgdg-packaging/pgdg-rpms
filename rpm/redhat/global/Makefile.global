@@ -13,6 +13,7 @@
 # at least that version, so that a package built against a new minor release
 # is not installed with an older one. Update them for every minor release,
 # after the PostgreSQL packages themselves are built on the build servers.
+PG14MINORVERSION = 14.25
 PG15MINORVERSION = 15.20
 PG16MINORVERSION = 16.16
 PG17MINORVERSION = 17.12
@@ -42,6 +43,8 @@ include ../../../../global/Makefile.global-common
 include ../../../../global/Makefile.global-common-testing
 include ../../../../global/Makefile.global-extras
 include ../../../../global/Makefile.global-extras-testing
+include ../../../../global/Makefile.global-PG14-testing
+include ../../../../global/Makefile.global-PG14
 include ../../../../global/Makefile.global-PG15-testing
 include ../../../../global/Makefile.global-PG15
 include ../../../../global/Makefile.global-PG16-testing

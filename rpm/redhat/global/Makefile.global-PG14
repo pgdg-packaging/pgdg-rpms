@@ -1,0 +1,118 @@
+#################################
+# Makefile for PostgreSQL 14	#
+# packaging	 	 	#
+# https://yum.postgresql.org	#
+#				#
+# Devrim Gunduz			#
+# devrim@gunduz.org		#
+#################################
+#				#
+#				#
+# build target is for		#
+# RPM buildfarm			#
+#				#
+#				#
+#################################
+
+
+## PostgreSQL 14
+
+prep14:
+	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
+	# Update spec file, patches, etc, before running spectool:
+	git pull
+	# Use spectool to download source files, especially tarballs.
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" $(SPECFILE)
+
+build14: prep14
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_builddir $(HOME)/rpm14/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm14/RPMS/" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	-bb $(SPECFILE)
+	make bfsrpm14
+
+srpm14: prep14
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir ." \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfsrpm14: prep14
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfnoprepsrpm14:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfnosignsrpm14: prep14
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+rpm14: prep14
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	-bb $(SPECFILE)
+
+nosignbuild14: prep14
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(HOME)/rpm14/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm14/RPMS/" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	-bb $(SPECFILE)
+	make bfnosignsrpm14
+
+noprepbuild14:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(HOME)/rpm14/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm14/RPMS/" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	-bb $(SPECFILE)
+
+nopreprpm14:
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	-bb $(SPECFILE)
+
+noprepsrpm14:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir ." \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" --define "pgminorversion $(PG14MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
