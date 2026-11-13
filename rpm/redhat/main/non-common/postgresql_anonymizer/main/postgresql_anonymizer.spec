@@ -3,12 +3,12 @@
 %global pgrx_series 0.19
 # The pgrx release that it is built with (Cargo.lock of upstream may have an
 # older one, which anon-vendor.sh changes):
-%global pgrx_version 0.19.3
+%global pgrx_version 0.19.4
 
 Summary:	Anonymization & Data Masking for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	3.3.0
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -127,6 +127,12 @@ install -pm 0644 data/*.csv data/en_US/fake/*.csv %{buildroot}%{pginstdir}/share
 %{pginstdir}/share/extension/anon/
 
 %changelog
+* Fri Nov 13 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-3PGDG
+- Build with pgrx 0.19.4, to match cargo-pgrx019 0.19.4. This pgrx release
+  checks the version of composite datums before reading their attributes
+  (CVE-2026-6460). The check is only compiled in against the patched
+  PostgreSQL headers (14.25, 15.20, 16.16, 17.12, 18.7).
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.3.0-2PGDG
 - Add missing BuildRequires: postgresqlNN-server. "cargo pgrx init" in
   %%build runs initdb, so the build failed in a clean buildroot.
