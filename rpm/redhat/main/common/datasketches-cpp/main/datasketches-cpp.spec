@@ -3,7 +3,7 @@
 
 Summary:	Core C++ library of Apache DataSketches
 Name:		datasketches-cpp
-Version:	5.3.0
+Version:	5.3.1
 Release:	1PGDG%{dist}
 License:	Apache-2.0
 Source0:	https://github.com/apache/%{name}/archive/refs/tags/%{version}.tar.gz
@@ -72,6 +72,10 @@ popd
 %{_libdir}/DataSketches/*
 
 %changelog
+* Fri Nov 13 2026 Devrim Gündüz <devrim@gunduz.org> - 5.3.1-1PGDG
+- Update to 5.3.1 per changes described at:
+  https://github.com/apache/datasketches-cpp/releases/tag/5.3.1
+
 * Thu Oct 8 2026 Devrim Gündüz <devrim@gunduz.org> - 5.3.0-1PGDG
 - Update to 5.3.0 per changes described at:
   https://github.com/apache/datasketches-cpp/releases/tag/5.3.0
