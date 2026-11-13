@@ -7,14 +7,22 @@
 Summary:	Fast data loader for PostgreSQL
 Name:		pgloader
 Version:	3.6.10
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 License:	PostgreSQL
 URL:		https://pgloader.io
 Source0:	https://github.com/dimitri/%{name}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:	make
 BuildRequires:	sbcl >= 2.2.9
+%if 0%{?rhel} && ! 0%{?amzn}
+# FreeTDS comes from EPEL on RHEL, so use our pgdg-freetds package. pgloader
+# loads libsybdb with dlopen() for MS SQL sources, so require it by name:
+BuildRequires:	pgdg-freetds-devel
+Requires:	pgdg-freetds%{?_isa}
+%else
 BuildRequires:	freetds-devel
+Requires:	libsybdb.so.5%{?__isa_bits:()(%{__isa_bits}bit)}
+%endif
 BuildRequires:	openssl-devel
 Requires:	openssl-devel
 
@@ -34,11 +42,27 @@ from the pgloader command directly.
 
 %prep
 %setup -q -n %{name}-%{version}
+%if 0%{?rhel} && ! 0%{?amzn}
+# pgdg-freetds is not in the library search path, so make pgloader load
+# libsybdb by its full path, so that the FreeTDS library of EPEL is not used
+# even if it is installed. src/hooks.lisp is loaded after the mssql system:
+grep -q 'mssql::sybdb' src/hooks.lisp
+cat >> src/hooks.lisp << 'EOF_SYBDB'
+
+;;; PGDG: use the FreeTDS library of the pgdg-freetds package.
+(cffi:define-foreign-library mssql::sybdb
+  (:linux "/usr/pgdg-freetds/lib64/libsybdb.so.5"))
+EOF_SYBDB
+%endif
 
 %build
 export CCFLAGS="%{_optflags}"
 export CCXFLAGS="%{_optflags}"
 export DYNSIZE=""
+%if 0%{?rhel} && ! 0%{?amzn}
+# The mssql system loads libsybdb by name while pgloader is built:
+export LD_LIBRARY_PATH=/usr/pgdg-freetds/lib64
+%endif
 echo "Arch is : %{_arch}"
 %if "%{_arch}" == "i386" || "%{_arch}" == "arm"
 export DYNSIZE="DYNSIZE=1024"
@@ -56,6 +80,13 @@ export DYNSIZE="DYNSIZE=1024"
 %{_bindir}/%{name}
 
 %changelog
+* Fri Nov 13 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.10-3PGDG
+- RHEL: Use our new pgdg-freetds package instead of the EPEL freetds
+  package, and load libsybdb from it by its full path. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/513
+- Add the missing runtime dependency to FreeTDS, which pgloader loads
+  with dlopen() for MS SQL sources.
+
 * Thu Sep 10 2026 Devrim Gündüz <devrim@gunduz.org> - 3.6.10-2PGDG
 - Add missing BR
 
