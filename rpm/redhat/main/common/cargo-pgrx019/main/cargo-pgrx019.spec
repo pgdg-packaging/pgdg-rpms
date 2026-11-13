@@ -6,7 +6,7 @@
 %global pgrx_series	0.19
 
 Name:		cargo-pgrx019
-Version:	0.19.3
+Version:	0.19.4
 Release:	1PGDG%{?dist}
 Summary:	Cargo subcommand to build PostgreSQL extensions written in Rust (pgrx 0.19)
 # The licenses of the crates that are compiled into the binary, checked with
@@ -76,6 +76,12 @@ install -Dpm 0755 target/release/%{crate} %{buildroot}%{_bindir}/%{crate}-%{pgrx
 %{_bindir}/%{crate}-%{pgrx_series}
 
 %changelog
+* Fri Nov 13 2026 Devrim Gündüz <devrim@gunduz.org> - 0.19.4-1PGDG
+- Update to 0.19.4 per changes described at:
+  https://github.com/pgcentralfoundation/pgrx/releases/tag/v0.19.4
+  This is a security release for CVE-2026-6460: extensions have to be
+  rebuilt with pgrx 0.19.4 against the patched PostgreSQL releases.
+
 * Thu Oct 8 2026 Devrim Gündüz <devrim@gunduz.org> - 0.19.3-1PGDG
 - Update to 0.19.3 per changes described at:
   https://github.com/pgcentralfoundation/pgrx/releases/tag/v0.19.2
