@@ -32,7 +32,7 @@ VALID_ARCH_opensuse=("x86_64")
 VALID_ARCH_amzn=("x86_64" "aarch64")
 
 # Valid versions per OS
-VALID_VER_redhat=("10.2" "10.1" "9.8" "9.7" "8.10")
+VALID_VER_redhat=("10.3" "10.2" "10.1" "9.9" "9.8" "9.7" "8.10")
 VALID_VER_fedora=("45" "44" "43")
 VALID_VER_sles=("15.6" "15.7" "16.0")
 VALID_VER_opensuse=("16.0")
@@ -107,8 +107,8 @@ OSDISTRO_amzn="amzn"
 # Example:
 #   [redhat:10.0]="x86_64 aarch64"    # ppc64le not yet available for 10.0
 declare -A VALID_ARCH_OVERRIDES=(
-#	[redhat:10.0]="aarch64 x86_64"	# no ppc64le builds for 10.0
-#	[redhat:9.6]="aarch64 x86_64"	# no ppc64le builds for 9.6
+	[redhat:10.3]="x86_64"	# no ppc64le and arm64 builds for 10.3 yet
+	[redhat:9.9]="x86_64"	# no ppc64le and arm64 builds for 9.9 yet
 )
 
 # Resolve the valid architecture list for a given OS/version pair into the
