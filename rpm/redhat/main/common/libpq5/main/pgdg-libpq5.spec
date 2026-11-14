@@ -5,13 +5,13 @@
 
 Summary:	PostgreSQL Client Library
 Name:		libpq5
-Version:	%{pgmajorversion}.6
+Version:	%{pgmajorversion}.7
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -254,6 +254,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Sat Nov 14 2026 Devrim Gündüz <devrim@gunduz.org> - 18.7-1PGDG
+- Update to 18.7
+
 * Mon Aug 24 2026 Devrim Gündüz <devrim@gunduz.org> - 18.6-2PGDG
 - Fix OpenSSL dependency for Amazon Linux 2023
 
