@@ -8,8 +8,8 @@
 
 Summary:	The user interface of PoWA
 Name:		%{sname}
-Version:	5.3.0
-Release:	6PGDG%{?dist}
+Version:	5.3.2
+Release:	1PGDG%{?dist}
 License:	BSD
 Source0:	https://github.com/powa-team/powa-web/archive/refs/tags/%{version}.tar.gz
 Source2:	%{sname}.service
@@ -68,6 +68,11 @@ This is the user interface of POWA.
 %{_unitdir}/%{sname}.service
 
 %changelog
+* Sun Nov 15 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.2-1PGDG
+- Update to 5.3.2 per changes described at:
+  https://github.com/powa-team/powa-web/releases/tag/5.3.1 and
+  https://github.com/powa-team/powa-web/releases/tag/5.3.2
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 5.3.0-6PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0, and build and run
   with its Python everywhere, not only on RHEL 8: require
