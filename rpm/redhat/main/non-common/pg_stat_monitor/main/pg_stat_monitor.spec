@@ -21,8 +21,8 @@
 
 Summary:	PostgreSQL Query Performance Monitoring Tool
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.4.0
-Release:	4PGDG%{?dist}
+Version:	2.4.1
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -37,14 +37,10 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 License:	PostgreSQL
 URL:		https://github.com/percona/%{sname}
 Source0:	https://github.com/percona/%{sname}/archive/refs/tags/%{version}.tar.gz
-# Remove this patch in next release. Only needed for PostgreSQL 19:
-%if %{pgmajorversion} == 19
-Patch0:		pg_stat_monitor-pg19-beta4-293096b.patch
-%endif
 %if 0%{?suse_version} >= 1500
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
 BuildRequires:	openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
@@ -109,9 +105,6 @@ This packages provides JIT support for pg_stat_monitor
 
 %prep
 %setup -q -n %{sname}-%{version}
-%if %{pgmajorversion} == 19
-%patch -P0 -p1
-%endif
 
 %build
 PATH=%{pginstdir}/bin:$PATH %{__make} USE_PGXS=1 %{?_smp_mflags} %{with_llvm_arg}
@@ -155,6 +148,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.1-1PGDG
+- Update to 2.4.1 per changes described at:
+  https://github.com/percona/pg_stat_monitor/releases/tag/2.4.1
+- Remove the PostgreSQL 19 patch, now in upstream.
+- Add the openssl-devel BuildRequires back on RHEL 8.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-4PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
