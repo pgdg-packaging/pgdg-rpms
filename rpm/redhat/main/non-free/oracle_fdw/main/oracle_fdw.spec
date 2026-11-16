@@ -3,7 +3,7 @@
 %global ofdwmidver 9
 %global ofdwminver 0
 
-%{!?oi_release:%global oi_release 23.26.2.0.0}
+%{!?oi_release:%global oi_release 23.26.4.0.0}
 
 %global		__find_requires %{SOURCE1}
 
@@ -13,7 +13,7 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Oracle.
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ofdwmajver}.%{ofdwmidver}.%{ofdwminver}
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -67,6 +67,9 @@ PATH=%{pginstdir}/bin:$PATH USE_PGXS=1 %{__make} %{?_smp_mflags} install DESTDIR
 %{pginstdir}/doc/extension/README.%{sname}
 
 %changelog
+* Mon Nov 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.0-3PGDG
+- Update OIC dependency to 23.26.4.0.0
+
 * Thu Nov 12 2026 Devrim Gunduz <devrim@gunduz.org> - 2.9.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
