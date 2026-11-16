@@ -20,8 +20,8 @@
 
 Summary:	Reliable PostgreSQL Backup & Restore
 Name:		pgbackrest
-Version:	2.60.0
-Release:	3PGDG%{?dist}
+Version:	2.60.1
+Release:	1PGDG%{?dist}
 License:	MIT
 Url:		http://www.pgbackrest.org/
 Source0:	https://github.com/%{name}/%{name}/releases/download/release%2F%{version}/%{name}-%{version}.tar.gz
@@ -199,6 +199,10 @@ fi
 %attr(-,postgres,postgres) /var/spool/%{name}
 
 %changelog
+* Mon Nov 16 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.1-1PGDG
+- Update to 2.60.1 per changes described at:
+  https://github.com/pgbackrest/pgbackrest/releases/tag/release/2.60.1
+
 * Wed Nov 4 2026 Devrim Gündüz <devrim@gunduz.org> - 2.60.0-3PGDG
 - EL-10 and Fedora 44+: Ship a local SELinux policy module (loaded in %%post)
   that allows sshd_session_t to search/read postgresql_db_t, fixing SSH
