@@ -11,20 +11,15 @@
 %global		__provides_exclude_from ^%{libmemcachedinstdir}/
 %global		__requires_exclude ^lib(hashkit|memcached|memcachedprotocol|memcachedutil)\\.so
 
-%global		gh_commit 92d18858b417309f6bdee6bce464a4f3d6a375fd
-%global		gh_short %(c=%{gh_commit}; echo ${c:0:7})
-
 %{!?runselftest:%global runselftest 0}
 
 Name:		pgdg-%{sname}
-Version:	1.1.4
+Version:	1.2.0
 Release:	1PGDG%{?dist}
 Summary:	Client library for memcached server
 License:	BSD-3-Clause
 URL:		https://github.com/awesomized/%{libname}
-Source0:	https://github.com/awesomized/%{libname}/archive/%{gh_commit}/%{libname}-%{version}-%{gh_short}.tar.gz
-# Fix a test with memcached 1.6.40 (Fedora)
-Patch0:		%{name}-memcached-1.6.40.patch
+Source0:	https://github.com/awesomized/%{libname}/archive/refs/tags/%{version}.tar.gz#/%{libname}-%{version}.tar.gz
 
 BuildRequires:	pgdg-srpm-macros >= 2.5.1
 BuildRequires:	cmake >= 3.9
@@ -60,7 +55,7 @@ This package contains the header files and development libraries
 for %{sname}, installed under %{libmemcachedinstdir}.
 
 %prep
-%setup -q -n %{libname}-%{gh_commit}
+%setup -q -n %{libname}-%{version}
 
 # drop test hanging in mock
 # and requiring some memcached build options
@@ -70,8 +65,6 @@ for %{sname}, installed under %{libmemcachedinstdir}.
 %{__rm} test/tests/memcached/udp.cpp
 %{__rm} test/tests/memcached/regression/lp_000-583-031.cpp
 %{__rm} test/tests/memcached/regression/gh-php-memcached_0531.cpp
-
-%patch -P 0 -p1
 
 %build
 # The command line tools are built (the test suite uses them), but not
@@ -128,6 +121,13 @@ for %{sname}, installed under %{libmemcachedinstdir}.
 %{libmemcachedinstdir}/lib64/cmake/
 
 %changelog
+* Tue Nov 17 2026 Devrim Gunduz <devrim@gunduz.org> - 1.2.0-1PGDG
+- Update to 1.2.0 per changes described at:
+  https://github.com/awesomized/libmemcached/releases/tag/1.1.5
+  https://github.com/awesomized/libmemcached/releases/tag/1.2.0
+- Build from the release tag instead of a git snapshot.
+- Remove the memcached 1.6.40 test patch, now in upstream.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 1.1.4-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-libmemcached, so that pgpool-II and pgmemcache do not need the
