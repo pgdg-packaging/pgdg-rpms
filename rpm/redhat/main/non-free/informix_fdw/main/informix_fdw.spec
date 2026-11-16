@@ -21,7 +21,7 @@
 Summary:	A PostgreSQL Foreign Data Wrapper for Informix
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{ifxfdwmajver}.%{ifxfdwmidver}.%{ifxfdwminver}
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -42,6 +42,15 @@ BuildRequires:	postgresql%{pgmajorversion}-devel
 BuildRequires:	postgresql%{pgmajorversion}-server
 #BuildRequires:	some-informix-dependency maybe?
 Requires:	postgresql%{pgmajorversion}-server
+# Informix client libraries and the esql preprocessor need libcrypt.so.1:
+%if 0%{?rhel} == 8
+BuildRequires:	libxcrypt
+Requires:	libxcrypt
+%endif
+%if 0%{?rhel} >= 9
+BuildRequires:	libxcrypt-compat
+Requires:	libxcrypt-compat
+%endif
 
 Obsoletes:	%{sname}%{pgmajorversion} < 0.5.3-2
 
@@ -102,6 +111,11 @@ USE_PGXS=1 %{__make} %{?_smp_mflags} %{with_llvm_arg} install DESTDIR=%{buildroo
 %endif
 
 %changelog
+* Mon Nov 16 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.3-4PGDG
+- Add libxcrypt-compat dependency on RHEL 9 and 10 and libxcrypt
+  on RHEL 8 (BuildRequires and Requires), as the Informix esql
+  preprocessor and client libraries need libcrypt.so.1.
+
 * Thu Nov 12 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.3-3PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
