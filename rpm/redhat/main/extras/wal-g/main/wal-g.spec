@@ -16,7 +16,7 @@ ExcludeArch:	ppc64le
 %global		ubuntuver 24.04
 
 Name:		wal-g
-Version:	3.0.9
+Version:	3.0.10
 Release:	1PGDG%{?dist}
 Summary:	Archival and restoration tool for PostgreSQL
 License:	Apache-2.0
@@ -51,5 +51,9 @@ This package contains the PostgreSQL build of WAL-G.
 %attr(755, root, root) %{_bindir}/%{name}
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.10-1PGDG
+- Update to 3.0.10 per changes described at:
+  https://github.com/wal-g/wal-g/releases/tag/v3.0.10
+
 * Mon Oct 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.9-1PGDG
 - Initial packaging for the PostgreSQL RPM repository.
