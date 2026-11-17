@@ -22,7 +22,7 @@
 %{!?plperl:%global plperl 1}
 %{!?plpython3:%global plpython3 1}
 %{!?pltcl:%global pltcl 1}
-%{!?runselftest:%global runselftest 0}
+%{!?runselftest:%global runselftest 1}
 %{!?sdt:%global sdt 1}
 %{!?selinux:%global selinux 1}
 %{!?ssl:%global ssl 1}
@@ -36,17 +36,17 @@
 
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
-Version:	19
+Version:	19.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	rc2_420001PGDG%{?dist}
+Release:	420001PGDG%{?dist}
 %else
-Release:	rc2_1PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
-Source0:	https://download.postgresql.org/pub/source/v%{version}rc2/postgresql-%{version}rc2.tar.bz2
+Source0:	https://download.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README.rpm-dist
@@ -517,7 +517,7 @@ and benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{pgpackageversion}rc2
+%setup -q -n %{sname}-%{version}
 
 %patch -P 1 -p0
 %patch -P 3 -p0
@@ -1413,6 +1413,9 @@ fi
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-1PGDG
+- Update to 19.0 Gold!
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0rc2-1PGDG
 - Update to 19.0 RC2
 - Fixes CVE-2026-6460, CVE-2026-6467, CVE-2026-14661, CVE-2026-16237,
