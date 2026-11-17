@@ -101,9 +101,9 @@ fi
 
 # PostgreSQL Build Versions. One array element per version: quoted expansions
 # ("${pgStableBuilds[@]}") must see each version separately.
-declare -a pgStableBuilds=(18 17 16 15 14)
+declare -a pgStableBuilds=(19 18 17 16 15 14)
 declare -a pgTestBuilds=(19 18 17 16 15 14)
-declare -a pgBetaVersion=(19)
+declare -a pgBetaVersion=()
 declare -a pgAlphaVersion=(20)
 
 # Make sure the shared logs directory exists (used by packagebuild.sh and reporpmbuild.sh):
