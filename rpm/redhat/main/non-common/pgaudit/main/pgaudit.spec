@@ -2,11 +2,11 @@
 
 %if %{pgmajorversion} == 15
 %global pgauditversion 17
-%global pversion 1.7.1
+%global pversion 1.7.2
 %endif
 %if %{pgmajorversion} == 14
 %global pgauditversion 16
-%global pversion 1.6.3
+%global pversion 1.6.4
 %endif
 %if %{pgmajorversion} == 13
 %global pgauditversion 15
@@ -31,7 +31,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}%{pgauditversion}_%{pgmajorversion}
 Version:	%{pversion}
-Release:	10PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -61,6 +61,8 @@ Requires:	postgresql%{pgmajorversion}-server
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 # The tests use pg_stat_statements and postgres_fdw from contrib
 BuildRequires:	postgresql%{pgmajorversion}-contrib
+# prove and IPC::Run, for the TAP tests
+BuildRequires:	perl(Test::Harness) perl(IPC::Run)
 %endif
 
 %description
@@ -138,6 +140,14 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - %{pversion}-1PGDG
+- Update to 1.7.2 (PostgreSQL 15) and 1.6.4 (PostgreSQL 14) per changes
+  described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/1.7.2
+  https://github.com/pgaudit/pgaudit/releases/tag/1.6.4
+- BuildRequire perl(Test::Harness) and perl(IPC::Run) when runselftest
+  is enabled: this release adds TAP tests, which installcheck also runs.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - %{pversion}-10PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
