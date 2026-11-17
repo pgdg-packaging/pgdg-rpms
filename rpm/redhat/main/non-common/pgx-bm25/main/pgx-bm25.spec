@@ -17,8 +17,8 @@
 
 Summary:	Native BM25 ranked full-text index access method for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.0.0
-Release:	2PGDG%{?dist}
+Version:	1.0.1
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -86,6 +86,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %if %runselftest
 # Only the SQL regression tests: the TAP tests (crash and replica suites)
 # need more of the PostgreSQL test framework than is installed.
+# Some tests need a UTF-8 database, but the build environment may run with
+# LANG=C (EL), which would make the test cluster SQL_ASCII.
+export LC_ALL=C.UTF-8
 %pgdg_check_init
 pgdg_check_start main
 pgdg_installcheck %{with_llvm_arg} TAP_TESTS=
@@ -106,6 +109,13 @@ pgdg_installcheck %{with_llvm_arg} TAP_TESTS=
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gunduz <devrim@gunduz.org> - 1.0.1-1PGDG
+- Update to 1.0.1 per changes described at:
+  https://github.com/pgexperts/pgx-bm25/releases/tag/v1.0.1
+- %%check: Set LC_ALL=C.UTF-8, so that the test cluster is UTF-8 on EL,
+  where the build environment runs with LANG=C. Five tests failed there
+  with a SQL_ASCII database.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
