@@ -1,11 +1,11 @@
-%global pgmajorversion 18
+%global pgmajorversion 19
 
 # Macros that define the configure parameters:
 %{!?kerbdir:%global kerbdir "/usr"}
 
 Summary:	PostgreSQL Client Library
 Name:		libpq5
-Version:	%{pgmajorversion}.7
+Version:	%{pgmajorversion}.0
 %if 0%{?suse_version} >= 1500
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
@@ -61,11 +61,9 @@ BuildRequires:	llvm-devel >= 19.0 clang-devel >= 19.0
 Requires:	/sbin/ldconfig libicu
 
 %if 0%{?suse_version} >= 1500
-Requires:	libopenssl3
 BuildRequires:	libopenssl-3-devel
 %endif
-%if 0%{?fedora} >= 43 || 0%{?rhel} >= 8 || 0%{?amzn}
-Requires:	openssl-libs >= 1.1.1k
+%if 0%{?fedora} >= 43 || 0%{?rhel} >= 9 || 0%{?amzn}
 BuildRequires:	openssl-devel
 %endif
 %if 0%{?fedora} && 0%{?fedora} <= 44 && !0%{?amzn}
@@ -125,6 +123,7 @@ Provides:	libpq.so.5(RHPG_11)(64bit) libpq.so.5(RHPG_12)(64bit)
 Provides:	libpq.so.5(RHPG_13)(64bit) libpq.so.5(RHPG_14)(64bit)
 Provides:	libpq.so.5(RHPG_15)(64bit) libpq.so.5(RHPG_16)(64bit)
 Provides:	libpq.so.5(RHPG_17)(64bit) libpq.so.5(RHPG_18)(64bit)
+Provides:	libpq.so.5(RHPG_18)(64bit)
 
 %description
 The libpq5 package provides the essential shared libraries for any
@@ -254,6 +253,9 @@ find_lang_bins %name-devel.lst	pg_config
 %_libdir/pkgconfig/libpq.pc
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-1PGDG
+- Update to 19.0
+
 * Sat Nov 14 2026 Devrim Gündüz <devrim@gunduz.org> - 18.7-1PGDG
 - Update to 18.7
 
