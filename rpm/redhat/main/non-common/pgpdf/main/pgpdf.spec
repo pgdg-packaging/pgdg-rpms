@@ -23,7 +23,7 @@
 Summary:	pdf type for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	0.1.0
-Release:	9PGDG%{?dist}
+Release:	10PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -38,6 +38,9 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 License:	GPLv2
 URL:		https://github.com/Florents-Tselai/%{sname}/
 Source0:	https://github.com/Florents-Tselai/%{sname}/archive/refs/tags/v%{version}.tar.gz
+# Fix the build against PostgreSQL 19, and the compiler warnings. Sent
+# upstream as https://github.com/Florents-Tselai/pgpdf/pull/19
+Patch0:		%{sname}-0.1.0-pg19.patch
 BuildRequires:	postgresql%{pgmajorversion}-devel
 %if 0%{?suse_version} == 1500
 BuildRequires:	libpoppler-glib-devel
@@ -89,6 +92,7 @@ This package provides JIT support for pgpdf
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -129,6 +133,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.0-10PGDG
+- Add a patch to fix the build against PostgreSQL 19: VARSIZE_ANY_EXHDR()
+  and VARDATA_ANY() are now inline functions that take a pointer, not a
+  Datum. Also fixes the compiler warnings. Sent upstream as
+  https://github.com/Florents-Tselai/pgpdf/pull/19
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.1.0-9PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
