@@ -16,8 +16,8 @@
 
 Summary:	Extension for PostgreSQL for collecting statistics about messages in logfile
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.1.5
-Release:	7PGDG%{?dist}
+Version:	2.1.6
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -104,6 +104,11 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.6-1PGDG
+- Update to 2.1.6 per changes described at:
+  https://github.com/munakoiso/logerrors/releases/tag/v2.1.6
+- Add PostgreSQL 19 support.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.1.5-7PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
