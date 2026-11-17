@@ -5,13 +5,10 @@
 
 Summary:	DDL eXtractor functions for PostgreSQL (ddlx)
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.30
-Release:	5PGDG%{?dist}
+Version:	0.32
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
 Source0:	https://github.com/lacanoid/%{pname}/archive/%{version}.tar.gz
-# Fix column options with the pg_attver entry of the November 2026 minor
-# releases. https://github.com/lacanoid/pgddl/pull/37
-Patch0:	%{sname}-%{version}-pg_attver.patch
 URL:		https://github.com/lacanoid/%{pname}
 BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
@@ -31,7 +28,6 @@ system catalogs to nicely formatted snippets of SQL DDL, such as CREATE TABLE.
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch -P 0 -p1
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -58,6 +54,12 @@ sed -i 's/Owner: root    /Owner: postgres/' test/expected/pg18.out
 %doc %{pginstdir}/doc/extension/README-%{sname}.md
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 0.32-1PGDG
+- Update to 0.32 per changes described at:
+  https://github.com/lacanoid/pgddl/releases/tag/0.31
+  https://github.com/lacanoid/pgddl/releases/tag/0.32
+- Remove the pg_attver patch, now in upstream.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 0.30-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Add a patch to skip the internal pg_attver column option of the
