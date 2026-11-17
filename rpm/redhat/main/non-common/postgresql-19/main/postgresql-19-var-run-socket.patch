@@ -1,3 +1,14 @@
+--- src/backend/utils/misc/guc_parameters.dat.old	2026-11-17 08:40:10
++++ src/backend/utils/misc/guc_parameters.dat	2026-11-17 08:40:10
+@@ -3301,7 +3301,7 @@
+   short_desc => 'Sets the directories where Unix-domain sockets will be created.',
+   flags => 'GUC_LIST_INPUT | GUC_LIST_QUOTE | GUC_SUPERUSER_ONLY',
+   variable => 'Unix_socket_directories',
+-  boot_val => 'DEFAULT_PGSOCKET_DIR',
++  boot_val => 'DEFAULT_PGSOCKET_DIR ", /tmp"',
+ },
+ 
+ { name => 'unix_socket_group', type => 'string', context => 'PGC_POSTMASTER', group => 'CONN_AUTH_SETTINGS',
 --- src/include/pg_config_manual.h.old	2026-02-14 15:20:11.539394590 +0300
 +++ src/include/pg_config_manual.h	2026-02-14 15:20:18.716546952 +0300
 @@ -195,7 +195,7 @@
