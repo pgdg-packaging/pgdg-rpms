@@ -16,8 +16,8 @@
 
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
-Version:	17.1
-Release:	9PGDG%{?dist}
+Version:	17.2
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -47,6 +47,8 @@ Requires:	postgresql%{pgmajorversion}-server
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
 # The tests use pg_stat_statements and postgres_fdw from contrib
 BuildRequires:	postgresql%{pgmajorversion}-contrib
+# prove and IPC::Run, for the TAP tests
+BuildRequires:	perl(Test::Harness) perl(IPC::Run)
 %endif
 
 %description
@@ -124,6 +126,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 17.2-1PGDG
+- Update to 17.2 per changes described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/17.2
+- BuildRequire perl(Test::Harness) and perl(IPC::Run) when runselftest
+  is enabled: this release adds TAP tests, which installcheck also runs.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 17.1-9PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
