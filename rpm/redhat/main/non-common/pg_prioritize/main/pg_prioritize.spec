@@ -17,7 +17,7 @@
 Summary:	Get and set the nice priorities of PostgreSQL backends
 Name:		%{pname}_%{pgmajorversion}
 Version:	1.0.4
-Release:	12PGDG%{?dist}
+Release:	13PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -72,12 +72,15 @@ This package provides JIT support for pg_prioritize
 %setup -q -n %{sname}-%{version}
 
 %build
-
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
+# USE_EXTENSION=yes: the upstream Makefile detects pre-9.1 servers with
+# grep -E " 8\.|9\.0", and the unanchored 9\.0 also matches "19.0", so on
+# PostgreSQL 19.0 it would skip the extension script and install
+# uninstall_prioritize.sql instead.
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg} USE_EXTENSION=yes
 
 %install
 %{__rm} -rf %{buildroot}
-USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} %{with_llvm_arg} install
+USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} %{with_llvm_arg} USE_EXTENSION=yes install
 # Install documentation with a better name:
 %{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 %{__mv} README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
@@ -96,6 +99,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.4-13PGDG
+- Pass USE_EXTENSION=yes to make: the upstream Makefile's pre-9.1 check
+  (grep -E " 8\.|9\.0") also matches "19.0", so the PostgreSQL 19 build
+  installed uninstall_prioritize.sql instead of the extension script.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.0.4-12PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
