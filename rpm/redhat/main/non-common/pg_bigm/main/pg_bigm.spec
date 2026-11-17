@@ -1,4 +1,4 @@
-%global pgbigmpackagever 20250903
+%global pgbigmpackagever 20261118
 %global pgbigmver 1.2
 %global sname pg_bigm
 %{!?llvm:%global llvm 1}
@@ -19,7 +19,7 @@
 Summary:	2-gram (bigram) index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgbigmver}_%{pgbigmpackagever}
-Release:	7PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -110,6 +110,10 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2_20261118-1PGDG
+- Update to 1.2-20261118 per changes described at:
+  https://github.com/pgbigm/pg_bigm/releases/tag/v1.2-20261118
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.2_20250903-7PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
