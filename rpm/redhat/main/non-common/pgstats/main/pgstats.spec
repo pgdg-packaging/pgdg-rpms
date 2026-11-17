@@ -1,12 +1,12 @@
 %global sname	pgstats
 %global pgstatsmajver 1
-%global pgstatsmidver 4
+%global pgstatsmidver 5
 %global pgstatsminver 0
 
 Summary:	vmstat-like tool for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{pgstatsmajver}.%{pgstatsmidver}.%{pgstatsminver}
-Release:	3PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -23,6 +23,11 @@ Source0:	https://github.com/gleu/pgstats/archive/refs/tags/REL%{pgstatsmajver}_%
 URL:		https://github.com/gleu/%{sname}
 BuildRequires:	gcc make
 BuildRequires:	postgresql%{pgmajorversion}-devel
+# The static libraries (libpgcommon, libpgport) are in the -static subpackage
+# as of PostgreSQL 19:
+%if %{pgmajorversion} >= 19
+BuildRequires:	postgresql%{pgmajorversion}-static
+%endif
 Requires:	postgresql%{pgmajorversion}-server postgresql%{pgmajorversion}-libs
 
 %description
@@ -68,6 +73,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} DESTDIR=%{build
 %{pginstdir}/bin/pgwaitevent
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.0-1PGDG
+- Update to 1.5.0
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.0-3PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
