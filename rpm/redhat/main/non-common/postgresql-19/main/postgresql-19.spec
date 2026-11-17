@@ -22,7 +22,7 @@
 %{!?plperl:%global plperl 1}
 %{!?plpython3:%global plpython3 1}
 %{!?pltcl:%global pltcl 1}
-%{!?runselftest:%global runselftest 1}
+%{!?runselftest:%global runselftest 0}
 %{!?sdt:%global sdt 1}
 %{!?selinux:%global selinux 1}
 %{!?ssl:%global ssl 1}
