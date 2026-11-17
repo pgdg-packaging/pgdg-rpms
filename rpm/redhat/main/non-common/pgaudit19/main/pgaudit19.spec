@@ -17,7 +17,7 @@
 Summary:	PostgreSQL Audit Extension
 Name:		%{sname}_%{pgmajorversion}
 Version:	19.0
-Release:	rc1_1PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -30,7 +30,7 @@ BuildRequires:	postgresql%{pgmajorversion}-devel >= %{pgminorversion}
 Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 %endif
 License:	BSD
-Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/19rc1.tar.gz
+Source0:	https://github.com/%{sname}/%{sname}/archive/refs/tags/%{version}.tar.gz
 URL:		https://www.pgaudit.org
 BuildRequires:	postgresql%{pgmajorversion}-devel postgresql%{pgmajorversion}
 BuildRequires:	krb5-devel
@@ -91,7 +91,7 @@ This package provides JIT support for pgaudit
 %endif
 
 %prep
-%setup -q -n %{sname}-19rc1
+%setup -q -n %{sname}-%{version}
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -126,6 +126,10 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 17 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-1PGDG
+- Update to 19.0 per changes described at:
+  https://github.com/pgaudit/pgaudit/releases/tag/19.0
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 19.0-rc1_1PGDG
 - Update to 19rc1 per changes described at:
   https://github.com/pgaudit/pgaudit/releases/tag/19rc1
