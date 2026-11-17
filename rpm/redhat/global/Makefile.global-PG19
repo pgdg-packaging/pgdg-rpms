@@ -1,0 +1,117 @@
+#################################
+# Makefile for PostgreSQL 19	#
+# packaging			#
+# https://yum.postgresql.org	#
+#				#
+# Devrim Gunduz			#
+# devrim@gunduz.org		#
+#################################
+#				#
+#				#
+# build target is for		#
+# RPM buildfarm			#
+#				#
+#				#
+#################################
+
+## PostgreSQL 19
+
+prep19:
+	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
+	# Update spec file, patches, etc, before running spectool:
+	git pull
+	# Use spectool to download source files, especially tarballs.
+	spectool -g -S --define "_sourcedir $(PWD)" --define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" $(SPECFILE)
+
+build19: prep19
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "_builddir $(HOME)/rpm19/BUILD" \
+	--define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm19/RPMS/" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	-bb $(SPECFILE)
+	make bfsrpm19
+
+srpm19: prep19
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir ." \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfsrpm19: prep19
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfnoprepsrpm19:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+bfnosignsrpm19: prep19
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+rpm19: prep19
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	-bb $(SPECFILE)
+
+nosignbuild19: prep19
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(HOME)/rpm19/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm19/RPMS/" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	-bb $(SPECFILE)
+	make bfnosignsrpm19
+
+noprepbuild19:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
+
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(HOME)/rpm19/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm19/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm19/RPMS/" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	-bb $(SPECFILE)
+
+nopreprpm19:
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define "_builddir $(PWD)" \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "_srcrpmdir $(PWD)" \
+	--define "_rpmdir $(PWD)" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	-bb $(SPECFILE)
+
+noprepsrpm19:
+	rpmbuild --define "_sourcedir ." --define "_specdir ." \
+	--define "_builddir ." --define "_srcrpmdir ." \
+	--define "_buildrootdir $(HOME)/rpm19/BUILDROOT" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" --define "pgminorversion $(PG19MINORVERSION)" \
+	--define "_rpmdir ." --nodeps -bs $(SPECFILE)

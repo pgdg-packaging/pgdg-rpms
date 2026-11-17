@@ -18,7 +18,7 @@ PG15MINORVERSION = 15.20
 PG16MINORVERSION = 16.16
 PG17MINORVERSION = 17.12
 PG18MINORVERSION = 18.7
-PG19MINORVERSION = 19-rc2
+PG19MINORVERSION = 19.0
 
 prep:
 	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
@@ -54,4 +54,5 @@ include ../../../../global/Makefile.global-PG17
 include ../../../../global/Makefile.global-PG18-testing
 include ../../../../global/Makefile.global-PG18
 include ../../../../global/Makefile.global-PG19-testing
+include ../../../../global/Makefile.global-PG19
 include ../../../../global/Makefile.global-PG20-testing
