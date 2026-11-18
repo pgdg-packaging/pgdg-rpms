@@ -31,6 +31,11 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 # setuptools before 70.1 (68 on RHEL 8/9, 69 on RHEL 10 and AL 2023) has no bdist_wheel of its own
 BuildRequires:	python%{python3_pkgversion}-wheel
 %endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
+# pyproject_save_files runs with the non-default Python here, and needs its
+# packaging module, which pyproject-rpm-macros only pulls in for the OS Python.
+BuildRequires:	python%{python3_pkgversion}-packaging
+%endif
 BuildRequires:	systemd-rpm-macros
 %if 0%{?suse_version} >= 1600
 BuildRequires:	python-rpm-macros
@@ -226,6 +231,8 @@ PYTHONPATH=%{buildroot}%{python_sitelib}${PYTHONPATH:+:$PYTHONPATH} pytest-%{pyb
   https://github.com/EnterpriseDB/barman/releases/tag/release%%2F3.21.0
 - Refresh the setuptools build backend patch: upstream raised the uv_build
   upper bound.
+- BuildRequire python3.12-packaging on RHEL 8 and 9: pyproject_save_files
+  needs it.
 
 * Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
