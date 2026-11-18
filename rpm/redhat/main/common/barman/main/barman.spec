@@ -9,7 +9,7 @@
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
 Version:	3.21.0
-Release:	42PGDG%{?dist}
+Release:	43PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -64,6 +64,12 @@ BuildRequires:	python%{python3_pkgversion}-six
 
 Requires:	rsync >= 3.0.4 file systemd
 Requires:	python3-barman = %{version}
+%if 0%{?suse_version}
+# SUSE's rpm does not generate these from the sysusers.d file, unlike
+# Fedora and RHEL. Without them, the user(barman) and group(barman)
+# Requires of the files owned by barman cannot be resolved.
+Provides:	user(barman) group(barman)
+%endif
 
 %description
 Barman (Backup and Recovery Manager) is an open-source administration tool for
@@ -226,6 +232,10 @@ PYTHONPATH=%{buildroot}%{python_sitelib}${PYTHONPATH:+:$PYTHONPATH} pytest-%{pyb
 %{python_sitelib}/%{name}/
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.21.0-43PGDG
+- Provide user(barman) and group(barman) on SUSE, where rpm does not
+  generate them from the sysusers.d file, so that barman can be installed.
+
 * Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.21.0-42PGDG
 - Update to 3.21.0 per changes described at:
   https://github.com/EnterpriseDB/barman/releases/tag/release%%2F3.21.0
