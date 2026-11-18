@@ -8,8 +8,8 @@
 
 Summary:	Backup and Recovery Manager for PostgreSQL
 Name:		barman
-Version:	3.20.1
-Release:	44PGDG%{?dist}
+Version:	3.21.0
+Release:	42PGDG%{?dist}
 License:	GPLv3
 Url:		https://www.pgbarman.org/
 Source0:	https://github.com/EnterpriseDB/%{name}/archive/refs/tags/release/%{version}.tar.gz
@@ -221,6 +221,12 @@ PYTHONPATH=%{buildroot}%{python_sitelib}${PYTHONPATH:+:$PYTHONPATH} pytest-%{pyb
 %{python_sitelib}/%{name}/
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 3.21.0-42PGDG
+- Update to 3.21.0 per changes described at:
+  https://github.com/EnterpriseDB/barman/releases/tag/release%%2F3.21.0
+- Refresh the setuptools build backend patch: upstream raised the uv_build
+  upper bound.
+
 * Wed Oct 28 2026 Devrim Gündüz <devrim@gunduz.org> - 3.20.1-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
