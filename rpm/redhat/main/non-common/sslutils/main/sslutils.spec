@@ -15,8 +15,8 @@
 
 Summary:	SSL Utils for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.1
-Release:	4PGDG%{?dist}
+Version:	1.4.2
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -100,6 +100,10 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{__make} %{?_smp_mflags} %{wi
 %endif
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.2-1PGDG
+- Update to 1.4.2, which restricts the SECURITY DEFINER functions.
+  See README-sslutils.txt for the new access control and upgrade notes.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-4PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
