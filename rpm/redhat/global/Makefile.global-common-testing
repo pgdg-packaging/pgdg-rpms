@@ -2,7 +2,7 @@
 # Makefile for PostgreSQL 	#
 # common packaging	 	#
 # https://yum.postgresql.org	#
-#				
+#				#
 # Devrim Gunduz			#
 # devrim@gunduz.org		#
 #################################
@@ -13,7 +13,7 @@ commonbfsrpmtesting: prep
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 commonbuildtesting: prep
@@ -23,7 +23,7 @@ commonbuildtesting: prep
 	--define "_builddir $(HOME)/rpmcommontesting/BUILD" \
 	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	-bb $(SPECFILE)
 	make commonbfsrpmtesting
 
@@ -34,14 +34,14 @@ commonrpmtesting: prep
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	-bb $(SPECFILE)
 
 commonnoprepbuildtesting:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
 	rpmbuild --define "_sourcedir $(PWD)" \
@@ -50,7 +50,7 @@ commonnoprepbuildtesting:
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
 	--define "_srcrpmdir $(HOME)/rpmcommontesting/SRPMS" \
 	--define "_rpmdir $(HOME)/rpmcommontesting/RPMS/" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	-bb $(SPECFILE)
 
 commonnopreprpmtesting:
@@ -60,13 +60,13 @@ commonnopreprpmtesting:
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
 	--define "_srcrpmdir $(PWD)" \
 	--define "_rpmdir $(PWD)" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	-bb $(SPECFILE)
 
 commonnoprepsrpmtesting:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir ." \
 	--define "_buildrootdir $(HOME)/rpmcommontesting/BUILDROOT" \
-	--define "pgmajorversion 18" --define "pginstdir /usr/pgsql-18" --define "pgpackageversion 18" \
+	--define "pgmajorversion 19" --define "pginstdir /usr/pgsql-19" --define "pgpackageversion 19" \
 	--define "_rpmdir ." --nodeps -bs $(SPECFILE)
 
