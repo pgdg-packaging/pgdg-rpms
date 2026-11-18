@@ -2,7 +2,7 @@
 
 %global squeezemajver 1
 %global squeezemidver 9
-%global squeezeminver 4
+%global squeezeminver 5
 
 %{!?llvm:%global llvm 1}
 %{!?runselftest:%global runselftest 0}
@@ -21,7 +21,7 @@
 Summary:	A PostgreSQL extension for automatic bloat cleanup
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{squeezemajver}.%{squeezemidver}.%{squeezeminver}
-Release:	5PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -74,6 +74,15 @@ This package provides JIT support for pg_squeeze
 
 %prep
 %setup -q -n %{sname}-REL%{squeezemajver}_%{squeezemidver}_%{squeezeminver}
+# Upstream picks the pgstatapprox source with $(intcmp), which needs GNU
+# make 4.4. On older make (RHEL 8/9, AL2023, SLES 15) it expands to
+# nothing, and the PostgreSQL 19 version would be built for every
+# PostgreSQL version. Pick the file here; make then finds it up to date.
+%if %{pgmajorversion} < 19
+%{__cp} pgstatapprox.in.old.c pgstatapprox.c
+%else
+%{__cp} pgstatapprox.in.c pgstatapprox.c
+%endif
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -116,6 +125,12 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.9.5-1PGDG
+- Update to 1.9.5 per changes described at:
+  https://github.com/cybertec-postgresql/pg_squeeze/blob/REL1_9_5/NEWS
+- Choose the pgstatapprox source file in %%prep: upstream's Makefile
+  does that with $(intcmp), which needs GNU make 4.4.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.9.4-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
