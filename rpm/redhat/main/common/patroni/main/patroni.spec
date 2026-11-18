@@ -7,7 +7,7 @@
 Summary:	A Template for PostgreSQL HA with ZooKeeper, etcd or Consul
 Name:		patroni
 Version:	4.1.5
-Release:	8PGDG%{?dist}
+Release:	9PGDG%{?dist}
 License:	MIT
 Source0:	https://github.com/patroni/%{name}/archive/v%{version}.tar.gz
 Source1:	%{name}.service
@@ -21,6 +21,11 @@ BuildRequires:	python%{python3_pkgversion}-setuptools
 %if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version}
 # Older setuptools have no bdist_wheel of their own
 BuildRequires:	python%{python3_pkgversion}-wheel
+%endif
+%if 0%{?rhel} && 0%{?rhel} <= 9
+# pyproject_save_files runs with the non-default Python here, and needs its
+# packaging module, which pyproject-rpm-macros only pulls in for the OS Python.
+BuildRequires:	python%{python3_pkgversion}-packaging
 %endif
 BuildRequires:	systemd-rpm-macros
 %if 0%{?suse_version}
@@ -248,8 +253,14 @@ fi
 %postun
  /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 if [ $1 -ge 1 ] ; then
-	# Package upgrade, not uninstall
-	/bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
+	# Package upgrade, not uninstall. Restarting Patroni restarts (or fails
+	# over) the PostgreSQL instance it manages, so let the operator opt out
+	# by creating /etc/patroni/no-restart-on-upgrade.
+	if [ -e %{_sysconfdir}/%{name}/no-restart-on-upgrade ] ; then
+		echo "%{name}: %{_sysconfdir}/%{name}/no-restart-on-upgrade exists, not restarting %{name}.service. Restart it yourself to run the new version."
+	else
+		/bin/systemctl try-restart %{name}.service >/dev/null 2>&1 || :
+	fi
 fi
 
 %files
@@ -275,6 +286,16 @@ fi
 %files -n %{name}-zookeeper
 
 %changelog
+* Wed Nov 18 2026 Devrim Gunduz <devrim@gunduz.org> - 4.1.5-9PGDG
+- Do not restart patroni.service on package upgrade when
+  /etc/patroni/no-restart-on-upgrade exists. Restarting Patroni stops the
+  PostgreSQL instance it manages, so a routine upgrade caused a failover
+  or an outage at a point the operator does not control. The default
+  behaviour is unchanged. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/630
+- BuildRequire python3.12-packaging on RHEL 8 and 9: pyproject_save_files
+  needs it, so clean builds failed in %%install.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 4.1.5-8PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
