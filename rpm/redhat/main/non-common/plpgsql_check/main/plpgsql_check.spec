@@ -6,8 +6,8 @@
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.10.16
-Release:	2PGDG%{?dist}
+Version:	2.11.0
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -103,6 +103,10 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-1PGDG
+- Update to 2.11.0 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.11.0
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.10.16-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
