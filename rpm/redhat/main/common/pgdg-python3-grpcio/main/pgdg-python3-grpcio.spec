@@ -55,8 +55,8 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 %pgdg_python3_obsoletes_prev
-Version:	1.85.1
-Release:	2PGDG%{?dist}
+Version:	1.85.3
+Release:	1PGDG%{?dist}
 Summary:	HTTP/2-based RPC framework
 %if ! 0%{?suse_version}
 # This package was called python3.X-<module> before this release, and was
@@ -154,6 +154,10 @@ export CC=/opt/rh/gcc-toolset-14/root/usr/bin/gcc CXX=/opt/rh/gcc-toolset-14/roo
 %{pgdg_pysitelib}/
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.85.3-1PGDG
+- Update to 1.85.3 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.3
+
 * Wed Nov 04 2026 Devrim Gunduz <devrim@gunduz.org> - 1.85.1-2PGDG
 - Fedora 45: Obsolete the Fedora 44 package, pgdg-python3.14-grpcio, with
   %%pgdg_python3_obsoletes_prev from pgdg-srpm-macros 2.6.0. It was not
