@@ -41,6 +41,14 @@ repo_gpgcheck = 1
 
 # PGDG Red Hat Enterprise Linux / Rocky Linux / AlmaLinux stable repositories:
 
+[pgdg19]
+name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch
+baseurl=https://download.postgresql.org/pub/repos/yum/19/redhat/rhel-$releasever_major.$releasever_minor-$basearch
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
 [pgdg18]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch
 baseurl=https://download.postgresql.org/pub/repos/yum/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
@@ -208,6 +216,14 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
+[pgdg19-source]
+name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - Source
+baseurl=https://dnf-srpms.postgresql.org/srpms/19/redhat/rhel-$releasever_major.$releasever_minor-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
+
 [pgdg18-source]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - Source
 baseurl=https://dnf-srpms.postgresql.org/srpms/18/redhat/rhel-$releasever_major.$releasever_minor-$basearch
@@ -299,6 +315,14 @@ gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
 repo_gpgcheck = 1
 
 # Debuginfo / debugsource packages for stable repos
+
+[pgdg19-debuginfo]
+name=PostgreSQL 19 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - Debuginfo
+baseurl=https://dnf-debuginfo.postgresql.org/debug/19/redhat/rhel-$releasever_major.$releasever_minor-$basearch
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/PGDG-RPM-GPG-KEY-AARCH64-RHEL
+repo_gpgcheck = 1
 
 [pgdg18-debuginfo]
 name=PostgreSQL 18 for RHEL / Rocky Linux / AlmaLinux $releasever_major.$releasever_minor - $basearch - Debuginfo
