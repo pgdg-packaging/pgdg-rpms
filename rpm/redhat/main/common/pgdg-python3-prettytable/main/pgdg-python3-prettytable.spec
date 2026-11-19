@@ -12,7 +12,7 @@ Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
 URL:		https://github.com/jazzband/%{modname}
-Source0:	https://files.pythonhosted.org/packages/source/p/prettytable/prettytable-3.18.0.tar.gz
+Source0:	https://files.pythonhosted.org/packages/source/p/prettytable/prettytable-%{version}.tar.gz
 
 BuildArch:	noarch
 
