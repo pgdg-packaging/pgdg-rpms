@@ -2,7 +2,7 @@
 
 Summary:	PostgreSQL based time-series database
 Name:		%{sname}-tsl_%{pgmajorversion}
-Version:	2.32.0
+Version:	2.32.1
 Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
@@ -77,6 +77,13 @@ cd build; %{__make} %{?_smp_mflags} DESTDIR=%{buildroot} install
 %{pginstdir}/lib/pgxs/src/test/perl/TimescaleNode.pm
 
 %changelog
+* Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 2.32.1-1PGDG
+- Update to 2.32.1, per changes described at:
+  https://github.com/timescale/timescaledb/releases/tag/2.32.1
+  This release includes security fixes, and fixes background jobs
+  failing on the latest PostgreSQL minor releases (18.7, 17.12, 16.16).
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/680
+
 * Thu Nov 12 2026 Devrim Gündüz <devrim@gunduz.org> - 2.32.0-1PGDG
 - Update to 2.32.0, per changes described at:
   https://github.com/timescale/timescaledb/releases/tag/2.32.0
