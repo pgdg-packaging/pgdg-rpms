@@ -3,8 +3,8 @@
 
 Summary:	A Hexagonal Hierarchical Geospatial Indexing System
 Name:		%{sname}
-Version:	4.5.0
-Release:	3PGDG%{dist}
+Version:	4.6.0
+Release:	1PGDG%{?dist}
 License:	Apache
 Source0:	https://github.com/uber/%{sname}/archive/refs/tags/v%{version}.tar.gz
 URL:		https://github.com/uber/%{sname}
@@ -86,6 +86,11 @@ popd
 %{_libdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 4.6.0-1PGDG
+- Update to 4.6.0 per changes described at:
+  https://github.com/uber/h3/releases/tag/v4.6.0
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/667
+
 * Thu Oct 29 2026 Devrim Gündüz <devrim@gunduz.org> - 4.5.0-3PGDG
 - Fix SLES builds: use %%make_install there, as SUSE's %%cmake_install
   macro runs make in the build/ subdirectory.
