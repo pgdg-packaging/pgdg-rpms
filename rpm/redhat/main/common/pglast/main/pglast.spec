@@ -7,7 +7,7 @@
 %global sname pglast
 
 Name:		pglast
-Version:	7.23
+Version:	7.24
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Languages AST and statements prettifier
 License:	GPLv3+
@@ -25,6 +25,11 @@ BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+%if 0%{?rhel} && 0%{?rhel} <= 9
+# pyproject_save_files runs with the non-default Python here, and needs its
+# packaging module, which pyproject-rpm-macros only pulls in for the OS Python.
+BuildRequires:	python%{python3_pkgversion}-packaging
+%endif
 
 BuildRequires:	gcc libpg_query make
 
@@ -61,6 +66,13 @@ sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/'
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 7.24-1PGDG
+- Update to 7.24 per changes described at:
+  https://github.com/lelit/pglast/blob/v7/CHANGES.rst
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/670
+- BuildRequire python3.12-packaging on RHEL 8 and 9: pyproject_save_files
+  needs it.
+
 * Sun Nov 15 2026 Devrim Gündüz <devrim@gunduz.org> - 7.23-1PGDG
 - Update to 7.23 per changes described at:
   https://github.com/lelit/pglast/blob/v7/CHANGES.rst
