@@ -20,7 +20,7 @@
 %endif
 
 Name:		pgdg-libmongoc
-Version:	1.30.15
+Version:	1.30.16
 Release:	1PGDG%{?dist}
 Summary:	Client library written in C for MongoDB
 # See THIRD_PARTY_NOTICES
@@ -135,6 +135,12 @@ them.
 %{mongocinstdir}/lib64/cmake/
 
 %changelog
+* Thu Nov 19 2026 Devrim Gunduz <devrim@gunduz.org> - 1.30.16-1PGDG
+- Update to 1.30.16 per changes described at:
+  https://github.com/mongodb/mongo-c-driver/releases/tag/1.30.16
+  This release redacts URI values in errors and logs. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/677
+
 * Wed Nov 4 2026 Devrim Gunduz <devrim@gunduz.org> - 1.30.15-1PGDG
 - Update to 1.30.15 per changes described at:
   https://github.com/mongodb/mongo-c-driver/releases/tag/1.30.15
