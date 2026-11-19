@@ -1,6 +1,6 @@
 Name:		pgdg-redhat-nonfree-repo
 Version:	42.0
-Release:	22PGDG
+Release:	23PGDG
 Summary:	PostgreSQL PGDG RPMs - DNF Repository Configuration for RHEL / Rocky Linux / AlmaLinux NonFree
 License:	PostgreSQL
 URL:		https://yum.postgresql.org
@@ -71,6 +71,9 @@ exit 0
 %{_sysconfdir}/pki/rpm-gpg/*
 
 %changelog
+* Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-23PGDG
+- Add v19 stable repo.
+
 * Thu Jul 16 2026 Devrim Gündüz <devrim@gunduz.org> - 42.0-22PGDG
 - Add v19 and v20 testing repos
 - Use $releasever_major.$releasever_minor in the repo file, so that the repos
