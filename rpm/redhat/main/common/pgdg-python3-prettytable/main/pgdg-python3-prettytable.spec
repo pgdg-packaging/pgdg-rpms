@@ -6,8 +6,8 @@
 %global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	3.18.0
-Release:	3PGDG%{?dist}
+Version:	3.19.0
+Release:	1PGDG%{?dist}
 Summary:	Python library to display tabular data in tables
 
 License:	BSD-3-Clause
@@ -73,6 +73,10 @@ if grep -qE '^license-files|^dynamic|hatchling' pyproject.toml; then exit 1; fi
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Thu Nov 193.18.0 2026 Devrim Gunduz <devrim@gunduz.org> - 3.19.0-1PGDG.1
+- Update to 3.19.0 per changes described at:
+  https://pypi.org/project/prettytable/3.19.0/
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.18.0-3PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
