@@ -85,9 +85,9 @@ Version:	14.25
 %if 0%{?suse_version} >= 1315
 # SuSE upstream packages have release numbers like 150200.5.19.1
 # which overrides our packages. Increase our release number on SuSE.
-Release:	420002PGDG%{?dist}
+Release:	420003PGDG%{?dist}
 %else
-Release:	2PGDG%{?dist}
+Release:	3PGDG%{?dist}
 %endif
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
@@ -358,6 +358,7 @@ Requires(postun):	systemd
 %endif
 
 Provides:	postgresql-server >= %{version}-%{release}
+Provides:	group(postgres) user(postgres)
 
 %if 0%{?rhel} && 0%{?rhel} == 7
 %ifarch ppc64 ppc64le
@@ -1486,6 +1487,12 @@ fi
 %endif
 
 %changelog
+* Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 14.25-3PGDG
+- Provide user(postgres) and group(postgres) in the -server subpackage, as
+  PostgreSQL 17 and later already do. SUSE's rpm does not generate them from
+  the sysusers.d file, so on SLES 16 the server package pulled in another
+  package that provides them, such as the OS postgresql-server.
+
 * Mon Nov 16 2026 Devrim Gündüz <devrim@gunduz.org> - 14.25-2PGDG
 - Rebuild on RHEL 8 against new LLVM
 
