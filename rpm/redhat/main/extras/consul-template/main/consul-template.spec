@@ -13,7 +13,7 @@ ExcludeArch:	ppc64le
 
 Name:		consul-template
 Version:	0.43.1
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	consul-template watches a series of templates on the file system, writing new changes when Consul is updated. It runs until an interrupt is received unless the -once flag is specified.
 
 License:	MPLv2.0
@@ -28,6 +28,12 @@ Source7:	%{name}-tmpfiles.d
 BuildRequires:	systemd-rpm-macros
 
 Requires:	systemd
+%if 0%{?suse_version}
+# SUSE's rpm does not generate these from the sysusers.d file, unlike
+# Fedora and RHEL. Without them, the user(consul-template) and
+# group(consul-template) Requires of the files it owns cannot be resolved.
+Provides:	user(consul-template) group(consul-template)
+%endif
 
 %description
 consul-template watches a series of templates on the file system, writing
@@ -81,6 +87,11 @@ unless the -once flag is specified.
 %{_tmpfilesdir}/%{name}.conf
 
 %changelog
+* Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> 0.43.1-2PGDG
+- Provide user(consul-template) and group(consul-template) on SUSE, where
+  rpm does not generate them from the sysusers.d file, so that
+  consul-template can be installed.
+
 * Wed Oct 21 2026 Devrim Gündüz <devrim@gunduz.org> 0.43.1-1PGDG
 - Update to 0.43.1 per changes described at
   https://github.com/hashicorp/consul-template/releases/tag/v0.43.1
