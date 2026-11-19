@@ -15,8 +15,8 @@
 
 Summary:	High-Performance Pattern Matching Index for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	3.0.0
-Release:	2PGDG%{?dist}
+Version:	3.1.1
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -95,6 +95,13 @@ USE_PGXS=1 PATH=%{pginstdir}/bin:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg
 %endif
 
 %changelog
+* Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 3.1.1-1PGDG
+- Update to 3.1.1 per changes described at:
+  https://github.com/CrystallineCore/Biscuit/releases/tag/v3.1.0
+  https://github.com/CrystallineCore/Biscuit/releases/tag/v3.1.1
+  3.1.1 adds PostgreSQL 19 support.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/678
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 3.0.0-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
