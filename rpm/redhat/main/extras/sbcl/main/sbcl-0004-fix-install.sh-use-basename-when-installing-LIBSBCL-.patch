@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Peter Lemenkov <lemenkov@gmail.com>
+Date: Mon, 30 Mar 2026 10:27:35 +0200
+Subject: [PATCH] fix install.sh: use basename when installing LIBSBCL objects
+
+The loop that installs linkable runtime objects reads the LIBSBCL
+variable from src/runtime/sbcl.mk and uses each value verbatim as both
+the cp source and destination path:
+
+    for i in $(grep '^LIBSBCL=' src/runtime/sbcl.mk | cut -d= -f2-) ; do
+        cp "src/runtime/$i" "$BUILD_ROOT$SBCL_HOME/$i"
+    done
+
+On most architectures LIBSBCL expands to a plain filename (e.g.
+sbcl.o), so this works fine. However on ppc64le, LIBSBCL includes
+../../tlsf-bsd/tlsf/tlsf.o, because that object is linked directly into
+the runtime on that platform. The relative path traversal is valid for
+the source side (relative to src/runtime/), but when used verbatim as
+the destination it resolves to a path outside the install tree
+($SBCL_HOME/../../tlsf-bsd/tlsf/tlsf.o), which does not exist, causing
+install.sh to abort with:
+
+    cp: cannot create regular file '.../lib/sbcl/../../tlsf-bsd/tlsf/tlsf.o':
+    No such file or directory
+
+Fix by using $(basename $i) for the destination, so all LIBSBCL objects
+are installed flat into $SBCL_HOME regardless of where they were found
+in the build tree.
+
+Note: this bug is only triggered when --with-sb-linkable-runtime is
+enabled, since without it no LIBSBCL= line is written to sbcl.mk and the
+loop never executes.
+
+Signed-off-by: Peter Lemenkov <lemenkov@gmail.com>
+Assisted-by: Claude (Anthropic) <https://claude.ai>
+
+diff --git a/install.sh b/install.sh
+index 52bd2048c..eadda3628 100755
+--- a/install.sh
++++ b/install.sh
+@@ -118,7 +118,7 @@ test -f src/runtime/libsbcl.so && \
+ 
+ cp src/runtime/sbcl.mk "$BUILD_ROOT$SBCL_HOME"/sbcl.mk
+ for i in $(grep '^LIBSBCL=' src/runtime/sbcl.mk | cut -d= -f2-) ; do
+-    cp "src/runtime/$i" "$BUILD_ROOT$SBCL_HOME/$i"
++    cp "src/runtime/$i" "$BUILD_ROOT$SBCL_HOME/$(basename $i)"
+ done
+ 
+ # installing contrib

@@ -1,0 +1,36 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Than Ngo <than@redhat.com>
+Date: Mon, 24 Feb 2020 11:17:04 +0100
+Subject: [PATCH] Verbose build
+
+
+diff --git a/make.sh b/make.sh
+index c5b7e5393..b05b04154 100755
+--- a/make.sh
++++ b/make.sh
+@@ -24,7 +24,7 @@ export LANG LC_ALL
+ # thing" when run on the target machine, with the minor caveat that
+ # any --xc-host parameter should be suitable for the host machine
+ # instead of the target.
+-sh make-config.sh "$@" --check-host-lisp || exit $?
++sh -x make-config.sh "$@" --check-host-lisp || exit $?
+ 
+ . output/prefix.def
+ . output/build-config
+@@ -76,11 +76,11 @@ maybetime() {
+         $@
+     fi
+ }
+-maybetime sh make-host-1.sh
+-maybetime sh make-target-1.sh
+-maybetime sh make-host-2.sh
+-maybetime sh make-target-2.sh
+-maybetime sh make-target-contrib.sh
++maybetime sh -x make-host-1.sh
++maybetime sh -x make-target-1.sh
++maybetime sh -x make-host-2.sh
++maybetime sh -x make-target-2.sh
++maybetime sh -x make-target-contrib.sh
+ 
+ # Confirm that default evaluation strategy is :INTERPRET if sb-fasteval was built
+ src/runtime/sbcl --core output/sbcl.core --lose-on-corruption --noinform \

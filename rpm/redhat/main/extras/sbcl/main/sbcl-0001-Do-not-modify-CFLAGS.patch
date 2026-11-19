@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Rex Dieter <rdieter@gmail.com>
+Date: Fri, 1 Dec 2017 13:11:56 -0600
+Subject: [PATCH] Do not modify CFLAGS
+
+
+diff --git a/src/runtime/GNUmakefile b/src/runtime/GNUmakefile
+index 935143499..8fe2b9043 100644
+--- a/src/runtime/GNUmakefile
++++ b/src/runtime/GNUmakefile
+@@ -33,7 +33,6 @@ __LDFLAGS__ =
+ 
+ include ../../output/prefix.def
+ 
+-CFLAGS += -g -Wall -Wundef -Wsign-compare -Wpointer-arith -O3
+ ASFLAGS += $(CFLAGS)
+ CPPFLAGS += -I.
+ 

@@ -1,72 +1,38 @@
 # generate/package docs
 %global	docs 1
 
-# define to enable verbose build for debugging
-%global	sbcl_verbose 0
 %global	sbcl_shell /bin/bash
+
+# The test suite is long; run it with --define 'runselftest 1'.
+%{!?runselftest:%global runselftest 0}
+
+# Only x86_64 can be built: upstream ships Linux bootstrap binaries for
+# x86-64 only, and there is no Lisp for other architectures in RHEL or EPEL.
+%global	sbcl_arch x86-64
+%global	sbcl_bootstrap_ver 2.0.11
+%global	sbcl_bootstrap_dir sbcl-%{sbcl_bootstrap_ver}-x86-64-linux
 
 Name:		sbcl
 Summary:	Steel Bank Common Lisp
-Version:	2.6.8
-Release:	1%{?dist}
+Version:	2.6.10
+Release:	1PGDG%{?dist}
 
-License:	BSD
-URL:		http://sbcl.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-%{version}-source.tar.bz2
+# See COPYING for a license breakdown
+License:	LicenseRef-Fedora-Public-Domain AND LOOP AND BSD-3-Clause
+URL:		https://sbcl.sourceforge.io/
+Source0:	https://downloads.sourceforge.net/sourceforge/%{name}/%{name}-%{version}-source.tar.bz2
+Source20:	https://downloads.sourceforge.net/sourceforge/%{name}/%{name}-%{sbcl_bootstrap_ver}-x86-64-linux-binary.tar.bz2
 
-ExclusiveArch:	%{arm} %{ix86} x86_64 ppc sparcv9 aarch64
+# Patches from Fedora
+Patch1:		sbcl-0001-Do-not-modify-CFLAGS.patch
+Patch2:		sbcl-0002-Fix-for-mock-builds-when-proc-isn-t-available.patch
+Patch3:		sbcl-0003-Verbose-build.patch
+Patch4:		sbcl-0004-fix-install.sh-use-basename-when-installing-LIBSBCL-.patch
 
-# Pre-generated html docs
-Source1:	http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-%{version}-documentation-html.tar.bz2
-
-## x86_64 section
-Source20:	http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-2.0.11-x86-64-linux-binary.tar.bz2
-%ifarch x86_64
-%global		sbcl_arch x86-64
-# or
-%global		sbcl_bootstrap_src -b 20
-%global		sbcl_bootstrap_dir sbcl-2.0.11-x86-64-linux
-%endif
-
-## ppc section
-# Thanks David!
-%ifarch ppc
-%global		sbcl_arch ppc
-# or
-#Source30: sbcl-1.0.1-patched_el4-powerpc-linux.tar.bz2
-#Source30: sbcl-1.0.1-patched-powerpc-linux.tar.bz2
-%endif
-
-## sparc section
-%ifarch sparcv9
-%global		sbcl_archsparc
-# or
-#Source40: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-0.9.17-sparc-linux-binary.tar.bz2
-%endif
-
-## arm section
-%ifarch armv5tel
-%global		sbcl_arch arm
-# or
-#Source50: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.2.0-armel-linux-binary.tar.bz2
-%endif
-
-# generated on a fedora20 arm box, sf bootstrap missing sb-gmp
-%ifarch armv6hl armv7hl
-%global		sbcl_arch arm
-# or
-#Source60: sbcl-1.2.0-armhf-linux-binary-2.tar.bz2
-#Source60: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.2.0-armhf-linux-binary.tar.bz2
-%endif
-
-## aarch64 section
-%ifarch aarch64
-%global		sbcl_arch arm64
-# or
-#Source70: http://downloads.sourceforge.net/sourceforge/sbcl/sbcl-1.3.16-arm64-linux-binary.tar.bz2
-%endif
+ExclusiveArch:	x86_64
 
 BuildRequires:	make
+BuildRequires:	gcc
 BuildRequires:	libzstd-devel
 %if 0%{?fedora} >= 42
 BuildRequires:	ctags
@@ -74,13 +40,15 @@ BuildRequires:	ctags
 %if 0%{?el8}
 BuildRequires:	ctags-etags
 %endif
-BuildRequires:	gcc
-BuildRequires:	zlib-devel
 %if 0%{?docs}
 # doc generation
-BuildRequires:	ghostscript
 BuildRequires:	texinfo
 BuildRequires:	time
+%endif
+%if %runselftest
+BuildRequires:	ed
+BuildRequires:	hostname
+BuildRequires:	strace
 %endif
 
 %description
@@ -88,69 +56,73 @@ Steel Bank Common Lisp (SBCL) is a Open Source development environment
 for Common Lisp. It includes an integrated native compiler,
 interpreter, and debugger.
 
-
 %prep
-%setup -q -c -n sbcl-%{version} -a 1 %{?sbcl_bootstrap_src}
+%autosetup -p1
 
-pushd sbcl-%{version}
-
-# fix permissions (some have eXecute bit set)
-find . -name '*.c' | xargs chmod 644
+# Bootstrap binary goes outside the source tree
+tar -xjf %{SOURCE20} -C ..
 
 # set version.lisp-expr
 sed -i.rpmver -e "s|\"%{version}\"|\"%{version}-%{release}\"|" version.lisp-expr
 
-# make %%doc items available in parent dir to make life easier
-%{__cp} -alf BUGS COPYING README CREDITS NEWS TLA TODO PRINCIPLES ..
-%{__ln_s} sbcl-%{version}/doc ../doc
-popd
-
 %build
-# LTO causes testsuite failures, though it may be the case that the tests are racy.
-# Until further analysis is complete, disable LTO
+# LTO breaks the runtime link on RHEL 9/10 and AL2023: undefined
+# reference to call_into_lisp_ (an assembly symbol).
 %global _lto_cflags %{nil}
 
-pushd sbcl-%{version}
-
-export CFLAGS="%{?optflags}"
-export LDFLAGS="%{?__global_ldflags}"
+export CFLAGS='%{build_cflags}'
+export LDFLAGS='%{build_ldflags}'
 export CC=gcc
 
 export SBCL_HOME=%{_prefix}/lib/sbcl
-%{?sbcl_arch:export SBCL_ARCH=%{sbcl_arch}}
+export SBCL_ARCH=%{sbcl_arch}
 %{?sbcl_shell} \
 ./make.sh \
+  --fancy \
   --prefix=%{_prefix} \
   --with-sb-core-compression \
-  %{?sbcl_bootstrap_dir:--xc-host="`pwd`/../../%{sbcl_bootstrap_dir}/run-sbcl.sh"}
+  --with-sb-linkable-runtime \
+  --xc-host="$(pwd)/../%{sbcl_bootstrap_dir}/run-sbcl.sh"
 
 # docs
 %if 0%{?docs}
-make -C doc/manual info
-
-# Handle pre-generated docs
-tar xvjf %{SOURCE1}
-%{__cp} -av %{name}-%{version}/doc/manual/* doc/manual/
+%{__make} -C doc/manual html info
 %endif
-popd
-
 
 %install
-pushd sbcl-%{version}
 mkdir -p %{buildroot}{%{_bindir},%{_prefix}/lib,%{_mandir}}
 
 unset SBCL_HOME
 export INSTALL_ROOT=%{buildroot}%{_prefix}
 %{?sbcl_shell} ./install.sh
 
-popd
-
 ## Unpackaged files
 rm -rfv %{buildroot}%{_docdir}/sbcl
-rm -fv %{buildroot}%{_infodir}/dir
+rm -fv  %{buildroot}%{_infodir}/dir
 # CVS crud
-find %{buildroot} -name CVS -type d | xargs rm -rfv
-find %{buildroot} -name .cvsignore | xargs rm -fv
+find %{buildroot} -name .cvsignore -delete
+# 'test-passed' files from %%check
+find %{buildroot} -name 'test-passed' -delete
+
+%check
+ERROR=0
+# sanity check, essential contrib modules get built/included?
+CONTRIBS="sb-posix.fasl sb-bsd-sockets.fasl"
+for CONTRIB in $CONTRIBS ; do
+  if [ ! -f %{buildroot}%{_prefix}/lib/sbcl/contrib/$CONTRIB ]; then
+    echo "WARNING: ${CONTRIB} awol!"
+    ERROR=1
+    echo "ulimit -a"
+    ulimit -a
+  fi
+done
+%if %runselftest
+pushd tests
+# still seeing Failure: threads.impure.lisp / (DEBUGGER-NO-HANG-ON-SESSION-LOCK-IF-INTERRUPTED)
+time %{?sbcl_shell} ./run-tests.sh ||:
+popd
+%endif
+exit $ERROR
 
 %files
 %license COPYING
@@ -158,6 +130,7 @@ find %{buildroot} -name .cvsignore | xargs rm -fv
 %{_bindir}/sbcl
 %dir %{_prefix}/lib/sbcl/
 %{_prefix}/lib/sbcl/sbcl.mk
+%{_prefix}/lib/sbcl/sbcl.o
 %{_prefix}/lib/sbcl/contrib/
 %{_mandir}/man1/sbcl.1*
 %if 0%{?docs}
@@ -169,6 +142,20 @@ find %{buildroot} -name .cvsignore | xargs rm -fv
 %{_prefix}/lib/sbcl/sbcl.core
 
 %changelog
+* Thu Nov 19 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6.10-1PGDG
+- Update to 2.6.10 per changes described at:
+  https://www.sbcl.org/news.html
+- Sync with the Fedora spec file: add Fedora's patches (do not modify
+  CFLAGS, mock builds without /proc, verbose build, install.sh fix for
+  the linkable runtime), build with --fancy and the linkable runtime
+  (ships sbcl.o), use the Fedora build flags (still without LTO), SPDX
+  license tag, and build the HTML and info manuals from the source
+  instead of downloading the pre-generated HTML docs.
+- Add back a %%check section: the contrib sanity check always runs, the
+  full test suite only with runselftest 1.
+- Restrict the build to x86_64, the only architecture with an upstream
+  bootstrap binary, and drop the dead per-architecture sections.
+
 * Mon Aug 31 2026 Devrim Gunduz <devrim@gunduz.org> - 2.6.8-1PGDG
 - Update to 2.6.8 per changes described at:
   https://www.sbcl.org/news.html
@@ -183,4 +170,3 @@ find %{buildroot} -name .cvsignore | xargs rm -fv
 - Initial packaging for the PostgreSQL RPM repository to support
   pgloader dependency. Spec file written by Stephen Hassard
   <steve@hassard.net>, and I fixed a few rpmlint warnings.
-

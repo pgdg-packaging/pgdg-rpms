@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Rex Dieter <rdieter@gmail.com>
+Date: Wed, 2 Jan 2019 10:20:53 +0100
+Subject: [PATCH] Fix for mock builds when /proc isn't available
+
+
+diff --git a/src/runtime/linux-os.c b/src/runtime/linux-os.c
+index f87cd8e7a..e68802313 100644
+--- a/src/runtime/linux-os.c
++++ b/src/runtime/linux-os.c
+@@ -256,6 +256,12 @@ int os_preinit(char *argv[], char *envp[])
+                 setenv("SBCL_IS_RESTARTING", "T", 1);
+                 runtime[i] = '\0';
+                 execv(runtime, argv);
++            } else {
++                /* if /proc isn't available (like in chroot builds, like mock),
++                 * try using execvp with argv[0] instead */
++                environ = envp;
++                setenv("SBCL_IS_RESTARTING", "T", 1);
++                execvp(argv[0], argv);
+             }
+         }
+         /* Either changing the personality or execve() failed.
