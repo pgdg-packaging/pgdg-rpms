@@ -73,7 +73,7 @@ if grep -qE '^license-files|^dynamic|hatchling' pyproject.toml; then exit 1; fi
 %{python3_sitelib}/%{modname}/
 
 %changelog
-* Thu Nov 193.18.0 2026 Devrim Gunduz <devrim@gunduz.org> - 3.19.0-1PGDG.1
+* Thu Nov 19 2026 Devrim Gunduz <devrim@gunduz.org> - 3.19.0-1PGDG.1
 - Update to 3.19.0 per changes described at:
   https://pypi.org/project/prettytable/3.19.0/
 
