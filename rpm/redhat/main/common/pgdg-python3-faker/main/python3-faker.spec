@@ -16,7 +16,7 @@ Name:		python3-%{sname}
 Epoch:		1
 Version:	14.2.1
 %else
-Version:	40.54.0
+Version:	40.63.0
 %endif
 Release:	1PGDG%{?dist}
 Summary:	Faker is a Python package that generates fake data for you
@@ -59,6 +59,19 @@ Summary:	Documentation for %{name}
 %doc README.rst CHANGELOG.md CONTRIBUTING.rst RELEASE_PROCESS.rst docs/*.rst
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 40.63.0-1PGDG
+- Update to 40.63.0 per changes described at:
+  https://github.com/joke2k/faker/releases/tag/v40.55.0
+  https://github.com/joke2k/faker/releases/tag/v40.56.0
+  https://github.com/joke2k/faker/releases/tag/v40.57.0
+  https://github.com/joke2k/faker/releases/tag/v40.58.0
+  https://github.com/joke2k/faker/releases/tag/v40.59.0
+  https://github.com/joke2k/faker/releases/tag/v40.60.0
+  https://github.com/joke2k/faker/releases/tag/v40.61.0
+  https://github.com/joke2k/faker/releases/tag/v40.62.0
+  https://github.com/joke2k/faker/releases/tag/v40.63.0
+  RHEL 8 stays on 14.2.1.
+
 * Wed Nov 11 2026 Devrim Gunduz <devrim@gunduz.org> - 40.54.0-1PGDG
 - Update to 40.54.0 per changes described at:
   https://github.com/joke2k/faker/releases/tag/v40.54.0
