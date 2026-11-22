@@ -17,7 +17,7 @@
 %endif
 
 Name:		pgdg-%{sname}
-Version:	15.6.2
+Version:	15.8.0
 Release:	1PGDG%{?dist}
 Summary:	Fast C++ matrix library with syntax similar to MATLAB and Octave
 License:	Apache-2.0
@@ -112,6 +112,9 @@ sed -i 's/\r//' README.md
 %{armadilloinstdir}/share/
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 15.8.0-1PGDG
+- Update to 15.8.0
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 15.6.2-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-armadillo, so that the GIS stack does not need the EPEL
