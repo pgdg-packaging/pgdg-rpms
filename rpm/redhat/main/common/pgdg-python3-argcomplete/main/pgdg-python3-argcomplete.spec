@@ -4,8 +4,8 @@
 
 Name:		python%{python3_pkgversion}-%{modname}
 Summary:	Bash tab completion for argparse
-Version:	3.7.2
-Release:	4PGDG%{?dist}
+Version:	3.8.0
+Release:	1PGDG%{?dist}
 License:	Apache-2.0
 URL:		https://github.com/kislyuk/%{modname}
 Source0:	https://files.pythonhosted.org/packages/source/a/%{modname}/%{modname}-%{version}.tar.gz
@@ -22,6 +22,8 @@ BuildRequires: python%{python3_pkgversion}-devel
 BuildRequires: python%{python3_pkgversion}-setuptools
 BuildRequires: python%{python3_pkgversion}-pip
 BuildRequires: python%{python3_pkgversion}-wheel
+# %%pyproject_save_files imports packaging:
+BuildRequires: python%{python3_pkgversion}-packaging
 BuildRequires: pyproject-rpm-macros
 BuildArch:     noarch
 
@@ -79,6 +81,11 @@ sed -i '/^#!/d' argcomplete/scripts/*.py
 %{python3_sitelib}/argcomplete/scripts/__pycache__/*.py*
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 3.8.0-1PGDG
+- Update to 3.8.0 per changes described at:
+  https://github.com/kislyuk/argcomplete/releases/tag/v3.8.0
+- Add missing python3-packaging BR, needed by %%pyproject_save_files.
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.7.2-4PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
