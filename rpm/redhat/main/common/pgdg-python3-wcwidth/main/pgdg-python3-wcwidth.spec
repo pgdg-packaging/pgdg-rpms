@@ -5,8 +5,8 @@
 %global python3_sitelib %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('purelib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.9.4
-Release:	2PGDG%{?dist}
+Version:	0.9.5
+Release:	1PGDG%{?dist}
 Summary:	Measures number of Terminal column cells of wide-character codes
 
 # part of the code is under HPND-Markus-Kuhn
@@ -64,6 +64,10 @@ export WCWIDTH_NO_EXTENSION=1
 %{python3_sitelib}/%{modname}/
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.5-1PGDG
+- Update to 0.9.5 per changes described at:
+  https://github.com/jquast/wcwidth/releases/tag/0.9.5
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.9.4-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
