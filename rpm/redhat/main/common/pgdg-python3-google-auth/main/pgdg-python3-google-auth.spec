@@ -29,7 +29,7 @@ Name:		python%{python3_pkgversion}-%{modname}
 Version:	2.47.0
 Release:	44PGDG%{?dist}
 %else
-Version:	2.62.2
+Version:	2.63.1
 Release:	42PGDG%{?dist}
 %endif
 %if 0%{?rhel} == 10
@@ -199,6 +199,12 @@ echo rpm > $(echo %{buildroot}%{python3_sitelib}/*.dist-info)/INSTALLER
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.63.1-42PGDG
+- Update to 2.63.1 on RHEL 8 and 10, per changes described at:
+  https://pypi.org/project/google-auth/2.63.0/
+  https://pypi.org/project/google-auth/2.63.1/
+  RHEL 9 and Amazon Linux 2023 stay on 2.47.0.
+
 * Tue Nov 10 2026 Devrim Gunduz <devrim@gunduz.org> - 1:2.62.2-42PGDG
 - Update to 2.62.2 on RHEL 8 and 10, per changes described at:
   https://pypi.org/project/google-auth/2.62.2/
