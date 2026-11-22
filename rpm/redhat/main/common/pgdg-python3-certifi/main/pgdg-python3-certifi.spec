@@ -4,7 +4,7 @@
 %global	pymodname certifi
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	2026.10.23
+Version:	2026.11.20
 Release:	43PGDG%{?dist}
 Summary:	System CA bundle for Python
 
@@ -72,6 +72,9 @@ PYEOF2
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.11.20-43PGDG
+- Update to 2026.11.20
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 2026.10.23-43PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
