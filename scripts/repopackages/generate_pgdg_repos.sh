@@ -27,7 +27,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ##############################################################
 
 # PostgreSQL versions
-PG_ALL_VERSIONS=(18 17 16 15 14)		# Stable releases (all OS types)
+PG_ALL_VERSIONS=(19 18 17 16 15 14)		# Stable releases (all OS types)
 PG_TEST_VERSIONS=(20 19 18 17 16 15 14)		# Testing repos for RHEL/Fedora
 
 # Per-OS-version maximum supported PostgreSQL major version.
@@ -37,7 +37,7 @@ PG_TEST_VERSIONS=(20 19 18 17 16 15 14)		# Testing repos for RHEL/Fedora
 PG_MAX_VER_redhat_8=18			# RHEL 8: PG19+ not supported
 
 # RHEL: valid OS versions and architectures
-VALID_VER_redhat=("10.2" "10.1" "10.0" "10" "9.8" "9.7" "9.6" "9" "8.10")
+VALID_VER_redhat=("10.3" "10.2" "10.1" "10" "9.9" "9.8" "9.7" "9" "8.10")
 VALID_ARCH_redhat=("x86_64" "aarch64" "ppc64le")
 EXTRASREPOSENABLED_redhat=1
 SYNCTESTINGREPOS_redhat=1
