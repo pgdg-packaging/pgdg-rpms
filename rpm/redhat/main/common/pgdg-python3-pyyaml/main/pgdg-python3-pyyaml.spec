@@ -29,8 +29,8 @@
 %global python3_sitearch %(%{__python3} -Esc "import sysconfig; print(sysconfig.get_path('platlib', vars={'platbase': '/usr', 'base': '%{_prefix}'}))")
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	6.0.3
-Release:	2PGDG%{?dist}
+Version:	6.0.4
+Release:	1PGDG%{?dist}
 Summary:	HTTP library with thread-safe connection pooling, file post, and more
 
 License:	MIT
@@ -39,6 +39,8 @@ Source0:	https://github.com/yaml/pyyaml/archive/%{version}.tar.gz
 
 BuildRequires:	gcc libyaml-devel python%{python3_pkgversion}-devel python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools python%{python3_pkgversion}-cython
+# setuptools older than 70.1 (69 on Amazon Linux 2023) needs wheel for bdist_wheel:
+BuildRequires:	python%{python3_pkgversion}-wheel
 
 %if 0%{?suse_version} >= 1500
 BuildRequires:	python-rpm-macros
@@ -72,11 +74,19 @@ export HATCH_METADATA_CLASSIFIERS_NO_VERIFY=1
 %pyproject_install
 
 %files
-%{python3_sitearch}/pyyaml-%{version}.dist-info/
+# setuptools 69 (Amazon Linux 2023) does not normalize the name:
+%{python3_sitearch}/[Pp]y[Yy][Aa][Mm][Ll]-%{version}.dist-info/
 %{python3_sitearch}/_yaml/*
 %{python3_sitearch}/yaml/*
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0.4-1PGDG
+- Update to 6.0.4 per changes described at:
+  https://github.com/yaml/pyyaml/releases/tag/6.0.4
+- Add missing python3-wheel BR: setuptools 69 of Amazon Linux 2023 needs
+  it for bdist_wheel. Its dist-info directory is named PyYAML-*, so
+  match both spellings in %%files.
+
 * Fri Sep 11 2026 Devrim Gunduz <devrim@gunduz.org> - 6.0.3-2PGDG
 - Migrate %%python3_sitearch off the removed distutils.sysconfig module
   to sysconfig.get_path()
