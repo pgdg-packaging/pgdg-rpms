@@ -4,7 +4,7 @@
 %global sname orafce
 %global orafcemajver 4
 %global orafcemidver 17
-%global orafceminver 1
+%global orafceminver 2
 
 %{!?llvm:%global llvm 1}
 %{!?runselftest:%global runselftest 0}
@@ -12,7 +12,7 @@
 Summary:	Implementation of some Oracle functions into PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{orafcemajver}.%{orafcemidver}.%{orafceminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -90,6 +90,10 @@ export PATH=%{pginstdir}/bin:$PATH
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 4.17.2-1PGDG
+- Update to 4.17.2 per changes described at:
+  https://github.com/orafce/orafce/releases/tag/VERSION_4_17_2
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.17.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
