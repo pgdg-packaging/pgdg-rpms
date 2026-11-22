@@ -2,15 +2,13 @@
 
 %{!?runselftest:%global runselftest 0}
 
-%global permissionsmajver 1
-%global permissionsminver 3
 
 Summary:	PostgreSQL permission reports and checks
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.4.1
-Release:	4PGDG%{?dist}
+Version:	1.6
+Release:	1PGDG%{?dist}
 License:	PostgreSQL
-Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/REL_%{permissionsmajver}_%{permissionsminver}.tar.gz
+Source0:	https://github.com/cybertec-postgresql/%{sname}/archive/refs/tags/REL_%(echo %{version} | tr . _).tar.gz
 URL:		https://github.com/cybertec-postgresql/%{sname}
 BuildRequires:	make
 BuildRequires:	postgresql%{pgmajorversion}-devel
@@ -25,7 +23,7 @@ This extension allows you to review object permissions on a PostgreSQL
 database.
 
 %prep
-%setup -q -n %{sname}-REL_%{permissionsmajver}_%{permissionsminver}
+%setup -q -n %{sname}-REL_%(echo %{version} | tr . _)
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
@@ -33,8 +31,6 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %install
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install
-# Install documentation with a better name:
-%{__mkdir} -p %{buildroot}%{pginstdir}/doc/extension
 
 %check
 %if %runselftest
@@ -43,10 +39,20 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 
 %files
 %defattr(644,root,root,755)
-%doc %{pginstdir}/doc/extension/README.%{sname}
+%doc README.md CHANGELOG
+%license LICENSE
 %{pginstdir}/share/extension/%{sname}*.*
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 1.6-1PGDG
+- Update to 1.6 per changes described at:
+  https://github.com/cybertec-postgresql/pg_permissions/releases/tag/REL_1_6
+- Use the version in the Source0 URL: the 1.4.1 packages were built from
+  the 1.3 tarball.
+- Upstream no longer installs README.pg_permissions; ship README.md,
+  CHANGELOG and LICENSE from the build directory instead.
+- 1.6 requires PostgreSQL 15 or later.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-4PGDG
 - Rebuild against latest PostgreSQL minor releases
 
