@@ -12,7 +12,7 @@
 %endif
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	1.44.6
+Version:	1.44.9
 Release:	42PGDG%{?dist}
 Summary:	The AWS SDK for Python
 
@@ -100,6 +100,12 @@ hardlink -c '%{buildroot}%{python3_sitelib}/%{modname}'
 %{python3_sitelib}/%{modname}/s3/__pycache__/*
 
 %changelog
+* Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 1.44.9-42PGDG
+- Update to 1.44.9 per changes described at:
+  https://pypi.org/project/boto3/1.44.7/
+  https://pypi.org/project/boto3/1.44.8/
+  https://pypi.org/project/boto3/1.44.9/
+
 * Thu Nov 19 2026 Devrim Gunduz <devrim@gunduz.org> - 1.44.6-42PGDG
 - Update to 1.44.6 per changes described at:
   https://pypi.org/project/boto3/1.44.6/
