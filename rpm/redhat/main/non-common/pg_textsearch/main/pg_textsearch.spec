@@ -16,8 +16,8 @@
 
 Summary:	Modern ranked text search for Postgres
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.5.1
-Release:	2PGDG%{?dist}
+Version:	1.6.0
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -31,7 +31,6 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 %endif
 URL:		https://github.com/timescale/%{sname}
 Source0:	https://github.com/timescale/%{sname}/archive/refs/tags/v%{version}.tar.gz
-Patch0:		%{sname}-1.5.0-limits_h.patch
 License:	PostgreSQL
 BuildRequires:	postgresql%{pgmajorversion}-devel
 %if %runselftest
@@ -77,7 +76,6 @@ This package provides JIT support for pg_textsearch
 
 %prep
 %setup -q -n %{sname}-%{version}
-%patch -P 0 -p0
 
 %build
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_arg}
@@ -118,6 +116,11 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Mon Nov 23 2026 Devrim Gündüz <devrim@gunduz.org> - 1.6.0-1PGDG
+- Update to 1.6.0 per changes described at:
+  https://github.com/timescale/pg_textsearch/releases/tag/v1.6.0
+- Remove the limits.h patch, now upstream.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.5.1-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
