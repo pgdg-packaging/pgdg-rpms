@@ -6,7 +6,7 @@
 %{!?llvm:%global llvm 0}
 
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.11.0
+Version:	2.11.1
 Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
@@ -103,6 +103,10 @@ export LC_ALL=C.UTF-8
 %endif
 
 %changelog
+* Mon Nov 23 2026 Devrim Gündüz <devrim@gunduz.org> - 2.11.1-1PGDG
+- Update to 2.11.1 per changes described at:
+  https://github.com/okbob/plpgsql_check/releases/tag/v2.11.1
+
 * Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 2.11.0-1PGDG
 - Update to 2.11.0 per changes described at:
   https://github.com/okbob/plpgsql_check/releases/tag/v2.11.0
