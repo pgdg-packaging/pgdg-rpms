@@ -31,6 +31,9 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags}
 %install
 %{__rm} -rf %{buildroot}
 USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_mflags} install
+# Install README under PostgreSQL installation directory with a better name:
+%{__install} -d %{buildroot}%{pginstdir}/doc/extension
+%{__install} -m 644 README.md %{buildroot}%{pginstdir}/doc/extension/README-%{sname}.md
 
 %check
 %if %runselftest
@@ -39,7 +42,7 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
 
 %files
 %defattr(644,root,root,755)
-%doc README.md CHANGELOG
+%doc %{pginstdir}/doc/extension/README-%{sname}.md
 %license LICENSE
 %{pginstdir}/share/extension/%{sname}*.*
 
@@ -49,8 +52,6 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} DESTDIR=%{buildroot} %{?_smp_m
   https://github.com/cybertec-postgresql/pg_permissions/releases/tag/REL_1_6
 - Use the version in the Source0 URL: the 1.4.1 packages were built from
   the 1.3 tarball.
-- Upstream no longer installs README.pg_permissions; ship README.md,
-  CHANGELOG and LICENSE from the build directory instead.
 - 1.6 requires PostgreSQL 15 or later.
 
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.4.1-4PGDG
