@@ -7,7 +7,7 @@
 %global sname pglast
 
 Name:		pglast
-Version:	7.24
+Version:	7.25
 Release:	1PGDG%{?dist}
 Summary:	PostgreSQL Languages AST and statements prettifier
 License:	GPLv3+
@@ -66,6 +66,11 @@ sed -i 's/^license = "GPL-3.0-or-later"$/license = {text = "GPL-3.0-or-later"}/'
 %{python3_sitearch}/%{sname}-%{version}.dist-info/
 
 %changelog
+* Tue Nov 24 2026 Devrim Gündüz <devrim@gunduz.org> - 7.25-1PGDG
+- Update to 7.25 per changes described at:
+  https://github.com/lelit/pglast/blob/v7/CHANGES.rst
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/728
+
 * Thu Nov 19 2026 Devrim Gündüz <devrim@gunduz.org> - 7.24-1PGDG
 - Update to 7.24 per changes described at:
   https://github.com/lelit/pglast/blob/v7/CHANGES.rst
