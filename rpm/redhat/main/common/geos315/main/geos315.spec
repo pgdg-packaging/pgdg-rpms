@@ -6,8 +6,8 @@
 %global		_geoslibdir lib64
 
 Name:		%{sname}%{_geosversion}
-Version:	3.15.0
-Release:	2PGDG%{?dist}
+Version:	3.15.1
+Release:	1PGDG%{?dist}
 Summary:	GEOS is a C++ port of the Java Topology Suite
 
 License:	LGPLv2
@@ -20,7 +20,7 @@ BuildRequires:	cmake-full
 %else
 BuildRequires:	cmake-rpm-macros
 %endif
-BuildRequires:	libtool gcc-c++ pgdg-srpm-macros >= 2.0.0
+BuildRequires:	libtool gcc-c++ pgdg-srpm-macros >= 2.6.0
 %if 0%{?suse_version} == 1500
 # %%build and %%install use GCC 13 there
 BuildRequires:  gcc13 gcc13-c++
@@ -107,6 +107,11 @@ echo "%{geosinstdir}/%{_geoslibdir}/" > %{buildroot}%{_sysconfdir}/ld.so.conf.d/
 %{geosinstdir}/%{_geoslibdir}/pkgconfig/%{sname}.pc
 
 %changelog
+* Mon Nov 23 2026 Devrim Gunduz <devrim@gunduz.org> - 3.15.1-1PGDG
+- Update to 3.15.1 per changes described at:
+  https://github.com/libgeos/geos/releases/tag/3.15.1
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/726
+
 * Mon Oct 5 2026 Devrim Gunduz <devrim@gunduz.org> - 3.15.0-2PGDG
 - Build using GCC 13 on SLES 15.
 
