@@ -16,8 +16,8 @@
 
 Summary:	v7 UUIDs data type in PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	1.7.0
-Release:	5PGDG%{dist}
+Version:	1.8.0
+Release:	1PGDG%{dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -102,6 +102,10 @@ PATH=%{pginstdir}/bin/:$PATH %make_install %{with_llvm_arg}
 %endif
 
 %changelog
+* Tue Nov 24 2026 Devrim Gündüz <devrim@gunduz.org> - 1.8.0-1PGDG
+- Update to 1.8.0 per changes described at:
+  https://github.com/fboulnois/pg_uuidv7/releases/tag/v1.8.0
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 1.7.0-5PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
