@@ -34,6 +34,11 @@ package is built without the optional Cython extensions.
 
 %prep
 %autosetup -n %{pymodname}-%{version}
+# The trove-classifiers on the AL2023 and SLES 16 builders does not know the
+# Python 3.15 and free threading classifiers yet, and setuptools rejects
+# unknown classifiers when it is installed:
+%{__sed} -i -e '/"Programming Language :: Python :: 3\.15",/d' \
+	-e '/"Programming Language :: Python :: Free Threading :: /d' pyproject.toml
 
 %build
 %pyproject_wheel
@@ -59,6 +64,8 @@ package is built without the optional Cython extensions.
 - BuildRequire pyproject-rpm-macros (python-rpm-macros on SUSE), and
   python3.12-packaging on RHEL 8 and 9: only the builders had them, so
   clean builds failed.
+- Remove the Python 3.15 and free threading classifiers in %%prep: the
+  trove-classifiers on the AL2023 and SLES 16 builders does not know them.
 
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 3.4.2-2PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
