@@ -12,7 +12,7 @@
 Summary:	PostgreSQL extensions for pgpool-II
 Name:		%{sname}-pg%{pgmajorversion}-extensions
 Version:	4.7.3
-Release:	3PGDG%{?dist}
+Release:	4PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -27,6 +27,9 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 License:	BSD
 URL:		https://pgpool.net
 Source0:	https://www.pgpool.net/source/%{sname}-%{version}.tar.gz
+# PostgreSQL 19 moved get_database_name() to utils/lsyscache.h. Backport of
+# the pgpool-regclass part of upstream commit f0c5abc (master only):
+Patch0:		pgpool-II-extensions-4.7.3-pg19-lsyscache.patch
 Requires:	postgresql%{pgmajorversion}-server %{sname}-pcp
 
 BuildRequires:	gcc
@@ -79,6 +82,7 @@ PostgreSQL extensions, libraries and sql files for pgpool-II.
 
 %prep
 %setup -q -n %{sname}-%{version}
+%patch -P 0 -p1
 
 %build
 # We need this flag on SLES so that pgpool can find libmemched.
@@ -144,6 +148,12 @@ export PATH=%{pginstdir}/bin/:$PATH
 %{pginstdir}/share/extension/pgpool_recovery.control
 
 %changelog
+* Tue Nov 24 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-4PGDG
+- Add a patch to build pgpool-regclass against PostgreSQL 19: include
+  utils/lsyscache.h for get_database_name(). Backported from upstream
+  commit f0c5abc. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/729
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.7.3-3PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is

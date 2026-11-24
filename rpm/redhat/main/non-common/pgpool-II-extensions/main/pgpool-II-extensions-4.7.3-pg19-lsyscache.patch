@@ -1,0 +1,10 @@
+--- pgpool-II-4.7.3.orig/src/sql/pgpool-regclass/pgpool-regclass.c	2026-09-20 05:08:53.000000000 +0200
++++ pgpool-II-4.7.3/src/sql/pgpool-regclass/pgpool-regclass.c	2026-11-24 10:33:50.403418587 +0100
+@@ -35,6 +35,7 @@
+ #include "utils/elog.h"
+ #include "utils/syscache.h"
+ #include "utils/varlena.h"
++#include "utils/lsyscache.h"
+ 
+ #ifdef PG_MODULE_MAGIC
+ PG_MODULE_MAGIC;
