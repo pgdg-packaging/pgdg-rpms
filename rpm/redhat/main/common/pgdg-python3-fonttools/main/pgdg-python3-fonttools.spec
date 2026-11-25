@@ -21,12 +21,12 @@
 
 %if %{pgdg_altstack}
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	4.68.0
+Version:	4.69.1
 Release:	42PGDG%{?dist}
 %else
 Name:		python3-%{pymodname}
-Version:	4.63.0
-Release:	5PGDG%{?dist}
+Version:	4.69.1
+Release:	1PGDG%{?dist}
 %endif
 Summary:	Tools to manipulate font files
 
@@ -45,6 +45,11 @@ BuildRequires:	pyproject-rpm-macros
 BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
+%if 0%{?rhel} && 0%{?rhel} <= 9
+# %%pyproject_install runs with the non-default Python here, and needs its
+# packaging module, which pyproject-rpm-macros only pulls in for the OS Python.
+BuildRequires:	python%{python3_pkgversion}-packaging
+%endif
 %else
 BuildRequires:	python3-devel
 BuildRequires:	python3-setuptools
@@ -267,6 +272,16 @@ export FONTTOOLS_WITH_CYTHON=1
 %endif
 
 %changelog
+* Thu Nov 26 2026 Devrim Gunduz <devrim@gunduz.org> - 4.69.1-42PGDG
+- Update to 4.69.1 on RHEL 9 and 10, Amazon Linux 2023 and SLES 16
+  (4.69.1-1PGDG there, from 4.63.0), per changes described at
+  https://github.com/fonttools/fonttools/releases/tag/4.69.0
+  https://github.com/fonttools/fonttools/releases/tag/4.69.1
+  Fixes GHSA-868m-5w35-h9cq (WOFF/WOFF2 decompression memory exhaustion).
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/748
+- BuildRequire python3.12-packaging on RHEL 9: only the builders had it,
+  so clean builds failed.
+
 * Fri Oct 30 2026 Devrim Gunduz <devrim@gunduz.org> - 4.68.0-42PGDG
 - Update to 4.68.0 on RHEL 9 and 10 and Amazon Linux 2023, per changes
   described at https://github.com/fonttools/fonttools/releases/tag/4.68.0
