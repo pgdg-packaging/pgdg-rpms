@@ -4,8 +4,8 @@
 
 Summary:	Routing functionality for PostGIS
 Name:		%{sname}_%{pgmajorversion}
-Version:	%{pgroutingmajorversion}.2
-Release:	3PGDG%{dist}
+Version:	%{pgroutingmajorversion}.3
+Release:	1PGDG%{dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -83,6 +83,10 @@ popd
 %{pginstdir}/share/extension/%{sname}*
 
 %changelog
+* Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.3-1PGDG
+- Update to 4.0.3 per changes described at:
+  https://github.com/pgRouting/pgrouting/releases/tag/v4.0.3
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 4.0.2-3PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
