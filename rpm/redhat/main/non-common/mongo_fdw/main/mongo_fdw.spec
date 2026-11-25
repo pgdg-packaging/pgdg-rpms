@@ -20,16 +20,20 @@
 %endif
 
 # On RHEL, mongo-c-driver and libbson come from pgdg-libmongoc (EPEL is not
-# needed), which does not provide their sonames; they are found through the
-# rpath:
-%if 0%{?rhel}
+# needed). Amazon Linux 2023 has no mongo-c-driver, and SLES 16 has no 1.x
+# packages, so they use pgdg-libmongoc too. It does not provide the sonames;
+# they are found through the rpath:
+%if 0%{?rhel} || 0%{?amzn} || 0%{?suse_version} >= 1600
+%global with_pgdg_libmongoc 1
 %global __requires_exclude ^lib(mongoc|bson)-1\\.0\\.so
+%else
+%global with_pgdg_libmongoc 0
 %endif
 
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -49,15 +53,23 @@ Patch0:		%{sname}-makefile-rpm.patch
 
 BuildRequires:	postgresql%{pgmajorversion}-devel
 
-%if 0%{?suse_version} >= 1499
-Requires:		libsnappy1 libbson-1_0-0 libmongoc-1_0-0 libjson-c5
-BuildRequires:		snappy-devel libbson-1_0-0-devel libmongoc-1_0-0-devel
-%else
-Requires:	snappy
-%if 0%{?rhel}
+%if %{with_pgdg_libmongoc}
 BuildRequires:	pgdg-srpm-macros >= 2.3.0 pgdg-libmongoc-devel
 Requires:	pgdg-libmongoc-libs%{?_isa}
+%endif
+
+%if 0%{?suse_version} >= 1499
+Requires:		libsnappy1 libjson-c5
+BuildRequires:		snappy-devel
+%if %{with_pgdg_libmongoc}
+BuildRequires:	libjson-c-devel cyrus-sasl-devel krb5-devel
 %else
+Requires:		libbson-1_0-0 libmongoc-1_0-0
+BuildRequires:		libbson-1_0-0-devel libmongoc-1_0-0-devel
+%endif
+%else
+Requires:	snappy
+%if ! %{with_pgdg_libmongoc}
 Requires:	mongo-c-driver-libs libbson
 BuildRequires:	mongo-c-driver-devel libbson-devel
 %endif
@@ -73,7 +85,11 @@ Requires:	openssl-libs >= 1.1.1k
 BuildRequires:	openssl-devel
 %endif
 
-Requires:	postgresql%{pgmajorversion}-server cyrus-sasl-lib
+Requires:	postgresql%{pgmajorversion}-server
+# SUSE has no cyrus-sasl-lib; libsasl2 comes in through the library deps:
+%if ! 0%{?suse_version}
+Requires:	cyrus-sasl-lib
+%endif
 
 %description
 This PostgreSQL extension implements a Foreign Data Wrapper (FDW) for
@@ -127,7 +143,7 @@ sed -i "s:\(^#include \"bson.h\"\)://\1:g" mongo_wrapper.h
 %endif
 
 export LIBJSON=%{_includedir}/json-c
-%if 0%{?rhel}
+%if %{with_pgdg_libmongoc}
 export PKG_CONFIG_PATH=%{pgdg_libmongocinstdir}/lib64/pkgconfig
 sed -i "s:^\(SHLIB_LINK = .*\)$:\1 -Wl,-rpath,%{pgdg_libmongocinstdir}/lib64:" Makefile
 grep -q '^SHLIB_LINK = .*-Wl,-rpath,%{pgdg_libmongocinstdir}/lib64$' Makefile
@@ -163,6 +179,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
+* Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 5.6.0-2PGDG
+- Build against pgdg-libmongoc on Amazon Linux 2023 and SLES 16 too:
+  Amazon Linux 2023 has no mongo-c-driver, and SLES 16 has no 1.x
+  packages, so mongo_fdw could not be built there.
+- Do not require cyrus-sasl-lib on SUSE, where no package has that name.
+
 * Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 5.6.0-1PGDG
 - Update to 5.6.0 per changes described at:
   https://github.com/EnterpriseDB/mongo_fdw/releases/tag/REL-5_6_0
