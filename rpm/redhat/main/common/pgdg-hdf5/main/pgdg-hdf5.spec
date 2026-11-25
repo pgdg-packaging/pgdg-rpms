@@ -22,7 +22,7 @@
 %endif
 
 Name:		pgdg-%{sname}
-Version:	2.2.0
+Version:	2.3.0
 Release:	1PGDG%{?dist}
 Summary:	A general purpose library and file format for storing scientific data
 License:	BSD-3-Clause
@@ -171,6 +171,10 @@ grep -q 'pgdg-libaec\|%{pgdg_libaecinstdir}' %{buildroot}%{hdf5instdir}/%{_hdf5l
 %{hdf5instdir}/%{_hdf5libdir}/pkgconfig/
 
 %changelog
+* Wed Nov 25 2026 Devrim Gunduz <devrim@gunduz.org> - 2.3.0-1PGDG
+- Update to 2.3.0 per changes described at:
+  https://github.com/HDFGroup/hdf5/blob/2.3.0/release_docs/CHANGELOG.md
+
 * Wed Oct 21 2026 Devrim Gunduz <devrim@gunduz.org> - 2.2.0-1PGDG
 - Initial packaging for the PostgreSQL RPM repository, installed under
   /usr/pgdg-hdf5, so that the GIS stack does not need the EPEL HDF5
