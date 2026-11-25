@@ -20,8 +20,8 @@
 %endif
 
 Name:		pgdg-libmongoc
-Version:	1.30.16
-Release:	2PGDG%{?dist}
+Version:	1.30.17
+Release:	1PGDG%{?dist}
 Summary:	Client library written in C for MongoDB
 # See THIRD_PARTY_NOTICES
 License:	Apache-2.0 AND ISC AND MIT AND Zlib
@@ -140,6 +140,12 @@ them.
 %{mongocinstdir}/lib64/cmake/
 
 %changelog
+* Thu Nov 26 2026 Devrim Gündüz <devrim@gunduz.org> - 1.30.17-1PGDG
+- Update to 1.30.17 per changes described at:
+  https://github.com/mongodb/mongo-c-driver/releases/tag/1.30.17
+  Fixes CVE-2026-135134, CVE-2026-135222 and CVE-2026-135224. Per
+  https://github.com/pgdg-packaging/pgdg-rpms/issues/745
+
 * Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.30.16-2PGDG
 - Build on Amazon Linux 2023 and SLES 16 too, for mongo_fdw: Amazon
   Linux 2023 has no mongo-c-driver, and SLES 16 has no 1.x packages.
