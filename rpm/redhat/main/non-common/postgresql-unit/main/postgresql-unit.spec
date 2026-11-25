@@ -16,8 +16,8 @@
 
 Summary:	SI Units for PostgreSQL
 Name:		%{sname}_%{pgmajorversion}
-Version:	7.10
-Release:	10PGDG%{?dist}
+Version:	7.11
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -32,7 +32,7 @@ Requires:	postgresql%{pgmajorversion}-libs%{?_isa} >= %{pgminorversion}
 License:	BSD
 Source0:	https://github.com/ChristophBerg/%{sname}/archive/%{version}.tar.gz
 URL:		https://github.com/ChristophBerg/%{sname}
-BuildRequires:	postgresql%{pgmajorversion}-devel flex
+BuildRequires:	postgresql%{pgmajorversion}-devel flex bison
 Requires:	postgresql%{pgmajorversion}-server
 %if %runselftest
 BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
@@ -112,6 +112,11 @@ pgdg_installcheck %{with_llvm_arg}
 %endif
 
 %changelog
+* Thu Nov 26 2026 Devrim Gündüz <devrim@gunduz.org> - 7.11-1PGDG
+- Update to 7.11 per changes described at:
+  https://github.com/df7cb/postgresql-unit/releases/tag/7.11
+- Add bison BR: 7.11 no longer ships the generated parser.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 7.10-10PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
