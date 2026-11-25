@@ -1,5 +1,5 @@
---- Makefile.old	2025-10-28 12:02:11.257852584 +0300
-+++ Makefile	2025-10-28 12:02:39.576373419 +0300
+--- Makefile.old	2026-11-25 12:33:59.582221489 +0100
++++ Makefile	2026-11-25 12:33:59.592617977 +0100
 @@ -11,14 +11,9 @@
  # on another platform, change env_posix.os in MONGO_OBJS with the appropriate
  # environment object file.
@@ -10,7 +10,7 @@
 -                                $(LIBJSON)/arraylist.o $(LIBJSON)/random_seed.o $(LIBJSON)/debug.o $(LIBJSON)/strerror_override.o
 -
  MONGO_INCLUDE = $(shell pkg-config --cflags libmongoc-1.0)
- PG_CPPFLAGS = --std=c99 $(MONGO_INCLUDE) -I$(LIBJSON)
+ PG_CPPFLAGS = $(MONGO_INCLUDE) -I$(LIBJSON)
 -SHLIB_LINK = $(shell pkg-config --libs libmongoc-1.0)
 +SHLIB_LINK = $(shell pkg-config --libs libmongoc-1.0 json-c)
  

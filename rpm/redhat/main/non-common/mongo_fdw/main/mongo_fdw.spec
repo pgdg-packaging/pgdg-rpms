@@ -1,8 +1,8 @@
 %global sname mongo_fdw
 
 %global mongofdwmajver 5
-%global mongofdwmidver 5
-%global mongofdwminver 3
+%global mongofdwmidver 6
+%global mongofdwminver 0
 
 %global relver %{mongofdwmajver}_%{mongofdwmidver}_%{mongofdwminver}
 
@@ -29,7 +29,7 @@
 Summary:	PostgreSQL foreign data wrapper for MongoDB
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mongofdwmajver}.%{mongofdwmidver}.%{mongofdwminver}
-Release:	7PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -163,6 +163,12 @@ PATH=%{pginstdir}/bin:$PATH %{__make} -f Makefile USE_PGXS=1 %{?_smp_mflags} ins
 %endif
 
 %changelog
+* Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 5.6.0-1PGDG
+- Update to 5.6.0 per changes described at:
+  https://github.com/EnterpriseDB/mongo_fdw/releases/tag/REL-5_6_0
+  Fixes CVE-2026-62155 and CVE-2026-62157.
+- Rebase the Makefile patch.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 5.5.3-7PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
