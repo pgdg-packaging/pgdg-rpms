@@ -21,7 +21,7 @@
 
 Name:		pgdg-libmongoc
 Version:	1.30.16
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 Summary:	Client library written in C for MongoDB
 # See THIRD_PARTY_NOTICES
 License:	Apache-2.0 AND ISC AND MIT AND Zlib
@@ -29,7 +29,12 @@ URL:		https://github.com/mongodb/%{sname}
 Source0:	https://github.com/mongodb/%{sname}/archive/refs/tags/%{version}.tar.gz
 
 BuildRequires:	pgdg-srpm-macros >= 2.3.0
-BuildRequires:	cmake >= 3.15 gcc gcc-c++ make perl-interpreter
+BuildRequires:	cmake >= 3.15 gcc gcc-c++ make
+%if 0%{?suse_version}
+BuildRequires:	perl
+%else
+BuildRequires:	perl-interpreter
+%endif
 BuildRequires:	openssl-devel pkgconfig(libsasl2) pkgconfig(zlib)
 BuildRequires:	pkgconfig(snappy) pkgconfig(libzstd) >= 0.8.0
 %if %{with_libutf8proc}
@@ -135,6 +140,11 @@ them.
 %{mongocinstdir}/lib64/cmake/
 
 %changelog
+* Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 1.30.16-2PGDG
+- Build on Amazon Linux 2023 and SLES 16 too, for mongo_fdw: Amazon
+  Linux 2023 has no mongo-c-driver, and SLES 16 has no 1.x packages.
+- BuildRequire perl instead of perl-interpreter on SUSE.
+
 * Thu Nov 19 2026 Devrim Gunduz <devrim@gunduz.org> - 1.30.16-1PGDG
 - Update to 1.30.16 per changes described at:
   https://github.com/mongodb/mongo-c-driver/releases/tag/1.30.16
