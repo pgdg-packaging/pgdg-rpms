@@ -15,8 +15,8 @@
 
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the hdfs
 Name:		%{sname}_%{pgmajorversion}
-Version:	2.3.3
-Release:	8PGDG%{?dist}
+Version:	2.4.0
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -169,6 +169,11 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} %{with_llvm_ar
 %endif
 
 %changelog
+* Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.4.0-1PGDG
+- Update to 2.4.0 per changes described at:
+  https://github.com/EnterpriseDB/hdfs_fdw/releases/tag/v2.4.0
+  Fixes CVE-2026-62156.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.3.3-8PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
