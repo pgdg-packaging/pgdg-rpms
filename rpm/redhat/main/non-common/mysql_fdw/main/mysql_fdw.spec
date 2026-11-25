@@ -1,7 +1,7 @@
 %global sname mysql_fdw
 %global mysqlfdwmajver 2
-%global mysqlfdwmidver 9
-%global mysqlfdwminver 3
+%global mysqlfdwmidver 10
+%global mysqlfdwminver 0
 
 %{!?llvm:%global llvm 1}
 
@@ -19,7 +19,7 @@
 Summary:	PostgreSQL Foreign Data Wrapper (FDW) for the MySQL
 Name:		%{sname}_%{pgmajorversion}
 Version:	%{mysqlfdwmajver}.%{mysqlfdwmidver}.%{mysqlfdwminver}
-Release:	9PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -114,6 +114,12 @@ USE_PGXS=1 PATH=%{pginstdir}/bin/:$PATH %{__make} %{?_smp_mflags} install DESTDI
 %endif
 
 %changelog
+* Wed Nov 25 2026 Devrim Gündüz <devrim@gunduz.org> - 2.10.0-1PGDG
+- Update to 2.10.0 per changes described at:
+  https://github.com/EnterpriseDB/mysql_fdw/releases/tag/REL-2_10_0
+  Fixes CVE-2026-62151, CVE-2026-62152, CVE-2026-62153 and
+  CVE-2026-62154.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 2.9.3-9PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
