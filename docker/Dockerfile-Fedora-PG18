@@ -13,7 +13,7 @@ RUN rpm --import https://yum.postgresql.org/keys/PGDG-RPM-GPG-KEY-Fedora
 
 # Add PostgreSQL's repository. It contains the most recent stable release
 # of PostgreSQL 18:
-RUN dnf -q -y install https://download.postgresql.org/pub/repos/yum/reporpms/F-43-x86_64/pgdg-fedora-repo-latest.noarch.rpm
+RUN dnf -q -y install https://download.postgresql.org/pub/repos/yum/reporpms/F-45-x86_64/pgdg-fedora-repo-latest.noarch.rpm
 
 # Update the Fedora and PostgreSQL repository metadata
 RUN dnf -q -y install deltarpm
