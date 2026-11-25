@@ -1,11 +1,11 @@
 %global pgodbcmajver 18
 %global pgodbcmidver 00
-%global pgodbcminver 0006
+%global pgodbcminver 0007
 
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	2PGDG%{?dist}
+Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -107,6 +107,11 @@ popd
 %license license.txt
 
 %changelog
+* Thu Nov 26 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0007-1PGDG
+- Update to 18.00.0007 per changes described at:
+  https://github.com/postgresql-interfaces/psqlodbc/blob/REL-18_00_0007/Changelog.md
+  This release fixes CVE-2026-136499 to CVE-2026-136515.
+
 * Mon Nov 9 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0006-2PGDG
 - Rebuild against latest PostgreSQL minor releases
 - Require at least the PostgreSQL minor release that the package is
