@@ -1,3 +1,5 @@
+%{!?runselftest:%global runselftest 0}
+
 %global pgodbcmajver 18
 %global pgodbcmidver 00
 %global pgodbcminver 0007
@@ -5,7 +7,7 @@
 Name:		postgresql%{pgmajorversion}-odbc
 Summary:	PostgreSQL ODBC driver
 Version:	%{pgodbcmajver}.%{pgodbcmidver}.%{pgodbcminver}
-Release:	1PGDG%{?dist}
+Release:	2PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
 # build against (global/Makefile.global): require at least that one, at
@@ -26,6 +28,9 @@ Source1:	acinclude.m4
 BuildRequires:	autoconf krb5-devel make pam-devel automake libtool
 BuildRequires:	pam-devel postgresql%{pgmajorversion}-devel
 BuildRequires:	unixODBC-devel
+%if %runselftest
+BuildRequires:	postgresql%{pgmajorversion}-server pgdg-srpm-macros >= 2.0.0
+%endif
 
 Requires:	postgresql%{pgmajorversion}-libs
 %if 0%{?suse_version} >= 1500
@@ -95,6 +100,22 @@ pushd %{buildroot}%{pginstdir}/lib
 	%{__rm} %{buildroot}%{_libdir}/psqlodbca.la
 popd
 
+%check
+%if %runselftest
+# The regression tests in test/ use the drivers in .libs, through the
+# odbc.ini and odbcinst.ini that they create there. Their DSNs leave the
+# server and port empty, so libpq takes them from PGHOST and PGPORT, which
+# point to the test server. server_version makes the suite compare with the
+# expected outputs of that PostgreSQL major version in expected/vNN first,
+# where it has them (e.g. v19, where standard_conforming_strings can no
+# longer be turned off).
+export LC_ALL=C.UTF-8
+%pgdg_check_init
+pgdg_check_start main
+cd test
+pgdg_installcheck server_version=%{pgmajorversion}
+%endif
+
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
@@ -107,6 +128,11 @@ popd
 %license license.txt
 
 %changelog
+* Thu Nov 26 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0007-2PGDG
+- Add %%check, running the upstream regression tests with the %%check
+  helpers from pgdg-srpm-macros 2.0.0. It is disabled by default; enable
+  it with --define 'runselftest 1'.
+
 * Thu Nov 26 2026 Devrim Gündüz <devrim@gunduz.org> - 18.00.0007-1PGDG
 - Update to 18.00.0007 per changes described at:
   https://github.com/postgresql-interfaces/psqlodbc/blob/REL-18_00_0007/Changelog.md
