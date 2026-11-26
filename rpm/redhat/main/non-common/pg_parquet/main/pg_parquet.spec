@@ -6,7 +6,7 @@
 
 Summary:	Copy data between PostgreSQL and Parquet files
 Name:		%{sname}_%{pgmajorversion}
-Version:	0.6.1
+Version:	0.6.2
 Release:	1PGDG%{?dist}
 %if 0%{?pgminorversion:1}
 # pgminorversion is the PostgreSQL minor release that the build servers
@@ -124,6 +124,10 @@ cp -a target/release/%{sname}-pg%{pgmajorversion}/* %{buildroot}/
 %{pginstdir}/share/extension/%{sname}--*.sql
 
 %changelog
+* Thu Nov 26 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.2-1PGDG
+- Update to 0.6.2 per changes described at:
+  https://github.com/CrunchyData/pg_parquet/compare/v0.6.1...v0.6.2
+
 * Sun Nov 22 2026 Devrim Gunduz <devrim@gunduz.org> - 0.6.1-1PGDG
 - Update to 0.6.1 per changes described at:
   https://github.com/CrunchyData/pg_parquet/releases/tag/v0.6.0
