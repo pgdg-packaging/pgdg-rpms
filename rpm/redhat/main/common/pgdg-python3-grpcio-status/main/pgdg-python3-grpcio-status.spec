@@ -55,7 +55,7 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 %pgdg_python3_obsoletes_prev
-Version:	1.85.3
+Version:	1.85.4
 Release:	1PGDG%{?dist}
 Summary:	Status proto mapping for gRPC
 %if ! 0%{?suse_version}
@@ -74,7 +74,7 @@ BuildRequires:	python%{python3_pkgversion}-pip
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	python%{python3_pkgversion}-wheel
 
-Requires:	pgdg-python%{python3_pkgversion}-grpcio >= 1.85.3
+Requires:	pgdg-python%{python3_pkgversion}-grpcio >= 1.85.4
 Requires:	pgdg-python%{python3_pkgversion}-protobuf >= 7.36.2
 Requires:	pgdg-python%{python3_pkgversion}-googleapis-common-protos >= 1.75.5
 
@@ -109,6 +109,11 @@ This package installs the module into the private PGDG Python tree,
 %{pgdg_pysitelib}/
 
 %changelog
+* Fri Nov 27 2026 Devrim Gündüz <devrim@gunduz.org> - 1.85.4-1PGDG
+- Update to 1.85.4 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.4
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/701
+
 * Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.85.3-1PGDG
 - Update to 1.85.3 per changes described at:
   https://github.com/grpc/grpc/releases/tag/v1.85.3

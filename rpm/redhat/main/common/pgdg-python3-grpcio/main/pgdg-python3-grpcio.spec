@@ -55,7 +55,7 @@
 
 Name:		%{pgdg_pyname}-%{modname}
 %pgdg_python3_obsoletes_prev
-Version:	1.85.3
+Version:	1.85.4
 Release:	1PGDG%{?dist}
 Summary:	HTTP/2-based RPC framework
 %if ! 0%{?suse_version}
@@ -154,6 +154,11 @@ export CC=/opt/rh/gcc-toolset-14/root/usr/bin/gcc CXX=/opt/rh/gcc-toolset-14/roo
 %{pgdg_pysitelib}/
 
 %changelog
+* Fri Nov 27 2026 Devrim Gündüz <devrim@gunduz.org> - 1.85.4-1PGDG
+- Update to 1.85.4 per changes described at:
+  https://github.com/grpc/grpc/releases/tag/v1.85.4
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/701
+
 * Wed Nov 18 2026 Devrim Gündüz <devrim@gunduz.org> - 1.85.3-1PGDG
 - Update to 1.85.3 per changes described at:
   https://github.com/grpc/grpc/releases/tag/v1.85.3
