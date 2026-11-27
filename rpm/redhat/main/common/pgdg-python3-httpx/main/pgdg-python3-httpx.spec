@@ -4,8 +4,8 @@
 %global	pymodname httpx
 
 Name:		python%{python3_pkgversion}-%{modname}
-Version:	0.28.1
-Release:	44PGDG%{?dist}
+Version:	0.29.0
+Release:	42PGDG%{?dist}
 Summary:	The next generation HTTP client
 
 License:	BSD-3-Clause
@@ -93,12 +93,6 @@ This is a metapackage bringing in socks extras requires for
 
 %prep
 %autosetup -n %{pymodname}-%{version}
-%if 0%{?rhel} == 10
-# The cli extra caps rich below 14, RHEL 10 (EPEL) has 14. The CLI works
-# with it:
-sed -i 's/"rich>=10,<14",/"rich>=10",/' pyproject.toml
-grep -q '"rich>=10",' pyproject.toml
-%endif
 
 %build
 %pyproject_wheel
@@ -115,6 +109,12 @@ grep -q '"rich>=10",' pyproject.toml
 %{python3_sitelib}/%{pymodname}-%{version}.dist-info/
 
 %changelog
+* Fri Nov 27 2026 Devrim Gunduz <devrim@gunduz.org> - 0.29.0-42PGDG
+- Update to 0.29.0 per changes described at
+  https://github.com/encode/httpx/releases/tag/0.29.0
+- Remove the RHEL 10 rich cap workaround: the cli extra now allows rich 14.
+  Per https://github.com/pgdg-packaging/pgdg-rpms/issues/759
+
 * Wed Oct 28 2026 Devrim Gunduz <devrim@gunduz.org> - 0.28.1-44PGDG
 - Use %%pgdg_python3_setup from pgdg-srpm-macros 2.5.0 instead of the
   per-distro Python block and the __ospython macro. Per
